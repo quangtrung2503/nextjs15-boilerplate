@@ -1,30 +1,14 @@
 "use client";
 
-import {
-    createDOMRenderer,
-    FluentProvider,
-    makeStyles,
-    RendererProvider,
-    SSRProvider,
-    tokens,
-    webDarkTheme,
-    webLightTheme,
-} from "@fluentui/react-components";
+import darkTheme from "@/themes/darkTheme";
+import lightTheme from "@/themes/lightTheme";
+import { ThemeProvider as MUIThemeProvider } from '@mui/material';
+import { AppRouterCacheProvider } from "@mui/material-nextjs/v15-appRouter";
 import { useEffect, useState } from "react";
 import { ThemeProvider, useThemeContext } from "../themes/ThemeProvider";
 
-const renderer = createDOMRenderer();
-/**
- * https://react.fluentui.dev/?path=/docs/theme-colors--docs
- */
-const useStyles = makeStyles({
-    root: {
-        backgroundColor: tokens.colorNeutralBackground1,
-    },
-});
 
 export function Providers({ children }: { children: React.ReactNode }) {
-    // Declare a state variable named 'hasMounted' and a function named 'setHasMounted' to update it.
     const [hasMounted, setHasMounted] = useState(false);
 
     useEffect(() => {
@@ -38,24 +22,21 @@ export function Providers({ children }: { children: React.ReactNode }) {
     // If the component has mounted, return a set of providers.
     return (
         <ThemeProvider>
-            <RendererProvider renderer={renderer}>
-                <SSRProvider>
-                    <WrappedFluentProvider>{children}</WrappedFluentProvider>
-                </SSRProvider>
-            </RendererProvider>
+            <AppRouterCacheProvider options={{ enableCssLayer: true, key: 'css' }}>
+                <WrappedThemeProvider>{children}</WrappedThemeProvider>
+            </AppRouterCacheProvider>
         </ThemeProvider>
     );
 }
 
-const WrappedFluentProvider = ({ children }: { children: React.ReactNode }) => {
-    const styles = useStyles();
+const WrappedThemeProvider = ({ children }: { children: React.ReactNode }) => {
     const { theme } = useThemeContext();
 
-    const currentTheme = theme === "light" ? webLightTheme : webDarkTheme;
+    const currentTheme = theme === "light" ? lightTheme : darkTheme;
 
     return (
-        <FluentProvider theme={currentTheme} className={styles.root}>
+        <MUIThemeProvider theme={currentTheme} >
             {children}
-        </FluentProvider>
+        </MUIThemeProvider>
     );
 };

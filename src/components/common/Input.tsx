@@ -1,4 +1,4 @@
-import { Field, Input } from '@fluentui/react-components';
+import { Input } from '@mui/material';
 import { FieldValues, useController, UseControllerProps } from 'react-hook-form';
 
 interface CustomInputProps<T extends FieldValues> extends UseControllerProps<T> {
@@ -19,19 +19,13 @@ const InputField = <T extends FieldValues>({
     } = useController(controllerProps);
 
     return (
-        <Field
+        <Input
             {...field}
-            label={label}
-            validationMessage={error?.message}
-        >
-            <Input
-                // {...field}
-                id={controllerProps.name}
-                name={controllerProps.name}
-                type={type}
-                placeholder={placeholder}
-            />
-        </Field>
+            id={controllerProps.name}
+            name={controllerProps.name}
+            type={type}
+            placeholder={placeholder}
+        />
     );
 };
 

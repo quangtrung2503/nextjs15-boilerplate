@@ -1,5 +1,5 @@
-import type { ButtonProps } from "@fluentui/react-components";
-import { Button as FlButton, Label } from "@fluentui/react-components";
+import type { ButtonProps } from "@mui/material";
+import { Button as FlButton, Typography } from "@mui/material";
 
 interface IButtonProps {
     label: string;
@@ -11,7 +11,7 @@ export const CommonButton = (props: CommonButtonProps) => {
     const { label, ...rest } = props
     return (
         <FlButton {...rest}>
-            <Label size="small">{label}</Label>
+            <Typography >{label}</Typography>
         </FlButton>
     )
 }

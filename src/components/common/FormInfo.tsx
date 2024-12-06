@@ -1,4 +1,4 @@
-import { Text } from '@fluentui/react-components';
+import { Typography } from '@mui/material';
 import { ControllerFieldState } from 'react-hook-form';
 
 const FormInfo = (props: ControllerFieldState): JSX.Element | null => {
@@ -6,7 +6,7 @@ const FormInfo = (props: ControllerFieldState): JSX.Element | null => {
     if (!error || !isTouched) return null;
 
     return (
-        <Text >{error?.message}</Text>
+        <Typography color='error' >{error?.message}</Typography>
     );
 };
 

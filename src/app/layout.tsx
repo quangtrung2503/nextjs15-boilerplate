@@ -52,15 +52,15 @@ export default async function RootLayout(props: Readonly<{
                 className={`${geistSans.variable} ${geistMono.variable} antialiased`}
                 suppressHydrationWarning
             >
-                <Providers>
-                    <NextIntlClientProvider
-                        locale={locale}
-                        messages={messages}>
+                <NextIntlClientProvider
+                    locale={locale}
+                    messages={messages}>
+                    <Providers>
                         <div className=" min-h-screen" >
                             {children}
                         </div>
-                    </NextIntlClientProvider>
-                </Providers>
+                    </Providers>
+                </NextIntlClientProvider>
             </body>
         </html>
     );
