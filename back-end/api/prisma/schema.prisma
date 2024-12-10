@@ -1,0 +1,46 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["fullTextSearch", "fullTextIndex"]
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserStatus {
+  ACTIVE
+  DELETED
+  BANNED
+}
+
+enum UserRole {
+  MEMBER
+}
+
+model User {
+  id              Int        @id @default(autoincrement())
+  username        String     @unique @db.VarChar(255)
+  password        String?
+  phone           String     @unique @db.VarChar(255)
+  email           String     @unique @db.VarChar(255)
+  name            String     @db.VarChar(255)
+  lastAccessToken String?    @db.Text
+  fcmToken        String?    @db.Text
+  nickName        String?    @db.VarChar(255)
+  avatar          String?    @db.VarChar(255)
+  role            UserRole   @default(MEMBER)
+  sex             String?    @db.VarChar(255)
+  dateOfBirth     DateTime?
+  address         String?    @db.VarChar(255)
+  status          UserStatus @default(ACTIVE)
+  createdAt       DateTime   @default(now()) @map("created_at")
+  updatedAt       DateTime   @default(now()) @updatedAt @map("updated_at")
+  // relation
+
+  @@fulltext([username, email, phone, name, nickName])
+  @@map("user")
+}
