@@ -1,0 +1,35 @@
+{
+  "auth": {
+    "signup": {
+      "wrong_parameter": "{keyNotInDto} is not defined in parameters",
+      "invalid_phone": "Phone number need Minimum nine characters",
+      "invalid_email": "Email is not valid",
+      "invalid_password": "Password need Minimum eight characters, at least one letter, one number and one special character"
+    },
+    "login": {
+      "user_not_found": "Username",
+      "wrong_password": "Wrong password"
+    },
+    "changePassword": {
+      "user_not_found": "User",
+      "wrong_current_password": "Wrong current password",
+      "wrong_confirm_password": "New password does not match confirmed password"
+    },
+    "logout": {
+      "user_not_found": "User not found"
+    }
+  },
+  "user": {
+    "banned": {
+      "not_found": "User not found or deleted"
+    },
+    "findOne": {
+      "not_found": "User"
+    },
+    "update": {
+      "wrong_parameter": "{keyNotInDto} is not defined in parameters",
+      "not_found": "User not found or deleted"
+    }
+  },
+  "test-fall-back": "ENG"
+}

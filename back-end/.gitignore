@@ -1,0 +1,13 @@
+node_modules
+dist
+*.env
+yarn.lock
+yarn-error.log
+data
+.vscode
+yarn.lock
+docs.json
+public/
+postman.json
+.DS_Store
+postman-api.json

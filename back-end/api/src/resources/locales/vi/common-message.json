@@ -1,0 +1,35 @@
+{
+  "auth": {
+    "signup": {
+      "wrong_parameter": "{keyNotInDto} không được định nghĩa trong các tham số",
+      "invalid_phone": "Số điện thoại cần ít nhất 9 ký tự",
+      "invalid_email": "Email không hợp lệ",
+      "invalid_password": "Mật khẩu cần ít nhất 8 ký tự, bao gồm ít nhất một chữ cái, một số và một ký tự đặc biệt"
+    },
+    "login": {
+      "user_not_found": "Tên đăng nhập",
+      "wrong_password": "Sai mật khẩu"
+    },
+    "changePassword": {
+      "user_not_found": "Người dùng",
+      "wrong_current_password": "Mật khẩu cũ không đúng",
+      "wrong_confirm_password": "Xác nhận mật khẩu không khớp"
+    },
+    "logout": {
+      "user_not_found": "Người dùng không tồn tại"
+    }
+  },
+  "user": {
+    "banned": {
+      "not_found": "Người dùng không tồn tại hoặc đã bị xóa"
+    },
+    "findOne": {
+      "not_found": "Người dùng"
+    },
+    "update": {
+      "wrong_parameter": "{keyNotInDto} không được định nghĩa trong các tham số",
+      "not_found": "Người dùng không tồn tại hoặc đã bị xóa"
+    }
+  },
+  "test-fall-back": "VI"
+}
