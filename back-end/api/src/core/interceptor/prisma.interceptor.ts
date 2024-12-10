@@ -26,7 +26,7 @@ implements NestInterceptor<T, Response> {
 
         const user = request?.user?.data;
         const role: UserRole = user?.userType;
-        if (user && role && role === UserRole.MEMBER && method != 'GET') {
+        if (user && role && role === UserRole.ADMIN && method != 'GET') {
           // await this.actionAdminService.create({
           //   data: {
           //     action: originalUrl,

@@ -18,21 +18,23 @@ enum UserStatus {
 }
 
 enum UserRole {
-  MEMBER
+  ADMIN
+  STAFF
+  CUSTOMER
 }
 
 model User {
   id              Int        @id @default(autoincrement())
   username        String     @unique @db.VarChar(255)
   password        String?
-  phone           String     @unique @db.VarChar(255)
-  email           String     @unique @db.VarChar(255)
+  phone           String     @db.VarChar(255)
+  email           String     @db.VarChar(255)
   name            String     @db.VarChar(255)
   lastAccessToken String?    @db.Text
   fcmToken        String?    @db.Text
   nickName        String?    @db.VarChar(255)
   avatar          String?    @db.VarChar(255)
-  role            UserRole   @default(MEMBER)
+  role            UserRole   @default(CUSTOMER)
   sex             String?    @db.VarChar(255)
   dateOfBirth     DateTime?
   address         String?    @db.VarChar(255)
@@ -40,7 +42,107 @@ model User {
   createdAt       DateTime   @default(now()) @map("created_at")
   updatedAt       DateTime   @default(now()) @updatedAt @map("updated_at")
   // relation
+  Review          Review[]
 
   @@fulltext([username, email, phone, name, nickName])
   @@map("user")
+}
+
+model City {
+  id        Int      @id @default(autoincrement())
+  name      String   @db.VarChar(255)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+
+  // relation
+  Tour Tour[]
+
+  @@map("city")
+}
+
+model Theme {
+  id        Int      @id @default(autoincrement())
+  name      String   @db.VarChar(255)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+
+  // relation
+  Tour Tour[]
+
+  @@map("theme")
+}
+
+model Destination {
+  id        Int      @id @default(autoincrement())
+  name      String   @db.VarChar(255)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+
+  // relation
+  Tour Tour[]
+
+  @@map("destination")
+}
+
+model Tour {
+  id             Int      @id @default(autoincrement())
+  name           String   @db.VarChar(255)
+  price          Float
+  description    String   @db.Text
+  transport      String   @db.VarChar(255)
+  package        String   @db.VarChar(255)
+  numberOfPeople Int
+  startDate      DateTime
+  endDate        DateTime
+  cityId         Int
+  themeId        Int
+  destinationId  Int
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+
+  // relation fields
+  City        City        @relation(fields: [cityId], references: [id], onDelete: Cascade)
+  Theme       Theme       @relation(fields: [themeId], references: [id], onDelete: Cascade)
+  Destination Destination @relation(fields: [id], references: [id], onDelete: Cascade)
+  Review      Review[]
+  TourImage   TourImage[]
+
+  @@fulltext([name])
+  @@map("tour")
+}
+
+model TourImage {
+  id        Int      @id @default(autoincrement())
+  tourId    Int
+  imageUrl  String   @db.VarChar(255)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+
+  // relation fields
+  Tour Tour @relation(fields: [tourId], references: [id], onDelete: Cascade)
+
+  @@map("tour_image")
+}
+
+model Review {
+  id                    Int      @id @default(autoincrement())
+  userId                Int
+  tourId                Int
+  rating_guide          Int
+  rating_transportation Int
+  rating_valueOfMoney   Int
+  rating_safety         Int
+  rating                Int
+  title                 String   @db.VarChar(255)
+  content               String   @db.Text
+  isHelpful             Boolean  @default(false)
+  createdAt             DateTime @default(now()) @map("created_at")
+  updatedAt             DateTime @default(now()) @updatedAt @map("updated_at")
+
+  // relation fields
+  User User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  Tour Tour @relation(fields: [tourId], references: [id], onDelete: Cascade)
+
+  @@map("review")
 }

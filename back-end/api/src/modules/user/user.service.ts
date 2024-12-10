@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Prisma, User } from '@prisma/client';
+import { Prisma, User, UserRole } from '@prisma/client';
 import { PrismaService } from 'prisma/prisma.service';
 
 export interface IUser extends User {
@@ -41,5 +41,33 @@ export class UserService {
 
   async updateMany(args: Prisma.UserUpdateManyArgs) {
     return this.prismaService.user.updateMany(args);
+  }
+
+  async checkEmailExistsInRoles(
+    email: string,
+    roles: UserRole[],
+  ): Promise<boolean> {
+    const userExists = await this.prismaService.user.findFirst({
+      where: {
+        role: { in: roles },
+        email: email
+      },
+    });
+
+    return !!userExists;
+  }
+
+  async checkPhoneExistsInRoles(
+    phone: string,
+    roles: UserRole[],
+  ): Promise<boolean> {
+    const userExists = await this.prismaService.user.findFirst({
+      where: {
+        role: { in: roles },
+        phone: phone
+      },
+    });
+
+    return !!userExists;
   }
 }

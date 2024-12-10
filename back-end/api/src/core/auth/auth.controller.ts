@@ -37,19 +37,44 @@ export class AuthController {
     private readonly userService: UserService,
   ) { }
 
-  @Post('sign-up')
+  @Post('sign-up-customer')
   async signUp(@Body() body: UserSignupDto) {
     const keyNotInDto = Object.keys(body).find((key: keyof UserSignupDto) => !UserSignupDtoKeys.includes(key))
-    if (keyNotInDto) throw new BaseException(Errors.BAD_REQUEST(this.i18n.t('common-message.auth.signup.wrong_parameter', { keyNotInDto })));
+    if (keyNotInDto) throw new BaseException(Errors.BAD_REQUEST(this.i18n.t('common-message.auth.signUp.wrong_parameter', { keyNotInDto })));
+
+    if (body.username.trim() === '')
+      throw new BaseException(Errors.BAD_REQUEST(this.i18n.t('common-message.auth.signUp.username_required')));
+
+    if (body.username.includes(' '))
+      throw new BaseException(Errors.BAD_REQUEST(this.i18n.t('common-message.auth.signUp.username_no_spaces')));
+
+    if (!RegexConstant.UsernameReg.test(body.username))
+      throw new BaseException(Errors.BAD_REQUEST(this.i18n.t('common-message.auth.signUp.username_invalid_format')));
 
     if (!RegexConstant.PhoneReg.test(body.phone))
-      throw new BaseException(Errors.BAD_REQUEST(this.i18n.t('common-message.auth.signup.invalid_phone')));
-
+      throw new BaseException(Errors.BAD_REQUEST(this.i18n.t('common-message.auth.signUp.invalid_phone')));
+    
     if (!RegexConstant.EmailReg.test(body.email))
-      throw new BaseException(Errors.BAD_REQUEST(this.i18n.t('common-message.auth.signup.invalid_email')));
+      throw new BaseException(Errors.BAD_REQUEST(this.i18n.t('common-message.auth.signUp.invalid_email')));
 
     if (!RegexConstant.PasswordReg.test(body.password))
-      throw new BaseException(Errors.BAD_REQUEST(this.i18n.t('common-message.auth.signup.invalid_password')));
+      throw new BaseException(Errors.BAD_REQUEST(this.i18n.t('common-message.auth.signUp.invalid_password')));
+
+    const phoneExists = await this.userService.checkPhoneExistsInRoles(
+      body.phone,
+      [UserRole.CUSTOMER],
+    );
+  
+    if (phoneExists)
+      throw new BaseException(Errors.BAD_REQUEST(this.i18n.t('common-message.auth.signUp.phone_exists')),);
+
+    const emailExists = await this.userService.checkEmailExistsInRoles(
+      body.email,
+      [UserRole.CUSTOMER],
+    );
+  
+    if (emailExists)
+      throw new BaseException(Errors.BAD_REQUEST(this.i18n.t('common-message.auth.signUp.email_exists')),);
 
     const hashPassword = await this.authService.hashPassword(body.password)
 
@@ -85,7 +110,7 @@ export class AuthController {
   }
 
   @ApiBearerAuth()
-  @Roles(UserRole.MEMBER)
+  @Roles(UserRole.ADMIN, UserRole.STAFF, UserRole.CUSTOMER)
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Post('change-password')
   async changePassword(@UserDecorator() user: IUserJwt, @Body() body: ChangePassword) {
@@ -111,7 +136,7 @@ export class AuthController {
   }
 
   @ApiBearerAuth()
-  @Roles(UserRole.MEMBER)
+  @Roles(UserRole.ADMIN, UserRole.STAFF, UserRole.CUSTOMER)
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Get('logout')
   async logout(@UserDecorator() user: IUserJwt) {
@@ -120,7 +145,7 @@ export class AuthController {
   }
 
   @ApiBearerAuth()
-  @Roles(UserRole.MEMBER)
+  @Roles(UserRole.ADMIN, UserRole.STAFF, UserRole.CUSTOMER)
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Post('push-token-fcm')
   async pushTokenFcm(@UserDecorator() user: IUserJwt, @Body() body: PushFcmTokenDto) {
