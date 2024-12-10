@@ -2,7 +2,6 @@
 
 import { CommonButton } from "@/components/common/Button"
 import { useForm, Controller, FormProvider, Path, UseFormRegister } from "react-hook-form"
-import HookFormField from "@/components/common/CustomHookFormField/HookFormField"
 import * as yup from "yup"
 import { yupResolver } from "@hookform/resolvers/yup"
 import { CommonDatePicker } from "@/components/common/DatePicker"
@@ -59,13 +58,6 @@ export default function App() {
             render={({ field }) => <input {...field} />}
           />
           <p>{errors.firstName?.message}</p>
-          <HookFormField
-            name="Age"
-            label="Age"
-            component={CommonDatePicker}
-            rules={{ required: true }}
-          />
-          <p>{errors.age?.message}</p>
           {/*           
           <HookFormField
           name="lastName"
