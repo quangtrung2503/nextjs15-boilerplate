@@ -20,11 +20,11 @@ export class UserService {
   }
 
   async findAll(args: Prisma.UserFindManyArgs) {
-    return this.prismaService.user.findMany({ ...args });
+    return this.prismaService.user.findMany({ ...args, include: args?.include });
   }
 
   async findOne(args: Prisma.UserFindFirstArgs) {
-    return this.prismaService.user.findFirst({ ...args });
+    return this.prismaService.user.findFirst({ ...args, include: args?.include });
   }
 
   async update(id: number, args: Prisma.UserUpdateInput) {

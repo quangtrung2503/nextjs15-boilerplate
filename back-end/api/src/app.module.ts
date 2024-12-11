@@ -16,6 +16,10 @@ import { LoggerMiddleware } from './core/middleware/logger.middleware';
 import { BackendConfigService } from './core/services/backend-config.service';
 import { I18nCustomModule } from './resources/i18n/i18n.module';
 import { UserModule } from './modules/user/user.module';
+import { CityModule } from './modules/city/city.module';
+import { ThemeModule } from './modules/theme/theme.module';
+import { DestinationModule } from './modules/destination/destination.module';
+import { PostModule } from './modules/post/post.module';
 
 @Module({
   imports: [
@@ -40,6 +44,10 @@ import { UserModule } from './modules/user/user.module';
       inject: [BackendConfigService],
     }),
     UserModule,
+    CityModule,
+    ThemeModule,
+    DestinationModule,
+    PostModule
   ],
   controllers: [AppController],
   providers: [
