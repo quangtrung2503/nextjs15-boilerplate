@@ -57,7 +57,7 @@ implements NestInterceptor<T, Response> {
           case 'P2002':
             const duplicateField = this.mapDuplicateField(err?.meta?.target);
             const lang = I18nContext.current().lang || 'en';
-            const message = lang === 'vi' 
+            const message = lang === 'vi'
               ? `${duplicateField} đã tồn tại!`
               : `${duplicateField} already exists!`;
             throw new ConflictException(message);
@@ -70,12 +70,14 @@ implements NestInterceptor<T, Response> {
 
   private mapDuplicateField(target: string): string {
     switch (target) {
-      case 'user_email_key':
-        return I18nContext.current().lang === 'en' ? 'Email' : 'Email';
-      case 'user_phone_key':
-        return I18nContext.current().lang === 'en' ? 'Phone' : 'Số điện thoại';
       case 'user_username_key':
         return I18nContext.current().lang === 'en' ? 'Username' : 'Tên đăng nhập';
+      case 'city_name_key':
+        return I18nContext.current().lang === 'en' ? 'City' : 'Thành phố';
+      case 'theme_name_key':
+        return I18nContext.current().lang === 'en' ? 'Theme' : 'Chủ đề';
+      case 'destination_name_key':
+        return I18nContext.current().lang === 'en' ? 'Destination' : 'Điểm đến';
       default:
         return '';
     }

@@ -54,5 +54,65 @@
       "not_found": "Người dùng không tồn tại hoặc đã bị xóa"
     }
   },
+  "city": {
+    "create": {
+      "wrong_parameter": "{keyNotInDto} không được định nghĩa trong các tham số"
+    },
+    "findOne": {
+      "not_found": "Thành phố"
+    },
+    "update": {
+      "wrong_parameter": "{keyNotInDto} không được định nghĩa trong các tham số",
+      "not_found": "Thành phố"
+    },
+    "remove": {
+      "not_found": "Thành phố"
+    }
+  },
+  "destination": {
+    "create": {
+      "wrong_parameter": "{keyNotInDto} không được định nghĩa trong các tham số"
+    },
+    "findOne": {
+      "not_found": "Điểm đến"
+    },
+    "update": {
+      "wrong_parameter": "{keyNotInDto} không được định nghĩa trong các tham số",
+      "not_found": "Điểm đến"
+    },
+    "remove": {
+      "not_found": "Điểm đến"
+    }
+  },
+  "theme": {
+    "create": {
+      "wrong_parameter": "{keyNotInDto} không được định nghĩa trong các tham số"
+    },
+    "findOne": {
+      "not_found": "Chủ đề"
+    },
+    "update": {
+      "wrong_parameter": "{keyNotInDto} không được định nghĩa trong các tham số",
+      "not_found": "Chủ đề"
+    },
+    "remove": {
+      "not_found": "Chủ đề"
+    }
+  },
+  "post": {
+    "create": {
+      "wrong_parameter": "{keyNotInDto} is not defined in parameters"
+    },
+    "findOne": {
+      "not_found": "Bài viết"
+    },
+    "update": {
+      "wrong_parameter": "{keyNotInDto} is not defined in parameters",
+      "not_found": "Bài viết"
+    },
+    "remove": {
+      "not_found": "Bài viết"
+    }
+  },
   "test-fall-back": "VI"
 }

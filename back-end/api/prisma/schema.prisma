@@ -43,6 +43,7 @@ model User {
   updatedAt       DateTime   @default(now()) @updatedAt @map("updated_at")
   // relation
   Review          Review[]
+  Post            Post[]
 
   @@fulltext([username, email, phone, name, nickName])
   @@map("user")
@@ -50,7 +51,7 @@ model User {
 
 model City {
   id        Int      @id @default(autoincrement())
-  name      String   @db.VarChar(255)
+  name      String   @unique @db.VarChar(255)
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
 
@@ -62,7 +63,7 @@ model City {
 
 model Theme {
   id        Int      @id @default(autoincrement())
-  name      String   @db.VarChar(255)
+  name      String   @unique @db.VarChar(255)
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
 
@@ -74,7 +75,7 @@ model Theme {
 
 model Destination {
   id        Int      @id @default(autoincrement())
-  name      String   @db.VarChar(255)
+  name      String   @unique @db.VarChar(255)
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
 
@@ -91,6 +92,8 @@ model Tour {
   description    String   @db.Text
   transport      String   @db.VarChar(255)
   package        String   @db.VarChar(255)
+  duration       String   @db.VarChar(255)
+  numberOfHours  Float
   numberOfPeople Int
   startDate      DateTime
   endDate        DateTime
@@ -145,4 +148,20 @@ model Review {
   Tour Tour @relation(fields: [tourId], references: [id], onDelete: Cascade)
 
   @@map("review")
+}
+
+model Post {
+  id            Int      @id @default(autoincrement())
+  userCreatedId Int
+  image         String   @db.VarChar(255)
+  title         String   @db.VarChar(255)
+  content       String   @db.Text
+  views         Int      @default(0)
+  createdAt     DateTime @default(now()) @map("created_at")
+  updatedAt     DateTime @default(now()) @updatedAt @map("updated_at")
+
+  // relation fields
+  User User @relation(fields: [userCreatedId], references: [id], onDelete: Cascade)
+
+  @@map("post")
 }
