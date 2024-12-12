@@ -17,7 +17,7 @@ export async function generateMetadata(props: ISignInPageProps) {
     };
 }
 
-export default async function SignInPage() {
+export default async function Hompage() {
     return (
         <Landing />
     );
