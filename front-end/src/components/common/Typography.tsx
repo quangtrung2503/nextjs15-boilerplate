@@ -12,6 +12,11 @@ export type TypeTypographyClient =
   | 'size14Weight500'
   | 'size14Weight600'
   | 'size14Weight700'
+  | 'size15Weight300'
+  | 'size15Weight400'
+  | 'size15Weight500'
+  | 'size15Weight600'
+  | 'size18Weight500'
   | 'size18Weight600'
   | 'size18Weight700'
   | 'size16Weight600'
@@ -27,6 +32,7 @@ export type TypeTypographyClient =
   | 'size11Weight600'
   | 'size75Weight600'
   | 'size25Weight600'
+  | 'size26Weight400'
   | 'size9Weight600'
   | 'size23Weight600';
 
@@ -79,7 +85,22 @@ const Typography = (props: Props) => {
       fontSize: '14px', //0.875rem
       fontWeight: 700,
     });
-
+    styles.set('size15Weight300', {
+      fontSize: '15px', //0.875rem
+      fontWeight: 300,
+    });
+    styles.set('size15Weight400', {
+      fontSize: '15px', //0.875rem
+      fontWeight: 400,
+    });
+    styles.set('size15Weight500', {
+      fontSize: '15px', //0.875rem
+      fontWeight: 500,
+    });
+    styles.set('size15Weight600', {
+      fontSize: '15px', //0.875rem
+      fontWeight: 600,
+    });
     styles.set('size16Weight400', {
       fontSize: '16px',
       fontWeight: 400,
@@ -91,6 +112,10 @@ const Typography = (props: Props) => {
     styles.set('size14Weight600', {
       fontSize: '14px', //0.875rem
       fontWeight: 600,
+    });
+    styles.set('size18Weight500', {
+      fontSize: '18px',
+      fontWeight: 500,
     });
     styles.set('size18Weight600', {
       fontSize: '18px',
@@ -143,6 +168,10 @@ const Typography = (props: Props) => {
     styles.set('size23Weight600', {
       fontSize: '23px',
       fontWeight: 600,
+    });
+    styles.set('size26Weight400', {
+      fontSize: '26px',
+      fontWeight: 400,
     });
     styles.set('size9Weight600', {
       fontSize: '9px',

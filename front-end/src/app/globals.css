@@ -5,6 +5,23 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+
+  --primary: #7bbcb0;
+  --secondary: #ffda32;
+
+  --accent-gray-dark: #1c2b38;
+  --accent-gray-800: #495560;
+  --accent-gray-500: #778088;
+  --accent-gray-light: #ffffff99;
+
+  --accent-purple: #d176e0;
+  --accent-blue: #5c9bde;
+  --accent-red: #fc3131;
+
+  --footer: #13253f;
+  --footer-bottom: #00000033;
+
+  --header-height: 90px;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -18,7 +35,7 @@
 body {
   margin: 0;
   padding: 0;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   color: var(--foreground);
   background: var(--background);
 }

@@ -1,10 +1,10 @@
 import DefaulLayout from "@/components/DefaultLayout";
 import React from "react";
 interface LayoutProps {
-    children: React.ReactNode;
-  }
+  children: React.ReactNode;
+}
 const Layout = (props: LayoutProps) => {
-    const {children} = props
+  const { children } = props;
   return (
     <DefaulLayout>
       <div>{children}</div>
