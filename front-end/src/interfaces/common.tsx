@@ -1,9 +1,11 @@
 import { FieldInputProps, FormikProps } from "formik";
 import { AxiosResponse } from "axios";
 import { FormikHelpers } from "formik";
+import React, { ReactNode } from "react";
+
 export interface SelectOption {
   key?: string;
-  label: string;
+  label: string | React.ReactNode;
   value: any;
 }
 
@@ -37,9 +39,9 @@ export type TypeAlign =
   | undefined;
 
 export interface SelectOption {
-  key?: string
-  label: string;
+  label: ReactNode;
   value: any;
+  key?: string;
 }
 
 export interface ResponseCommon<T> {

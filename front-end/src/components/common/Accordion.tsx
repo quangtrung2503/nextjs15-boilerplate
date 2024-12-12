@@ -10,7 +10,7 @@ import MuiAccordionSummary, {
 import MuiAccordionDetails from "@mui/material/AccordionDetails";
 import { SelectOption } from "@/interfaces/common";
 import { Checkbox, FormControlLabel, FormGroup } from "@mui/material";
-import { default as CommonStyles } from "../../components/common";
+import { default as CommonStyles } from ".";
 
 interface AccordionMUIProps {
   title: string;
@@ -71,7 +71,7 @@ const AccordionMUI = (props: AccordionMUIProps) => {
   const visibleOptions = showMore ? options : options.slice(0, 7);
 
   return (
-    <div className="w-full shadow-md rounded-md overflow-hidden">
+    <div className="tw-w-full tw-shadow-md tw-rounded-md tw-overflow-hidden">
       <Accordion
         expanded={expanded === "panel1"}
         onChange={handleChange("panel1")}
@@ -81,7 +81,7 @@ const AccordionMUI = (props: AccordionMUIProps) => {
             {title}
           </CommonStyles.Typography>
         </AccordionSummary>
-        <AccordionDetails className="flex flex-col items-start">
+        <AccordionDetails className="tw-flex tw-flex-col tw-items-start">
           <FormGroup sx={{ width: "100%" }}>
             {visibleOptions.map((item: SelectOption, index) => (
               <FormControlLabel
@@ -102,7 +102,7 @@ const AccordionMUI = (props: AccordionMUIProps) => {
           {options.length > 7 && (
             <CommonStyles.Typography
               type="size14Weight700"
-              className="!cursor-pointer mt-3"
+              className="tw-!cursor-pointer tw-mt-3"
               color="#7BBCB0"
               onClick={handleShowMore}
             >

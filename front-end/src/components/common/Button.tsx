@@ -1,4 +1,6 @@
-import { Button, ButtonProps, SxProps } from "@mui/material";
+import { Button } from "@mui/material";
+import { ButtonProps } from "@mui/material/Button";
+import { SxProps } from "@mui/material/styles";
 import { ReactNode, useMemo } from "react";
 
 export type ColorButton = 'primary' | 'success' | 'danger' | 'warning' | 'info' | 'outlined';
@@ -33,7 +35,7 @@ export const CommonButton = (props: CommonButtonProps) => {
     const styledVariant = new Map<Variant, SxProps>();
 
     styled.set('primary', {
-      color: "#495560",
+      color: "#1C2B38",
       background:
         variant==="outlined" ? "transparent" : "#FFDA32",
     });
