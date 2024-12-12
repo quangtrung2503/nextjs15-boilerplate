@@ -38,7 +38,7 @@ const FormProfileWithCustomComponent: React.FC = () => {
   const onSubmit: SubmitHandler<FormData> = (data) => {
     console.log("Form Data:", data);
   };
-  const phoneRegex = /^\d+$/;
+  const phoneRegex =/^\d*$/;
   return (
     <div>
       <form onSubmit={handleSubmit(onSubmit)}>
@@ -46,7 +46,6 @@ const FormProfileWithCustomComponent: React.FC = () => {
           name="name"
           control={control}
           label="Name"
-          icon={<AcUnitIcon />}
         />
         <InputField
           name="phone"
@@ -54,7 +53,6 @@ const FormProfileWithCustomComponent: React.FC = () => {
           label="Phone"
           type='tel'
           regex={phoneRegex}
-          icon={<AddAPhotoIcon />}
         />
         <InputField
           name="location"
