@@ -8,59 +8,78 @@ import {
   MenuItem,
   FormHelperText,
   SelectChangeEvent,
+  SxProps,
 } from "@mui/material";
 import { SelectOption } from "@/interfaces/common";
+import { twMerge } from "tailwind-merge";
 
 interface SelectFieldProps {
   label?: string;
   name?: string;
+  sx?: SxProps;
+  size?: "small" | "medium";
   value?: string | number;
   options?: SelectOption[];
-  onChange?: (event: SelectChangeEvent<string | number>, child: ReactNode) => void;
+  classNameLabel?: string;
+  onChange?: (
+    event: SelectChangeEvent<string | number>,
+    child: ReactNode
+  ) => void;
   error?: boolean;
   helperText?: string;
   classNameContainer?: string;
+  className?: string;
   fullWidth?: boolean;
+  defaultValue?: string | number | undefined;
   variant?: "outlined" | "filled" | "standard";
 }
 
 const SelectField: React.FC<SelectFieldProps> = ({
   label,
   name,
+  defaultValue,
+  size,
   value,
   options = [],
+  classNameLabel,
   onChange,
+  className,
+  sx,
   error = false,
   helperText = "",
-  classNameContainer="",
+  classNameContainer = "",
   fullWidth = true,
   variant,
   ...props
 }) => {
   return (
     <FormControl
-      className={ classNameContainer}
+      size={size}
+      className={classNameContainer}
       fullWidth={fullWidth}
       variant={variant}
-      sx={{
-        borderWidth: '1px !important',
-        borderRadius: "0.25rem"
-      }}
       error={error}
     >
-      {label && <InputLabel>{label}</InputLabel>}
+      {label && <InputLabel className={classNameLabel}>{label}</InputLabel>}
       <Select
-        // MenuProps={{
-        //   disableScrollLock: true, // Prevent scroll locking when menu is open
-        // }}
+        defaultValue={defaultValue}
+        sx={sx}
+        MenuProps={{
+          disableScrollLock: true, // Prevent scroll locking when menu is open
+        }}
         label={label}
         name={name}
         value={value}
         onChange={onChange}
+        className="tw-text-[#ffffff86]"
         {...props}
       >
         {options.map((option, index) => (
-          <MenuItem className="rounded" key={index} value={option.value}>
+          <MenuItem
+            className={twMerge("rounded tw-flex tw-items-center", className)}
+            key={index}
+            value={option.value}
+          >
             {option.label}
           </MenuItem>
         ))}

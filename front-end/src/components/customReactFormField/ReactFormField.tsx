@@ -16,11 +16,6 @@ function RHFField<T extends FieldValues, C>({
   component: Component,
   ...props
 }: RHFFieldProps<T, C>) {
-const abc = useController({
-  name,
-  control
-})
-console.log('abc', abc, control)
   return (
     <Controller
       name={name}

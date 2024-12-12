@@ -15,16 +15,17 @@ import pageUrls from "@/constants/pageUrls";
 type FormValues = {
   email: string;
   password: string;
+  confirmPassword: string;
 };
 
-type ISignInProps = {
+type ISignUpProps = {
   path: string;
 };
 
-const SignIn = (props: ISignInProps) => {
-  const t = useTranslations("SignIn");
+const SignUp = (props: ISignUpProps) => {
+  const t = useTranslations("SignUp");
   const { handleSubmit, control } = useForm<FormValues>({
-    defaultValues: { email: "", password: "" },
+    defaultValues: { email: "", password: "", confirmPassword: "" },
     reValidateMode: "onSubmit",
     criteriaMode: "all",
     resolver: yupResolver(
@@ -32,7 +33,11 @@ const SignIn = (props: ISignInProps) => {
         email: Yup.string()
           .email("Invalid email format")
           .required("Email is required"),
-        password: Yup.string().required("Password is required"),
+        password: Yup.string()
+          .required("Password is required"),
+        confirmPassword: Yup.string()
+          .oneOf([Yup.ref("password")], "Passwords must match")
+          .required("Confirm Password is required"),
       })
     ),
   });
@@ -50,7 +55,7 @@ const SignIn = (props: ISignInProps) => {
       />
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="tw-min-w-[800px] tw-bg-white tw-py-10 tw-rounded-xl tw-relative tw-z-50 tw-mt-10 "
+        className="tw-min-w-[800px] tw-h-fit tw-drop-shadow-lg tw-bg-white tw-py-10 tw-rounded-xl tw-relative tw-z-50  tw-mb-10 tw-mt-10 "
       >
         <CommonStyles.Box className="tw-max-w-[400px] tw-flex tw-flex-col tw-items-center tw-gap-5 tw-mx-auto">
           <CommonStyles.Box>
@@ -64,9 +69,9 @@ const SignIn = (props: ISignInProps) => {
               {t("meta_title")}
             </CommonStyles.Typography>
             <CommonStyles.Typography color="var(--accent-gray-800)">
-              {t("Don't have an account")}?{" "}
-              <Link className="!tw-underline" href={pageUrls.SignUp}>
-                {t("Sign Up")}
+              {t("Already have an account")}?{" "}
+              <Link className="!tw-underline" href={pageUrls.SignIn}>
+                {t("Sign In")}
               </Link>
             </CommonStyles.Typography>
           </CommonStyles.Box>
@@ -76,14 +81,14 @@ const SignIn = (props: ISignInProps) => {
               variant="outlined"
               className="tw-rounded-full tw-border-accent_gray_500 tw-bg-white"
             >
-              {t("Login with Facebook")}
+              {t("Sign up with Facebook")}
             </CommonButton>
             <CommonButton
               startIcon={<CommonIcons.GoogleLogin />}
               variant="outlined"
               className="tw-rounded-full tw-border-accent_gray_500 tw-bg-white"
             >
-              {t("Login with Google")}
+              {t("Sign up with Google")}
             </CommonButton>
           </CommonStyles.Box>
           <CommonStyles.Box className="tw-flex tw-items-center tw-w-full tw-gap-3">
@@ -110,33 +115,40 @@ const SignIn = (props: ISignInProps) => {
               component={InputField}
               label={t("Email label")}
             />
-            <CommonStyles.Box className="tw-flex tw-flex-col tw-items-end tw-w-full">
-              <RHFField
-                name="password"
-                control={control}
-                sx={{
-                  fieldset: {
-                    borderRadius: "20px",
-                    width: "100%",
-                    padding: 0,
-                  },
-                }}
-                component={InputField}
-                label={t("Password label")}
-              />
-              <CommonStyles.Link
-                className="!tw-underline !tw-text-accent_gray_800 tw-mt-1"
-                href={""}
-              >
-                Forgot password
-              </CommonStyles.Link>
-            </CommonStyles.Box>
+            <RHFField
+              name="password"
+              control={control}
+              sx={{
+                fieldset: {
+                  borderRadius: "20px",
+                  width: "100%",
+                  padding: 0,
+                },
+              }}
+              type="password"
+              component={InputField}
+              label={t("Password label")}
+            />
+            <RHFField
+              name="confirmPassword"
+              control={control}
+              type="password"
+              sx={{
+                fieldset: {
+                  borderRadius: "20px",
+                  width: "100%",
+                  padding: 0,
+                },
+              }}
+              component={InputField}
+              label={t("Confirm password label")}
+            />
           </CommonStyles.Box>
           <CommonButton
             className="tw-w-full tw-rounded-full tw-text-accent_gray_800"
             type="submit"
           >
-            {t("Sign in button")}
+            {t("Sign up button")}
           </CommonButton>
         </CommonStyles.Box>
       </form>
@@ -144,4 +156,4 @@ const SignIn = (props: ISignInProps) => {
   );
 };
 
-export default SignIn;
+export default SignUp;
