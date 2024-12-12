@@ -13,7 +13,7 @@ export class ListCustomerDto extends OmitType(FilterOptions, ['from', 'to']) {
   readonly status?: UserStatus;
 
   @ApiProperty({
-    example: UserRole.MEMBER,
+    example: UserRole.CUSTOMER,
     required: false
   })
   @IsEnum(UserRole)

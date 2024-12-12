@@ -1,10 +1,15 @@
 {
   "auth": {
-    "signup": {
+    "signUp": {
       "wrong_parameter": "{keyNotInDto} không được định nghĩa trong các tham số",
+      "username_required": "Tên đăng nhập là bắt buộc",
+      "username_no_spaces": "Tên đăng nhập không được chứa khoảng trắng",
+      "username_invalid_format": "Tên đăng nhập phải có ít nhất 8 ký tự và không được chứa ký tự đặc biệt",
       "invalid_phone": "Số điện thoại cần ít nhất 9 ký tự",
       "invalid_email": "Email không hợp lệ",
-      "invalid_password": "Mật khẩu cần ít nhất 8 ký tự, bao gồm ít nhất một chữ cái, một số và một ký tự đặc biệt"
+      "invalid_password": "Mật khẩu cần ít nhất 8 ký tự, bao gồm ít nhất một chữ cái, một số và một ký tự đặc biệt",
+      "phone_exists": "Số điện thoại đã tồn tại",
+      "email_exists": "Email đã tồn tại"
     },
     "login": {
       "user_not_found": "Tên đăng nhập",
@@ -23,12 +28,90 @@
     "banned": {
       "not_found": "Người dùng không tồn tại hoặc đã bị xóa"
     },
+    "createUser": {
+      "wrong_parameter": "{keyNotInDto} không được định nghĩa trong các tham số",
+      "username_required": "Tên đăng nhập là bắt buộc",
+      "username_no_spaces": "Tên đăng nhập không được chứa khoảng trắng",
+      "username_invalid_format": "Tên đăng nhập phải có ít nhất 8 ký tự và không được chứa ký tự đặc biệt",
+      "invalid_phone": "Số điện thoại cần ít nhất 9 ký tự",
+      "invalid_email": "Email không hợp lệ",
+      "invalid_password": "Mật khẩu cần ít nhất 8 ký tự, bao gồm ít nhất một chữ cái, một số và một ký tự đặc biệt",
+      "invalid_status": "Trạng thái người dùng phải là ACTIVE hoặc BANNED",
+      "phone_exists": "Số điện thoại đã tồn tại",
+      "email_exists": "Email đã tồn tại"
+    },
     "findOne": {
       "not_found": "Người dùng"
     },
     "update": {
       "wrong_parameter": "{keyNotInDto} không được định nghĩa trong các tham số",
+      "forbidden": "{role} không thể cập nhật {key}",
+      "not_found": "Người dùng không tồn tại hoặc đã bị xóa",
+      "phone_exists": "Số điện thoại đã tồn tại",
+      "email_exists": "Email đã tồn tại"
+    },
+    "remove": {
       "not_found": "Người dùng không tồn tại hoặc đã bị xóa"
+    }
+  },
+  "city": {
+    "create": {
+      "wrong_parameter": "{keyNotInDto} không được định nghĩa trong các tham số"
+    },
+    "findOne": {
+      "not_found": "Thành phố"
+    },
+    "update": {
+      "wrong_parameter": "{keyNotInDto} không được định nghĩa trong các tham số",
+      "not_found": "Thành phố"
+    },
+    "remove": {
+      "not_found": "Thành phố"
+    }
+  },
+  "destination": {
+    "create": {
+      "wrong_parameter": "{keyNotInDto} không được định nghĩa trong các tham số"
+    },
+    "findOne": {
+      "not_found": "Điểm đến"
+    },
+    "update": {
+      "wrong_parameter": "{keyNotInDto} không được định nghĩa trong các tham số",
+      "not_found": "Điểm đến"
+    },
+    "remove": {
+      "not_found": "Điểm đến"
+    }
+  },
+  "theme": {
+    "create": {
+      "wrong_parameter": "{keyNotInDto} không được định nghĩa trong các tham số"
+    },
+    "findOne": {
+      "not_found": "Chủ đề"
+    },
+    "update": {
+      "wrong_parameter": "{keyNotInDto} không được định nghĩa trong các tham số",
+      "not_found": "Chủ đề"
+    },
+    "remove": {
+      "not_found": "Chủ đề"
+    }
+  },
+  "post": {
+    "create": {
+      "wrong_parameter": "{keyNotInDto} is not defined in parameters"
+    },
+    "findOne": {
+      "not_found": "Bài viết"
+    },
+    "update": {
+      "wrong_parameter": "{keyNotInDto} is not defined in parameters",
+      "not_found": "Bài viết"
+    },
+    "remove": {
+      "not_found": "Bài viết"
     }
   },
   "test-fall-back": "VI"

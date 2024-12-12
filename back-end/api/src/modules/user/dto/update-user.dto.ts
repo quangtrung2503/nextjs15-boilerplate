@@ -1,10 +1,10 @@
 import { ApiProperty, OmitType, PartialType } from '@nestjs/swagger';
 import { IsEnum } from 'class-validator';
 import { UserStatus } from 'src/helpers/constants/enum.constant';
-import { UserSignupDto } from 'src/core/auth/dtos/user-signup.dto';
+import { CreateUserDto } from './create-user.dto';
 
-export const UpdateUserDtoKeys: (keyof UpdateUserDto)[] = ['avatar', 'email', 'name', 'nickName', 'phone'];
-export class UpdateUserDto extends PartialType(OmitType(UserSignupDto, ['password', 'username'])) {}
+export const UpdateUserDtoKeys: (keyof UpdateUserDto)[] = ['avatar', 'email', 'name', 'nickName', 'phone', 'role', 'status', 'sex', 'dateOfBirth', 'address'];
+export class UpdateUserDto extends PartialType(OmitType(CreateUserDto, ['password', 'username'])) {}
 
 export class UpdateUserBannedDto {
   @ApiProperty({

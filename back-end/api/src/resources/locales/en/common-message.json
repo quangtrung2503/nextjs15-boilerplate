@@ -1,10 +1,15 @@
 {
   "auth": {
-    "signup": {
+    "signUp": {
       "wrong_parameter": "{keyNotInDto} is not defined in parameters",
+      "username_required": "Username is required",
+      "username_no_spaces": "Username cannot contain space",
+      "username_invalid_format": "Username must be at least eight characters long and cannot contain special characters",
       "invalid_phone": "Phone number need Minimum nine characters",
       "invalid_email": "Email is not valid",
-      "invalid_password": "Password need Minimum eight characters, at least one letter, one number and one special character"
+      "invalid_password": "Password need Minimum eight characters, at least one letter, one number and one special character",
+      "phone_exists": "Phone already exists",
+      "email_exists": "Email already exists"
     },
     "login": {
       "user_not_found": "Username",
@@ -23,12 +28,90 @@
     "banned": {
       "not_found": "User not found or deleted"
     },
+    "createUser": {
+      "wrong_parameter": "{keyNotInDto} is not defined in parameters",
+      "username_required": "Username is required",
+      "username_no_spaces": "Username cannot contain space",
+      "username_invalid_format": "Username must be at least eight characters long and cannot contain special characters",
+      "invalid_phone": "Phone number need Minimum nine characters",
+      "invalid_email": "Email is not valid",
+      "invalid_password": "Password need Minimum eight characters, at least one letter, one number and one special character",
+      "invalid_status": "User status must be ACTIVE or BANNED",
+      "phone_exists": "Phone already exists",
+      "email_exists": "Email already exists"
+    },
     "findOne": {
       "not_found": "User"
     },
     "update": {
       "wrong_parameter": "{keyNotInDto} is not defined in parameters",
+      "forbidden": "{role} cannot update {key}",
+      "not_found": "User not found or deleted",
+      "phone_exists": "Phone already exists",
+      "email_exists": "Email already exists"
+    },
+    "remove": {
       "not_found": "User not found or deleted"
+    }
+  },
+  "city": {
+    "create": {
+      "wrong_parameter": "{keyNotInDto} is not defined in parameters"
+    },
+    "findOne": {
+      "not_found": "City"
+    },
+    "update": {
+      "wrong_parameter": "{keyNotInDto} is not defined in parameters",
+      "not_found": "City"
+    },
+    "remove": {
+      "not_found": "City"
+    }
+  },
+  "destination": {
+    "create": {
+      "wrong_parameter": "{keyNotInDto} is not defined in parameters"
+    },
+    "findOne": {
+      "not_found": "Destination"
+    },
+    "update": {
+      "wrong_parameter": "{keyNotInDto} is not defined in parameters",
+      "not_found": "Destination"
+    },
+    "remove": {
+      "not_found": "Destination"
+    }
+  },
+  "theme": {
+    "create": {
+      "wrong_parameter": "{keyNotInDto} is not defined in parameters"
+    },
+    "findOne": {
+      "not_found": "Theme"
+    },
+    "update": {
+      "wrong_parameter": "{keyNotInDto} is not defined in parameters",
+      "not_found": "Theme"
+    },
+    "remove": {
+      "not_found": "Theme"
+    }
+  },
+  "post": {
+    "create": {
+      "wrong_parameter": "{keyNotInDto} is not defined in parameters"
+    },
+    "findOne": {
+      "not_found": "Post"
+    },
+    "update": {
+      "wrong_parameter": "{keyNotInDto} is not defined in parameters",
+      "not_found": "Post"
+    },
+    "remove": {
+      "not_found": "Post"
     }
   },
   "test-fall-back": "ENG"
