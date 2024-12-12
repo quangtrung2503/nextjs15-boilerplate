@@ -1,5 +1,6 @@
 {
   "SignIn": {
+    "Function is under development": "Function is under development",
     "meta_title": "Sign in",
     "Don't have an account": "Don't have an account",
     "Sign Up": "Sign Up",
@@ -11,28 +12,50 @@
     "Email label": "Email",
     "Password label": "Password",
     "Sign in button": "Sign in",
+    "Login success": "Login successful",
     "Forgot password": "Forgot password",
     "meta_description": "Seamlessly sign in to your account with our user-friendly login process.",
     "Enter your username": "Enter your username",
-    "Enter your password": "Enter your password"
+    "Enter your password": "Enter your password",
+    "Validations": {
+      "emailFormat": "Invalid email format",
+      "emailRequire": "Email is required",
+      "passwordFormat": "",
+      "passwordRequire": "Password is required"
+    }
   },
   "SignUp": {
+    "Function is under development": "Function is under development",
     "meta_title": "Sign Up",
     "Already have an account": "Already have an account",
     "Sign In": "Sign In",
     "Sign up with Facebook": "Sign up with Facebook",
     "Sign up with Google": "Sign up with Google",
     "or": "or",
+    "Name placeholder": "Name",
+    "Phone placeholder": "Phone",
     "Email placeholder": "Email",
     "Password placeholder": "Password",
     "Confirm password placeholder": "Confirm password",
+    "Name label": "Name",
+    "Phone label": "Phone",
     "Email label": "Email",
     "Password label": "Password",
     "Confirm password label": "Confirm password",
     "Sign up button": "Sign up",
+    "Sign up success": "Sign up successful",
     "meta_description": "Seamlessly sign in to your account with our user-friendly login process.",
     "Enter your username": "Enter your username",
-    "Enter your password": "Enter your password"
+    "Enter your password": "Enter your password",
+    "Validations": {
+      "nameRequire": "Name is required",
+      "emailFormat": "Invalid email format",
+      "emailRequire": "Email is required",
+      "phoneFormat": "Invalid phone number format",
+      "passwordFormat": "",
+      "passwordRequire": "Password is required",
+      "passwordNotMatch": "Confirm password does not match"
+    }
   },
   "LandingPage": {
     "meta_title": "Welcome to our website",

@@ -1,16 +1,24 @@
 "use client";
+import * as Yup from "yup";
 import { useTranslations } from "next-intl";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import * as Yup from "yup";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+
+import { bgLogin } from "@/assets";
 import RHFField from "@/components/customReactFormField/ReactFormField";
 import InputField from "@/components/customReactFormField/InputField";
 import { default as CommonStyles } from "@/components/common";
-import { bgLogin } from "@/assets";
 import CommonIcons from "@/components/CommonIcons";
 import Link from "@/components/common/Link";
 import { CommonButton } from "@/components/common/Button";
+
 import pageUrls from "@/constants/pageUrls";
+import useAuth from "@/hooks/useAuth";
+import LoginModel from "@/models/login.model";
+import { useNotifications } from "@/helpers/toast";
+import Loading from "@/components/common/Loading";
 
 type FormValues = {
   email: string;
@@ -22,7 +30,17 @@ type ISignInProps = {
 };
 
 const SignIn = (props: ISignInProps) => {
+  const [isLogin, setIsLogin] = useState<boolean>(true);
+  const { showSuccess, showError, showInfo } = useNotifications();
+  const auth = useAuth();
+  const router = useRouter();
+  const isLogged = auth?.isLogged;
+  const isLogining = auth?.isLogining;
   const t = useTranslations("SignIn");
+
+  const handleForgot = () => {
+    setIsLogin(false);
+  };
   const { handleSubmit, control } = useForm<FormValues>({
     defaultValues: { email: "", password: "" },
     reValidateMode: "onSubmit",
@@ -30,17 +48,47 @@ const SignIn = (props: ISignInProps) => {
     resolver: yupResolver(
       Yup.object().shape({
         email: Yup.string()
-          .email("Invalid email format")
-          .required("Email is required"),
-        password: Yup.string().required("Password is required"),
+          .email(t("Validations.emailFormat"))
+          .required(t("Validations.emailRequire")),
+        password: Yup.string().required(t("Validations.passwordRequire")),
       })
     ),
   });
-
-  const onSubmit: SubmitHandler<FormValues> = (data) => {
-    console.log("Form Data:", data);
+  const onSubmit: SubmitHandler<FormValues> = async (values) => {
+    const body = {
+      email: values?.email,
+      password: values?.password,
+    };
+    try {
+      const requestPayload = LoginModel.parseBodyToRequest(body);
+      const res = await auth?.signIn(requestPayload);
+      showSuccess(t("Login success"));
+    } catch (error: any) {
+      const err: any = error?.response.data.messages[0];
+      showError(err);
+    }
   };
-
+  useEffect(() => {
+    if (isLogged) {
+      router.push(pageUrls.Homepage);
+    }
+  }, [isLogged]);
+  if (!isLogining && isLogged) {
+    return (
+      <CommonStyles.Box
+        sx={{
+          width: "100vw",
+          height: "100vh",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          background: "#fff",
+        }}
+      >
+        <Loading />
+      </CommonStyles.Box>
+    );
+  }
   return (
     <CommonStyles.Box className="tw-flex tw-items-center tw-justify-center">
       <img
@@ -72,6 +120,9 @@ const SignIn = (props: ISignInProps) => {
           </CommonStyles.Box>
           <CommonStyles.Box className="tw-flex tw-w-full tw-flex-col tw-gap-3">
             <CommonButton
+              onClick={() => {
+                showInfo(t("Function is under development"));
+              }}
               startIcon={<CommonIcons.FacebookLogin />}
               variant="outlined"
               className="tw-rounded-full tw-border-accent_gray_500 tw-bg-white"
@@ -79,6 +130,9 @@ const SignIn = (props: ISignInProps) => {
               {t("Login with Facebook")}
             </CommonButton>
             <CommonButton
+              onClick={() => {
+                showInfo(t("Function is under development"));
+              }}
               startIcon={<CommonIcons.GoogleLogin />}
               variant="outlined"
               className="tw-rounded-full tw-border-accent_gray_500 tw-bg-white"
@@ -121,6 +175,7 @@ const SignIn = (props: ISignInProps) => {
                     padding: 0,
                   },
                 }}
+                type="password"
                 component={InputField}
                 label={t("Password label")}
               />
@@ -128,11 +183,12 @@ const SignIn = (props: ISignInProps) => {
                 className="!tw-underline !tw-text-accent_gray_800 tw-mt-1"
                 href={""}
               >
-                Forgot password
+                {t("Forgot password")}
               </CommonStyles.Link>
             </CommonStyles.Box>
           </CommonStyles.Box>
           <CommonButton
+            loading={isLogining}
             className="tw-w-full tw-rounded-full tw-text-accent_gray_800"
             type="submit"
           >

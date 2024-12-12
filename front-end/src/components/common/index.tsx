@@ -16,5 +16,5 @@ export default {
     CommonButton,
     Divider,
     Rating,
-    Avatar
+    Avatar,
 }
