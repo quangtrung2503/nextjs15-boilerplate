@@ -14,58 +14,64 @@ import RHFField from "@/components/customReactFormField/ReactFormField";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { FormikValues } from "formik";
 import InputField from "@/components/customReactFormField/InputField";
-import CardListItem from "@/components/Card/CardListItem";
-import CardBlogItem from "@/components/Card/CardBlogItem";
+import * as yup from "yup"
+import { yupResolver } from "@hookform/resolvers/yup";
 type FormValues = {
   username: string;
   email: string;
 };
 const Landing = () => {
-  const options: SelectOption[] = [
-    {
-      value: "value1",
-      label: "label1",
-    },
-    {
-      value: "value2",
-      label: "label2",
-    },
-    {
-      value: "value3",
-      label: "label3",
-    },
-    {
-      value: "value4",
-      label: "label4",
-    },
-    {
-      value: "value5",
-      label: "label5",
-    },
-    {
-      value: "value6",
-      label: "label6",
-    },
-    {
-      value: "value7",
-      label: "label7",
-    },
-    {
-      value: "value8",
-      label: "label8",
-    },
-  ];
-  const t = useTranslations("LandingPage");
-  const { theme, setTheme } = useThemeContext();
-  const { control, handleSubmit } = useForm<FormValues>({
-    defaultValues: { username: "", email: "" },
-  });
-
-  const onSubmit: SubmitHandler<FormValues> = (data) => {
-    console.log("Form Data:", data);
-  };
-  return (
-    <div className="tw-flex tw-flex-col tw-gap-10 tw-m-10">
+    const options: SelectOption[] = [
+        {
+          value: "value1",
+          label: "label1",
+        },
+        {
+          value: "value2",
+          label: "label2",
+        },
+        {
+          value: "value3",
+          label: "label3",
+        },
+        {
+          value: "value4",
+          label: "label4",
+        },
+        {
+          value: "value5",
+          label: "label5",
+        },
+        {
+          value: "value6",
+          label: "label6",
+        },
+        {
+          value: "value7",
+          label: "label7",
+        },
+        {
+          value: "value8",
+          label: "label8",
+        },
+      ];
+    const t = useTranslations('LandingPage');
+    const { theme, setTheme } = useThemeContext();
+    const schema = yup
+  .object({
+    firstName: yup.string().required(),
+    age: yup.number().positive().integer().required(),
+  })
+  .required()
+    const { control, handleSubmit } = useForm<FormValues>({
+        defaultValues: { username: "", email: "" },
+      });
+    
+      const onSubmit: SubmitHandler<FormikValues> = (data) => {
+        console.log("Form Data:", data);
+      };
+    return (
+        <div className="flex flex-col gap-10 m-10">
       {/* <CommonIcons.AbcTwoTone/> */}
       <CommonStyles.Box className="tw-w-[270px] tw-p-5">
         <CardGridItem

@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useMemo } from "react";
 import { InputProps, SxProps, TextField } from "@mui/material";
 import { FieldError } from "react-hook-form";
 
@@ -28,10 +28,10 @@ const InputField: React.FC<CustomInputProps> = ({
 }) => {
   return (
     <TextField
-      {...field}
-      label={label}
       type={type}
+      {...field}
       className={className}
+      label={label}
       placeholder={placeholder}
       variant="outlined"
       sx={sx}
