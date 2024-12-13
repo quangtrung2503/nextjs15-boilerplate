@@ -3,11 +3,11 @@ import localFont from "next/font/local";
 import { Providers } from "./providers";
 import { NextIntlClientProvider } from "next-intl";
 import { getMessages, setRequestLocale } from "next-intl/server";
-import { routing } from "@/libs/i18nNavigation";
 
 import "./globals.css";
 import AuthProvider from "@/providers/AuthProvider";
 import { ToastifyProvider } from "@/providers/ToastifyProvider";
+import { routing } from "@/i18n/routing";
 
 const geistSans = localFont({
   src: "./../fonts/GeistVF.woff",
@@ -51,7 +51,7 @@ export default async function RootLayout(
   // which dynamically adds a `style` attribute to the body tag.
 
   return (
-    <html lang="en">
+    <html lang={locale || "en"}>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
         suppressHydrationWarning
