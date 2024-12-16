@@ -12,11 +12,11 @@ export async function generateMetadata(props: ISignInPageProps) {
     const { locale } = await props.params;
     const t = await getTranslations({
         locale,
-        namespace: 'SignIn',
+        namespace: 'signIn',
     });
     return {
-        title: t('meta_title'),
-        description: t('meta_description'),
+        title: t('metaTitle'),
+        description: t('metaDescription'),
     };
 }
 

@@ -1,15 +1,19 @@
-import { DatePicker } from "@mui/x-date-pickers";
+import { DatePicker, MobileDatePicker } from "@mui/x-date-pickers";
 import { Dayjs } from "dayjs";
 import { twMerge } from "tailwind-merge";
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
+import { SxProps } from "@mui/material";
 
 interface IDatePickerProps {
-    label?: string;
-    name: string;
-    className?: string;
-    onChange?: (value: Dayjs)=>void;
-    required?: boolean;
-    classNameLabel?: string;
+  label?: string;
+  name: string;
+  className?: string;
+  onChange?: (value: Dayjs) => void;
+  required?: boolean;
+  classNameLabel?: string;
+  sx?: SxProps;
+  isMobileDate?: boolean;
+  placeholder?: string;
 }
 
 type CommonDatePickerProps = IDatePickerProps;
@@ -20,18 +24,27 @@ export const CommonDatePicker = ({
   className,
   name,
   onChange,
+  placeholder = "Pick a date",
   onBlur,
+  sx,
+  isMobileDate,
   ...rest
 }: CommonDatePickerProps & { onChange?: (date: Dayjs | null) => void; onBlur?: () => void }) => {
+
+  const PickerComponent = isMobileDate ? MobileDatePicker : DatePicker;
+
   return (
     <div className="flex flex-col">
-      {label && 
-      <label className={twMerge(required && "required", classNameLabel,"text-[15px] h-[18px] font-[700] mb-[10px]")}>{label}</label>}
-      <DatePicker
-      slots={{openPickerIcon: CalendarMonthIcon}}
+      {label &&
+        <label className={twMerge(required && "required", classNameLabel, "text-[15px] h-[18px] font-[700] mb-[10px]")}>{label}</label>}
+      <PickerComponent
+        slots={{ openPickerIcon: CalendarMonthIcon }}
         slotProps={{
           textField: {
             hiddenLabel: true,
+            inputProps: {
+              placeholder
+            },
             sx: {
               input: {
                 padding: 0,
@@ -52,14 +65,15 @@ export const CommonDatePicker = ({
               },
               borderRadius: '3px',
               backgroundColor: '#F4F4F5',
-            }
+              ...sx
+            },
           },
         }}
         name={name}
-        className={twMerge("rounded-none",className)}
+        className={twMerge("tw-rounded-none", className)}
         onChange={onChange}
         {...rest}
-        />
+      />
     </div>
   );
 };

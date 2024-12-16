@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import { useThemeContext } from "@/themes/ThemeProvider";
 import { Button, Typography } from "@mui/material";
 import { useTranslations } from "next-intl";
@@ -14,10 +14,14 @@ import RHFField from "@/components/customReactFormField/ReactFormField";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { FormikValues } from "formik";
 import InputField from "@/components/customReactFormField/InputField";
+import * as yup from "yup"
+import { yupResolver } from "@hookform/resolvers/yup";
+import CardBlogItem from "@/components/Card/CardBlogItem";
+import CardListItem from "@/components/Card/CardListItem";
 type FormValues = {
-    username: string;
-    email: string;
-  };
+  username: string;
+  email: string;
+};
 const Landing = () => {
     const options: SelectOption[] = [
         {
@@ -55,6 +59,12 @@ const Landing = () => {
       ];
     const t = useTranslations('LandingPage');
     const { theme, setTheme } = useThemeContext();
+    const schema = yup
+  .object({
+    firstName: yup.string().required(),
+    age: yup.number().positive().integer().required(),
+  })
+  .required()
     const { control, handleSubmit } = useForm<FormValues>({
         defaultValues: { username: "", email: "" },
       });
@@ -65,17 +75,32 @@ const Landing = () => {
     return (
         <div className="flex flex-col gap-10 m-10">
       {/* <CommonIcons.AbcTwoTone/> */}
-      <CommonStyles.Box className="w-[270px] p-5">
+      <CommonStyles.Box className="tw-w-[270px] tw-p-5">
         <CardGridItem
           src="https://vietnam.travel/sites/default/files/inline-images/Ha%20Giang%20Loop-9.jpg"
           title="Alaska: Westminster to Greenwich River Thames"
-          duration="Duration 2 hours"
+          duration={2}
           transport="Transport Facility"
           plan="Family Plan"
           price={35}
+          feedback_quantity={500}
+        />
+        <CardBlogItem
+          src="https://vietnam.travel/sites/default/files/inline-images/Ha%20Giang%20Loop-9.jpg"
+          author={{ avatar: "", name: "Jackie Moncada" }}
+          title="10 Proven Health Benefits of Cinnamon"
         />
       </CommonStyles.Box>
-      <CommonStyles.Box className="w-[270px] p-5">
+      <CardListItem
+        src="https://vietnam.travel/sites/default/files/inline-images/Ha%20Giang%20Loop-9.jpg"
+        title="Alaska: Westminster to Greenwich River Thames"
+        duration={2}
+        transport="Transport Facility"
+        plan="Family Plan"
+        price={35}
+        feedback_quantity={500}
+      />
+      <CommonStyles.Box className="tw-w-[270px] tw-p-5">
         <AccordionMUI title="Theme" options={options} />
         <Loading />
       </CommonStyles.Box>
@@ -106,7 +131,7 @@ const Landing = () => {
         <button type="submit">Submit</button>
       </form>
     </div>
-    )
-}
+  );
+};
 
-export default Landing
+export default Landing;

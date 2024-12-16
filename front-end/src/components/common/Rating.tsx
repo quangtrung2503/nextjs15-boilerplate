@@ -1,7 +1,8 @@
+"use client"
 import React, { memo } from 'react';
 import Rating from '@mui/material/Rating';
 import { FieldInputProps, FormikProps } from 'formik';
-import { default as CommonStyles } from "../../components/common";
+import { default as CommonStyles } from ".";
 import { SxProps } from '@mui/material';
 
 interface Props {

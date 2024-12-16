@@ -1,13 +1,90 @@
 {
-  "SignIn": {
-    "meta_title": "Sign in",
-    "meta_description": "Seamlessly sign in to your account with our user-friendly login process.",
-    "Enter your username": "Enter your username",
-    "Enter your password": "Enter your password"
+  "signIn": {
+    "functionIsUnderDevelopment": "Function is under development",
+    "metaTitle": "Sign in",
+    "dontHaveAnAccount": "Don't have an account",
+    "signUp": "Sign Up",
+    "loginWithFacebook": "Login with Facebook",
+    "loginWithGoogle": "Login with Google",
+    "or": "or",
+    "emailPlaceholder": "Email",
+    "passwordPlaceholder": "Password",
+    "emailLabel": "Email",
+    "passwordLabel": "Password",
+    "signInButton": "Sign in",
+    "loginSuccess": "Login successful",
+    "forgotPassword": "Forgot password",
+    "metaDescription": "Seamlessly sign in to your account with our user-friendly login process.",
+    "enterYourUsername": "Enter your username",
+    "enterYourPassword": "Enter your password",
+    "validations": {
+      "emailFormat": "Invalid email format",
+      "emailRequire": "Email is required",
+      "passwordFormat": "",
+      "passwordRequire": "Password is required"
+    }
   },
-  "LandingPage": {
-    "meta_title": "Welcome to our website",
-    "meta_description": "Discover the latest trends, products, and services at our website.",
+  "signUp": {
+    "functionIsUnderDevelopment": "Function is under development",
+    "metaTitle": "Sign Up",
+    "alreadyHaveAnAccount": "Already have an account",
+    "signIn": "Sign In",
+    "signUpWithFacebook": "Sign up with Facebook",
+    "signUpWithGoogle": "Sign up with Google",
+    "or": "or",
+    "namePlaceholder": "Name",
+    "phonePlaceholder": "Phone",
+    "emailPlaceholder": "Email",
+    "passwordPlaceholder": "Password",
+    "confirmPasswordPlaceholder": "Confirm password",
+    "nameLabel": "Name",
+    "phoneLabel": "Phone",
+    "emailLabel": "Email",
+    "passwordLabel": "Password",
+    "confirmPasswordLabel": "Confirm password",
+    "signUpButton": "Sign up",
+    "signUpSuccess": "Sign up successful",
+    "metaDescription": "Seamlessly sign in to your account with our user-friendly login process.",
+    "enterYourUsername": "Enter your username",
+    "enterYourPassword": "Enter your password",
+    "validations": {
+      "nameRequire": "Name is required",
+      "emailFormat": "Invalid email format",
+      "emailRequire": "Email is required",
+      "phoneFormat": "Invalid phone number format",
+      "passwordFormat": "",
+      "passwordRequire": "Password is required",
+      "passwordNotMatch": "Confirm password does not match"
+    }
+  },
+  "homePage": {
+    "title": "We Find The Best Tours For You",
+    "subtitleAboutTour": "Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint. Velit officia consequat duis enim velit mollit. Exercitation veniam consequat sunt nostrud amet.",
+    "watchVideo": "Watch Video",
+    "locationLabel": "Location",
+    "guestsLabel": "Guests",
+    "dateLabel": "Date",
+    "locationPlaceholder": "Search For A Destination",
+    "guestsPlaceholder": "How many Guests?",
+    "datePlaceholder": "Pick a date",
+    "searchButton": "Search",
+    "explorePopularCity": "Explore Popular Cities",
+    "subheading": "Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint. Velit officia consequat duis enim velit mollit",
+
+    "featuredDestinationsHeading": "Featured Destinations",
+    "subFeaturedDestinationsHeading": "Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint. Velit officia consequat duis enim velit mollit",
+
+    "galleryTitle": "From The Gallery",
+    "subGalleryTitle": "Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint. Velit officia consequat duis enim velit mollit",
+    "allImageButton": "View All Images",
+
+    "storyTitle": "Latest Stories",
+    "subStoryTitle": "Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint. Velit officia consequat duis enim velit mollit",
+    "allPostButton": "View All Posts"
+  },
+  "landingPage": {
+    "metaTitle": "Welcome to our website",
+    "metaDescription": "Discover the latest trends, products, and services at our website.",
     "title": "Welcome to our website",
     "gotoLogin": "Sign in"
   }
