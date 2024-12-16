@@ -2,17 +2,15 @@
   "auth": {
     "signUp": {
       "wrong_parameter": "{keyNotInDto} không được định nghĩa trong các tham số",
-      "username_required": "Tên đăng nhập là bắt buộc",
-      "username_no_spaces": "Tên đăng nhập không được chứa khoảng trắng",
-      "username_invalid_format": "Tên đăng nhập phải có ít nhất 8 ký tự và không được chứa ký tự đặc biệt",
       "invalid_phone": "Số điện thoại cần ít nhất 9 ký tự",
       "invalid_email": "Email không hợp lệ",
       "invalid_password": "Mật khẩu cần ít nhất 8 ký tự, bao gồm ít nhất một chữ cái, một số và một ký tự đặc biệt",
+      "wrong_confirm_password": "Mật khẩu không khớp",
       "phone_exists": "Số điện thoại đã tồn tại",
       "email_exists": "Email đã tồn tại"
     },
     "login": {
-      "user_not_found": "Tên đăng nhập",
+      "user_not_found": "Email",
       "wrong_password": "Sai mật khẩu"
     },
     "changePassword": {
@@ -101,17 +99,50 @@
   },
   "post": {
     "create": {
-      "wrong_parameter": "{keyNotInDto} is not defined in parameters"
+      "wrong_parameter": "{keyNotInDto} không được định nghĩa trong các tham số"
     },
     "findOne": {
       "not_found": "Bài viết"
     },
     "update": {
-      "wrong_parameter": "{keyNotInDto} is not defined in parameters",
+      "wrong_parameter": "{keyNotInDto} không được định nghĩa trong các tham số",
       "not_found": "Bài viết"
     },
     "remove": {
       "not_found": "Bài viết"
+    }
+  },
+  "tour": {
+    "create": {
+      "wrong_parameter": "{keyNotInDto} không được định nghĩa trong các tham số",
+      "images_required": "Vui lòng chọn ảnh",
+      "invalid_start_date": "Ngày bắt đầu phải sau ngày hiện tại",
+      "invalid_end_date": "Ngày kết thúc phải bằng hoặc sau ngày bắt đầu",
+      "city_not_found": "Thành phố không tồn tại",
+      "theme_not_found": "Chủ đề không tồn tại",
+      "destination_not_found": "Điểm đến không tồn tại"
+    },
+    "update": {
+      "wrong_parameter": "{keyNotInDto} không được định nghĩa trong các tham số",
+      "not_found": "Chuyến đi",
+      "invalid_start_date": "Ngày bắt đầu phải sau ngày hiện tại",
+      "invalid_end_date": "Ngày kết thúc phải bằng hoặc sau ngày bắt đầu",
+      "city_not_found": "Thành phố không tồn tại",
+      "theme_not_found": "Chủ đề không tồn tại",
+      "destination_not_found": "Điểm đến không tồn tại"
+    },
+    "findOne": {
+      "not_found": "Chuyến đi"
+    }
+  },
+  "wishlist": {
+    "addToWishlist": {
+      "wrong_parameter": "{keyNotInDto} không được định nghĩa trong các tham số",
+      "not_found": "Chuyến đi",
+      "already_in_wishlist": "Chuyến đi đã tồn tại trong danh sách yêu thích"
+    },
+    "removeFromWishlist": {
+      "not_found": "Chuyến đi"
     }
   },
   "test-fall-back": "VI"

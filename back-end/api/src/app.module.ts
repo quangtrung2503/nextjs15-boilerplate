@@ -20,6 +20,8 @@ import { CityModule } from './modules/city/city.module';
 import { ThemeModule } from './modules/theme/theme.module';
 import { DestinationModule } from './modules/destination/destination.module';
 import { PostModule } from './modules/post/post.module';
+import { TourModule } from './modules/tour/tour.module';
+import { WishlistModule } from './modules/wishlist/wishlist.module';
 
 @Module({
   imports: [
@@ -47,7 +49,9 @@ import { PostModule } from './modules/post/post.module';
     CityModule,
     ThemeModule,
     DestinationModule,
-    PostModule
+    PostModule,
+    TourModule,
+    WishlistModule
   ],
   controllers: [AppController],
   providers: [

@@ -63,7 +63,7 @@ export class AuthService {
       sub: decode?.sub,
       exp: decode?.exp,
       iat: decode?.iat,
-      username: decode?.username,
+      email: decode?.email,
     }
     return jwt
   }
