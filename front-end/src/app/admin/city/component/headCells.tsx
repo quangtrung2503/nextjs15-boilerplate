@@ -54,7 +54,7 @@ const ActionCell: React.FC<{ row: City; handleEditId: (id: number) => void; hand
                 <CommonStyles.Box className="tw-text-red-500 tw-cursor-pointer tw-border-solid tw-border-[1px] tw-bg-red-100 tw-rounded-md tw-px-2 tw-pb-1" onClick={handleConfirmDelete}>
                   Delete
                 </CommonStyles.Box>
-                <CommonStyles.Box className="tw-text-gray-700 tw-cursor-pointer tw-border-solid tw-border-[1px] tw-bg-secondary_100 tw-rounded-md tw-px-2 tw-pb-1" onClick={handleClosePopover}>
+                <CommonStyles.Box className="tw-text-gray-700 tw-cursor-pointer tw-border-solid tw-border-[1px] tw-rounded-md tw-px-2 tw-pb-1" onClick={handleClosePopover}>
                   Cancel
                 </CommonStyles.Box>
               </CommonStyles.Box>
