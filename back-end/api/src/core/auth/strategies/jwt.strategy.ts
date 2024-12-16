@@ -28,7 +28,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   async validate(req: Request, payload: IJwtPayload): Promise<IUserJwt> {
     const accessToken = req.headers['authorization'].replace('Bearer ', '');
 
-    const user = await this.userService.findOne({ where: { username: payload.username } });
+    const user = await this.userService.findOne({ where: { email: payload.email } });
     if (!user) throw new HttpException('Cant detected user', HttpStatus.UNAUTHORIZED);
 
     if (user.status === UserStatus.BANNED) {

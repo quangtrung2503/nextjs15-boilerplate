@@ -7,7 +7,7 @@ export interface IJwtPayload {
 
     exp?: number;
 
-    username?: string;
+    email?: string;
 
     role?: UserRole;
 }
