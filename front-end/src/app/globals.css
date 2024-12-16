@@ -2,11 +2,24 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer utilities {
+  .scrollbar-hide {
+    /* For Webkit browsers */
+    &::-webkit-scrollbar {
+      display: none;
+    }
+    /* For IE, Edge, and Firefox */
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+  }
+}
+
 :root {
   --background: #ffffff;
   --foreground: #171717;
 
   --primary: #7bbcb0;
+  --primary-light: #AFFFF0;
   --secondary: #ffda32;
 
   --accent-gray-dark: #1c2b38;
@@ -35,7 +48,9 @@
 body {
   margin: 0;
   padding: 0;
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   color: var(--foreground);
   background: var(--background);
+}
+*{
+  font-family: 'Mulish', 'sans-serif';
 }

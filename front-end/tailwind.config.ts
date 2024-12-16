@@ -13,10 +13,15 @@ export default {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        volkhov: ['Volkhov', 'serif'],
+        mulish: ['Mulish', 'sans-serif'],
+      },
       colors: {
         background: "var(--background)",
         foreground: "var(--foreground)",
         primary: "var(--primary)",
+        primary_light: "var(--primary-light)",
         secondary: "var(--secondary)",
         accent_purple: "var(--accent-purple)",
         accent_blue: "var(--accent-blue)",
@@ -32,6 +37,19 @@ export default {
       },
       height: {
         header: "var(--header-height)",
+      },
+      boxShadow: {
+        direction_carousel: "0px 8px 20px 0px #FFDA3280"
+      },
+      scrollbar: {
+        hide: {
+          '::-webkit-scrollbar': {
+            display: 'none',
+          },
+          /* Hide scrollbar for IE, Edge, and Firefox */
+          '-ms-overflow-style': 'none',
+          'scrollbar-width': 'none',
+        },
       },
     },
   },

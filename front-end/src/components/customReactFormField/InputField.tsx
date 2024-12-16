@@ -10,7 +10,7 @@ interface CustomInputProps extends InputProps {
     onBlur: () => void;
   };
   fieldState: { error?: FieldError }; // Cập nhật kiểu ở đây
-  label: string;
+  label?: string;
   sx?: SxProps;
   type?: string;
   className?: string;
@@ -28,6 +28,7 @@ const InputField: React.FC<CustomInputProps> = ({
 }) => {
   return (
     <TextField
+      inputProps={{min: 0}}
       type={type}
       {...field}
       className={className}
