@@ -1,18 +1,18 @@
-import type { NextConfig } from "next";
-import createNextIntlPlugin from 'next-intl/plugin';
+import { NextConfig } from "next";
 
-const withNextIntl = createNextIntlPlugin('./src/libs/i18n.ts');
+const withNextIntl = require("next-intl/plugin")();
 
+/** @type {import('next').NextConfig} */
 const nextConfig: NextConfig = {
   async redirects() {
     return [
       {
-        source: '/',
+        source: "/",
         destination: `/en`,
-        permanent: true,
+        permanent: false,
       },
     ];
   },
 };
 
-export default withNextIntl(nextConfig);
+module.exports = withNextIntl(nextConfig);

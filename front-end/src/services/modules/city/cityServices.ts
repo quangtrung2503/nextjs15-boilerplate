@@ -1,4 +1,4 @@
-import { CommonFilters, ResponseApi, ResponseList } from "@/interfaces/common";
+import { CommonFilters, ResponseCommon, ResponseList } from "@/interfaces/common";
 import httpService from "@/services/httpService";
 import { AxiosRequestConfig, AxiosResponse } from "axios";
 import { City } from "./interfaces/city";
@@ -7,8 +7,8 @@ import queryString from "query-string";
 export interface FiltersGetCities extends CommonFilters { }
 export interface RequestGetCities extends CommonFilters { }
 
-export type ResponseCityList = AxiosResponse<ResponseApi<ResponseList<City[]>>>;
-export type ResponseCity = ResponseApi<City>;
+export type ResponseCityList = AxiosResponse<ResponseCommon<ResponseList<City[]>>>;
+export type ResponseCity = ResponseCommon<City>;
 
 
 class CityService {

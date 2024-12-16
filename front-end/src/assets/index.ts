@@ -2,6 +2,7 @@ export {default as banner} from "./images/banner.jpg"
 export {default as alaska} from "./images/alaska.jpg" 
 export {default as bannerTrendingCity} from "./images/trendingCitybanner.jpg" 
 export {default as imagesTrendingCity} from "./images/imageTrendingCity.jpg" 
+
 export {default as VNFlag} from './images/VNFlag.jpg'
 export {default as UKFlag} from './images/UKFlag.png'
 // Payment methods

@@ -7,4 +7,5 @@ export default {
     },
     CITY_URL: `${BASE_URL}/city`,
     UPLOAD_URL: `${BASE_URL}/upload`
+
 }
