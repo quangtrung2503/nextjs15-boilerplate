@@ -20,4 +20,20 @@ export {default as visa} from './images/payment_method/visa.png'
 // Backgrounds
 export {default as bgLogin} from './images/backgrounds/bg_login.jpg'
 
+export {default as introduceApp } from './images/backgrounds/bg_itd_app.png'
+export {default as mask } from './images/backgrounds/mask.png'
+export {default as bgMask } from './images/backgrounds/bg_mask.jpg'
+export {default as mobileApp1} from './images/backgrounds/mobile_app1.svg'
+export {default as mobileApp2} from './images/backgrounds/mobile_app2.svg'
+
+// Gallery
+export {default as gallery1 } from './images/gallery/gallery1.png'
+export {default as gallery2 } from './images/gallery/gallery2.png'
+export {default as gallery3 } from './images/gallery/gallery3.png'
+export {default as gallery4 } from './images/gallery/gallery4.png'
+export {default as gallery5 } from './images/gallery/gallery5.png'
+export {default as gallery6 } from './images/gallery/gallery6.png'
+export {default as gallery7 } from './images/gallery/gallery7.png'
+export {default as gallery8 } from './images/gallery/gallery8.png'
+
 
