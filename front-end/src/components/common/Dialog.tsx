@@ -19,16 +19,19 @@ interface DialogProps{
   open: boolean
   body: React.ReactNode
   toggle: ()=>void;
-  title: string;
+  title?: string;
+  onClose?: ()=>void;
 }
 export default function CommonDialog(props: DialogProps) {
-  const {open,title,body,toggle}=props;
+  const {open,title,body,toggle,onClose}=props;
   return (
       <BootstrapDialog
-        onClose={toggle}
+        onClose={()=>{onClose && onClose(),toggle()}}
         aria-labelledby="customized-dialog-title"
         open={open}
       >
+        {title && 
+        <>
         <DialogTitle sx={{ m: 0, p: 2 }} id="customized-dialog-title">
           {title}
         </DialogTitle>
@@ -43,7 +46,7 @@ export default function CommonDialog(props: DialogProps) {
           })}
         >
           <CloseIcon />
-        </IconButton>
+        </IconButton></>}
         <DialogContent dividers>
           {body}
         </DialogContent>

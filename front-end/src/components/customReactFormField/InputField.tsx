@@ -1,7 +1,8 @@
 "use client";
-import React, { useMemo } from "react";
-import { InputProps, SxProps, TextField } from "@mui/material";
+import React, { ReactNode } from "react";
+import { InputLabel, InputProps, SxProps, TextField } from "@mui/material";
 import { FieldError } from "react-hook-form";
+import { twMerge } from "tailwind-merge";
 
 interface CustomInputProps extends InputProps {
   field: {
@@ -9,12 +10,15 @@ interface CustomInputProps extends InputProps {
     onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
     onBlur: () => void;
   };
+  onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
   fieldState: { error?: FieldError }; // Cập nhật kiểu ở đây
-  label: string;
+  label?: string;
   sx?: SxProps;
   type?: string;
+  classNameLabel?: string;
   className?: string;
   placeholder?: string;
+  rightIcon?: ReactNode
 }
 
 const InputField: React.FC<CustomInputProps> = ({
@@ -25,20 +29,28 @@ const InputField: React.FC<CustomInputProps> = ({
   type,
   className,
   placeholder,
+  classNameLabel,
+  onChange
 }) => {
   return (
-    <TextField
-      type={type}
-      {...field}
-      className={className}
-      label={label}
-      placeholder={placeholder}
-      variant="outlined"
-      sx={sx}
-      fullWidth
-      error={!!fieldState.error}
-      helperText={fieldState.error?.message || ""}
-    />
+    <>
+      {label && (
+        <InputLabel className={twMerge(classNameLabel,'tw-text-xl tw-font-mulish tw-font-bold tw-text-accent_gray_800')} shrink>
+          {label}
+        </InputLabel>
+      )}
+      <TextField
+        type={type}
+        {...field}
+        className={className}
+        placeholder={placeholder}
+        variant="outlined"
+        sx={sx}
+        fullWidth
+        error={!!fieldState.error}
+        helperText={fieldState.error?.message || ""}
+      />
+    </>
   );
 };
 

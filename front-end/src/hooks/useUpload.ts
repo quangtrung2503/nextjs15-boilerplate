@@ -1,4 +1,4 @@
-import uploadServices from 'modules/upload/upload.services';
+import uploadService from '@/services/modules/upload/uploadService';
 import { useCallback } from 'react';
 
 const useImageUploader = () => {
@@ -8,7 +8,7 @@ const useImageUploader = () => {
   const uploadImage = useCallback((image?: File | string) => {
     const bodyUpload = new FormData();
     image && bodyUpload.append('file', image);
-    return uploadServices.uploadFile(bodyUpload);
+    return uploadService.uploadSingle(bodyUpload);
   }, []);
 
   //!Render

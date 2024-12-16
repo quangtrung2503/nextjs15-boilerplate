@@ -1,8 +1,9 @@
-import React, { FC, ReactNode } from "react";
-import { Container } from "@mui/material";
+"use client"
+import { FC, ReactNode } from "react";
 import SideBar from "./Component/sidebar";
 import Header from "./Component/header";
-import {default as CommonStyles} from "@/components/common"
+import { Box } from "@mui/material";
+
 interface Props {
   children: ReactNode;
 }
@@ -14,7 +15,7 @@ const AdminLayout: FC<Props> = (props) => {
       <div className="tw-ml-content-admin tw-w-full">
         <Header />
         <div className="tw-mt-header-admin tw-rounded-t-md">
-          <CommonStyles.Box className="tw-py-5">{props.children}</CommonStyles.Box>
+          <Box className="tw-py-5">{props.children}</Box>
         </div>
       </div>
     </div>

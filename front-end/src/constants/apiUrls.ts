@@ -5,5 +5,6 @@ export default {
         SIGN_IN: `${BASE_URL}/auth/sign-up-customer`,
         SIGN_UP: `${BASE_URL}auth/login`,
     },
-    CITY_URL: `${BASE_URL}/city`
+    CITY_URL: `${BASE_URL}/city`,
+    UPLOAD_URL: `${BASE_URL}/upload`
 }

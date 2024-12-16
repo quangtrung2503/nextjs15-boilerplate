@@ -17,7 +17,9 @@ export default {
         background: "var(--background)",
         foreground: "var(--foreground)",
         primary: "var(--primary)",
+        primary_100: "var(--primary-100)",
         secondary: "var(--secondary)",
+        secondary_100: "var(--secondary-100)",
         accent_purple: "var(--accent-purple)",
         accent_blue: "var(--accent-blue)",
         accent_red: "var(--accent-red)",
@@ -32,6 +34,7 @@ export default {
       },
       height: {
         header: "var(--header-height)",
+        header_admin: "80px",
       },
       margin: {
         "content-admin": "273px",
@@ -41,11 +44,6 @@ export default {
       width: {
         sidebar: "273px",
         "content-admin": "calc(100% - 273px)",
-      },
-      height: {
-        header: "75px",
-        banner: "calc(100% -75px)",
-        "header-admin": "80px",
       },
     },
   },

@@ -14,7 +14,7 @@ class Services {
     //! Interceptor request
     this.axios.interceptors.request.use(
       function (config) {
-        config.headers.Authorization = `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyIiwiZW1haWwiOiJhZG1pbjQ1NkBleGFtcGxlLmNvbSIsInJvbGUiOiJBRE1JTiIsImlhdCI6MTczMzk5NTE1NiwiZXhwIjoxNzY1NTMxMTU2fQ.B2IJoU9lipU5waDIjwYiOX1C5zSmNkZgRTyJGe_Fycg`
+        config.headers.Authorization = `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyIiwiZW1haWwiOiJhZG1pbjQ1NkBleGFtcGxlLmNvbSIsInJvbGUiOiJBRE1JTiIsImlhdCI6MTczNDA2NDc4OSwiZXhwIjoxNzY1NjAwNzg5fQ.NMz-I1g7EdqxPrgyggO2rrWPv4plKgPyijjst_EhJ4k`
         const token = localStorage.getItem(TOKEN_KEY)
         if (token) {
         }

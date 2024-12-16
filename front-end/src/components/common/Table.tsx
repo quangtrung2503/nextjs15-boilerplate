@@ -595,10 +595,10 @@ function TableCommon<T>({
               onRowsPerPageChange={handleChangeRowsPerPage}
               nextIconButtonProps={{ style: { display: 'none' } }}
               backIconButtonProps={{ style: { display: 'none' } }}
-              labelRowsPerPage={"Dòng mỗi trang"}
-              labelDisplayedRows={({ from, to, count, page }) =>
-                "t('Common.displayedRow', { from, to, count })"
-              }
+              // labelRowsPerPage={"Dòng mỗi trang"}
+              // labelDisplayedRows={({ from, to, count, page }) =>
+              //   "t('Common.displayedRow', { from, to, count })"
+              // }
             />
             {/* <CustomPagination
               className='pagination-list'

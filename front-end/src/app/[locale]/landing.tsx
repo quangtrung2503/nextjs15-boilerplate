@@ -16,6 +16,8 @@ import { FormikValues } from "formik";
 import InputField from "@/components/customReactFormField/InputField";
 import * as yup from "yup"
 import { yupResolver } from "@hookform/resolvers/yup";
+import CardBlogItem from "@/components/Card/CardBlogItem";
+import CardListItem from "@/components/Card/CardListItem";
 type FormValues = {
   username: string;
   email: string;
