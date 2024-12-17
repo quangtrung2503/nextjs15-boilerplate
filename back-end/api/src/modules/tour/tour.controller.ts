@@ -58,10 +58,23 @@ export class TourController {
     });
     if (!themeExists) throw new BaseException(Errors.BAD_REQUEST(this.i18n.t('common-message.tour.create.theme_not_found')));
 
-    const destinationExists = await this.destinationService.findOne({
-      where: { id: body.destinationId }
-    });
-    if (!destinationExists) throw new BaseException(Errors.BAD_REQUEST(this.i18n.t('common-message.tour.create.destination_not_found')));
+    // Validate destinations
+    if (!body.destinationIds || body.destinationIds.length === 0) {
+      throw new BaseException(Errors.BAD_REQUEST(this.i18n.t('common-message.tour.create.destinations_required')));
+    }
+
+    // Check if all destinations exist
+    await Promise.all(
+      body.destinationIds.map(async (destinationId) => {
+        const destinationExists = await this.destinationService.findOne({
+          where: { id: destinationId }
+        });
+        if (!destinationExists) {
+          throw new BaseException(Errors.BAD_REQUEST(this.i18n.t('common-message.tour.create.destination_not_found')));
+        }
+        return destinationExists;
+      })
+    );
 
     const tourData: Prisma.TourUncheckedCreateInput = {
       name: body.name,
@@ -70,7 +83,6 @@ export class TourController {
       transport: body.transport,
       package: body.package,
       duration: body.duration,
-      numberOfHours: body.numberOfHours,
       numberOfPeople: body.numberOfPeople,
       startDate: body.startDate,
       endDate: body.endDate,
@@ -82,10 +94,14 @@ export class TourController {
       guideLanguage: body.guideLanguage,
       cityId: body.cityId,
       themeId: body.themeId,
-      destinationId: body.destinationId,
       TourImage: {
         createMany: {
           data: body.images.map((image: string) => ({ image: image }))
+        }
+      },
+      TourDestination: {
+        createMany: {
+          data: body.destinationIds.map((destinationId: number) => ({ destinationId }))
         }
       }
     }
@@ -95,7 +111,11 @@ export class TourController {
       include: {
         City: true,
         Theme: true,
-        Destination: true,
+        TourDestination: {
+          include: {
+            Destination: true
+          }
+        },
         TourImage: true,
         Review: true,
       }
@@ -133,10 +153,14 @@ export class TourController {
       }
     }
 
-    if (options?.destinationId) {
+    if (options?.destinationIds && options.destinationIds.length > 0) {
       where = {
         ...where,
-        destinationId: options.destinationId
+        TourDestination: {
+          some: {
+            destinationId: { in: options.destinationIds }
+          }
+        }
       }
     }
 
@@ -172,7 +196,11 @@ export class TourController {
       include: {
         City: true,
         Theme: true,
-        Destination: true,
+        TourDestination: {
+          include: {
+            Destination: true
+          }
+        },
         TourImage: true,
         Review: true,
       }
@@ -196,7 +224,11 @@ export class TourController {
       include: {
         City: true,
         Theme: true,
-        Destination: true,
+        TourDestination: {
+          include: {
+            Destination: true
+          }
+        },
         TourImage: true,
         Review: true,
       }
@@ -242,11 +274,18 @@ export class TourController {
       if (!themeExists) throw new BaseException(Errors.BAD_REQUEST(this.i18n.t('common-message.tour.update.theme_not_found')));
     }
 
-    if (body.destinationId) {
-      const destinationExists = await this.destinationService.findOne({
-        where: { id: body.destinationId }
-      });
-      if (!destinationExists) throw new BaseException(Errors.BAD_REQUEST(this.i18n.t('common-message.tour.update.destination_not_found')));
+    // Validate destinations if provided
+    if (body.destinationIds) {
+      await Promise.all(
+        body.destinationIds.map(async (destinationId) => {
+          const destinationExists = await this.destinationService.findOne({
+            where: { id: destinationId }
+          });
+          if (!destinationExists) {
+            throw new BaseException(Errors.BAD_REQUEST(this.i18n.t('common-message.tour.update.destination_not_found')));
+          }
+        })
+      );
     }
 
     const updateData: Prisma.TourUpdateInput = {
@@ -256,7 +295,6 @@ export class TourController {
       transport: body.transport,
       package: body.package,
       duration: body.duration,
-      numberOfHours: body.numberOfHours,
       numberOfPeople: body.numberOfPeople,
       startDate: body.startDate,
       endDate: body.endDate,
@@ -268,14 +306,24 @@ export class TourController {
       guideLanguage: body.guideLanguage,
       ...(body.cityId && { City: { connect: { id: body.cityId } } }),
       ...(body.themeId && { Theme: { connect: { id: body.themeId } } }),
-      ...(body.destinationId && { Destination: { connect: { id: body.destinationId } } }),
     };
 
+    // Handle images update
     if (body.images && body.images.length > 0) {
       updateData.TourImage = {
         deleteMany: { tourId: id },
         createMany: {
           data: body.images.map((image: string) => ({ image: image }))
+        }
+      };
+    }
+
+    // Handle destinations update
+    if (body.destinationIds && body.destinationIds.length > 0) {
+      updateData.TourDestination = {
+        deleteMany: { tourId: id },
+        createMany: {
+          data: body.destinationIds.map((destinationId: number) => ({ destinationId }))
         }
       };
     }
@@ -286,10 +334,82 @@ export class TourController {
   @ApiBearerAuth()
   @Roles(UserRole.ADMIN, UserRole.STAFF)
   @UseGuards(JwtAuthGuard, RolesGuard)
+  @Patch('set-active/:id')
+  async setActive(@Param('id') id: number) {
+    const existingTour = await this.prismaService.tour.findFirst({
+      where: { id },
+      include: { 
+        City: true, 
+        Theme: true, 
+        TourDestination: { 
+          include: { 
+            Destination: true
+          } 
+        } 
+      }
+    });
+
+    if (!existingTour) {
+      throw new BaseException(
+        Errors.ITEM_NOT_FOUND(this.i18n.t('common-message.tour.setActive.not_found'))
+      );
+    }
+
+    // Kiểm tra điều kiện active của City, Theme và Destinations
+    const newStatus = !existingTour.isActive;
+
+    // Nếu muốn active tour
+    if (newStatus === true) {
+      if (!existingTour.City.isActive) {
+        throw new BaseException(
+          Errors.BAD_REQUEST(this.i18n.t('common-message.tour.setActive.city_inactive', { city: existingTour.City.name }))
+        );
+      }
+
+      if (!existingTour.Theme.isActive) {
+        throw new BaseException(
+          Errors.BAD_REQUEST(this.i18n.t('common-message.tour.setActive.theme_inactive', { theme: existingTour.Theme.name }))
+        );
+      }
+
+      const activeDestinations = existingTour.TourDestination.filter(
+        td => td.Destination.isActive
+      );
+
+      // Chỉ cho active tour nếu có ít nhất 1 destination hoạt động
+      if (activeDestinations.length === 0) {
+        throw new BaseException(
+          Errors.BAD_REQUEST(this.i18n.t('common-message.tour.setActive.no_active_destination'))
+        );
+      }
+    }
+
+    const updatedTour = await this.tourService.update(existingTour.id, {
+      isActive: newStatus
+    });
+
+    return updatedTour;
+  }
+
+  @ApiBearerAuth()
+  @Roles(UserRole.ADMIN, UserRole.STAFF)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Patch('set-feature/:id')
+  async setFeature(@Param('id') id: number) {
+    const existingTour = await this.tourService.findOne({ where: { id } });
+    if (!existingTour) throw new BaseException(Errors.ITEM_NOT_FOUND(this.i18n.t('common-message.tour.setFeature.not_found')));
+
+    return await this.tourService.update(existingTour.id, { isFeature: !existingTour.isFeature });
+    
+  }
+
+  @ApiBearerAuth()
+  @Roles(UserRole.ADMIN, UserRole.STAFF)
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Delete(':id')
   async remove(@Param('id') id: number) {
     const tour = await this.tourService.findOne({ where: { id } });
-    if (!tour) throw new BaseException(Errors.ITEM_NOT_FOUND(this.i18n.t('common-mesage.tour.remove.not_found')));
+    if (!tour) throw new BaseException(Errors.ITEM_NOT_FOUND(this.i18n.t('common-message.tour.remove.not_found')));
 
     return this.tourService.remove({ where: { id } });
   }

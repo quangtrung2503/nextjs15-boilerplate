@@ -28,6 +28,7 @@ export class TourCustomerController {
     let where: Prisma.TourWhereInput = {
       AND: [
         {
+          isActive: true,
           startDate: { gte: moment().startOf('day').toDate() }
         }
       ]
@@ -58,10 +59,14 @@ export class TourCustomerController {
       }
     }
 
-    if (options?.destinationId) {
+    if (options?.destinationIds && options.destinationIds.length > 0) {
       where = {
         ...where,
-        destinationId: options.destinationId
+        TourDestination: {
+          some: {
+            destinationId: { in: options.destinationIds }
+          }
+        }
       }
     }
 
@@ -97,7 +102,11 @@ export class TourCustomerController {
       include: {
         City: true,
         Theme: true,
-        Destination: true,
+        TourDestination: {
+          include: {
+            Destination: true
+          }
+        },
         TourImage: true,
         Review: true,
       }
@@ -116,12 +125,17 @@ export class TourCustomerController {
     const tour = await this.tourService.findOne({
       where: {
         id,
+        isActive: true,
         startDate: { gte: moment().startOf('day').toDate() }
       },
       include: {
         City: true,
         Theme: true,
-        Destination: true,
+        TourDestination: {
+          include: {
+            Destination: true
+          }
+        },
         TourImage: true,
         Review: true,
       }
@@ -132,6 +146,7 @@ export class TourCustomerController {
       this.tourService.findAll({
         where: {
           AND: [
+            { isActive: true },
             { startDate: moment().startOf('day').toDate() },
             { id: { not: tour.id } }
           ]
@@ -147,6 +162,7 @@ export class TourCustomerController {
       this.tourService.findAll({
         where: {
           AND: [
+            { isActive: true },
             { cityId: tour.cityId },
             { id: { not: tour.id } },
             { startDate: { gte: moment().startOf('day').toDate() } }
@@ -173,6 +189,7 @@ export class TourCustomerController {
     const whereInput: Prisma.TourImageFindManyArgs = {
       where: {
         Tour: {
+          isActive: true,
           startDate: { gte: moment().startOf('day').toDate() }
         }
       },
@@ -196,6 +213,7 @@ export class TourCustomerController {
         isDisplay: true,
         Tour: {
           some: {
+            isActive: true,
             startDate: { gte: moment().startOf('day').toDate() }
           }
         }
@@ -205,6 +223,7 @@ export class TourCustomerController {
       include: {
         Tour: {
           where: {
+            isActive: true,
             startDate: { gte: moment().startOf('day').toDate() }
           },
           orderBy: { updatedAt: 'desc' },

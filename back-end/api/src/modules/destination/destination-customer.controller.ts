@@ -20,6 +20,10 @@ export class DestinationCustomerController {
 
   @Get()
   async findAll(@Query() options: FilterDestinationDto) {
+
+    // @ts-ignore
+    where.AND.push({ isActive: true });
+
     const where: Prisma.DestinationWhereInput = { AND: [] };
     if (options.textSearch) {
       // @ts-ignore
@@ -56,7 +60,7 @@ export class DestinationCustomerController {
   @Get(':id')
   async findOne(@Param('id') id: number) {
     const destination = await this.destinationService.findOne({ 
-      where: { id }
+      where: { id, isActive: true }
     });
     if (!destination) throw new BaseException(Errors.ITEM_NOT_FOUND(this.i18n.t('common-message.destination.findOne.not_found')));
 

@@ -21,6 +21,10 @@ export class CityCustomerController {
   @Get()
   async findAll(@Query() options: FilterCityDto) {
     const where: Prisma.CityWhereInput = { AND: [] };
+
+    // @ts-ignore
+    where.AND.push({ isActive: true });
+
     if (options.textSearch) {
       // @ts-ignore
       where.AND.push({
@@ -55,8 +59,8 @@ export class CityCustomerController {
 
   @Get(':id')
   async findOne(@Param('id') id: number) {
-    const city = await this.cityService.findOne({ 
-      where: { id }
+    const city = await this.cityService.findOne({
+      where: { id, isActive: true }
     });
     if (!city) throw new BaseException(Errors.ITEM_NOT_FOUND(this.i18n.t('common-message.city.findOne.not_found')));
 

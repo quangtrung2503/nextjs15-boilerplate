@@ -22,6 +22,10 @@ export class PostCustomerController {
   @Get()
   async findAll(@Query() options: FilterPostDto) {
     const where: Prisma.PostWhereInput = { AND: [] };
+
+    // @ts-ignore
+    where.AND.push({ isActive: true });
+
     if (options.textSearch) {
       // @ts-ignore
       where.AND.push({
@@ -72,7 +76,7 @@ export class PostCustomerController {
   @Get(':id')
   async findOne(@Param('id') id: number) {
     const post = await this.postService.findOne({
-      where: { id },
+      where: { id, isActive: true },
       include: {
         User: true
       }

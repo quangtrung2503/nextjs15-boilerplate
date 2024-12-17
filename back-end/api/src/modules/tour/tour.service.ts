@@ -25,7 +25,11 @@ export class TourService {
       where: { id }, data: args, include: {
         City: true,
         Theme: true,
-        Destination: true,
+        TourDestination: {
+          include: {
+            Destination: true
+          }
+        },
         TourImage: true,
         Review: true
       }
@@ -36,7 +40,7 @@ export class TourService {
     return this.prismaService.tour.count(args)
   }
 
-  async updateMany(where: Prisma.TourWhereInput, args: Prisma.TourUncheckedCreateInput) {
+  async updateMany(where: Prisma.TourWhereInput, args: Prisma.TourUncheckedUpdateInput) {
     return this.prismaService.tour.updateMany({ where, data: args });
   }
 

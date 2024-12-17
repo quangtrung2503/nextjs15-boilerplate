@@ -28,7 +28,7 @@ export class TourImageService {
     return this.prismaService.tourImage.count(args)
   }
 
-  async updateMany(where: Prisma.TourImageWhereInput, args: Prisma.TourImageUncheckedCreateInput) {
+  async updateMany(where: Prisma.TourImageWhereInput, args: Prisma.TourImageUncheckedUpdateInput) {
     return this.prismaService.tourImage.updateMany({ where, data: args });
   }
 

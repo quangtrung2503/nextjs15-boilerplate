@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
-import { IsBoolean, IsEnum, IsNumber, IsOptional } from 'class-validator';
+import { IsArray, IsBoolean, IsEnum, IsNumber, IsOptional } from 'class-validator';
 import { FilterOptions } from 'src/helpers/common/filterOption.dto';
 import { Duration } from 'src/helpers/constants/enum.constant';
 
@@ -48,11 +48,19 @@ export class FilterTourDto extends FilterOptions {
     duration?: Duration;
 
   @ApiProperty({
-    example: 5,
-    required: false
+    example: [1, 2, 3],
+    description: 'Array of destination IDs',
+    required: false,
+    type: [Number]
   })
-  @Transform(({ value }) => Number(value))
-  @IsNumber()
+  @Transform(({ value }) => {
+    if (typeof value === 'string') {
+      return value.split(',').map(id => Number(id.trim()));
+    }
+    return value?.map(Number);
+  })
+  @IsArray()
+  @IsNumber({}, { each: true })
   @IsOptional()
-    destinationId?: number;
+    destinationIds?: number[];
 }
