@@ -14,7 +14,7 @@ import { FilterCityDto } from './dto/filter-city.dto';
 import { UpdateCityDto } from './dto/update-city.dto';
 import { I18nCustomService } from 'src/resources/i18n/i18n.service';
 
-@ApiTags('City')
+@ApiTags('City (Administrator)')
 @Controller('city')
 export class CityController {
   constructor(

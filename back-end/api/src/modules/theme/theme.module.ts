@@ -3,9 +3,10 @@ import { ThemeService } from './theme.service';
 import { ThemeController } from './theme.controller';
 import { PrismaModule } from 'prisma/prisma.module';
 import { I18nCustomModule } from 'src/resources/i18n/i18n.module';
+import { ThemeCustomerController } from './theme-customer.controller';
 
 @Module({
-  controllers: [ThemeController],
+  controllers: [ThemeController, ThemeCustomerController],
   providers: [ThemeService],
   exports: [ThemeModule, ThemeService],
   imports: [

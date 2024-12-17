@@ -3,7 +3,7 @@ import React from "react";
 import Header from "./Header";
 import Footer from "./Footer";
 import useAuth from "@/hooks/useAuth";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 interface DefaultLayoutProps {
   children: React.ReactNode;
 }

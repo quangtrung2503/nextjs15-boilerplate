@@ -14,7 +14,7 @@ import moment from 'moment';
 import { funcListPaging } from 'src/helpers/common/list-paging';
 import { I18nCustomService } from 'src/resources/i18n/i18n.service';
 
-@ApiTags('Theme')
+@ApiTags('Theme (Administrator)')
 @Controller('theme')
 export class ThemeController {
   constructor(
@@ -37,7 +37,7 @@ export class ThemeController {
   }
 
   @ApiBearerAuth()
-  @Roles(UserRole.ADMIN, UserRole.STAFF)
+  @Roles(UserRole.ADMIN, UserRole.STAFF, UserRole.CUSTOMER)
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Get()
   async findAll(@Query() options: FilterThemeDto) {
@@ -75,7 +75,7 @@ export class ThemeController {
   }
 
   @ApiBearerAuth()
-  @Roles(UserRole.ADMIN, UserRole.STAFF)
+  @Roles(UserRole.ADMIN, UserRole.STAFF, UserRole.CUSTOMER)
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Get(':id')
   async findOne(@Param('id') id: number) {

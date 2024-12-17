@@ -14,7 +14,7 @@ import { FilterDestinationDto } from './dto/filter-destination.dto';
 import { UpdateDestinationDto } from './dto/update-destination.dto';
 import { I18nCustomService } from 'src/resources/i18n/i18n.service';
 
-@ApiTags('Destination')
+@ApiTags('Destination (Administrator)')
 @Controller('destination')
 export class DestinationController {
   constructor(

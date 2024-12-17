@@ -21,7 +21,7 @@ const CardBlogItem = (props: CardBlogItemProps) => {
     <Card className="tw-w-full tw-p-0 tw-rounded-lg">
       <CommonStyles.Box className="">
         <CardMedia
-          className={`tw-min-h-[140px]`}
+          className={`tw-min-h-[200px]`}
           sx={{ padding: "5px" }}
           image={src}
         />

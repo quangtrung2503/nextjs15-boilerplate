@@ -2,17 +2,15 @@
   "auth": {
     "signUp": {
       "wrong_parameter": "{keyNotInDto} is not defined in parameters",
-      "username_required": "Username is required",
-      "username_no_spaces": "Username cannot contain space",
-      "username_invalid_format": "Username must be at least eight characters long and cannot contain special characters",
       "invalid_phone": "Phone number need Minimum nine characters",
       "invalid_email": "Email is not valid",
       "invalid_password": "Password need Minimum eight characters, at least one letter, one number and one special character",
+      "wrong_confirm_password": "Password do not match",
       "phone_exists": "Phone already exists",
       "email_exists": "Email already exists"
     },
     "login": {
-      "user_not_found": "Username",
+      "user_not_found": "Email",
       "wrong_password": "Wrong password"
     },
     "changePassword": {
@@ -112,6 +110,39 @@
     },
     "remove": {
       "not_found": "Post"
+    }
+  },
+  "tour": {
+    "create": {
+      "wrong_parameter": "{keyNotInDto} is not defined in parameters",
+      "images_required": "Images are required for the tour",
+      "invalid_start_date": "Start date must be after current date",
+      "invalid_end_date": "End date must be equal to or after start date",
+      "city_not_found": "City not found",
+      "theme_not_found": "Theme not found",
+      "destination_not_found": "Destination not found"
+    },
+    "update": {
+      "wrong_parameter": "{keyNotInDto} is not defined in parameters",
+      "not_found": "Tour",
+      "invalid_start_date": "Start date must be after current date",
+      "invalid_end_date": "End date must be equal to or after start date",
+      "city_not_found": "City not found",
+      "theme_not_found": "Theme not found",
+      "destination_not_found": "Destination not found"
+    },
+    "findOne": {
+      "not_found": "Tour"
+    }
+  },
+  "wishlist": {
+    "addToWishlist": {
+      "wrong_parameter": "{keyNotInDto} is not defined in parameters",
+      "not_found": "Tour",
+      "already_in_wishlist": "Tour already exists in wishlist"
+    },
+    "removeFromWishlist": {
+      "not_found": "Tour"
     }
   },
   "test-fall-back": "ENG"
