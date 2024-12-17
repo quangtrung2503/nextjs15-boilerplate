@@ -19,12 +19,15 @@
   --foreground: #171717;
 
   --primary: #7bbcb0;
+  --primary-100: #7bbcb054;
   --primary-light: #AFFFF0;
   --secondary: #ffda32;
+  --secondary-100: #ffd93256;
 
   --accent-gray-dark: #1c2b38;
   --accent-gray-800: #495560;
   --accent-gray-500: #778088;
+  --accent-border-input-color: #cfcfcf;
   --accent-gray-light: #ffffff99;
 
   --accent-purple: #d176e0;

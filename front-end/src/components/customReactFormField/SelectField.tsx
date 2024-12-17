@@ -12,6 +12,7 @@ import {
 } from "@mui/material";
 import { SelectOption } from "@/interfaces/common";
 import { twMerge } from "tailwind-merge";
+import { FieldError } from "react-hook-form";
 
 interface SelectFieldProps {
   label?: string;
@@ -26,12 +27,19 @@ interface SelectFieldProps {
     child: ReactNode
   ) => void;
   error?: boolean;
+  placeholder?:string;
   helperText?: string;
   classNameContainer?: string;
   className?: string;
   fullWidth?: boolean;
   defaultValue?: string | number | undefined;
   variant?: "outlined" | "filled" | "standard";
+  field: {
+      value: string;
+      onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+      onBlur: () => void;
+    };
+    fieldState: { error?: FieldError }; // Cập nhật kiểu ở đâ
 }
 
 const SelectField: React.FC<SelectFieldProps> = ({
@@ -50,6 +58,9 @@ const SelectField: React.FC<SelectFieldProps> = ({
   classNameContainer = "",
   fullWidth = true,
   variant,
+  field,
+  placeholder,
+  fieldState,
   ...props
 }) => {
   return (
@@ -74,6 +85,9 @@ const SelectField: React.FC<SelectFieldProps> = ({
         className="tw-text-[#ffffff86]"
         {...props}
       >
+        {placeholder && <MenuItem disabled value="">
+            <em>Placeholder</em>
+          </MenuItem>}
         {options.map((option, index) => (
           <MenuItem
             className={twMerge("rounded tw-flex tw-items-center", className)}
