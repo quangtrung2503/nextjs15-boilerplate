@@ -38,7 +38,7 @@ const CardGridItem = (props: CardGridItemProps) => {
       <CommonStyles.Box className="tw-p-2">
         <CardMedia
           className={`tw-min-h-[140px]`}
-          sx={{ padding: "5px" }}
+          sx={{ padding: "5px"}}
           image={src}
         />
       </CommonStyles.Box>

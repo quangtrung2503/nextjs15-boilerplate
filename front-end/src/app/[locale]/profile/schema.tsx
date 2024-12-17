@@ -1,11 +1,16 @@
 import * as yup from 'yup';
 
-export const schema = yup.object().shape({
+export const schemaPersonalInformation = yup.object().shape({
   name: yup.string().required("Username is required"),
+  dateOfBirth: yup.string().required("Date of birth is required"),
   phone: yup
     .string()
     .matches(/^[0-9]{10}$/, "Phone number must be 10 digits")
-    .required("Phone number is required"), location: yup.string().required("Location is required"),
+    .required("Phone number is required"), 
+  location: yup.string().required("Location is required"),
+}).required();
+
+export const schemaSecurityInformation = yup.object().shape({
   email: yup.string().email('Invalid email address')
     .matches(
       /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
@@ -15,5 +20,5 @@ export const schema = yup.object().shape({
   confirmPassword: yup
     .string()
     .required("Confirm password is required")
-    .oneOf([yup.ref('password')], "Passwords must match")
+    .oneOf([yup.ref('password')], "Passwords must match"),
 }).required();
