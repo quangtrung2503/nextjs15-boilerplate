@@ -41,32 +41,12 @@ export class AuthController {
   async signUp(@Body() body: UserSignupDto) {
     const keyNotInDto = Object.keys(body).find((key: keyof UserSignupDto) => !UserSignupDtoKeys.includes(key))
     if (keyNotInDto) throw new BaseException(Errors.BAD_REQUEST(this.i18n.t('common-message.auth.signUp.wrong_parameter', { keyNotInDto })));
-
-    if (body.username.trim() === '')
-      throw new BaseException(Errors.BAD_REQUEST(this.i18n.t('common-message.auth.signUp.username_required')));
-
-    if (body.username.includes(' '))
-      throw new BaseException(Errors.BAD_REQUEST(this.i18n.t('common-message.auth.signUp.username_no_spaces')));
-
-    if (!RegexConstant.UsernameReg.test(body.username))
-      throw new BaseException(Errors.BAD_REQUEST(this.i18n.t('common-message.auth.signUp.username_invalid_format')));
-
-    if (!RegexConstant.PhoneReg.test(body.phone))
-      throw new BaseException(Errors.BAD_REQUEST(this.i18n.t('common-message.auth.signUp.invalid_phone')));
     
     if (!RegexConstant.EmailReg.test(body.email))
       throw new BaseException(Errors.BAD_REQUEST(this.i18n.t('common-message.auth.signUp.invalid_email')));
 
-    if (!RegexConstant.PasswordReg.test(body.password))
-      throw new BaseException(Errors.BAD_REQUEST(this.i18n.t('common-message.auth.signUp.invalid_password')));
-
-    const phoneExists = await this.userService.checkPhoneExistsInRoles(
-      body.phone,
-      [UserRole.CUSTOMER],
-    );
-  
-    if (phoneExists)
-      throw new BaseException(Errors.BAD_REQUEST(this.i18n.t('common-message.auth.signUp.phone_exists')),);
+    // if (!RegexConstant.PasswordReg.test(body.password))
+    //   throw new BaseException(Errors.BAD_REQUEST(this.i18n.t('common-message.auth.signUp.invalid_password')));
 
     const emailExists = await this.userService.checkEmailExistsInRoles(
       body.email,
@@ -76,11 +56,31 @@ export class AuthController {
     if (emailExists)
       throw new BaseException(Errors.BAD_REQUEST(this.i18n.t('common-message.auth.signUp.email_exists')),);
 
+    if (body.phone) {
+      if (!RegexConstant.PhoneReg.test(body.phone))
+        throw new BaseException(Errors.BAD_REQUEST(this.i18n.t('common-message.auth.signUp.invalid_phone')));
+      
+      const phoneExists = await this.userService.checkPhoneExistsInRoles(
+        body.phone,
+        [UserRole.CUSTOMER],
+      );
+    
+      if (phoneExists)
+        throw new BaseException(Errors.BAD_REQUEST(this.i18n.t('common-message.auth.signUp.phone_exists')),);
+    }
+
+    const checkNewPassword = body.password === body.confirmPassword
+    if (!checkNewPassword) {
+      throw new BaseException(Errors.BAD_REQUEST(this.i18n.t('common-message.auth.signUp.wrong_confirm_password')));
+    }
+
     const hashPassword = await this.authService.hashPassword(body.password)
 
     const data = await this.userService.create({
       data: {
-        ...body,
+        email: body.email,
+        name: body.name,
+        phone: body.phone,
         password: hashPassword,
       }
     })
@@ -90,7 +90,7 @@ export class AuthController {
   @Post('login')
   async login(@Body() body: LoginDto) {
     const user = await this.userService.findOne({ 
-      where: { username: body.userName },
+      where: { email: body.email },
     })
     if (!user) {
       throw new BaseException(Errors.ITEM_NOT_FOUND(this.i18n.t('common-message.auth.login.user_not_found')));
@@ -99,7 +99,7 @@ export class AuthController {
     if (!checkPassword) {
       throw new BaseException(Errors.BAD_REQUEST(this.i18n.t('common-message.auth.login.wrong_password')));
     }
-    const accessToken = await this.authService.generateAccessToken({ sub: user.id.toString(), username: user.username, role: user.role });
+    const accessToken = await this.authService.generateAccessToken({ sub: user.id.toString(), email: user.email, role: user.role });
     await this.userService.update(user.id, { lastAccessToken: accessToken })
 
     return {
@@ -114,7 +114,7 @@ export class AuthController {
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Post('change-password')
   async changePassword(@UserDecorator() user: IUserJwt, @Body() body: ChangePassword) {
-    const userRequest = await this.userService.findOne({ where: { username: user.data.username } })
+    const userRequest = await this.userService.findOne({ where: { email: user.data.email } })
     if (!userRequest) {
       throw new BaseException(Errors.ITEM_NOT_FOUND(this.i18n.t('common-message.auth.changePassword.user_not_found')));
     }

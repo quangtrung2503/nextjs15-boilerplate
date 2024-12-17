@@ -28,7 +28,7 @@ export class DestinationService {
     return this.prismaService.destination.count(args)
   }
 
-  async updateMany(where: Prisma.DestinationWhereInput, args: Prisma.DestinationUncheckedCreateInput) {
+  async updateMany(where: Prisma.DestinationWhereInput, args: Prisma.DestinationUncheckedUpdateInput) {
     return this.prismaService.destination.updateMany({ where, data: args });
   }
 

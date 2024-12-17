@@ -28,7 +28,7 @@ export class ThemeService {
     return this.prismaService.theme.count(args)
   }
 
-  async updateMany(where: Prisma.ThemeWhereInput, args: Prisma.ThemeUncheckedCreateInput) {
+  async updateMany(where: Prisma.ThemeWhereInput, args: Prisma.ThemeUncheckedUpdateInput) {
     return this.prismaService.theme.updateMany({ where, data: args });
   }
 

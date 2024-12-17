@@ -17,7 +17,7 @@ import { IUserJwt } from 'src/core/auth/strategies/jwt.strategy';
 import { _excludeObject } from 'src/helpers/functions/common.utils';
 import { I18nCustomService } from 'src/resources/i18n/i18n.service';
 
-@ApiTags('Post')
+@ApiTags('Post (Administrator)')
 @Controller('post')
 export class PostController {
   constructor(
@@ -96,10 +96,10 @@ export class PostController {
   }
 
   @ApiBearerAuth()
-  @Roles(UserRole.ADMIN, UserRole.STAFF, UserRole.CUSTOMER)
+  @Roles(UserRole.ADMIN, UserRole.STAFF)
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Get(':id')
-  async findOne(@UserDecorator() user: IUserJwt, @Param('id') id: number) {
+  async findOne(@Param('id') id: number) {
     const post = await this.postService.findOne({
       where: { id },
       include: {
@@ -107,16 +107,6 @@ export class PostController {
       }
     });
     if (!post) throw new BaseException(Errors.ITEM_NOT_FOUND(this.i18n.t('common-message.post.findOne.not_found')));
-
-    if (user.role == UserRole.CUSTOMER) {
-      const updatePost = await this.postService.update(+id, {
-        views: post.views + 1
-      });
-
-      delete updatePost?.userCreatedId;
-
-      return updatePost;
-    }
 
     const { User, ...rest } = post;
 
@@ -141,6 +131,18 @@ export class PostController {
 
     return this.postService.update(id, body);
 
+  }
+
+  @ApiBearerAuth()
+  @Roles(UserRole.ADMIN, UserRole.STAFF)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Patch('set-active/:id')
+  async setActive(@Param('id') id: number) {
+    const existingPost = await this.postService.findOne({ where: { id } });
+    if (!existingPost) throw new BaseException(Errors.ITEM_NOT_FOUND(this.i18n.t('common-message.post.setActive.not_found')));
+
+    return await this.postService.update(existingPost.id, { isActive: !existingPost.isActive });
+    
   }
 
   @ApiBearerAuth()

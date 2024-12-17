@@ -35,15 +35,15 @@ const Header = () => {
 
   return (
     <CommonStyles.Box
-      className={`tw-px-10 tw-flex tw-justify-between tw-transition-all tw-duration-500 tw-items-center tw-h-header tw-fixed tw-top-0 tw-left-0 tw-right-0 tw-z-50 transition-all ${
-        isScrolled ? "tw-bg-white" : "tw-bg-transparent"
+      className={`tw-px-10 tw-flex tw-justify-between tw-transition-all tw-duration-500 tw-items-center tw-h-header tw-fixed tw-top-0 tw-left-0 tw-right-0 tw-z-[999999999] transition-all ${
+        isScrolled ? "tw-bg-white tw-border-b tw-shadow-md" : "tw-bg-transparent"
       }`}
     >
       <CommonIcons.Logo color={isScrolled ? "#333" : "white"} />
       <CommonStyles.Box className="tw-flex tw-items-center tw-gap-8">
         {menu.map((item, index) => {
           return (
-            <CommonStyles.Typography key={index} type="size14Weight500">
+            <CommonStyles.Typography key={index} type="size15Weight600">
               <Link
                 className={`tw-no-underline ${
                   isScrolled ? "tw-text-black" : "tw-text-white"
@@ -55,7 +55,12 @@ const Header = () => {
             </CommonStyles.Typography>
           );
         })}
-        <CommonStyles.CommonButton onClick={()=>{router.push(pageUrls.SignIn)}} className="tw-px-10 tw-font-semibold">
+        <CommonStyles.CommonButton
+          onClick={() => {
+            router.push(pageUrls.SignIn);
+          }}
+          className="tw-px-10 tw-font-semibold"
+        >
           Sign In
         </CommonStyles.CommonButton>
       </CommonStyles.Box>

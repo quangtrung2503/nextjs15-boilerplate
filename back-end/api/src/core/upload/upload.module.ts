@@ -101,7 +101,7 @@ export const getUploadPath = (rootPath: string) => {
   );
   const pathDay = path.join(
     pathMonth,
-    moment().get('day').toString(),
+    moment().format('D').toString(),
   );
   if (!fs.existsSync(pathYear)) {
     fs.mkdirSync(pathYear, { recursive: true });

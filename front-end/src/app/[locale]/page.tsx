@@ -1,5 +1,5 @@
 import { getTranslations } from 'next-intl/server';
-import Landing from './landing';
+import HomePage from './home/HomePage';
 
 type ISignInPageProps = {
     params: Promise<{ locale: string }>;
@@ -9,16 +9,16 @@ export async function generateMetadata(props: ISignInPageProps) {
     const { locale } = await props.params;
     const t = await getTranslations({
         locale,
-        namespace: 'LandingPage',
+        namespace: 'landingPage',
     });
     return {
-        title: t('meta_title'),
-        description: t('meta_description'),
+        title: t('metaTitle'),
+        description: t('metaDescription'),
     };
 }
 
 export default async function Hompage() {
     return (
-        <Landing />
+        <HomePage />
     );
 };

@@ -28,7 +28,7 @@ export class CityService {
     return this.prismaService.city.count(args)
   }
 
-  async updateMany(where: Prisma.CityWhereInput, args: Prisma.CityUncheckedCreateInput) {
+  async updateMany(where: Prisma.CityWhereInput, args: Prisma.CityUncheckedUpdateInput) {
     return this.prismaService.city.updateMany({ where, data: args });
   }
 

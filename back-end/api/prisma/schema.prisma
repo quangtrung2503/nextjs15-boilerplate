@@ -25,9 +25,9 @@ enum UserRole {
 
 model User {
   id              Int        @id @default(autoincrement())
-  username        String     @unique @db.VarChar(255)
-  password        String?
-  phone           String     @db.VarChar(255)
+  username        String?    @unique @db.VarChar(255)
+  password        String
+  phone           String?    @db.VarChar(255)
   email           String     @db.VarChar(255)
   name            String     @db.VarChar(255)
   lastAccessToken String?    @db.Text
@@ -44,16 +44,20 @@ model User {
   // relation
   Review          Review[]
   Post            Post[]
+  Wishlist        Wishlist[]
 
   @@fulltext([username, email, phone, name, nickName])
   @@map("user")
 }
 
 model City {
-  id        Int      @id @default(autoincrement())
-  name      String   @unique @db.VarChar(255)
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+  id          Int      @id @default(autoincrement())
+  name        String   @unique @db.VarChar(255)
+  image       String   @db.VarChar(255)
+  description String   @db.VarChar(255)
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @default(now()) @updatedAt @map("updated_at")
 
   // relation
   Tour Tour[]
@@ -64,6 +68,8 @@ model City {
 model Theme {
   id        Int      @id @default(autoincrement())
   name      String   @unique @db.VarChar(255)
+  isDisplay Boolean  @default(true)
+  isActive  Boolean  @default(true)
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
 
@@ -76,49 +82,70 @@ model Theme {
 model Destination {
   id        Int      @id @default(autoincrement())
   name      String   @unique @db.VarChar(255)
+  isActive  Boolean  @default(true)
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
 
-  // relation
-  Tour Tour[]
+  TourDestination TourDestination[]
 
   @@map("destination")
 }
 
 model Tour {
-  id             Int      @id @default(autoincrement())
-  name           String   @db.VarChar(255)
-  price          Float
-  description    String   @db.Text
-  transport      String   @db.VarChar(255)
-  package        String   @db.VarChar(255)
-  duration       String   @db.VarChar(255)
-  numberOfHours  Float
-  numberOfPeople Int
-  startDate      DateTime
-  endDate        DateTime
-  cityId         Int
-  themeId        Int
-  destinationId  Int
+  id                 Int      @id @default(autoincrement())
+  name               String   @db.VarChar(255)
+  price              Float
+  description        String   @db.Text
+  transport          String   @db.VarChar(255)
+  package            String   @db.VarChar(255)
+  duration           String   @db.VarChar(255)
+  numberOfPeople     Int
+  startDate          DateTime
+  endDate            DateTime
+  isFeature          Boolean  @default(false)
+  isActive           Boolean  @default(true)
+  cancellationPolicy String   @db.VarChar(255)
+  healthPrecautions  String   @db.VarChar(255)
+  ticketType         String   @db.VarChar(255)
+  confirmation       String   @db.VarChar(255)
+  guideLanguage      String   @db.VarChar(255)
+  cityId             Int
+  themeId            Int
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
 
   // relation fields
-  City        City        @relation(fields: [cityId], references: [id], onDelete: Cascade)
-  Theme       Theme       @relation(fields: [themeId], references: [id], onDelete: Cascade)
-  Destination Destination @relation(fields: [id], references: [id], onDelete: Cascade)
-  Review      Review[]
-  TourImage   TourImage[]
+  City            City              @relation(fields: [cityId], references: [id])
+  Theme           Theme             @relation(fields: [themeId], references: [id])
+  Review          Review[]
+  TourImage       TourImage[]
+  Wishlist        Wishlist[]
+  TourDestination TourDestination[]
 
   @@fulltext([name])
   @@map("tour")
 }
 
+model TourDestination {
+  id            Int @id @default(autoincrement())
+  tourId        Int
+  destinationId Int
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+
+  // relation fields
+  Tour        Tour        @relation(fields: [tourId], references: [id], onDelete: Cascade)
+  Destination Destination @relation(fields: [destinationId], references: [id])
+
+  @@map("tour_destination")
+}
+
 model TourImage {
   id        Int      @id @default(autoincrement())
   tourId    Int
-  imageUrl  String   @db.VarChar(255)
+  image     String   @db.VarChar(255)
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
 
@@ -129,22 +156,23 @@ model TourImage {
 }
 
 model Review {
-  id                    Int      @id @default(autoincrement())
-  userId                Int
-  tourId                Int
-  rating_guide          Int
-  rating_transportation Int
-  rating_valueOfMoney   Int
-  rating_safety         Int
-  rating                Int
-  title                 String   @db.VarChar(255)
-  content               String   @db.Text
-  isHelpful             Boolean  @default(false)
-  createdAt             DateTime @default(now()) @map("created_at")
-  updatedAt             DateTime @default(now()) @updatedAt @map("updated_at")
+  id                   Int      @id @default(autoincrement())
+  userId               Int
+  tourId               Int
+  ratingGuide          Int
+  ratingTransportation Int
+  ratingValueOfMoney   Int
+  ratingSafety         Int
+  rating               Int
+  title                String   @db.VarChar(255)
+  content              String   @db.Text
+  isHelpful            Boolean  @default(false)
+  isActive             Boolean  @default(true)
+  createdAt            DateTime @default(now()) @map("created_at")
+  updatedAt            DateTime @default(now()) @updatedAt @map("updated_at")
 
   // relation fields
-  User User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  User User @relation(fields: [userId], references: [id])
   Tour Tour @relation(fields: [tourId], references: [id], onDelete: Cascade)
 
   @@map("review")
@@ -157,11 +185,27 @@ model Post {
   title         String   @db.VarChar(255)
   content       String   @db.Text
   views         Int      @default(0)
+  isActive      Boolean  @default(true)
   createdAt     DateTime @default(now()) @map("created_at")
   updatedAt     DateTime @default(now()) @updatedAt @map("updated_at")
 
   // relation fields
-  User User @relation(fields: [userCreatedId], references: [id], onDelete: Cascade)
+  User User @relation(fields: [userCreatedId], references: [id])
 
   @@map("post")
+}
+
+model Wishlist {
+  id     Int @id @default(autoincrement())
+  userId Int
+  tourId Int
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+
+  // relation fields
+  User User @relation(fields: [userId], references: [id])
+  Tour Tour @relation(fields: [tourId], references: [id], onDelete: Cascade)
+
+  @@map("wishlist")
 }

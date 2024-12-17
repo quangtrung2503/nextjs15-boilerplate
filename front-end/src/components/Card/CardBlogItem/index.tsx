@@ -19,13 +19,13 @@ const CardBlogItem = (props: CardBlogItemProps) => {
   const { src, title, link, author, ...rest } = props;
   return (
     <Card className="tw-w-full tw-p-0 tw-rounded-lg">
-        <CommonStyles.Box className="">
-          <CardMedia
-            className={`tw-min-h-[140px]`}
-            sx={{ padding: "5px" }}
-            image={src}
-          />
-        </CommonStyles.Box>
+      <CommonStyles.Box className="">
+        <CardMedia
+          className={`tw-min-h-[200px]`}
+          sx={{ padding: "5px" }}
+          image={src}
+        />
+      </CommonStyles.Box>
       <CardContent className="tw-flex tw-flex-col tw-gap-3">
         <CommonStyles.Box className="tw-flex tw-items-center tw-gap-2 tw-text-accent_gray_500">
           <CommonStyles.Avatar className="tw-size-6" src={author.avatar} />

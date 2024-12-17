@@ -36,7 +36,7 @@ const SignIn = (props: ISignInProps) => {
   const router = useRouter();
   const isLogged = auth?.isLogged;
   const isLogining = auth?.isLogining;
-  const t = useTranslations("SignIn");
+  const t = useTranslations("signIn");
 
   const handleForgot = () => {
     setIsLogin(false);
@@ -48,9 +48,9 @@ const SignIn = (props: ISignInProps) => {
     resolver: yupResolver(
       Yup.object().shape({
         email: Yup.string()
-          .email(t("Validations.emailFormat"))
-          .required(t("Validations.emailRequire")),
-        password: Yup.string().required(t("Validations.passwordRequire")),
+          .email(t("validations.emailFormat"))
+          .required(t("validations.emailRequire")),
+        password: Yup.string().required(t("validations.passwordRequire")),
       })
     ),
   });
@@ -62,7 +62,7 @@ const SignIn = (props: ISignInProps) => {
     try {
       const requestPayload = LoginModel.parseBodyToRequest(body);
       const res = await auth?.signIn(requestPayload);
-      showSuccess(t("Login success"));
+      showSuccess(t("loginSuccess"));
     } catch (error: any) {
       const err: any = error?.response.data.messages[0];
       showError(err);
@@ -109,35 +109,35 @@ const SignIn = (props: ISignInProps) => {
               type="size25Weight600"
               color="var(--accent-gray-dark)"
             >
-              {t("meta_title")}
+              {t("metaTitle")}
             </CommonStyles.Typography>
             <CommonStyles.Typography color="var(--accent-gray-800)">
-              {t("Don't have an account")}?{" "}
+              {t("dontHaveAnAccount")}?{" "}
               <Link className="!tw-underline" href={pageUrls.SignUp}>
-                {t("Sign Up")}
+                {t("signUp")}
               </Link>
             </CommonStyles.Typography>
           </CommonStyles.Box>
           <CommonStyles.Box className="tw-flex tw-w-full tw-flex-col tw-gap-3">
             <CommonButton
               onClick={() => {
-                showInfo(t("Function is under development"));
+                showInfo(t("functionIsUnderDevelopment"));
               }}
               startIcon={<CommonIcons.FacebookLogin />}
               variant="outlined"
               className="tw-rounded-full tw-border-accent_gray_500 tw-bg-white"
             >
-              {t("Login with Facebook")}
+              {t("loginWithFacebook")}
             </CommonButton>
             <CommonButton
               onClick={() => {
-                showInfo(t("Function is under development"));
+                showInfo(t("functionIsUnderDevelopment"));
               }}
               startIcon={<CommonIcons.GoogleLogin />}
               variant="outlined"
               className="tw-rounded-full tw-border-accent_gray_500 tw-bg-white"
             >
-              {t("Login with Google")}
+              {t("loginWithGoogle")}
             </CommonButton>
           </CommonStyles.Box>
           <CommonStyles.Box className="tw-flex tw-items-center tw-w-full tw-gap-3">
@@ -162,7 +162,7 @@ const SignIn = (props: ISignInProps) => {
                 },
               }}
               component={InputField}
-              label={t("Email label")}
+              label={t("emailLabel")}
             />
             <CommonStyles.Box className="tw-flex tw-flex-col tw-items-end tw-w-full">
               <RHFField
@@ -177,13 +177,13 @@ const SignIn = (props: ISignInProps) => {
                 }}
                 type="password"
                 component={InputField}
-                label={t("Password label")}
+                label={t("passwordLabel")}
               />
               <CommonStyles.Link
                 className="!tw-underline !tw-text-accent_gray_800 tw-mt-1"
                 href={""}
               >
-                {t("Forgot password")}
+                {t("forgotPassword")}
               </CommonStyles.Link>
             </CommonStyles.Box>
           </CommonStyles.Box>
@@ -192,7 +192,7 @@ const SignIn = (props: ISignInProps) => {
             className="tw-w-full tw-rounded-full tw-text-accent_gray_800"
             type="submit"
           >
-            {t("Sign in button")}
+            {t("signInButton")}
           </CommonButton>
         </CommonStyles.Box>
       </form>

@@ -33,7 +33,7 @@ type ISignUpProps = {
 };
 
 const SignUp = (props: ISignUpProps) => {
-  const t = useTranslations("SignUp");
+  const t = useTranslations("signUp");
   const router = useRouter();
   const auth = useAuth();
   const isLogged = auth?.isLogged;
@@ -56,18 +56,18 @@ const SignUp = (props: ISignUpProps) => {
     criteriaMode: "all",
     resolver: yupResolver(
       Yup.object().shape({
-        name: Yup.string().required(t("Validations.nameRequire")),
+        name: Yup.string().required(t("validations.nameRequire")),
         phone: Yup.string().matches(
           /^[0-9]{10}$/,
-          t("Validations.phoneFormat")
+          t("validations.phoneFormat")
         ),
         email: Yup.string()
-          .email(t("Validations.emailFormat"))
-          .required(t("Validations.emailRequire")),
-        password: Yup.string().required(t("Validations.passwordRequire")),
+          .email(t("validations.emailFormat"))
+          .required(t("validations.emailRequire")),
+        password: Yup.string().required(t("validations.passwordRequire")),
         confirmPassword: Yup.string()
-          .oneOf([Yup.ref("password")], t("Validations.passwordNotMatch"))
-          .required(t("Validations.passwordRequire")),
+          .oneOf([Yup.ref("password")], t("validations.passwordNotMatch"))
+          .required(t("validations.passwordRequire")),
       })
     ),
   });
@@ -84,7 +84,7 @@ const SignUp = (props: ISignUpProps) => {
       const requestPayload = SignUpModel.parseBodyToRequest(body);
       await auth?.signUp(requestPayload);
       router.push(pageUrls.SignIn);
-      showSuccess(t("Sign up success"));
+      showSuccess(t("signUpSuccess"));
     } catch (error: any) {
       const err: any = error?.response.data.messages[0];
       showError(err);
@@ -126,35 +126,35 @@ const SignUp = (props: ISignUpProps) => {
               type="size25Weight600"
               color="var(--accent-gray-dark)"
             >
-              {t("meta_title")}
+              {t("metaTitle")}
             </CommonStyles.Typography>
             <CommonStyles.Typography color="var(--accent-gray-800)">
-              {t("Already have an account")}?{" "}
+              {t("alreadyHaveAnAccount")}?{" "}
               <Link className="!tw-underline" href={pageUrls.SignIn}>
-                {t("Sign In")}
+                {t("signIn")}
               </Link>
             </CommonStyles.Typography>
           </CommonStyles.Box>
           <CommonStyles.Box className="tw-flex tw-w-full tw-flex-col tw-gap-3">
             <CommonButton
               onClick={() => {
-                showInfo(t("Function is under development"));
+                showInfo(t("functionIsUnderDevelopment"));
               }}
               startIcon={<CommonIcons.FacebookLogin />}
               variant="outlined"
               className="tw-rounded-full tw-border-accent_gray_500 tw-bg-white"
             >
-              {t("Sign up with Facebook")}
+              {t("signUpWithFacebook")}
             </CommonButton>
             <CommonButton
               onClick={() => {
-                showInfo(t("Function is under development"));
+                showInfo(t("functionIsUnderDevelopment"));
               }}
               startIcon={<CommonIcons.GoogleLogin />}
               variant="outlined"
               className="tw-rounded-full tw-border-accent_gray_500 tw-bg-white"
             >
-              {t("Sign up with Google")}
+              {t("signUpWithGoogle")}
             </CommonButton>
           </CommonStyles.Box>
           <CommonStyles.Box className="tw-flex tw-items-center tw-w-full tw-gap-3">
@@ -180,7 +180,7 @@ const SignUp = (props: ISignUpProps) => {
                 },
               }}
               component={InputField}
-              label={t("Name label")}
+              label={t("nameLabel")}
             />
             <RHFField
               name="phone"
@@ -194,7 +194,7 @@ const SignUp = (props: ISignUpProps) => {
                 },
               }}
               component={InputField}
-              label={t("Phone label")}
+              label={t("phoneLabel")}
             />
             <RHFField
               name="email"
@@ -208,7 +208,7 @@ const SignUp = (props: ISignUpProps) => {
                 },
               }}
               component={InputField}
-              label={t("Email label")}
+              label={t("emailLabel")}
             />
             <RHFField
               name="password"
@@ -223,7 +223,7 @@ const SignUp = (props: ISignUpProps) => {
               }}
               type="password"
               component={InputField}
-              label={t("Password label")}
+              label={t("passwordLabel")}
             />
             <RHFField
               name="confirmPassword"
@@ -238,14 +238,14 @@ const SignUp = (props: ISignUpProps) => {
                 },
               }}
               component={InputField}
-              label={t("Confirm password label")}
+              label={t("confirmPasswordLabel")}
             />
           </CommonStyles.Box>
           <CommonButton
             className="tw-w-full tw-rounded-full tw-text-accent_gray_800"
             type="submit"
           >
-            {t("Sign up button")}
+            {t("signUpButton")}
           </CommonButton>
         </CommonStyles.Box>
       </form>

@@ -51,7 +51,7 @@ export class UserController {
       where.AND.push({
         OR: [
           { name: { contains: options.textSearch } },
-          { username: { contains: options.textSearch } }
+          { email: { contains: options.textSearch } }
         ]
       });
     }

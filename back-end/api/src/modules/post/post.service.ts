@@ -28,7 +28,7 @@ export class PostService {
     return this.prismaService.post.count(args)
   }
 
-  async updateMany(where: Prisma.PostWhereInput, args: Prisma.PostUncheckedCreateInput) {
+  async updateMany(where: Prisma.PostWhereInput, args: Prisma.PostUncheckedUpdateInput) {
     return this.prismaService.post.updateMany({ where, data: args });
   }
 
