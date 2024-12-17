@@ -5,7 +5,10 @@ import PlaceOutlinedIcon from '@mui/icons-material/PlaceOutlined';
 import LineAxisOutlinedIcon from '@mui/icons-material/LineAxisOutlined';
 import Link from "next/link";
 import CommonIcons from "@/components/CommonIcons";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
+import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined';
+import { CategoryOutlined } from "@mui/icons-material";
+
 const SideBar = () => {
   const sideBarRoutes = [
     {
@@ -19,8 +22,18 @@ const SideBar = () => {
       icon: <PlaceOutlinedIcon />,
     },
     {
-      name: "Stories",
-      path: "/stories",
+      name: "User",
+      path: "/admin/user",
+      icon: <AccountCircleOutlinedIcon />,
+    },
+    {
+      name: "Theme",
+      path: "/admin/theme",
+      icon: <CategoryOutlined />,
+    },
+    {
+      name: "Post",
+      path: "/admin/post",
       icon: <PostAddOutlinedIcon />,
     },
   ];

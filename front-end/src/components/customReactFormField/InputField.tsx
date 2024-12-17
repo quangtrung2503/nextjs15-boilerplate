@@ -1,8 +1,9 @@
 "use client";
-import React, { ReactNode } from "react";
+import React, { Fragment, ReactNode } from "react";
 import { InputLabel, InputProps, SxProps, TextField } from "@mui/material";
 import { FieldError } from "react-hook-form";
 import { twMerge } from "tailwind-merge";
+import {default as CommonStyles} from "@/components/common";
 
 interface CustomInputProps extends InputProps {
   field: {
@@ -18,7 +19,8 @@ interface CustomInputProps extends InputProps {
   classNameLabel?: string;
   className?: string;
   placeholder?: string;
-  rightIcon?: ReactNode
+  rightIcon?: ReactNode;
+  classNameContainer?: string;
 }
 
 const InputField: React.FC<CustomInputProps> = ({
@@ -30,16 +32,18 @@ const InputField: React.FC<CustomInputProps> = ({
   className,
   placeholder,
   classNameLabel,
+  classNameContainer,
   onChange
 }) => {
   return (
-    <>
+    <CommonStyles.Box className={twMerge("tw-w-full",classNameContainer)}>
       {label && (
         <InputLabel className={twMerge(classNameLabel,'tw-text-xl tw-font-mulish tw-font-bold tw-text-accent_gray_800')} shrink>
           {label}
         </InputLabel>
       )}
       <TextField
+      // label={label}
         type={type}
         {...field}
         className={className}
@@ -50,7 +54,7 @@ const InputField: React.FC<CustomInputProps> = ({
         error={!!fieldState.error}
         helperText={fieldState.error?.message || ""}
       />
-    </>
+    </CommonStyles.Box>
   );
 };
 

@@ -61,7 +61,7 @@ const UploadField = (props: UploadFieldProps) => {
       >
         Upload
       </CommonStyles.CommonButton>
-      <CommonStyles.Typography>{uploadRef.current?.value}</CommonStyles.Typography>
+      <CommonStyles.Typography>{uploadRef.current?.value || field.value}</CommonStyles.Typography>
     </CommonStyles.Box>
   );
 };

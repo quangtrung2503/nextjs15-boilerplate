@@ -1,16 +1,16 @@
 "use client"
 import {default as CommonStyles} from "@/components/common"
-import City from "./city"
-type ICityPageProps = {
+import Theme from "./theme"
+type IThemePageProps = {
     path: string
 }
 
-const CityPage = (props: ICityPageProps) => {
+const ThemePage = (props: IThemePageProps) => {
     return (
       <CommonStyles.Box>
-        <City/>
+        <Theme/>
       </CommonStyles.Box>
     );
 }
 
-export default CityPage;
+export default ThemePage;

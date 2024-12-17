@@ -1,3 +1,6 @@
 export default {
-  fetchCities: "fetchCities"
+  fetchCities: "fetchCities",
+  fetchUsers: "fetchUsers",
+  fetchThemes: "fetchThemes",
+  fetchPosts: "fetchPosts",
 } as const;
