@@ -21,6 +21,10 @@ export class ThemeCustomerController {
   @Get()
   async findAll(@Query() options: FilterThemeDto) {
     const where: Prisma.ThemeWhereInput = { AND: [] };
+
+    // @ts-ignore
+    where.AND.push({ isActive: true });
+
     if (options.textSearch) {
       // @ts-ignore
       where.AND.push({
@@ -56,9 +60,9 @@ export class ThemeCustomerController {
   @Get(':id')
   async findOne(@Param('id') id: number) {
     const theme = await this.themeService.findOne({ 
-      where: { id }
+      where: { id, isActive: true },
     });
-    if (!theme) throw new BaseException(Errors.ITEM_NOT_FOUND(this.i18n.t('common-mesage.theme.findOne.not_found')));
+    if (!theme) throw new BaseException(Errors.ITEM_NOT_FOUND(this.i18n.t('common-message.theme.findOne.not_found')));
 
     return theme;
   }

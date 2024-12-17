@@ -63,6 +63,9 @@
       "wrong_parameter": "{keyNotInDto} không được định nghĩa trong các tham số",
       "not_found": "Thành phố"
     },
+    "setActive": {
+      "not_found": "Thành phố"
+    },
     "remove": {
       "not_found": "Thành phố"
     }
@@ -76,6 +79,9 @@
     },
     "update": {
       "wrong_parameter": "{keyNotInDto} không được định nghĩa trong các tham số",
+      "not_found": "Điểm đến"
+    },
+    "setActive": {
       "not_found": "Điểm đến"
     },
     "remove": {
@@ -93,6 +99,9 @@
       "wrong_parameter": "{keyNotInDto} không được định nghĩa trong các tham số",
       "not_found": "Chủ đề"
     },
+    "setActive": {
+      "not_found": "Chủ đề"
+    },
     "remove": {
       "not_found": "Chủ đề"
     }
@@ -108,6 +117,9 @@
       "wrong_parameter": "{keyNotInDto} không được định nghĩa trong các tham số",
       "not_found": "Bài viết"
     },
+    "setActive": {
+      "not_found": "Bài viết"
+    },
     "remove": {
       "not_found": "Bài viết"
     }
@@ -120,6 +132,7 @@
       "invalid_end_date": "Ngày kết thúc phải bằng hoặc sau ngày bắt đầu",
       "city_not_found": "Thành phố không tồn tại",
       "theme_not_found": "Chủ đề không tồn tại",
+      "destinations_required": "Điểm đến là bắt buộc cho chuyến đi",
       "destination_not_found": "Điểm đến không tồn tại"
     },
     "update": {
@@ -132,6 +145,18 @@
       "destination_not_found": "Điểm đến không tồn tại"
     },
     "findOne": {
+      "not_found": "Chuyến đi"
+    },
+    "setActive": {
+      "not_found": "Chuyến đi",
+      "city_inactive": "Thành phố {city} chứa chuyến đi này không hoạt động",
+      "theme_inactive": "Chủ đề {theme} chứa chuyến đi này không hoạt động",
+      "no_active_destination": "Không có điểm đến nào thuộc tour này hoạt động"
+    },
+    "setFeature": {
+      "not_found": "Chuyến đi"
+    },
+    "remove": {
       "not_found": "Chuyến đi"
     }
   },

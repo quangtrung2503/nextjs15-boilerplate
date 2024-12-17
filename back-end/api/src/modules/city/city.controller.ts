@@ -13,6 +13,7 @@ import { CreateCityDto, CreateCityDtoKeys } from './dto/create-city.dto';
 import { FilterCityDto } from './dto/filter-city.dto';
 import { UpdateCityDto } from './dto/update-city.dto';
 import { I18nCustomService } from 'src/resources/i18n/i18n.service';
+import { TourService } from '../tour/tour.service';
 
 @ApiTags('City (Administrator)')
 @Controller('city')
@@ -21,6 +22,7 @@ export class CityController {
     private readonly prismaService: PrismaService,
     private readonly cityService: CityService,
     private readonly i18n: I18nCustomService,
+    private readonly tourService: TourService
   ) { }
 
   @ApiBearerAuth()
@@ -100,6 +102,36 @@ export class CityController {
 
     return this.cityService.update(id, body);
 
+  }
+
+  @ApiBearerAuth()
+  @Roles(UserRole.ADMIN, UserRole.STAFF)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Patch('set-active/:id')
+  async setActive(@Param('id') id: number) {
+    const existingCity = await this.cityService.findOne({ where: { id } });
+    if (!existingCity) throw new BaseException(Errors.ITEM_NOT_FOUND(this.i18n.t('common-message.city.setActive.not_found')));
+
+    const newStatus = !existingCity.isActive;
+
+    const updateCity = await this.cityService.update(existingCity.id, { isActive: newStatus });
+
+    if (newStatus === false) {
+      const toursToUpdate = await this.tourService.findAll({
+        where: { cityId: existingCity.id },
+        select: { id: true },
+      });
+
+      const tourIds = toursToUpdate.map(tour => tour.id);
+
+      await this.tourService.updateMany(
+        { id: { in: tourIds } },
+        { isActive: newStatus }
+      );
+      
+    }
+
+    return updateCity;
   }
 
   @ApiBearerAuth()

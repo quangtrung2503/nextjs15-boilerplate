@@ -61,6 +61,14 @@ implements NestInterceptor<T, Response> {
               ? `${duplicateField} đã tồn tại!`
               : `${duplicateField} already exists!`;
             throw new ConflictException(message);
+
+          case 'P2003':
+            const foreignKeyField = this.mapForeignKeyField(err?.meta?.field_name);
+            const foreignKeyLang = I18nContext.current().lang || 'en';
+            const foreignKeyMessage = foreignKeyLang === 'vi'
+              ? `Không thể xóa ${foreignKeyField} do đang được sử dụng ở các bản ghi khác!`
+              : `Cannot delete ${foreignKeyField} as it is referenced by other records!`;
+            throw new ConflictException(foreignKeyMessage);
           default:
             return throwError(() => err);
         }
@@ -80,6 +88,23 @@ implements NestInterceptor<T, Response> {
         return I18nContext.current().lang === 'en' ? 'Destination' : 'Điểm đến';
       default:
         return '';
+    }
+  }
+
+  private mapForeignKeyField(fieldName: string): string {
+    switch (fieldName) {
+      case 'userId':
+        return I18nContext.current().lang === 'en' ? 'User' : 'Người dùng';
+      case 'userCreatedId':
+        return I18nContext.current().lang === 'en'? 'User created' : 'Người tạo';
+      case 'cityId':
+        return I18nContext.current().lang === 'en' ? 'City' : 'Thành phố';
+      case 'themeId':
+        return I18nContext.current().lang === 'en' ? 'Theme' : 'Chủ đề';
+      case 'destinationId':
+        return I18nContext.current().lang === 'en' ? 'Destination' : 'Điểm đến';
+      default:
+        return fieldName;
     }
   }
 }

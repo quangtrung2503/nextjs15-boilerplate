@@ -136,6 +136,18 @@ export class PostController {
   @ApiBearerAuth()
   @Roles(UserRole.ADMIN, UserRole.STAFF)
   @UseGuards(JwtAuthGuard, RolesGuard)
+  @Patch('set-active/:id')
+  async setActive(@Param('id') id: number) {
+    const existingPost = await this.postService.findOne({ where: { id } });
+    if (!existingPost) throw new BaseException(Errors.ITEM_NOT_FOUND(this.i18n.t('common-message.post.setActive.not_found')));
+
+    return await this.postService.update(existingPost.id, { isActive: !existingPost.isActive });
+    
+  }
+
+  @ApiBearerAuth()
+  @Roles(UserRole.ADMIN, UserRole.STAFF)
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Delete(':id')
   async remove(@Param('id') id: number) {
     const post = await this.postService.findOne({ where: { id } });

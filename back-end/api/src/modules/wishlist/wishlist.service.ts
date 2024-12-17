@@ -28,7 +28,7 @@ export class WishlistService {
     return this.prismaService.wishlist.count(args)
   }
 
-  async updateMany(where: Prisma.WishlistWhereInput, args: Prisma.WishlistUncheckedCreateInput) {
+  async updateMany(where: Prisma.WishlistWhereInput, args: Prisma.WishlistUncheckedUpdateInput) {
     return this.prismaService.wishlist.updateMany({ where, data: args });
   }
 

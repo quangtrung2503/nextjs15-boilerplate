@@ -4,7 +4,7 @@ import { IsBoolean, IsDate, IsEnum, IsNotEmpty, IsNumber, IsOptional, IsPositive
 import moment from 'moment';
 import { Duration, Package, Transport } from 'src/helpers/constants/enum.constant';
 
-export const CreateTourDtoKeys: (keyof CreateTourDto)[] = ['name', 'price', 'description', 'transport', 'package', 'duration', 'numberOfHours', 'numberOfPeople', 'startDate', 'endDate', 'isFeature', 'cancellationPolicy', 'healthPrecautions', 'ticketType', 'confirmation', 'guideLanguage' ,'cityId', 'themeId', 'destinationId', 'images'];
+export const CreateTourDtoKeys: (keyof CreateTourDto)[] = ['name', 'price', 'description', 'transport', 'package', 'duration', 'numberOfPeople', 'startDate', 'endDate', 'isFeature', 'cancellationPolicy', 'healthPrecautions', 'ticketType', 'confirmation', 'guideLanguage' ,'cityId', 'themeId', 'destinationIds', 'images'];
 
 export class CreateTourDto {
   @ApiProperty({
@@ -67,16 +67,6 @@ export class CreateTourDto {
   @IsEnum(Duration)
   @IsNotEmpty()
   readonly duration: Duration;
-
-  @ApiProperty({
-    example: 3.5,
-    description: 'Number of hours of tour',
-    required: true,
-  })
-  @IsNotEmpty()
-  @IsNumber()
-  @IsPositive()
-  readonly numberOfHours: number;
 
   @ApiProperty({
     example: 2,
@@ -187,13 +177,15 @@ export class CreateTourDto {
   readonly themeId: number;
 
   @ApiProperty({
-    example: 1,
+    example: [1, 2, 3],
     description: 'The id of the destination',
     required: true,
+    isArray: true,
+    type: Number,
   })
-  @IsNotEmpty()
-  @IsNumber()
-  readonly destinationId: number;
+  @IsNotEmpty({ each: true })
+  @IsNumber({}, { each: true })
+  readonly destinationIds: number[];
 
   @ApiProperty({
     example: ['https://example.com/image1.jpg', 'https://example.com/image2.jpg'],

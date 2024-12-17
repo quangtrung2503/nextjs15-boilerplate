@@ -55,6 +55,7 @@ model City {
   name        String   @unique @db.VarChar(255)
   image       String   @db.VarChar(255)
   description String   @db.VarChar(255)
+  isActive    Boolean  @default(true)
   createdAt   DateTime @default(now()) @map("created_at")
   updatedAt   DateTime @default(now()) @updatedAt @map("updated_at")
 
@@ -68,6 +69,7 @@ model Theme {
   id        Int      @id @default(autoincrement())
   name      String   @unique @db.VarChar(255)
   isDisplay Boolean  @default(true)
+  isActive  Boolean  @default(true)
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
 
@@ -80,11 +82,11 @@ model Theme {
 model Destination {
   id        Int      @id @default(autoincrement())
   name      String   @unique @db.VarChar(255)
+  isActive  Boolean  @default(true)
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
 
-  // relation
-  Tour Tour[]
+  TourDestination TourDestination[]
 
   @@map("destination")
 }
@@ -97,11 +99,11 @@ model Tour {
   transport          String   @db.VarChar(255)
   package            String   @db.VarChar(255)
   duration           String   @db.VarChar(255)
-  numberOfHours      Float
   numberOfPeople     Int
   startDate          DateTime
   endDate            DateTime
   isFeature          Boolean  @default(false)
+  isActive           Boolean  @default(true)
   cancellationPolicy String   @db.VarChar(255)
   healthPrecautions  String   @db.VarChar(255)
   ticketType         String   @db.VarChar(255)
@@ -109,21 +111,35 @@ model Tour {
   guideLanguage      String   @db.VarChar(255)
   cityId             Int
   themeId            Int
-  destinationId      Int
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
 
   // relation fields
-  City        City        @relation(fields: [cityId], references: [id], onDelete: Cascade)
-  Theme       Theme       @relation(fields: [themeId], references: [id], onDelete: Cascade)
-  Destination Destination @relation(fields: [destinationId], references: [id], onDelete: Cascade)
-  Review      Review[]
-  TourImage   TourImage[]
-  Wishlist    Wishlist[]
+  City            City              @relation(fields: [cityId], references: [id])
+  Theme           Theme             @relation(fields: [themeId], references: [id])
+  Review          Review[]
+  TourImage       TourImage[]
+  Wishlist        Wishlist[]
+  TourDestination TourDestination[]
 
   @@fulltext([name])
   @@map("tour")
+}
+
+model TourDestination {
+  id            Int @id @default(autoincrement())
+  tourId        Int
+  destinationId Int
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+
+  // relation fields
+  Tour        Tour        @relation(fields: [tourId], references: [id], onDelete: Cascade)
+  Destination Destination @relation(fields: [destinationId], references: [id])
+
+  @@map("tour_destination")
 }
 
 model TourImage {
@@ -151,11 +167,12 @@ model Review {
   title                String   @db.VarChar(255)
   content              String   @db.Text
   isHelpful            Boolean  @default(false)
+  isActive             Boolean  @default(true)
   createdAt            DateTime @default(now()) @map("created_at")
   updatedAt            DateTime @default(now()) @updatedAt @map("updated_at")
 
   // relation fields
-  User User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  User User @relation(fields: [userId], references: [id])
   Tour Tour @relation(fields: [tourId], references: [id], onDelete: Cascade)
 
   @@map("review")
@@ -168,11 +185,12 @@ model Post {
   title         String   @db.VarChar(255)
   content       String   @db.Text
   views         Int      @default(0)
+  isActive      Boolean  @default(true)
   createdAt     DateTime @default(now()) @map("created_at")
   updatedAt     DateTime @default(now()) @updatedAt @map("updated_at")
 
   // relation fields
-  User User @relation(fields: [userCreatedId], references: [id], onDelete: Cascade)
+  User User @relation(fields: [userCreatedId], references: [id])
 
   @@map("post")
 }
@@ -186,7 +204,7 @@ model Wishlist {
   updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
 
   // relation fields
-  User User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  User User @relation(fields: [userId], references: [id])
   Tour Tour @relation(fields: [tourId], references: [id], onDelete: Cascade)
 
   @@map("wishlist")

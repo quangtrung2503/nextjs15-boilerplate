@@ -13,6 +13,7 @@ import { CreateDestinationDto, CreateDestinationDtoKeys } from './dto/create-des
 import { FilterDestinationDto } from './dto/filter-destination.dto';
 import { UpdateDestinationDto } from './dto/update-destination.dto';
 import { I18nCustomService } from 'src/resources/i18n/i18n.service';
+import { TourService } from '../tour/tour.service';
 
 @ApiTags('Destination (Administrator)')
 @Controller('destination')
@@ -21,6 +22,7 @@ export class DestinationController {
     private readonly prismaService: PrismaService,
     private readonly destinationService: DestinationService,
     private readonly i18n: I18nCustomService,
+    private readonly tourService: TourService
   ) { }
 
   @ApiBearerAuth()
@@ -100,6 +102,65 @@ export class DestinationController {
 
     return this.destinationService.update(id, body);
 
+  }
+
+  @ApiBearerAuth()
+  @Roles(UserRole.ADMIN, UserRole.STAFF)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Patch('set-active/:id')
+  async setActive(@Param('id') id: number) {
+    const existingDestination = await this.destinationService.findOne({
+      where: { id },
+      include: { TourDestination: true }
+    });
+
+    if (!existingDestination) {
+      throw new BaseException(
+        Errors.ITEM_NOT_FOUND(this.i18n.t('common-message.destination.setActive.not_found'))
+      );
+    }
+
+    const newStatus = !existingDestination.isActive;
+    const updatedDestination = await this.destinationService.update(existingDestination.id, {
+      isActive: newStatus
+    });
+
+    if (newStatus === false) {
+      // Tìm tất cả các tour liên quan đến destination này
+      const tourIds = existingDestination.TourDestination.map(td => td.tourId);
+
+      // Kiểm tra các tour có liên quan và cập nhật trạng thái
+      if (tourIds.length > 0) {
+        // Kiểm tra các tour có còn destination nào đang hoạt động không
+        const toursWithActiveDestinations = await this.tourService.findAll({
+          where: {
+            id: { in: tourIds },
+            TourDestination: {
+              some: {
+                Destination: {
+                  isActive: true
+                }
+              }
+            }
+          },
+          select: { id: true }
+        });
+
+        // Các tour không còn destination nào hoạt động sẽ bị deactivate
+        const tourIdsToDeactivate = tourIds.filter(
+          tourId => !toursWithActiveDestinations.some(tour => tour.id === tourId)
+        );
+
+        if (tourIdsToDeactivate.length > 0) {
+          await this.tourService.updateMany(
+            { id: { in: tourIdsToDeactivate } },
+            { isActive: newStatus }
+          );
+        }
+      }
+    }
+
+    return updatedDestination;
   }
 
   @ApiBearerAuth()
