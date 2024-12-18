@@ -5,6 +5,7 @@ import { ResponseList } from "@/interfaces/common";
 import { useSave } from "@/stores/useStore";
 import themeServices, { FiltersGetThemes, RequestGetThemes, ResponseThemeList } from "../theme.services";
 import { Theme } from "../intefaces/theme";
+import { useNotifications } from "@/helpers/toast";
 
 /********************************************************
  * SNIPPET GENERATED
@@ -48,6 +49,7 @@ const useGetThemes = (
   const [refetching, setRefetching] = useState(false);
   const [error, setError] = useState<unknown>(null);
   const [hasMore, setHasMore] = useState(false);
+  const {showError} = useNotifications();
 
   //! Function
   const fetch: () => Promise<ResponseThemeList> | undefined = useCallback(() => {
@@ -96,8 +98,7 @@ const useGetThemes = (
       setRefetching(false);
     } catch (error: any) {
       if (!error.isCanceled) {
-        // showError(error);
-        console.log(error);
+        showError(error);
       }
     }
   }, [fetch, checkConditionPass]);
@@ -116,8 +117,7 @@ const useGetThemes = (
       }
       setLoading(false);
     } catch (error) {
-      // showError(error);
-      console.log(error);
+      showError(error);
       setLoading(false);
     }
   }, [fetch, checkConditionPass]);
@@ -134,8 +134,7 @@ const useGetThemes = (
           checkConditionPass(response);
         }
       } catch (error) {
-        // showError(error);
-        console.log(error);
+        showError(error);
       } finally {
         setLoading(false);
       }

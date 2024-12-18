@@ -3,6 +3,7 @@ import { isEmpty, isObject } from "lodash";
 import { useSave } from "@/stores/useStore";
 import { AxiosResponse } from "axios";
 import postServices, { ResponsePost } from "../post.services";
+import { useNotifications } from "@/helpers/toast";
 
 /********************************************************
  * SNIPPET GENERATED
@@ -35,6 +36,7 @@ const useGetPost = (
   const [loading, setLoading] = useState(false);
   const [refetching, setRefetching] = useState(false);
   const [error, setError] = useState<unknown>(null);
+  const {showError} = useNotifications();
 
   //! Function
   const fetch: () => Promise<AxiosResponse<ResponsePost>> | undefined = useCallback(() => {
@@ -81,8 +83,7 @@ const useGetPost = (
       setRefetching(false);
     } catch (error: any) {
       if (!error.isCanceled) {
-        // showError(error);
-        console.log(error);
+        showError(error);
       }
     }
   }, [fetch, checkConditionPass]);
@@ -101,8 +102,7 @@ const useGetPost = (
       }
       setLoading(false);
     } catch (error) {
-      // showError(error);
-      console.log(error);
+      showError(error);
       setLoading(false);
     }
   }, [fetch, checkConditionPass]);
@@ -119,8 +119,7 @@ const useGetPost = (
           checkConditionPass(response);
         }
       } catch (error) {
-        // showError(error);
-        console.log(error);
+        showError(error);
       } finally {
         setLoading(false);
       }

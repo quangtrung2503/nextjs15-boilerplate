@@ -5,6 +5,7 @@ import { ResponseList } from "@/interfaces/common";
 import { useSave } from "@/stores/useStore";
 import postServives, { FiltersGetPosts, RequestGetPosts, ResponsePostList } from "../post.services";
 import { Post } from "../interface/post";
+import { useNotifications } from "@/helpers/toast";
 
 /********************************************************
  * SNIPPET GENERATED
@@ -48,6 +49,7 @@ const useGetPosts = (
   const [refetching, setRefetching] = useState(false);
   const [error, setError] = useState<unknown>(null);
   const [hasMore, setHasMore] = useState(false);
+  const {showError} = useNotifications();
 
   //! Function
   const fetch: () => Promise<ResponsePostList> | undefined = useCallback(() => {
@@ -96,8 +98,7 @@ const useGetPosts = (
       setRefetching(false);
     } catch (error: any) {
       if (!error.isCanceled) {
-        // showError(error);
-        console.log(error);
+        showError(error);
       }
     }
   }, [fetch, checkConditionPass]);
@@ -116,8 +117,7 @@ const useGetPosts = (
       }
       setLoading(false);
     } catch (error) {
-      // showError(error);
-      console.log(error);
+      showError(error);
       setLoading(false);
     }
   }, [fetch, checkConditionPass]);
@@ -134,8 +134,7 @@ const useGetPosts = (
           checkConditionPass(response);
         }
       } catch (error) {
-        // showError(error);
-        console.log(error);
+        showError(error);
       } finally {
         setLoading(false);
       }

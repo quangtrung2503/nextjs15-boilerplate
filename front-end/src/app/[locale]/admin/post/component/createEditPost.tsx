@@ -91,7 +91,6 @@ const CreateEditPost: FC<createEditPostProps> = (props) => {
   }
 
   const handleUploadMultiple = async (e: ChangeEvent<HTMLInputElement>) => {
-    console.log(e.target.files)
     const file = e.target.files;
     if (file) {
       try {

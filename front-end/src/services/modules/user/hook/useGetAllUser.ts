@@ -5,6 +5,7 @@ import { ResponseList } from "@/interfaces/common";
 import { useSave } from "@/stores/useStore";
 import userServices, { FiltersGetUsers, RequestGetUsers, ResponseUserList } from "../user.services";
 import { User } from "../interfaces/user.inteface";
+import { useNotifications } from "@/helpers/toast";
 
 /********************************************************
  * SNIPPET GENERATED
@@ -48,7 +49,7 @@ const useGetUsers = (
   const [refetching, setRefetching] = useState(false);
   const [error, setError] = useState<unknown>(null);
   const [hasMore, setHasMore] = useState(false);
-
+  const {showError} = useNotifications();
   //! Function
   const fetch: () => Promise<ResponseUserList> | undefined = useCallback(() => {
     if (!isTrigger) {
@@ -96,8 +97,7 @@ const useGetUsers = (
       setRefetching(false);
     } catch (error: any) {
       if (!error.isCanceled) {
-        // showError(error);
-        console.log(error);
+        showError(error);
       }
     }
   }, [fetch, checkConditionPass]);
@@ -116,8 +116,7 @@ const useGetUsers = (
       }
       setLoading(false);
     } catch (error) {
-      // showError(error);
-      console.log(error);
+      showError(error);
       setLoading(false);
     }
   }, [fetch, checkConditionPass]);
@@ -134,8 +133,7 @@ const useGetUsers = (
           checkConditionPass(response);
         }
       } catch (error) {
-        // showError(error);
-        console.log(error);
+        showError(error);
       } finally {
         setLoading(false);
       }

@@ -66,7 +66,7 @@ const CreateEditCity: FC<createEditCityProps> = (props) => {
       toggle();
     }
     catch (error) {
-      console.log(error);
+      showError(error);
     }
   };
   const handleUpload = async (e: ChangeEvent<HTMLInputElement>) => {
