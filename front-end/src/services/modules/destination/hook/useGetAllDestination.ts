@@ -3,8 +3,8 @@ import cloneDeep from "lodash/cloneDeep";
 import { isEmpty, isObject } from "lodash";
 import { ResponseList } from "@/interfaces/common";
 import { useSave } from "@/stores/useStore";
-import userServices, { FiltersGetUsers, RequestGetUsers, ResponseUserList } from "../user.services";
-import { User } from "../interfaces/user.inteface";
+import destinationServices, { FiltersGetDestinations, RequestGetDestinations, ResponseDestinationList } from "../destination.services";
+import { Destination } from "../interface/destination";
 
 /********************************************************
  * SNIPPET GENERATED
@@ -20,7 +20,7 @@ import { User } from "../interfaces/user.inteface";
  ********************************************************/
 
 //* Check parse body request
-const parseRequest = (filters: FiltersGetUsers): RequestGetUsers => {
+const parseRequest = (filters: FiltersGetDestinations): RequestGetDestinations => {
   return cloneDeep({
     page: filters.page,
     perPage: filters.perPage,
@@ -30,10 +30,10 @@ const parseRequest = (filters: FiltersGetUsers): RequestGetUsers => {
   });
 };
 
-const requestAPI = userServices.getUsers;
+const requestAPI = destinationServices.getDestinations;
 
-const useGetUsers = (
-  filters: FiltersGetUsers,
+const useGetDestinations = (
+  filters: FiltersGetDestinations,
   options: { isTrigger?: boolean; refetchKey?: string } = {
     isTrigger: true,
     refetchKey: "",
@@ -43,14 +43,14 @@ const useGetUsers = (
   const { isTrigger = true, refetchKey = "" } = options;
   const signal = useRef(new AbortController());
   const save = useSave();
-  const [data, setData] = useState<ResponseList<User[]>>();
+  const [data, setData] = useState<ResponseList<Destination[]>>();
   const [loading, setLoading] = useState(false);
   const [refetching, setRefetching] = useState(false);
   const [error, setError] = useState<unknown>(null);
   const [hasMore, setHasMore] = useState(false);
 
   //! Function
-  const fetch: () => Promise<ResponseUserList> | undefined = useCallback(() => {
+  const fetch: () => Promise<ResponseDestinationList> | undefined = useCallback(() => {
     if (!isTrigger) {
       return;
     }
@@ -71,15 +71,15 @@ const useGetUsers = (
     });
   }, [filters, isTrigger]);
 
-  const checkConditionPass = useCallback((response: ResponseUserList) => {
+  const checkConditionPass = useCallback((response: ResponseDestinationList) => {
     //* Check condition of response here to set data
     if (isObject(response?.data)) {
       setData(response?.data.data);
-      setHasMore(data?data.currentPage<data.totalPage : false);
+      setHasMore(data ? data.currentPage < data.totalPage : false);
     }
   }, []);
 
-  //* Refetch implicity (without changing loading state)
+  //* Refetch impliDestination (without changing loading state)
   const refetch = useCallback(async () => {
     try {
       if (signal.current) {
@@ -162,4 +162,4 @@ const useGetUsers = (
   };
 };
 
-export default useGetUsers;
+export default useGetDestinations;

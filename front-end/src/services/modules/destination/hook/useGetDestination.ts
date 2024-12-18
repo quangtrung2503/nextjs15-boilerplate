@@ -1,10 +1,8 @@
 import { useEffect, useState, useCallback, useRef } from "react";
-import cloneDeep from "lodash/cloneDeep";
 import { isEmpty, isObject } from "lodash";
-import { ResponseList } from "@/interfaces/common";
 import { useSave } from "@/stores/useStore";
-import userServices, { FiltersGetUsers, RequestGetUsers, ResponseUserList } from "../user.services";
-import { User } from "../interfaces/user.inteface";
+import { AxiosResponse } from "axios";
+import destinationServices, { ResponseDestination } from "../destination.services";
 
 /********************************************************
  * SNIPPET GENERATED
@@ -20,20 +18,10 @@ import { User } from "../interfaces/user.inteface";
  ********************************************************/
 
 //* Check parse body request
-const parseRequest = (filters: FiltersGetUsers): RequestGetUsers => {
-  return cloneDeep({
-    page: filters.page,
-    perPage: filters.perPage,
-    textSearch: filters.textSearch,
-    sortField: filters.sortField,
-    sortOrder: filters.sortOrder,
-  });
-};
+const requestAPI = destinationServices.getDestination;
 
-const requestAPI = userServices.getUsers;
-
-const useGetUsers = (
-  filters: FiltersGetUsers,
+const useGetDestination = (
+  id: number,
   options: { isTrigger?: boolean; refetchKey?: string } = {
     isTrigger: true,
     refetchKey: "",
@@ -43,14 +31,13 @@ const useGetUsers = (
   const { isTrigger = true, refetchKey = "" } = options;
   const signal = useRef(new AbortController());
   const save = useSave();
-  const [data, setData] = useState<ResponseList<User[]>>();
+  const [data, setData] = useState<ResponseDestination>();
   const [loading, setLoading] = useState(false);
   const [refetching, setRefetching] = useState(false);
   const [error, setError] = useState<unknown>(null);
-  const [hasMore, setHasMore] = useState(false);
 
   //! Function
-  const fetch: () => Promise<ResponseUserList> | undefined = useCallback(() => {
+  const fetch: () => Promise<AxiosResponse<ResponseDestination>> | undefined = useCallback(() => {
     if (!isTrigger) {
       return;
     }
@@ -58,8 +45,7 @@ const useGetUsers = (
     return new Promise((resolve, reject) => {
       (async () => {
         try {
-          const nextFilters = parseRequest(filters);
-          const response = await requestAPI(nextFilters, {
+          const response = await requestAPI(id,{
             signal: signal.current.signal,
           });
           resolve(response);
@@ -69,17 +55,16 @@ const useGetUsers = (
         }
       })();
     });
-  }, [filters, isTrigger]);
+  }, [id, isTrigger]);
 
-  const checkConditionPass = useCallback((response: ResponseUserList) => {
+  const checkConditionPass = useCallback((response: AxiosResponse<ResponseDestination>) => {
     //* Check condition of response here to set data
     if (isObject(response?.data)) {
-      setData(response?.data.data);
-      setHasMore(data?data.currentPage<data.totalPage : false);
+      setData(response.data);
     }
   }, []);
 
-  //* Refetch implicity (without changing loading state)
+  //* Refetch impliDestination (without changing loading state)
   const refetch = useCallback(async () => {
     try {
       if (signal.current) {
@@ -157,9 +142,8 @@ const useGetUsers = (
     refetch,
     refetchWithLoading,
     refetching,
-    hasMore,
     setData,
   };
 };
 
-export default useGetUsers;
+export default useGetDestination;

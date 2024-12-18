@@ -4,6 +4,7 @@ import { isEmpty, isObject } from "lodash";
 import { ResponseList } from "@/interfaces/common";
 import { useSave } from "@/stores/useStore";
 import themeServices, { FiltersGetThemes, RequestGetThemes, ResponseThemeList } from "../theme.services";
+import { Theme } from "../intefaces/theme";
 
 /********************************************************
  * SNIPPET GENERATED
@@ -74,7 +75,7 @@ const useGetThemes = (
     //* Check condition of response here to set data
     if (isObject(response?.data)) {
       setData(response?.data.data);
-      setHasMore(!isEmpty(response?.data.data));
+      setHasMore(data?data.currentPage<data.totalPage:false);
     }
   }, []);
 

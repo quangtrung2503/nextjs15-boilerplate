@@ -35,7 +35,6 @@ const useGetCity = (
   const [loading, setLoading] = useState(false);
   const [refetching, setRefetching] = useState(false);
   const [error, setError] = useState<unknown>(null);
-  const [hasMore, setHasMore] = useState(false);
 
   //! Function
   const fetch: () => Promise<AxiosResponse<ResponseCity>> | undefined = useCallback(() => {
@@ -62,7 +61,6 @@ const useGetCity = (
     //* Check condition of response here to set data
     if (isObject(response?.data)) {
       setData(response.data);
-      setHasMore(!isEmpty(response.data));
     }
   }, []);
 
@@ -144,7 +142,6 @@ const useGetCity = (
     refetch,
     refetchWithLoading,
     refetching,
-    hasMore,
     setData,
   };
 };

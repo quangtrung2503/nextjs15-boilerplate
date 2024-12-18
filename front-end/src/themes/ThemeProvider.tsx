@@ -1,5 +1,5 @@
 "use client";
-import { createContext, Dispatch, SetStateAction, useContext, useState } from "react";
+import React, { createContext, Dispatch, SetStateAction, useContext, useState } from "react";
 
 const ThemeContext = createContext<{ theme: string; setTheme: Dispatch<SetStateAction<string>> }>({
   theme: "light",

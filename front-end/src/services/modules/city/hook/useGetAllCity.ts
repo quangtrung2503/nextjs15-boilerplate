@@ -75,7 +75,7 @@ const useGetCities = (
     //* Check condition of response here to set data
     if (isObject(response?.data)) {
       setData(response?.data.data);
-      setHasMore(!isEmpty(response?.data.data));
+      setHasMore(data ? data.currentPage < data.totalPage : false);
     }
   }, []);
 

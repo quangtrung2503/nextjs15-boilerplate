@@ -9,31 +9,29 @@ import InputField from "@/components/customReactFormField/InputField"
 import useImageUploader from "@/hooks/useUpload"
 import { useGet } from "@/stores/useStore"
 import cachedKeys from "@/constants/cachedKeys"
-import useGetTheme from "@/services/modules/theme/hook/useGetTheme"
-import themeServices from "@/services/modules/theme/theme.services"
-import CheckboxField from "@/components/customReactFormField/CheckBoxField"
-import { Theme } from "@/services/modules/theme/intefaces/theme"
+import useGetDestination from "@/services/modules/destination/hook/useGetDestination"
+import { Destination } from "@/services/modules/destination/interface/destination"
+import destinationServices from "@/services/modules/destination/destination.services"
 import CommonIcons from "@/components/CommonIcons"
 
-interface createEditThemeProps {
+interface createEditDestinationProps {
   toggle: () => void;
   id?: number;
 }
 interface FormValues {
   name: string;
-  isDisplay?: boolean;
 }
-const CreateEditTheme: FC<createEditThemeProps> = (props) => {
+const CreateEditDestination: FC<createEditDestinationProps> = (props) => {
   const { toggle, id } = props;
   const { uploadImage } = useImageUploader();
-  const { data } = useGetTheme(Number(id), { isTrigger: !!id });
+  const { data } = useGetDestination(Number(id), { isTrigger: !!id });
   const schema = yup
     .object({
       name: yup.string().required("Name is a required field"),
     })
     .required();
   const initValue = useMemo(() => {
-        return { name: data?.data.name ?? "",isDisplay: data?.data.isDisplay ?? false}
+        return { name: data?.data.name ?? ""}
   }, [data?.data]);
   const methods = useForm<FormValues>({
     defaultValues: initValue,
@@ -46,16 +44,15 @@ const CreateEditTheme: FC<createEditThemeProps> = (props) => {
       // Reset form values when data is loaded
       reset({
         name: data.data.name || "",
-        isDisplay: data.data.isDisplay || false
       });
     }
   }, [data?.data, reset]);
-  const fetchThemes = useGet(cachedKeys.fetchThemes);
-  const onSubmit: SubmitHandler<FormValues> = async (data: Theme) => {
+  const fetchDestinations = useGet(cachedKeys.fetchDestinations);
+  const onSubmit: SubmitHandler<FormValues> = async (data: Destination) => {
     try {
       id ? data = { ...data, id } : { data };
-      id? await themeServices.updateTheme(data): await themeServices.createTheme(data);
-      await fetchThemes();
+      id? await destinationServices.updateDestination(data): await destinationServices.createDestination(data);
+      await fetchDestinations();
       toggle();
     }
     catch (error) {
@@ -64,7 +61,7 @@ const CreateEditTheme: FC<createEditThemeProps> = (props) => {
   };
   return (
     <CommonStyles.Box className="tw-w-[500px] tw-relative">
-      <CommonStyles.Box className="tw-flex tw-justify-center"><CommonStyles.Typography type="size20Weight600">{id?"Edit Theme":"Create new Theme"}</CommonStyles.Typography></CommonStyles.Box>
+      <CommonStyles.Box className="tw-flex tw-justify-center"><CommonStyles.Typography type="size20Weight600">{id?"Edit Destination":"Create new Destination"}</CommonStyles.Typography></CommonStyles.Box>
       <FormProvider {...methods} >
         <form onSubmit={methods.handleSubmit(onSubmit)}>
           <RHFField
@@ -75,21 +72,15 @@ const CreateEditTheme: FC<createEditThemeProps> = (props) => {
             defaultValue={initValue?.name}
             label="Name"
           />
-          <RHFField
-            name="isDisplay"
-            defaultValue={initValue?.isDisplay}
-            control={methods.control}
-            component={CheckboxField}
-            label="Display"
-          />
           <CommonStyles.Box className="tw-flex tw-justify-around">
             <CommonStyles.CommonButton type="submit">Submit</CommonStyles.CommonButton>
           </CommonStyles.Box>
           <CommonStyles.Box  className="tw-absolute tw-top-0 tw-right-0 tw-cursor-pointer" onClick={toggle}><CommonIcons.Close /></CommonStyles.Box>
+
         </form>
       </FormProvider>
     </CommonStyles.Box>
   )
 }
 
-export default CreateEditTheme
+export default CreateEditDestination

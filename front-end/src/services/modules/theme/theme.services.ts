@@ -3,6 +3,7 @@ import httpService from "@/services/httpService";
 import { AxiosRequestConfig, AxiosResponse } from "axios";
 import apiUrls from "@/constants/apiUrls";
 import queryString from "query-string";
+import { Theme } from "./intefaces/theme";
 export interface FiltersGetThemes extends CommonFilters { }
 export interface RequestGetThemes extends CommonFilters { }
 

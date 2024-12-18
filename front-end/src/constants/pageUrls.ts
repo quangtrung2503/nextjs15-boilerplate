@@ -1,7 +1,7 @@
 const pageUrls = {
   Homepage: '/',
-  SignIn: '/auth/sign-in',
-  SignUp: '/auth/sign-up',
+  SignIn: '/sign-in',
+  SignUp: '/sign-up',
   PaymentHistory: '/payment-history',
   Tournaments: '/tournament',
   Profile: '/profile',
@@ -11,12 +11,12 @@ const pageUrls = {
   },
   Admin: {
     Home: '/admin',
+    CityPage: '/admin/city',
     UserManage: '/admin/user',
-    Posts: '/admin/posts',
-    Tournaments: '/admin/tournament',
-    Notification: '/admin/notification',
-    User: '/admin/user',
-    Product: '/admin/product',
+    Post: '/admin/post',
+    Tour: '/admin/tour',
+    Theme: '/admin/theme',
+    Destination: '/admin/destination'
   },
   Invoices: '/sales/invoices',
   Warehousing: {

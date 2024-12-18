@@ -1,45 +1,44 @@
 "use client"
-
-import cachedKeys from "@/constants/cachedKeys";
+import { default as CommonStyles } from "@/components/common"
+import { CommonButton } from "@/components/common/Button";
+import CommonDialog from "@/components/common/Dialog";
+import TableCommon, { HeadCell } from "@/components/common/Table";
 import useFiltersHandler from "@/hooks/useFiltersHandler";
 import useToggleDialog from "@/hooks/useToggleDialog";
-import useGetUsers from "@/services/modules/user/hook/useGetAllUser";
-import userServices from "@/services/modules/user/user.services";
 import { useState } from "react";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
-import { default as CommonStyles } from "@/components/common"
 import RHFField from "@/components/customReactFormField/ReactFormField";
 import InputField from "@/components/customReactFormField/InputField";
-import TableCommon from "@/components/common/Table";
-import { headCells } from "./component/headCells";
-import CommonDialog from "@/components/common/Dialog";
-import CreateEditUser from "./component/createEditUser";
-import { useNotifications } from "@/helpers/toast";
+import cachedKeys from "@/constants/cachedKeys";
+import destinationServices from "@/services/modules/destination/destination.services";
+import useGetDestinations from "@/services/modules/destination/hook/useGetAllDestination";
+import { headCells } from "./component/headCell";
+import CreateEditDestination from "./component/createEditDestination";
 
 interface FormSearch {
   textSearch: string;
   sortOrder: string;
 }
-const User = () => {
+const Destination = () => {
   const { filters, selected, setFilters, handleChangePage, handleChangeRowsPerPage: changeRowPerPage, handleRequestSort, handleSelectAllClick: handleSelectAll, handleCheckBox, } = useFiltersHandler({
     page: 1,
     perPage: 10
   });
-  const { data: dataUser, refetch: refetchUser, loading: loadingUser } = useGetUsers(filters, { refetchKey: cachedKeys.fetchUsers });
+  const { data: dataDestination, refetch: refetchDestination, loading: loadingDestination } = useGetDestinations(filters, { refetchKey: cachedKeys.fetchDestinations });
   const { open, toggle, shouldRender } = useToggleDialog();
   const [id, setId] = useState<number | null>(null);
-  const {showError} = useNotifications();
+
   const handleEditId = (id: number) => {
     setId(id);
     toggle();
   }
-  const handleDeleteUser = async (id: number) => {
+  const handleDeleteDestination = async (id: number) => {
     try {
-      await userServices.deleteUser(id);
-      await refetchUser();
+      await destinationServices.deleteDestination(id);
+      await refetchDestination();
     }
     catch (error) {
-      showError(error);
+      console.error(error);
     }
   }
   const methods = useForm<FormSearch>({
@@ -60,48 +59,44 @@ const User = () => {
         <CommonStyles.Box className="tw-w-full">
           <FormProvider {...methods} >
             <form onSubmit={methods.handleSubmit(handleSearch)} className="tw-flex tw-items-center">
-              <CommonStyles.Box className="tw-w-[20%]">
-                <RHFField
-                  name="textSearch"
-                  placeholder="Search User"
-                  control={methods.control}
-                  component={InputField}
-                />
-              </CommonStyles.Box>
+            <CommonStyles.Box className="tw-w-[20%]">
+              <RHFField
+                name="textSearch"
+                placeholder="Search Destination"
+                control={methods.control}
+                component={InputField}
+              />
+            </CommonStyles.Box>
               <CommonStyles.Box className="tw-w-[20%]">
                 <CommonStyles.CommonButton variant="outlined" className="outlined rounded tw-ml-5 tw-w-full" type="submit">Search</CommonStyles.CommonButton>
               </CommonStyles.Box>
             </form>
           </FormProvider>
         </CommonStyles.Box>
-        <CommonStyles.CommonButton className="tw-text-nowrap tw-px-7" onClick={toggle} label="Create new User" />
+        <CommonButton className="tw-text-nowrap tw-px-7" onClick={toggle} label="Create new Destination" />
       </CommonStyles.Box>
       <CommonStyles.Box>
-        {dataUser &&
+        {dataDestination &&
           <TableCommon
-            isLoading={loadingUser}
+            isLoading={loadingDestination}
             sxTableHead={{ fontWeight: "bold" }}
             rowsPerPage={10}
             disableSort={false}
             selected={selected}
-            totalCount={dataUser.totalItems}
+            totalCount={dataDestination.totalItems}
             handleCheckBox={handleCheckBox}
             handleSelectAllClick={handleSelectAll}
             page={filters?.page || 0}
-            headCells={headCells({ handleEditId, handleDeleteUser })}
-            rows={dataUser?.items}
+            headCells={headCells({ handleEditId, handleDeleteDestination })}
+            rows={dataDestination?.items}
             handleChangePage={handleChangePage}
             handleChangeRowsPerPage={changeRowPerPage}
             handleRequestSort={handleRequestSort}
           />}
       </CommonStyles.Box>
-      {shouldRender && <CommonDialog
-        onClose={() => setId(null)}
-        open={open}
-        toggle={toggle}
-        body={<CreateEditUser toggle={toggle} id={Number(id)} />} />}
+      {shouldRender && <CommonDialog onClose={() => setId(null)} open={open} toggle={toggle} body={<CreateEditDestination toggle={toggle} id={Number(id)} />} />}
     </CommonStyles.Box>
   );
 }
 
-export default User;
+export default Destination;

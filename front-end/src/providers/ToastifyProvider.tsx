@@ -50,7 +50,7 @@ export const ToastifyProvider: React.FC<SnackbarProviderProps> = ({ children }) 
         onClose={handleClose}
         anchorOrigin={{ vertical: "top", horizontal: "right" }}
       >
-        <Alert onClose={handleClose} severity={snackbar.severity} sx={{ width: "100%" }}>
+        <Alert onClose={handleClose} className="tw-z-[1000]" severity={snackbar.severity} sx={{ width: "100%" }}>
           {snackbar.message}
         </Alert>
       </Snackbar>

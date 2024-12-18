@@ -2,13 +2,13 @@ import { default as CommonStyles } from "@/components/common"
 import CommonIcons from "@/components/CommonIcons"
 import { useState } from "react"
 import { Popover } from "@mui/material"
-import { User } from "@/services/modules/user/interfaces/user.inteface";
-import moment from "moment";
+import apiUrls from "@/constants/apiUrls"
+import { Destination } from "@/services/modules/destination/interface/destination"
 
-const ActionCell: React.FC<{ row: User; handleEditId: (id: number) => void; handleDeleteUser: (id: number) => void }> = ({
+const ActionCell: React.FC<{ row: Destination; handleEditId: (id: number) => void; handleDeleteDestination: (id: number) => void }> = ({
   row,
   handleEditId,
-  handleDeleteUser
+  handleDeleteDestination
 }) => {
   const [anchorEl, setAnchorEl] = useState<HTMLDivElement | null>(null);
 
@@ -22,7 +22,7 @@ const ActionCell: React.FC<{ row: User; handleEditId: (id: number) => void; hand
 
   const handleConfirmDelete = () => {
     handleClosePopover();
-    handleDeleteUser(Number(row.id));
+    handleDeleteDestination(Number(row.id));
   };
 
   const isPopoverOpen = Boolean(anchorEl);
@@ -49,7 +49,7 @@ const ActionCell: React.FC<{ row: User; handleEditId: (id: number) => void; hand
           >
             <CommonStyles.Box className="tw-p-2 tw-flex tw-flex-col tw-items-center">
               <CommonStyles.Typography className="tw-text-md tw-mb-1 tw-font-bold">
-                Are you sure you want to delete this User?
+                Are you sure you want to delete this Destination?
               </CommonStyles.Typography>
               <CommonStyles.Box className="tw-flex tw-gap-4">
                 <CommonStyles.Box className="tw-text-red-500 tw-cursor-pointer tw-border-solid tw-border-[1px] tw-bg-red-100 tw-rounded-md tw-px-2 tw-pb-1" onClick={handleConfirmDelete}>
@@ -69,17 +69,17 @@ const ActionCell: React.FC<{ row: User; handleEditId: (id: number) => void; hand
 
 export const headCells = ({
   handleEditId,
-  handleDeleteUser
+  handleDeleteDestination
 }: {
   handleEditId: (id: number) => void;
-  handleDeleteUser: (id: number) => void;
+  handleDeleteDestination: (id: number) => void;
 }) => {
   return [
     {
       id: "id",
       label: "STT",
       numeric: true,
-      Cell(row: User, _index: number) {
+      Cell(row: Destination, _index: number) {
         return <span>{_index+1}</span>;
       },
     },
@@ -87,56 +87,16 @@ export const headCells = ({
       id: "name",
       label: "Name",
       numeric: false,
-      Cell(row: User, _index: number) {
+      Cell(row: Destination, _index: number) {
         return <span>{row.name}</span>;
       },
     },
     {
-      id: "username",
-      label: "Username",
-      numeric: false,
-      Cell(row: User, _index: number) {
-        return <span>{row.username}</span>;
-      },
-    },
-    {
-      id: "phone",
-      label: "Phone",
-      numeric: false,
-      Cell(row: User, _index: number) {
-        return <span>{row.phone}</span>;
-      },
-    },
-    {
-      id: "dataOfBirth",
-      label: "Date of birth",
-      numeric: false,
-      Cell(row: User, _index: number) {
-        return <span>{row.dateOfBirth && moment(row.dateOfBirth).format("DD/MM/YYYY").toLowerCase()}</span>;
-      },
-    },
-    {
-      id: "sex",
-      label: "Sex",
-      numeric: false,
-      Cell(row: User, _index: number) {
-        return <span>{row.sex}</span>;
-      },
-    },
-    {
-      id: "status",
-      label: "Status",
-      numeric: false,
-      Cell(row: User, _index: number) {
-        return <span>{row.status}</span>;
-      },
-    },
-    {
-      id: "actionUser",
+      id: "actionDestination",
       label: "Action",
       numeric: false,
-      Cell(row: User, _index: number) {
-        return <ActionCell row={row} handleEditId={handleEditId} handleDeleteUser={handleDeleteUser} />;
+      Cell(row: Destination, _index: number) {
+        return <ActionCell row={row} handleEditId={handleEditId} handleDeleteDestination={handleDeleteDestination} />;
       },
     },
   ];
