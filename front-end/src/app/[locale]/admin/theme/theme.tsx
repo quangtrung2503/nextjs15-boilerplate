@@ -15,6 +15,7 @@ import TableCommon from "@/components/common/Table";
 import { headCells } from "./component/headCells";
 import CommonDialog from "@/components/common/Dialog";
 import CreateEditTheme from "./component/createEditTheme";
+import { useNotifications } from "@/helpers/toast";
 
 interface FormSearch {
   textSearch: string;
@@ -28,6 +29,7 @@ const Theme = () => {
   const { data: dataTheme, refetch: refetchTheme, loading: loadingTheme } = useGetThemes(filters, { refetchKey: cachedKeys.fetchThemes });
   const { open, toggle, shouldRender } = useToggleDialog();
   const [id, setId] = useState<number | null>(null);
+  const {showError} = useNotifications();
 
   const handleEditId = (id: number) => {
     setId(id);
@@ -39,7 +41,7 @@ const Theme = () => {
       await refetchTheme();
     }
     catch (error) {
-      console.error(error);
+      showError(error);
     }
   }
   const methods = useForm<FormSearch>({
@@ -68,33 +70,13 @@ const Theme = () => {
                 component={InputField}
               />
               </CommonStyles.Box>
-              {/* <RHFField
-                name="sortOrder"
-                options={[
-                  {
-                    key: "1",
-                    label: "DESC",
-                    value: "desc"
-                  },
-                  {
-                    key: "2",
-                    label: "ASC",
-                    value: "asc"
-                  }
-                ]}
-                className="tw-w-[20%] tw-ml-5"
-                control={methods.control}
-                fullWidth={false}
-                placeholder="Sort"
-                component={SelectField}
-              /> */}
               <CommonStyles.Box className="tw-w-[20%]">
                 <CommonStyles.CommonButton variant="outlined" className="outlined rounded tw-ml-5 tw-w-full" type="submit">Search</CommonStyles.CommonButton>
               </CommonStyles.Box>
             </form>
           </FormProvider>
         </CommonStyles.Box>
-        <CommonButton className="tw-text-nowrap" onClick={toggle} label="Create new Theme" />
+        <CommonButton className="tw-text-nowrap tw-px-7" onClick={toggle} label="Create new Theme" />
       </CommonStyles.Box>
       <CommonStyles.Box>
         {dataTheme &&

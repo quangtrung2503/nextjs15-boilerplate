@@ -2,7 +2,7 @@ import { useEffect, useState, useCallback, useRef } from "react";
 import { isEmpty, isObject } from "lodash";
 import { useSave } from "@/stores/useStore";
 import { AxiosResponse } from "axios";
-import userServices, { ResponseUser } from "../user.services";
+import destinationServices, { ResponseDestination } from "../destination.services";
 import { useNotifications } from "@/helpers/toast";
 
 /********************************************************
@@ -19,9 +19,9 @@ import { useNotifications } from "@/helpers/toast";
  ********************************************************/
 
 //* Check parse body request
-const requestAPI = userServices.getUser;
+const requestAPI = destinationServices.getDestination;
 
-const useGetUser = (
+const useGetDestination = (
   id: number,
   options: { isTrigger?: boolean; refetchKey?: string } = {
     isTrigger: true,
@@ -32,14 +32,14 @@ const useGetUser = (
   const { isTrigger = true, refetchKey = "" } = options;
   const signal = useRef(new AbortController());
   const save = useSave();
-  const [data, setData] = useState<ResponseUser>();
+  const [data, setData] = useState<ResponseDestination>();
   const [loading, setLoading] = useState(false);
   const [refetching, setRefetching] = useState(false);
   const [error, setError] = useState<unknown>(null);
   const {showError} = useNotifications();
 
   //! Function
-  const fetch: () => Promise<AxiosResponse<ResponseUser>> | undefined = useCallback(() => {
+  const fetch: () => Promise<AxiosResponse<ResponseDestination>> | undefined = useCallback(() => {
     if (!isTrigger) {
       return;
     }
@@ -59,14 +59,14 @@ const useGetUser = (
     });
   }, [id, isTrigger]);
 
-  const checkConditionPass = useCallback((response: AxiosResponse<ResponseUser>) => {
+  const checkConditionPass = useCallback((response: AxiosResponse<ResponseDestination>) => {
     //* Check condition of response here to set data
     if (isObject(response?.data)) {
       setData(response.data);
     }
   }, []);
 
-  //* Refetch impliUser (without changing loading state)
+  //* Refetch impliDestination (without changing loading state)
   const refetch = useCallback(async () => {
     try {
       if (signal.current) {
@@ -145,4 +145,4 @@ const useGetUser = (
   };
 };
 
-export default useGetUser;
+export default useGetDestination;

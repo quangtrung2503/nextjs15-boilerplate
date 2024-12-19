@@ -3,6 +3,7 @@ import { isEmpty, isObject } from "lodash";
 import { useSave } from "@/stores/useStore";
 import { AxiosResponse } from "axios";
 import themeServices, { ResponseTheme } from "../theme.services";
+import { useNotifications } from "@/helpers/toast";
 
 /********************************************************
  * SNIPPET GENERATED
@@ -35,7 +36,7 @@ const useGetTheme = (
   const [loading, setLoading] = useState(false);
   const [refetching, setRefetching] = useState(false);
   const [error, setError] = useState<unknown>(null);
-  const [hasMore, setHasMore] = useState(false);
+  const {showError} = useNotifications();
 
   //! Function
   const fetch: () => Promise<AxiosResponse<ResponseTheme>> | undefined = useCallback(() => {
@@ -62,7 +63,6 @@ const useGetTheme = (
     //* Check condition of response here to set data
     if (isObject(response?.data)) {
       setData(response.data);
-      setHasMore(!isEmpty(response.data));
     }
   }, []);
 
@@ -83,8 +83,7 @@ const useGetTheme = (
       setRefetching(false);
     } catch (error: any) {
       if (!error.isCanceled) {
-        // showError(error);
-        console.log(error);
+        showError(error);
       }
     }
   }, [fetch, checkConditionPass]);
@@ -103,8 +102,7 @@ const useGetTheme = (
       }
       setLoading(false);
     } catch (error) {
-      // showError(error);
-      console.log(error);
+      showError(error);
       setLoading(false);
     }
   }, [fetch, checkConditionPass]);
@@ -121,8 +119,7 @@ const useGetTheme = (
           checkConditionPass(response);
         }
       } catch (error) {
-        // showError(error);
-        console.log(error);
+        showError(error);
       } finally {
         setLoading(false);
       }
@@ -144,7 +141,6 @@ const useGetTheme = (
     refetch,
     refetchWithLoading,
     refetching,
-    hasMore,
     setData,
   };
 };

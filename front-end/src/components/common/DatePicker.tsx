@@ -1,10 +1,10 @@
 import React from "react";
 import { DatePicker, MobileDatePicker } from "@mui/x-date-pickers";
-import { Dayjs } from "dayjs";
 import { twMerge } from "tailwind-merge";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import { SxProps } from "@mui/material";
 import { FieldError } from "react-hook-form";
+import moment, { Moment } from "moment";
 
 interface IDatePickerProps {
   label?: string;
@@ -17,14 +17,13 @@ interface IDatePickerProps {
   placeholder?: string;
   border?: boolean;
   field: {
-    value: Dayjs | null;
-    onChange: (date: Dayjs | null) => void;
+    value: Moment | null;
+    onChange: (date: Moment | null) => void;
     onBlur: () => void;
     name: string;
   };
   fieldState: { error?: FieldError };
 }
-
 export const CommonDatePicker: React.FC<IDatePickerProps> = ({
   required,
   classNameLabel,
@@ -40,21 +39,24 @@ export const CommonDatePicker: React.FC<IDatePickerProps> = ({
   const PickerComponent = isMobileDate ? MobileDatePicker : DatePicker;
 
   return (
-    <div className="flex flex-col">
+    <div className="tw-flex tw-flex-col">
       {label && (
         <label
           className={twMerge(
             required && "required",
             classNameLabel,
-            "tw-font-mulish tw-font-bold tw-text-accent_gray_800"
+            "tw-font-mulish tw-text-[15px] tw-mb-2 tw-font-bold tw-text-accent_gray_800"
           )}
         >
           {label}
         </label>
       )}
       <PickerComponent
-        {...field}
-        value={field.value || null} // Ensure value is never undefined
+      format="DD/MM/YYYY"
+        value={field.value ? moment(field.value) : null} // Đảm bảo giá trị không undefined
+        onChange={(newValue) => {
+          field.onChange(newValue); // Cập nhật giá trị
+        }}
         slots={{ openPickerIcon: CalendarMonthIcon }}
         slotProps={{
           textField: {
@@ -63,28 +65,13 @@ export const CommonDatePicker: React.FC<IDatePickerProps> = ({
               placeholder,
             },
             sx: {
-              input: {
-                padding: 0,
-                fontSize: "14px",
-                color: "#495560",
-                height: "54px",
-                paddingLeft: "20px",
-                
-              },
-              div: {
-                button: {
-                  padding: "6px",
-                  marginRight: 0,
-                },
-                ":hover":{
-                  ".css-u6ogs3-MuiInputBase-root-MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline":{
-                    border: fieldState.error ? "#d32f2f solid 1px": "none",
-                  }
-                }
-              },
               fieldset: {
                 padding: 0,
-                border: fieldState.error ? "#d32f2f solid 1px": border ? "#cfcfcf solid 1px":"none",
+                border: fieldState.error
+                  ? "#d32f2f solid 1px"
+                  : border
+                  ? "#cfcfcf solid 1px"
+                  : "none",
               },
               borderRadius: "3px",
               backgroundColor: "#F4F4F5",

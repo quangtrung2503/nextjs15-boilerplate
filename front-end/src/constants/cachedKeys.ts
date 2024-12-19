@@ -3,4 +3,5 @@ export default {
   fetchUsers: "fetchUsers",
   fetchThemes: "fetchThemes",
   fetchPosts: "fetchPosts",
+  fetchDestinations: "fetchDestinations",
 } as const;

@@ -6,9 +6,8 @@ import { ThemeProvider as MUIThemeProvider } from '@mui/material';
 import { AppRouterCacheProvider } from "@mui/material-nextjs/v15-appRouter";
 import { useEffect, useState } from "react";
 import { ThemeProvider, useThemeContext } from "../themes/ThemeProvider";
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-
+import { LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 
 export function Providers({ children }: { children: React.ReactNode }) {
     const [hasMounted, setHasMounted] = useState(false);
@@ -24,7 +23,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
     // If the component has mounted, return a set of providers.
     return (
       
-    <LocalizationProvider dateAdapter={AdapterDayjs}>
+    <LocalizationProvider dateAdapter={AdapterMoment}>
         <ThemeProvider>
             <AppRouterCacheProvider options={{ enableCssLayer: true, key: 'css' }}>
                 <WrappedThemeProvider>{children}</WrappedThemeProvider>

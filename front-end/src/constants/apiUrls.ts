@@ -1,6 +1,7 @@
 export const BASE_URL = `${process.env.NEXT_PUBLIC_ROOT_URL}`;
+export const PUBLIC_URL = `${process.env.NEXT_PUBLIC_URL}`;
 export default {
-    IMG_URL: `${BASE_URL}`,
+    IMG_URL: `${PUBLIC_URL}`,
     AUTH: {
       SIGN_UP: `${BASE_URL}/auth/sign-up-customer`,
       SIGN_IN: `${BASE_URL}/auth/login`,
@@ -10,6 +11,7 @@ export default {
     THEME_URL: `${BASE_URL}/theme`,
     TOUR_URL: `${BASE_URL}/tour`,
     POST_URL: `${BASE_URL}/post`,
-    UPLOAD_URL: `${BASE_URL}/upload`
+    UPLOAD_URL: `${BASE_URL}/upload`,
+    DESTINATION_URL: `${BASE_URL}/destination`,
 
 }

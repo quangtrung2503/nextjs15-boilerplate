@@ -13,6 +13,7 @@ export interface LoginResponse {
 
 export interface IUser {
   id: number;
+  name?: string;
   username: string;
   isVerifyOtp: boolean;
   phone: string;

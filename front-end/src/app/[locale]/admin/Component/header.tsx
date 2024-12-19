@@ -7,9 +7,10 @@ import React from "react";
 import { default as CommonStyles } from "@/components/common";
 import CommonIcons from "@/components/CommonIcons";
 import AssignmentIndOutlinedIcon from '@mui/icons-material/AssignmentIndOutlined';
+import useAuth from "@/hooks/useAuth";
 const Header = () => {
   const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
-
+  const {user} = useAuth();
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
@@ -54,6 +55,7 @@ const Header = () => {
               }}
             >
               <CommonStyles.Box className="tw-px-5 tw-py-5 tw-text-xl">
+                <CommonStyles.Box><CommonStyles.Typography type="size16Weight400">Hey👋 {user?.name}</CommonStyles.Typography></CommonStyles.Box>
                 <CommonStyles.Box className="tw-bg-primary_100 tw-rounded-xl tw-my-1 tw-p-2 tw-border-primary tw-border-solid tw-border-[1px]">
                   <CommonStyles.Box className="tw-flex tw-justify-start tw-px-5 tw-py-2 tw-items-center tw-my-1 tw-pr-4 tw-cursor-pointer hover:tw-bg-primary tw-rounded-lg">
                     <CommonIcons.AccountCircleOutlined />
