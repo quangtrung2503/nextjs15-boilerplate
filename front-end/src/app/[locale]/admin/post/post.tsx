@@ -15,6 +15,7 @@ import cachedKeys from "@/constants/cachedKeys";
 import postServices from "@/services/modules/post/post.services";
 import { headCells } from "./component/headCells";
 import CreateEditPost from "./component/createEditPost";
+import { useNotifications } from "@/helpers/toast";
 
 interface FormSearch {
   textSearch: string;
@@ -28,7 +29,7 @@ const Post = () => {
   const { data: dataPost, refetch: refetchPost, loading: loadingPost } = useGetPosts(filters, { refetchKey: cachedKeys.fetchPosts });
   const { open, toggle, shouldRender } = useToggleDialog();
   const [id, setId] = useState<number | null>(null);
-
+  const {showError} = useNotifications();
   const handleEditId = (id: number) => {
     setId(id);
     toggle();
@@ -39,7 +40,7 @@ const Post = () => {
       await refetchPost();
     }
     catch (error) {
-      console.error(error);
+      showError(error);
     }
   }
   const methods = useForm<FormSearch>({
@@ -68,33 +69,13 @@ const Post = () => {
                 component={InputField}
               />
             </CommonStyles.Box>
-              {/* <RHFField
-                name="sortOrder"
-                options={[
-                  {
-                    key: "1",
-                    label: "DESC",
-                    value: "desc"
-                  },
-                  {
-                    key: "2",
-                    label: "ASC",
-                    value: "asc"
-                  }
-                ]}
-                className="tw-w-[20%] tw-ml-5"
-                control={methods.control}
-                fullWidth={false}
-                placeholder="Sort"
-                component={SelectField}
-              /> */}
               <CommonStyles.Box className="tw-w-[20%]">
                 <CommonStyles.CommonButton variant="outlined" className="outlined rounded tw-ml-5 tw-w-full" type="submit">Search</CommonStyles.CommonButton>
               </CommonStyles.Box>
             </form>
           </FormProvider>
         </CommonStyles.Box>
-        <CommonButton className="tw-text-nowrap" onClick={toggle} label="Create new Post" />
+        <CommonButton className="tw-text-nowrap tw-px-7" onClick={toggle} label="Create new Post" />
       </CommonStyles.Box>
       <CommonStyles.Box>
         {dataPost &&

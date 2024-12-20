@@ -11,8 +11,13 @@ const useImageUploader = () => {
     return uploadService.uploadSingle(bodyUpload);
   }, []);
 
+  const uploadImages = useCallback((images?: FileList | string[])=>{
+    const bodyUpload = new FormData();
+    images && images.map((image=> bodyUpload.append('file',image)));
+    return uploadService.uploadMultiple(bodyUpload);
+  },[])
   //!Render
-  return { uploadImage };
+  return { uploadImage,uploadImages };
 };
 
 export default useImageUploader;

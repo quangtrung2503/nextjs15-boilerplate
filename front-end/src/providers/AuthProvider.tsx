@@ -51,7 +51,6 @@ export default function AuthProvider(props: { children: React.ReactNode }) {
     isLogged: !!httpService.getTokenFromLocalStorage(),
     isLogining: false,
   });
-
   useEffect(() => {
     httpService.attachTokenToHeader(state.accessToken);
   }, [state.accessToken]);
@@ -82,15 +81,13 @@ export default function AuthProvider(props: { children: React.ReactNode }) {
 
             const accessToken = response?.data?.data?.accessToken;
             const user: IUser = response?.data?.data?.user;
-
             onSignSuccess({ accessToken, user });
-            setState((prev) => ({
-              ...prev,
+            setState({
               isLogining: false,
               isLogged: true,
               accessToken,
-              user,
-            }));
+              user: user,
+            });
             resolve(response);
           } catch (error) {
             reject(error);

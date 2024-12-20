@@ -3,6 +3,7 @@ import { default as CommonStyles } from "@/components/common"
 import CommonIcons from "@/components/CommonIcons"
 import { useState } from "react"
 import { Popover } from "@mui/material"
+import apiUrls from "@/constants/apiUrls"
 
 const ActionCell: React.FC<{ row: City; handleEditId: (id: number) => void; handleDeleteCity: (id: number) => void }> = ({
   row,
@@ -95,7 +96,7 @@ export const headCells = ({
       label: "Image",
       numeric: false,
       Cell(row: City, _index: number) {
-        return <span>{row.image}</span>;
+        return <span>{row.image && <img className="tw-w-[100px] tw-h-auto" src={`${apiUrls.IMG_URL}/${row.image}`} alt={`${row.name}-images`} />}</span>;
       },
     },
     {

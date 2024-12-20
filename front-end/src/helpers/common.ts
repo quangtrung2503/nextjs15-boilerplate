@@ -1,6 +1,6 @@
 // import { IMAGE_REGEX, WarehousingStatus } from 'constants/common';
 import apiUrls from '@/constants/apiUrls';
-import dayjs from 'dayjs';
+
 import { FormikValues } from 'formik';
 // import { languages } from 'i18nOptions';
 import Lodash, { get, identity, isEmpty, isNumber, isString, pickBy } from 'lodash';
@@ -110,10 +110,6 @@ export const isDateObject = (date: Date | moment.Moment) => {
   return date instanceof Date;
 };
 
-export const isDaysJSObject = (date: Date) => {
-  return date instanceof dayjs;
-};
-
 export const isMomentObject = (date: Date | moment.Moment) => {
   return date instanceof moment;
 };
@@ -139,13 +135,13 @@ export const snakeCaseToWords = (input: string) => {
     ?.join(' ');
 };
 
-export const convertToQueryDate = (value: dayjs.Dayjs | Date | string | undefined) => {
-  if (value) {
-    const formatYearMonthDay = dayjs(value).format('YYYY-MM-DD');
-    return formatYearMonthDay;
-  }
-  return '';
-};
+// export const convertToQueryDate = (value: dayjs.Dayjs | Date | string | undefined) => {
+//   if (value) {
+//     const formatYearMonthDay = dayjs(value).format('YYYY-MM-DD');
+//     return formatYearMonthDay;
+//   }
+//   return '';
+// };
 
 export const convertStringToDateTime = (value: string) => {
   // Value Required HH:mm
@@ -371,8 +367,82 @@ export const formatStringDataIsEmpty = (value: string) => {
   return value === '' ? undefined : value;
 };
 
+
+export const getOptionEnum = <T extends Record<string, string>>(data: T) => {
+  return Object.values(data).map((item) => ({
+    key: item,
+    label: item,
+    value: item,
+  }));
+};
+
 export enum TransportOfTour {
   TransportFacility= "Transport Facility",
   PrivateCar= "Private Car",
   SharedBus= "Shared Bus" 
+}
+export enum Role{
+  ADMIN ="ADMIN",
+  STAFF ="STAFF",
+  CUSTOMER ="CUSTOMER",
+}
+
+export const TINY_API = 'z05d7wzwwza58npx1ncwvo79r6rnxq5zivx4gqk5sz4zsr9z';
+
+export enum FORMAT_DATE {
+  DATE_TIME = 'YYYY-MM-DD HH:mm:ss',
+  DATE = 'YYYY-MM-DD',
+  TIME = 'HH:mm:ss'
+}
+export enum SortOrder {
+  ASC = 'asc',
+  DESC = 'desc',
+}
+export enum Platform {
+  WEB = 'WEB',
+  APP = 'APP',
+}
+export enum LoginMethod {
+  PHONE = 'PHONE',
+  EMAIL = 'EMAIL',
+}
+export enum MediaType {
+  IMAGE = 'IMAGE',
+  VIDEO = 'VIDEO',
+  PDF = 'PDF',
+}
+export enum UserStatus {
+  ACTIVE = 'ACTIVE',
+  BANNED = 'BANNED',
+  DELETED = 'DELETED'
+}
+export enum Gender {
+  MALE = 'MALE',
+  FEMALE = 'FEMALE',
+  OTHER = 'OTHER'
+}
+export enum Language {
+  VI = 'VI',
+  EN = 'EN',
+}
+export enum AppType {
+  WEB_HOOK = 'WEB_HOOK',
+  REPORT = 'REPORT',
+}
+export enum Transport {
+  TRANSPORT_FACILITY = 'Transport Facility',
+  PRIVATE_CAR = 'Private Car',
+  SHARED_BUS = 'Shared Bus',
+}
+export enum Package {
+  FAMILY_PLAN = 'Family Plan',
+  COUPLE_PLAN = 'Couple Plan',
+  SINGLE_PLAN = 'Single Plan',
+}
+export enum Duration {
+  ZERO_TO_THREE_HOURS = '0-3 hours',
+  THREE_TO_FIVE_HOURS = '3-5 hours',
+  FIVE_TO_SEVEN_HOURS = '5-7 hours',
+  FULL_DAY = 'Full day (7+ hours)',
+  MULTI_DAY = 'Multi-day'
 }

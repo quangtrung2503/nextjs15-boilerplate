@@ -19,6 +19,7 @@ import useAuth from "@/hooks/useAuth";
 import LoginModel from "@/models/login.model";
 import { useNotifications } from "@/helpers/toast";
 import Loading from "@/components/common/Loading";
+import { Role } from "@/helpers/common";
 
 type FormValues = {
   email: string;
@@ -68,6 +69,7 @@ const SignIn = (props: ISignInProps) => {
       showError(err);
     }
   };
+  console.log(auth);
   useEffect(() => {
     if (isLogged) {
       router.push(pageUrls.Homepage);
