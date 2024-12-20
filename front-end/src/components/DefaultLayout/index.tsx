@@ -2,8 +2,8 @@
 import React from "react";
 import Header from "./Header";
 import Footer from "./Footer";
-import useAuth from "@/hooks/useAuth";
 import { usePathname } from "next/navigation";
+import pageUrls from "@/constants/pageUrls";
 interface DefaultLayoutProps {
   children: React.ReactNode;
 }
@@ -15,7 +15,7 @@ const DefaulLayout = (props: DefaultLayoutProps) => {
   return (
     <>
       {!hideHeaderFooter && <Header />}
-      <main>{children}</main>
+      <main className={pathname === `${pageUrls.Homepage}en` ? "" : "tw-mt-header"}>{children}</main>
       {!hideHeaderFooter && <Footer />}
     </>
   );

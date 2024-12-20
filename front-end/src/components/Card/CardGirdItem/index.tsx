@@ -34,7 +34,8 @@ const CardGridItem = (props: CardGridItemProps) => {
     ...rest
   } = props;
   return (
-    <Card className="tw-w-full tw-p-0">
+    <Card className="tw-w-full tw-p-0 tw-shadow-card">
+      <CommonStyles.Link href={"/citytour/1"} className="tw-w-full">
       <CommonStyles.Box className="tw-p-2">
         <CardMedia
           className={`tw-min-h-[180px]`}
@@ -49,7 +50,7 @@ const CardGridItem = (props: CardGridItemProps) => {
           </CommonStyles.Typography>
           <CommonStyles.Box className="tw-flex tw-flex-col tw-gap-y-3 tw-text-accent_gray_800">
             <CommonStyles.Box className="tw-flex tw-items-center tw-gap-2">
-              <AccessTimeIcon className="tw-size-[16px]" />
+              <CommonIcons.AccessTime className="tw-size-[19px]" />
               <CommonStyles.Typography type="size14Weight600">
                 Duration{" "}
                 {duration <= 24 && duration
@@ -58,13 +59,13 @@ const CardGridItem = (props: CardGridItemProps) => {
               </CommonStyles.Typography>
             </CommonStyles.Box>
             <CommonStyles.Box className="tw-flex tw-items-center tw-gap-2">
-              <DriveEtaOutlinedIcon className="tw-size-[16px]" />
+              <CommonIcons.Car color="var(--accent-gray-800)" />
               <CommonStyles.Typography type="size14Weight600">
                 {transport}
               </CommonStyles.Typography>
             </CommonStyles.Box>
             <CommonStyles.Box className="tw-flex tw-items-center tw-gap-2">
-              <PeopleAltOutlinedIcon className="tw-size-[16px]" />
+              <CommonIcons.PeopleAltOutlined className="tw-size-[20px]" />
               <CommonStyles.Typography type="size14Weight600">
                 {plan}
               </CommonStyles.Typography>
@@ -103,6 +104,7 @@ const CardGridItem = (props: CardGridItemProps) => {
           </CommonStyles.Typography>
         </CommonStyles.Box>
       </CommonStyles.Box>
+      </CommonStyles.Link>
     </Card>
   );
 };

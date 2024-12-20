@@ -6,8 +6,9 @@ import { useTheme } from "@mui/material";
 export type TypeTypographyClient =
   | "size12Weight400"
   | "size12Weight600"
-  | "size13Weight600"
   | "size13Weight500"
+  | "size13Weight600"
+  | "size13Weight700"
   | "size14Weight400"
   | "size14Weight500"
   | "size14Weight600"
@@ -16,6 +17,7 @@ export type TypeTypographyClient =
   | "size15Weight400"
   | "size15Weight500"
   | "size15Weight600"
+  | "size15Weight700"
   | "size18Weight500"
   | "size18Weight600"
   | "size18Weight700"
@@ -24,6 +26,8 @@ export type TypeTypographyClient =
   | "size20Weight600"
   | "size20Weight700"
   | "size20Weight800"
+  | "size22Weight700"
+  | "size23Weight300"
   | "size14Weight600"
   | "size16Weight400"
   | "size30Weight600"
@@ -33,12 +37,14 @@ export type TypeTypographyClient =
   | "size10Weight400"
   | "size11Weight600"
   | "size75Weight600"
-  | "size48Weight700"
   | "size25Weight600"
   | "size26Weight400"
   | "size9Weight600"
   | "size23Weight600"
   | "size36Weight700"
+  | "size36Weight900"
+  | "size48Weight700"
+  | "size48Weight900"
   | "size64Weight700";
 
 interface Props extends TypographyProps {
@@ -72,7 +78,10 @@ const Typography = (props: Props) => {
       fontSize: "13px",
       fontWeight: 600,
     });
-
+    styles.set("size13Weight600", {
+      fontSize: "13px",
+      fontWeight: 700,
+    });
     styles.set("size14Weight400", {
       fontSize: "14px", //0.875rem
       fontWeight: 400,
@@ -105,6 +114,10 @@ const Typography = (props: Props) => {
     styles.set("size15Weight600", {
       fontSize: "15px", //0.875rem
       fontWeight: 600,
+    });
+    styles.set("size15Weight700", {
+      fontSize: "15px", //0.875rem
+      fontWeight: 700,
     });
     styles.set("size16Weight400", {
       fontSize: "16px",
@@ -145,6 +158,14 @@ const Typography = (props: Props) => {
     styles.set("size20Weight600", {
       fontSize: "20px",
       fontWeight: 600,
+    });
+    styles.set("size22Weight700", {
+      fontSize: "22px",
+      fontWeight: 700,
+    });
+    styles.set("size23Weight300", {
+      fontSize: "23px",
+      fontWeight: 300,
     });
     styles.set("size30Weight600", {
       fontSize: "30px", // 1.875rem
@@ -190,7 +211,10 @@ const Typography = (props: Props) => {
       fontSize: "9px",
       fontWeight: 600,
     });
-
+    styles.set("size36Weight900", {
+      fontSize: "36px",
+      fontWeight: 900,
+    });
     styles.set("size36Weight700", {
       fontSize: "36px",
       fontWeight: 700,
@@ -198,6 +222,10 @@ const Typography = (props: Props) => {
     styles.set("size48Weight700", {
       fontSize: "48px",
       fontWeight: 700,
+    });
+    styles.set("size48Weight900", {
+      fontSize: "48px",
+      fontWeight: 900,
     });
     styles.set("size64Weight700", {
       fontSize: "64px",

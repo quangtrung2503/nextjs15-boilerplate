@@ -1,4 +1,50 @@
 {
+  "header": {
+    "navbar": {
+      "home": "Home",
+      "aboutUs": "About Us",
+      "popularDestinations": "Popular Destinations",
+      "ourPackages": "Our Packages",
+      "help": "Help"
+    },
+    "signInButton": "Sign In",
+    "profileMenu": {
+      "accountProfile": "Account Profile",
+      "logOut": "Log Out"
+    }
+  },
+  "footer": {
+    "languagePlaceholder": "Language",
+    "currencyPlaceholder": "Currency",
+    "languageOptions": {
+      "en": "English (UK)",
+      "vi": "Vietnamese (VN)"
+    },
+    "currencyOptions": {
+      "USD": "U.S. Dollar ($)",
+      "VND": "V.N Dong (VND)"
+    },
+    "helpMenu": {
+      "title": "Help",
+      "menu": {
+        "contactUs": "Contact Us",
+        "faq": "FAQs",
+        "termsAndConditions": "Terms and Conditions",
+        "privacyPolicy": "Privacy Policy",
+        "siteMap": "Site Maps"
+      }
+    },
+    "paymentMenu": {
+      "title": "Payment methods possible"
+    },
+    "companyDesMenu": {
+      "title": "Company",
+      "menu": {
+        "des": "Become a Tour guide for Us"
+      }
+    },
+    "copyRight": "Copyright 2021 Tour Guide. All Rights Reserved"
+  },
   "signIn": {
     "functionIsUnderDevelopment": "Function is under development",
     "metaTitle": "Sign in",
@@ -81,6 +127,24 @@
     "storyTitle": "Latest Stories",
     "subStoryTitle": "Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint. Velit officia consequat duis enim velit mollit",
     "allPostButton": "View All Posts"
+  },
+  "cityTourDetail": {
+    "validations": {
+      "startDateRequire": "Please select a start date.",
+      "startDateInvalid": "The start date is invalid.",
+      "startDateMin": "The start date cannot be in the past.",
+      "endDateRequire": "Please select an end date.",
+      "endDateInvalid": "The end date is invalid.",
+      "endDateAfterStartDate": "The end date must be after the start date.",
+      "noOfGuestRequire": "Please specify the number of guests.",
+      "adultQuantityRequire": "Please enter the number of adults.",
+      "adultQuantityInvalid": "The number of adults must be a valid number.",
+      "adultQuantityMin": "There must be at least 1 adult.",
+      "adultQuantityMax": "The number of adults cannot exceed 10.",
+      "childQuantityInvalid": "The number of children must be a valid number.",
+      "childQuantityMin": "The number of children cannot be less than 0.",
+      "childQuantityMax": "The number of children cannot exceed 10."
+    }
   },
   "landingPage": {
     "metaTitle": "Welcome to our website",

@@ -51,7 +51,10 @@ export default {
         "content-admin": "calc(100% - 273px)",
       },
       boxShadow: {
-        direction_carousel: "0px 8px 20px 0px #FFDA3280"
+        direction_carousel: "0px 8px 20px 0px #FFDA3280",
+        dropdown: "rgba(99, 99, 99, 0.2) 0px 2px 8px 0px",
+        card: "0px 8px 34px 0px #0000000F",
+        select: "0px 4px 10px 0px #0000001A"
       },
       scrollbar: {
         hide: {
@@ -63,6 +66,9 @@ export default {
           'scrollbar-width': 'none',
         },
       },
+      margin: {
+        header: "var(--header-height)",
+      }
     },
   },
   plugins: [],

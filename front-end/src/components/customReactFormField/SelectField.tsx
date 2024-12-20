@@ -31,12 +31,12 @@ interface SelectFieldProps {
   defaultValue?: string | number | undefined;
   variant?: "outlined" | "filled" | "standard";
   onChange?: (event: SelectChangeEvent, child: ReactNode) => void;
-  field: {
+  field?: {
     value: string | number | undefined; // Allow undefined to match React's controlled component requirements
     onChange: (event: SelectChangeEvent) => void; // Match MUI's expected event type
     onBlur: () => void;
   };
-  fieldState: { error?: FieldError };
+  fieldState?: { error?: FieldError };
   required?: boolean;
 }
 
@@ -83,24 +83,27 @@ const SelectField: React.FC<SelectFieldProps> = ({
       )}
       <Select
         {...field}
-        value={value ? String(value) : String(field.value || "")} // Ensure string type
+        defaultValue={defaultValue}
+        // value={value ? String(value) : String(field?.value || "")} // Ensure string type
+        value={value}
         onChange={(event, child) => {
           // const newValue = event.target.value; // This will always be a string
 
           // Call React Hook Form's onChange handler with the string value
-          field.onChange(event as SelectChangeEvent<string>);
+          field?.onChange(event as SelectChangeEvent<string>);
 
           // Call custom onChange handler if provided
           if (onChange) {
             onChange(event as SelectChangeEvent<string>, child);
           }
         }}
-        onBlur={field.onBlur}
+        onBlur={field?.onBlur}
         sx={sx}
         name={name}
         MenuProps={{
           disableScrollLock: true,
         }}
+        className={className}
         // {...props}
       >
         {placeholder && (
@@ -112,15 +115,15 @@ const SelectField: React.FC<SelectFieldProps> = ({
           <MenuItem
             key={index}
             value={option.value}
-            className={twMerge("tw-flex tw-items-center", className)}
+            className={twMerge("tw-flex tw-items-center")}
           >
             {option.label}
           </MenuItem>
         ))}
       </Select>
-      {(helperText || fieldState.error?.message) && (
+      {(helperText || fieldState?.error?.message) && (
         <FormHelperText>
-          {helperText || fieldState.error?.message}
+          {helperText || fieldState?.error?.message}
         </FormHelperText>
       )}
     </FormControl>

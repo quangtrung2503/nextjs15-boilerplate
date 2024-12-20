@@ -7,7 +7,7 @@ import { FieldError } from "react-hook-form";
 import moment, { Moment } from "moment";
 
 interface IDatePickerProps {
-  label?: string;
+  label?: string;  
   name: string;
   className?: string;
   required?: boolean;
@@ -37,7 +37,6 @@ export const CommonDatePicker: React.FC<IDatePickerProps> = ({
   border
 }) => {
   const PickerComponent = isMobileDate ? MobileDatePicker : DatePicker;
-
   return (
     <div className="tw-flex tw-flex-col">
       {label && (
