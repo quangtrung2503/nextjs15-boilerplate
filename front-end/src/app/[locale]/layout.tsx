@@ -1,6 +1,6 @@
 import DefaulLayout from "@/components/DefaultLayout";
 import React from "react";
-import { Roboto, Volkhov, Mulish } from '@next/font/google';
+import { Roboto, Volkhov, Mulish } from 'next/font/google';
 
 // Khai báo font
 const volkhov = Volkhov({

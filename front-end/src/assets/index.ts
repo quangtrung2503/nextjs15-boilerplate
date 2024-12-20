@@ -36,4 +36,14 @@ export {default as gallery6 } from './images/gallery/gallery6.png'
 export {default as gallery7 } from './images/gallery/gallery7.png'
 export {default as gallery8 } from './images/gallery/gallery8.png'
 
+// City tour details
+export {default as detail1 } from './images/detail_city_tour/detail1.jpg'
+export {default as detail2 } from './images/detail_city_tour/detail2.jpg'
+export {default as detail3 } from './images/detail_city_tour/detail3.jpg'
+export {default as detail4 } from './images/detail_city_tour/detail4.jpg'
+export {default as detail5 } from './images/detail_city_tour/detail5.jpg'
+export {default as detail6 } from './images/detail_city_tour/detail6.jpg'
+
+
+
 

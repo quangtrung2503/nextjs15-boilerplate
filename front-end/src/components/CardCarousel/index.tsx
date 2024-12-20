@@ -3,14 +3,14 @@ import { Container } from "@mui/material";
 import { default as CommonStyles } from "@/components/common";
 import CommonIcons from "@/components/CommonIcons";
 import CardGridItem from "@/components/Card/CardGirdItem";
-import Heading from "@/app/[locale]/home/components/Heading";
-import { title } from "process";
+import { twMerge } from "tailwind-merge";
 type Props = {
   data?: [];
   title?: React.ReactNode;
+  classNameContainerHeading?: string;
 };
 const CardCarousel= (props: Props) => {
-  const {title, data} = props
+  const {title, data, classNameContainerHeading} = props
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [isAtStart, setIsAtStart] = useState(true);
   const [isAtEnd, setIsAtEnd] = useState(false);
@@ -71,8 +71,8 @@ const CardCarousel= (props: Props) => {
   }, []);
 
   return (
-    <CommonStyles.Box className="tw-flex tw-flex-col tw-gap-y-5">
-      <Container className="tw-flex tw-items-center tw-justify-between">
+    <CommonStyles.Box className="tw-flex tw-flex-col tw-gap-y">
+      <Container className={twMerge("tw-flex tw-items-center tw-justify-between", classNameContainerHeading) }>
         <CommonStyles.Box>{title}</CommonStyles.Box>
         <CommonStyles.Box className="tw-flex tw-items-center tw-gap-5">
           <CommonStyles.Box
@@ -101,7 +101,7 @@ const CardCarousel= (props: Props) => {
         className="tw-overflow-auto scrollbar-hide tw-w-full"
         ref={scrollContainerRef}
       >
-        <CommonStyles.Box className="tw-flex tw-gap-3 tw-w-fit tw-px-5">
+        <CommonStyles.Box className="tw-flex tw-gap-5 tw-w-fit tw-py-5">
           {Array(15)
             .fill(null)
             .map((_, index) => (
