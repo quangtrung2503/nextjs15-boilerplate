@@ -28,24 +28,39 @@ export class FilterTourDto extends FilterOptions {
     cityId?: number;
 
   @ApiProperty({
-    example: 5,
-    required: false
+    example: [1, 2, 3],
+    description: 'Array of theme IDs',
+    required: false,
+    type: [Number]
   })
-  @Transform(({ value }) => Number(value))
-  @IsNumber()
+  @Transform(({ value }) => {
+    if (typeof value === 'string') {
+      return value.split(',').map(id => Number(id.trim()));
+    }
+    return value?.map(Number);
+  })
+  @IsArray()
+  @IsNumber({}, { each: true })
   @IsOptional()
-    themeId?: number;
+    themeIds?: number[];
 
   @ApiProperty({
-    example: Duration.THREE_TO_FIVE_HOURS,
-    description: 'Duration of tour',
-    enum: Duration,
-    default: Duration.THREE_TO_FIVE_HOURS,
+    example: [Duration.FULL_DAY, Duration.FIVE_TO_SEVEN_HOURS],
+    description: 'Array of duration',
     required: false,
+    enum: Duration,
+    isArray: true,
   })
-  @IsEnum(Duration)
+  @Transform(({ value }) => {
+    if (typeof value === 'string') {
+      return value.split(',').map((status) => status.trim() as Duration);
+    }
+    return value;
+  })
+  @IsArray()
+  @IsEnum(Duration, { each: true })
   @IsOptional()
-    duration?: Duration;
+    durations?: Duration[];
 
   @ApiProperty({
     example: [1, 2, 3],
