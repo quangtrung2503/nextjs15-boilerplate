@@ -57,10 +57,10 @@ export class CityCustomerController {
     );
   }
 
-  @Get(':id')
-  async findOne(@Param('id') id: number) {
+  @Get(':slug')
+  async findOne(@Param('slug') slug: string) {
     const city = await this.cityService.findOne({
-      where: { id, isActive: true }
+      where: { slug, isActive: true }
     });
     if (!city) throw new BaseException(Errors.ITEM_NOT_FOUND(this.i18n.t('common-message.city.findOne.not_found')));
 

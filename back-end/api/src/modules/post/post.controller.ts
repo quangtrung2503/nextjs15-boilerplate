@@ -14,8 +14,9 @@ import { FilterPostDto } from './dto/filter-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
 import { UserDecorator } from 'src/core/auth/decorators/user.decorator';
 import { IUserJwt } from 'src/core/auth/strategies/jwt.strategy';
-import { _excludeObject } from 'src/helpers/functions/common.utils';
+import { _excludeObject, convertToEn } from 'src/helpers/functions/common.utils';
 import { I18nCustomService } from 'src/resources/i18n/i18n.service';
+import { ParseIdPipe } from 'src/core/pipes/parse-id.pipe';
 
 @ApiTags('Post (Administrator)')
 @Controller('post')
@@ -34,11 +35,16 @@ export class PostController {
     const keyNotInDto = Object.keys(body).find((key: keyof CreatePostDto) => !CreatePostDtoKeys.includes(key))
     if (keyNotInDto) throw new BaseException(Errors.BAD_REQUEST(this.i18n.t('common-message.post.create.wrong_parameter', { keyNotInDto })));
 
-    return this.postService.create({
+    const newPost = await this.postService.create({
       data: {
         ...body,
+        slug: '',
         userCreatedId: user.data.id
       }
+    });
+
+    return await this.postService.update(newPost.id, {
+      slug: `${convertToEn(newPost.title.split(' ').join('-'))}-i.${newPost.id}`
     });
   }
 
@@ -99,7 +105,7 @@ export class PostController {
   @Roles(UserRole.ADMIN, UserRole.STAFF)
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Get(':id')
-  async findOne(@Param('id') id: number) {
+  async findOne(@Param('id', ParseIdPipe) id: number) {
     const post = await this.postService.findOne({
       where: { id },
       include: {
@@ -122,14 +128,19 @@ export class PostController {
   @Roles(UserRole.ADMIN, UserRole.STAFF)
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Patch(':id')
-  async update(@Param('id') id: number, @Body() body: UpdatePostDto) {
+  async update(@Param('id', ParseIdPipe) id: number, @Body() body: UpdatePostDto) {
     const existingPost = await this.postService.findOne({ where: { id } });
     if (!existingPost) throw new BaseException(Errors.ITEM_NOT_FOUND(this.i18n.t('common-message.post.update.not_found')));
 
     const keyNotInDto = Object.keys(body).find((key: keyof UpdatePostDto) => !CreatePostDtoKeys.includes(key))
     if (keyNotInDto) throw new BaseException(Errors.BAD_REQUEST(this.i18n.t('common-message.post.update.wrong_parameter', { keyNotInDto })));
 
-    return this.postService.update(id, body);
+    const updatedData: Prisma.PostUpdateInput = { ...body };
+    if (body.title && body.title !== existingPost.title) {
+      updatedData.slug = `${convertToEn(body.title.split(' ').join('-'))}-i.${id}`;
+    }
+
+    return this.postService.update(id, updatedData);
 
   }
 
@@ -137,19 +148,19 @@ export class PostController {
   @Roles(UserRole.ADMIN, UserRole.STAFF)
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Patch('set-active/:id')
-  async setActive(@Param('id') id: number) {
+  async setActive(@Param('id', ParseIdPipe) id: number) {
     const existingPost = await this.postService.findOne({ where: { id } });
     if (!existingPost) throw new BaseException(Errors.ITEM_NOT_FOUND(this.i18n.t('common-message.post.setActive.not_found')));
 
     return await this.postService.update(existingPost.id, { isActive: !existingPost.isActive });
-    
+
   }
 
   @ApiBearerAuth()
   @Roles(UserRole.ADMIN, UserRole.STAFF)
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Delete(':id')
-  async remove(@Param('id') id: number) {
+  async remove(@Param('id', ParseIdPipe) id: number) {
     const post = await this.postService.findOne({ where: { id } });
     if (!post) throw new BaseException(Errors.ITEM_NOT_FOUND(this.i18n.t('common-message.post.remove.not_found')));
 

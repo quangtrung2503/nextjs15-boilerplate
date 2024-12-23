@@ -14,6 +14,8 @@ import { FilterCityDto } from './dto/filter-city.dto';
 import { UpdateCityDto } from './dto/update-city.dto';
 import { I18nCustomService } from 'src/resources/i18n/i18n.service';
 import { TourService } from '../tour/tour.service';
+import { convertToEn } from 'src/helpers/functions/common.utils';
+import { ParseIdPipe } from 'src/core/pipes/parse-id.pipe';
 
 @ApiTags('City (Administrator)')
 @Controller('city')
@@ -33,8 +35,15 @@ export class CityController {
     const keyNotInDto = Object.keys(body).find((key: keyof CreateCityDto) => !CreateCityDtoKeys.includes(key))
     if (keyNotInDto) throw new BaseException(Errors.BAD_REQUEST(this.i18n.t('common-message.city.create.wrong_parameter', { keyNotInDto })));
 
-    return this.cityService.create({
-      data: body
+    const newCity = await this.cityService.create({
+      data: {
+        ...body,
+        slug: ''
+      }
+    });
+
+    return await this.cityService.update(newCity.id, {
+      slug: `${convertToEn(newCity.name.split(' ').join('-'))}-i.${newCity.id}`
     });
   }
 
@@ -80,8 +89,8 @@ export class CityController {
   @Roles(UserRole.ADMIN, UserRole.STAFF)
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Get(':id')
-  async findOne(@Param('id') id: number) {
-    const city = await this.cityService.findOne({ 
+  async findOne(@Param('id', ParseIdPipe) id: number) {
+    const city = await this.cityService.findOne({
       where: { id }
     });
     if (!city) throw new BaseException(Errors.ITEM_NOT_FOUND(this.i18n.t('common-message.city.findOne.not_found')));
@@ -93,22 +102,26 @@ export class CityController {
   @Roles(UserRole.ADMIN, UserRole.STAFF)
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Patch(':id')
-  async update(@Param('id') id: number, @Body() body: UpdateCityDto) {
+  async update(@Param('id', ParseIdPipe) id: number, @Body() body: UpdateCityDto) {
     const existingCity = await this.cityService.findOne({ where: { id } });
     if (!existingCity) throw new BaseException(Errors.ITEM_NOT_FOUND(this.i18n.t('common-message.city.update.not_found')));
 
     const keyNotInDto = Object.keys(body).find((key: keyof UpdateCityDto) => !CreateCityDtoKeys.includes(key))
     if (keyNotInDto) throw new BaseException(Errors.BAD_REQUEST(this.i18n.t('common-message.city.update.wrong_parameter', { keyNotInDto })));
 
-    return this.cityService.update(id, body);
+    const updatedData: Prisma.CityUpdateInput = { ...body };
+    if (body.name && body.name !== existingCity.name) {
+      updatedData.slug = `${convertToEn(body.name.split(' ').join('-'))}-i.${id}`;
+    }
 
+    return this.cityService.update(id, updatedData);
   }
 
   @ApiBearerAuth()
   @Roles(UserRole.ADMIN, UserRole.STAFF)
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Patch('set-active/:id')
-  async setActive(@Param('id') id: number) {
+  async setActive(@Param('id', ParseIdPipe) id: number) {
     const existingCity = await this.cityService.findOne({ where: { id } });
     if (!existingCity) throw new BaseException(Errors.ITEM_NOT_FOUND(this.i18n.t('common-message.city.setActive.not_found')));
 
@@ -128,7 +141,7 @@ export class CityController {
         { id: { in: tourIds } },
         { isActive: newStatus }
       );
-      
+
     }
 
     return updateCity;
@@ -138,7 +151,7 @@ export class CityController {
   @Roles(UserRole.ADMIN, UserRole.STAFF)
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Delete(':id')
-  async remove(@Param('id') id: number) {
+  async remove(@Param('id', ParseIdPipe) id: number) {
     const city = await this.cityService.findOne({ where: { id } });
     if (!city) throw new BaseException(Errors.ITEM_NOT_FOUND(this.i18n.t('common-message.city.remove.not_found')));
 

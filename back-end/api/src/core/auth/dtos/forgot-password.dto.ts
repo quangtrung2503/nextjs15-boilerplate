@@ -7,7 +7,8 @@ import {
 
 export class ForgotPassword {
   @ApiProperty({
-    required: true
+    required: true,
+    example: 'johndoe17@example.com',
   })
   @IsEmail()
   @IsNotEmpty()
@@ -17,7 +18,8 @@ export class ForgotPassword {
 
 export class ChangePassword {
   @ApiProperty({
-    required: true
+    required: true,
+    example: 'Password123@',
   })
   @IsString()
   @IsNotEmpty()
@@ -25,7 +27,8 @@ export class ChangePassword {
   readonly currentPassword: string;
 
   @ApiProperty({
-    required: true
+    required: true,
+    example: 'Password123@',
   })
   @IsString()
   @IsNotEmpty()
@@ -33,7 +36,8 @@ export class ChangePassword {
   readonly newPassword: string;
 
   @ApiProperty({
-    required: true
+    required: true,
+    example: 'Password123@',
   })
   @IsString()
   @IsNotEmpty()

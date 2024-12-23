@@ -5,9 +5,7 @@
       "invalid_phone": "Phone number need Minimum nine characters",
       "invalid_email": "Email is not valid",
       "invalid_password": "Password need Minimum eight characters, at least one letter, one number and one special character",
-      "wrong_confirm_password": "Password do not match",
-      "phone_exists": "Phone already exists",
-      "email_exists": "Email already exists"
+      "wrong_confirm_password": "Password do not match"
     },
     "login": {
       "user_not_found": "Email",
@@ -34,9 +32,7 @@
       "invalid_phone": "Phone number need Minimum nine characters",
       "invalid_email": "Email is not valid",
       "invalid_password": "Password need Minimum eight characters, at least one letter, one number and one special character",
-      "invalid_status": "User status must be ACTIVE or BANNED",
-      "phone_exists": "Phone already exists",
-      "email_exists": "Email already exists"
+      "invalid_status": "User status must be ACTIVE or BANNED"
     },
     "findOne": {
       "not_found": "User"
@@ -44,9 +40,7 @@
     "update": {
       "wrong_parameter": "{keyNotInDto} is not defined in parameters",
       "forbidden": "{role} cannot update {key}",
-      "not_found": "User not found or deleted",
-      "phone_exists": "Phone already exists",
-      "email_exists": "Email already exists"
+      "not_found": "User not found or deleted"
     },
     "remove": {
       "not_found": "User not found or deleted"
@@ -169,6 +163,45 @@
     "removeFromWishlist": {
       "not_found": "Tour"
     }
+  },
+  "booking": {
+    "create": {
+      "wrong_parameter": "{keyNotInDto} is not defined in parameters",
+      "tour_not_found": "Tour",
+      "invalid_start_date_before_tour": "Booking start date cannot be before tour start date",
+      "invalid_end_date_after_tour": "Booking end date cannot be after tour end date",
+      "invalid_start_date": "Booking start date cannot be in the past",
+      "invalid_end_date": "Booking end date must be after booking start date"
+    },
+    "cancel": {
+      "not_found": "Booking",
+      "already_cancelled": "Booking has been cancelled previously",
+      "too_late_to_cancel": "You can only cancel booking at least 1 day before the tour starts"
+    },
+    "updateStatus": {
+      "wrong_parameter": "{keyNotInDto} is not defined in parameters",
+      "not_found": "Booking"
+    }
+  },
+  "review": {
+    "create": {
+      "wrong_parameter": "{keyNotInDto} is not defined in parameters",
+      "tour_not_found": "Tour"
+    },
+    "update": {
+      "wrong_parameter": "{keyNotInDto} is not defined in parameters",
+      "not_found": "Review"
+    },
+    "updateHelpful": {
+      "not_found": "Review"
+    },
+    "setActive": {
+      "not_found": "Review"
+    }
+  },
+
+  "validation": {
+    "invalid_id": "ID must be a valid number"
   },
   "test-fall-back": "ENG"
 }

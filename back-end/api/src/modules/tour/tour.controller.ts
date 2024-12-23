@@ -17,6 +17,9 @@ import { FilterTourDto } from './dto/filter-tour.dto';
 import { UpdateTourDto } from './dto/update-tour.dto';
 import { TourImageService } from './tour-image.service';
 import { TourService } from './tour.service';
+import { Duration } from 'src/helpers/constants/enum.constant';
+import { convertToEn } from 'src/helpers/functions/common.utils';
+import { ParseIdPipe } from 'src/core/pipes/parse-id.pipe';
 
 @ApiTags('Tour (Administrator)')
 @Controller('tour')
@@ -78,12 +81,12 @@ export class TourController {
 
     const tourData: Prisma.TourUncheckedCreateInput = {
       name: body.name,
+      slug: '',
       price: body.price,
-      description: body.description,
       transport: body.transport,
       package: body.package,
-      duration: body.duration,
       numberOfPeople: body.numberOfPeople,
+      numberOfHours: body.numberOfHours,
       startDate: body.startDate,
       endDate: body.endDate,
       isFeature: body.isFeature,
@@ -92,6 +95,14 @@ export class TourController {
       ticketType: body.ticketType,
       confirmation: body.confirmation,
       guideLanguage: body.guideLanguage,
+
+      description: body.description,
+      activity: body.activity,
+      included: body.included,
+      notIncluded: body.notIncluded,
+      safety: body.safety,
+      details: body.details,
+
       cityId: body.cityId,
       themeId: body.themeId,
       TourImage: {
@@ -106,20 +117,13 @@ export class TourController {
       }
     }
 
-    return await this.tourService.create({
+    const newTour = await this.tourService.create({
       data: tourData,
-      include: {
-        City: true,
-        Theme: true,
-        TourDestination: {
-          include: {
-            Destination: true
-          }
-        },
-        TourImage: true,
-        Review: true,
-      }
     });
+
+    return await this.tourService.update(newTour.id, {
+      slug: `${convertToEn(newTour.name.split(' ').join('-'))}-i.${newTour.id}`
+    })
   }
 
   @ApiBearerAuth()
@@ -129,12 +133,18 @@ export class TourController {
   async findAll(@Query() options: FilterTourDto) {
     let where: Prisma.TourWhereInput = { AND: [] };
     if (options.textSearch) {
+      const searchNumber = Number(options.textSearch);
+
       // @ts-ignore
       where.AND.push({
         OR: [
           { name: { contains: options.textSearch } },
-          { numberOfPeople: !isNaN(Number(options.textSearch)) ? Number(options.textSearch) : undefined },
-          { price: !isNaN(Number(options.textSearch)) ? Number(options.textSearch) : undefined }
+          {
+            numberOfPeople: !isNaN(searchNumber)
+              ? { gte: searchNumber - 5, lte: searchNumber + 5 }  // Xấp xỉ ±5
+              : undefined
+          },
+          { price: !isNaN(searchNumber) ? { gte: searchNumber * 0.9, lte: searchNumber * 1.1 } : undefined } // ±10% giá
         ]
       });
     }
@@ -153,6 +163,13 @@ export class TourController {
       }
     }
 
+    if (options?.themeIds && options.themeIds.length > 0) {
+      where = {
+        ...where,
+        themeId: { in: options.themeIds }
+      }
+    }
+
     if (options?.destinationIds && options.destinationIds.length > 0) {
       where = {
         ...where,
@@ -164,11 +181,26 @@ export class TourController {
       }
     }
 
-    if (options?.duration) {
-      where = {
-        ...where,
-        duration: options.duration
-      }
+    if (options?.durations && options.durations.length > 0) {
+      const durationFilters = options.durations.map(duration => {
+        switch (duration) {
+          case Duration.ZERO_TO_THREE_HOURS:
+            return { numberOfHours: { gt: 0, lte: 3 } };
+          case Duration.THREE_TO_FIVE_HOURS:
+            return { numberOfHours: { gt: 3, lte: 5 } };
+          case Duration.FIVE_TO_SEVEN_HOURS:
+            return { numberOfHours: { gt: 5, lte: 7 } };
+          case Duration.FULL_DAY:
+            return { numberOfHours: { gt: 7, lte: 24 } };
+          case Duration.MULTI_DAY:
+            return { numberOfHours: { gt: 24 } };
+          default:
+            return {};
+        }
+      });
+
+      // @ts-ignore
+      where.AND.push({ OR: durationFilters });
     }
 
     if (options?.from || options?.to) {
@@ -202,23 +234,53 @@ export class TourController {
           }
         },
         TourImage: true,
-        Review: true,
+        Review: {
+          select: {
+            rating: true
+          }
+        },
+        _count: {
+          select: {
+            Review: true
+          }
+        }
       }
     };
 
-    return await funcListPaging(
+    const raw = await funcListPaging(
       this.tourService,
       whereInput,
       options?.page,
       options?.perPage,
     );
+
+    const modifiedResults = {
+      ...raw,
+      items: raw?.items.map(tour => {
+        const reviews = tour.Review || [];
+        const totalRating = reviews.reduce((sum, review) => sum + review.rating, 0);
+        const averageRating = reviews.length > 0 ? totalRating / reviews.length : 0;
+
+        delete tour.Review;
+        const { _count, ...tourWithoutReview } = tour;
+
+        return {
+          ...tourWithoutReview,
+          averageRating: Number(averageRating.toFixed(1)),
+          totalReviews: _count.Review
+        };
+      })
+
+    };
+
+    return modifiedResults;
   }
 
   @ApiBearerAuth()
   @Roles(UserRole.ADMIN, UserRole.STAFF, UserRole.CUSTOMER)
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Get(':id')
-  async findOne(@Param('id') id: number) {
+  async findOne(@Param('id', ParseIdPipe) id: number) {
     const tour = await this.tourService.findOne({
       where: { id },
       include: {
@@ -230,19 +292,40 @@ export class TourController {
           }
         },
         TourImage: true,
-        Review: true,
+        Review: {
+          select: {
+            rating: true
+          }
+        },
+        _count: {
+          select: {
+            Review: true
+          }
+        }
       }
     });
     if (!tour) throw new BaseException(Errors.ITEM_NOT_FOUND(this.i18n.t('common-message.tour.findOne.not_found')));
 
-    return tour;
+    const reviews = tour.Review || [];
+    const totalRating = reviews.reduce((sum, review) => sum + review.rating, 0);
+    const averageRating = reviews.length > 0 ? totalRating / reviews.length : 0;
+
+    delete tour.Review;
+
+    const { _count, ...tourWithoutReview } = tour;
+
+    return {
+      ...tourWithoutReview,
+      averageRating: Number(averageRating.toFixed(1)),
+      totalReviews: _count.Review
+    };
   }
 
   @ApiBearerAuth()
   @Roles(UserRole.ADMIN, UserRole.STAFF)
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Patch(':id')
-  async update(@Param('id') id: number, @Body() body: UpdateTourDto) {
+  async update(@Param('id', ParseIdPipe) id: number, @Body() body: UpdateTourDto) {
     const existingTour = await this.tourService.findOne({ where: { id } });
     if (!existingTour) throw new BaseException(Errors.ITEM_NOT_FOUND(this.i18n.t('common-message.tour.update.not_found')));
 
@@ -289,13 +372,11 @@ export class TourController {
     }
 
     const updateData: Prisma.TourUpdateInput = {
-      name: body.name,
       price: body.price,
-      description: body.description,
       transport: body.transport,
       package: body.package,
-      duration: body.duration,
       numberOfPeople: body.numberOfPeople,
+      numberOfHours: body.numberOfHours,
       startDate: body.startDate,
       endDate: body.endDate,
       isFeature: body.isFeature,
@@ -304,6 +385,14 @@ export class TourController {
       ticketType: body.ticketType,
       confirmation: body.confirmation,
       guideLanguage: body.guideLanguage,
+
+      description: body.description,
+      activity: body.activity,
+      included: body.included,
+      notIncluded: body.notIncluded,
+      safety: body.safety,
+      details: body.details,
+
       ...(body.cityId && { City: { connect: { id: body.cityId } } }),
       ...(body.themeId && { Theme: { connect: { id: body.themeId } } }),
     };
@@ -328,6 +417,11 @@ export class TourController {
       };
     }
 
+    if (body.name) {
+      updateData.name = body.name;
+      updateData.slug = `${convertToEn(body.name.split(' ').join('-'))}-i.${id}`;
+    }
+
     return await this.tourService.update(id, updateData);
   }
 
@@ -335,17 +429,17 @@ export class TourController {
   @Roles(UserRole.ADMIN, UserRole.STAFF)
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Patch('set-active/:id')
-  async setActive(@Param('id') id: number) {
+  async setActive(@Param('id', ParseIdPipe) id: number) {
     const existingTour = await this.prismaService.tour.findFirst({
       where: { id },
-      include: { 
-        City: true, 
-        Theme: true, 
-        TourDestination: { 
-          include: { 
+      include: {
+        City: true,
+        Theme: true,
+        TourDestination: {
+          include: {
             Destination: true
-          } 
-        } 
+          }
+        }
       }
     });
 
@@ -395,19 +489,19 @@ export class TourController {
   @Roles(UserRole.ADMIN, UserRole.STAFF)
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Patch('set-feature/:id')
-  async setFeature(@Param('id') id: number) {
+  async setFeature(@Param('id', ParseIdPipe) id: number) {
     const existingTour = await this.tourService.findOne({ where: { id } });
     if (!existingTour) throw new BaseException(Errors.ITEM_NOT_FOUND(this.i18n.t('common-message.tour.setFeature.not_found')));
 
     return await this.tourService.update(existingTour.id, { isFeature: !existingTour.isFeature });
-    
+
   }
 
   @ApiBearerAuth()
   @Roles(UserRole.ADMIN, UserRole.STAFF)
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Delete(':id')
-  async remove(@Param('id') id: number) {
+  async remove(@Param('id', ParseIdPipe) id: number) {
     const tour = await this.tourService.findOne({ where: { id } });
     if (!tour) throw new BaseException(Errors.ITEM_NOT_FOUND(this.i18n.t('common-message.tour.remove.not_found')));
 
