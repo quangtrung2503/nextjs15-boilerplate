@@ -19,14 +19,9 @@ import SignUpModel from "@/models/signup.model";
 import useAuth from "@/hooks/useAuth";
 import { useNotifications } from "@/helpers/toast";
 import Loading from "@/components/common/Loading";
+import { defaultValue, FormValues, validationSchema } from "./forms";
 
-type FormValues = {
-  name: string;
-  phone?: string; 
-  email: string;
-  password: string;
-  confirmPassword: string;
-};
+
 
 type ISignUpProps = {
   path: string;
@@ -44,27 +39,10 @@ const SignUp = (props: ISignUpProps) => {
       router.push(pageUrls.Homepage);
     }
   }, [isLogged]);
-  const validationSchema = Yup.object().shape({
-    name: Yup.string().required(t("validations.nameRequire")),
-    phone: Yup.string()
-    .matches(/^([0-9]{10})?$/, t("validations.phoneFormat")),
-    email: Yup.string()
-      .email(t("validations.emailFormat"))
-      .required(t("validations.emailRequire")),
-    password: Yup.string().required(t("validations.passwordRequire")),
-    confirmPassword: Yup.string()
-      .oneOf([Yup.ref("password")], t("validations.passwordNotMatch"))
-      .required(t("validations.passwordRequire")),
-  });
+  
   
   const { handleSubmit, control } = useForm<FormValues>({
-    defaultValues: {
-      email: "",
-      password: "",
-      confirmPassword: "",
-      name: "",
-      phone: "", // Phone is optional, should be undefined or empty string
-    },
+    defaultValues: defaultValue,
     reValidateMode: "onSubmit",
     criteriaMode: "all",
     resolver: yupResolver(validationSchema), // Use the validation schema

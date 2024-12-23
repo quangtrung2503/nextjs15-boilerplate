@@ -32,6 +32,7 @@ export default {
         accent_gray_dark: "var(--accent-gray-dark)",
         accent_gray_800: "var(--accent-gray-800)",
         accent_gray_500: "var(--accent-gray-500)",
+        accent_gray_200: "var(--accent-gray-200)",
         accent_gray_light: "var(--accent-gray-light)",
 
         footer: "var(--footer)",
@@ -66,9 +67,6 @@ export default {
           'scrollbar-width': 'none',
         },
       },
-      margin: {
-        header: "var(--header-height)",
-      }
     },
   },
   plugins: [],

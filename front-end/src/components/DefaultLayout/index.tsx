@@ -7,7 +7,7 @@ import pageUrls from "@/constants/pageUrls";
 interface DefaultLayoutProps {
   children: React.ReactNode;
 }
-const DefaulLayout = (props: DefaultLayoutProps) => {
+const DefaultLayout = (props: DefaultLayoutProps) => {
   const pathname = usePathname()
   const hideHeaderFooter = pathname.includes("sign") || pathname.includes("admin");
   
@@ -15,10 +15,10 @@ const DefaulLayout = (props: DefaultLayoutProps) => {
   return (
     <>
       {!hideHeaderFooter && <Header />}
-      <main className={pathname === `${pageUrls.Homepage}en` ? "" : "tw-mt-header"}>{children}</main>
+      <main className={`${pathname === `${pageUrls.Homepage}en` ? "" : "tw-mt-header"}`}>{children}</main>
       {!hideHeaderFooter && <Footer />}
     </>
   );
 };
 
-export default DefaulLayout;
+export default DefaultLayout;

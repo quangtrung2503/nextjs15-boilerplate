@@ -2,14 +2,12 @@ import { Card, CardContent, CardMedia } from "@mui/material";
 import { default as CommonStyles } from "../../common";
 import React from "react";
 import CommonIcons from "../../CommonIcons";
-import AccessTimeIcon from "@mui/icons-material/AccessTime";
-import DriveEtaOutlinedIcon from "@mui/icons-material/DriveEtaOutlined";
-import PeopleAltOutlinedIcon from "@mui/icons-material/PeopleAltOutlined";
-interface CardGridItemProps {
+import { useTranslations } from "next-intl";
+export interface CardGridItemProps {
   src: string;
   title: string;
   description?: string;
-  link?: string;
+  link: string;
   price?: number;
   options?: [];
   feedback_quantity?: number;
@@ -33,9 +31,10 @@ const CardGridItem = (props: CardGridItemProps) => {
     transport,
     ...rest
   } = props;
+  const t = useTranslations("card")
   return (
     <Card className="tw-w-full tw-p-0 tw-shadow-card">
-      <CommonStyles.Link href={"/citytour/1"} className="tw-w-full">
+      <CommonStyles.Link href={link} className="tw-w-full">
       <CommonStyles.Box className="tw-p-2">
         <CardMedia
           className={`tw-min-h-[180px]`}
@@ -52,10 +51,10 @@ const CardGridItem = (props: CardGridItemProps) => {
             <CommonStyles.Box className="tw-flex tw-items-center tw-gap-2">
               <CommonIcons.AccessTime className="tw-size-[19px]" />
               <CommonStyles.Typography type="size14Weight600">
-                Duration{" "}
+                {t("duration")}{" "}
                 {duration <= 24 && duration
-                  ? `${duration} hours`
-                  : `${duration / 24} day`}
+                  ? `${duration} ${t("hours")}`
+                  : `${duration / 24} ${t("days")}`}
               </CommonStyles.Typography>
             </CommonStyles.Box>
             <CommonStyles.Box className="tw-flex tw-items-center tw-gap-2">
@@ -76,13 +75,13 @@ const CardGridItem = (props: CardGridItemProps) => {
       </CardContent>
       <CommonStyles.Box className="tw-px-5 tw-py-2 tw-flex tw-items-center tw-justify-between">
         <CommonStyles.Box>
-          <CommonStyles.Rating readOnly haveFeedback={false} valueTable={4} />
+          <CommonStyles.Rating readOnly haveFeedback={false} valueTable={feedback_average} />
           <CommonStyles.Typography
             type="size12Weight600"
             className="tw-ml-[3px]"
             color="var(--accent-gray-500)"
           >
-            {feedback_quantity} reviews
+            {feedback_quantity} {t("reviews")}
           </CommonStyles.Typography>
         </CommonStyles.Box>
         <CommonStyles.Box>
@@ -90,7 +89,7 @@ const CardGridItem = (props: CardGridItemProps) => {
             type="size20Weight700"
             color="var(--primary)"
           >
-            $
+            {t("currency")}
             {price?.toLocaleString("en-US", {
               minimumFractionDigits: 2,
               maximumFractionDigits: 2,
@@ -100,7 +99,7 @@ const CardGridItem = (props: CardGridItemProps) => {
             type="size12Weight600"
             color="var(--accent-gray-500)"
           >
-            per person
+            {t("perPerson")}
           </CommonStyles.Typography>
         </CommonStyles.Box>
       </CommonStyles.Box>

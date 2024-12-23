@@ -1,14 +1,13 @@
 "use client";
 import Link from "next/link";
-import { MenuItem, MenuList } from "@mui/material";
-import React, { useState, useEffect, use } from "react";
+import React, { useState, useEffect } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import CommonStyles from "@/components/common";
 import CommonIcons from "@/components/CommonIcons";
 import pageUrls from "@/constants/pageUrls";
 import useAuth from "@/hooks/useAuth";
 import { useTranslations } from "next-intl";
-import MenuAcount from "./components/MenuAcount";
+import MenuAccount from "./components/MenuAccount";
 export interface AccountMenu {
   name: string | undefined;
   email: string | undefined;
@@ -93,7 +92,7 @@ const Header = () => {
         ) : (
           <CommonStyles.Box>
             <CommonStyles.PopoverMui
-              body={<MenuAcount account={accountMenu} />}
+              body={<MenuAccount account={accountMenu} />}
               zIndex={1300}
               onClick={() => console.log("Popover clicked!")}
             >

@@ -43,8 +43,6 @@ class HttpService {
   constructor() {
     this.axios = axios.create();
     this.axios.defaults.withCredentials = false;
-
-    //! Interceptor request
     this.axios.interceptors.request.use(
       (config) => {
         const nextConfig = cloneDeep(config);
@@ -65,25 +63,25 @@ class HttpService {
       }
     );
 
-    //! Interceptor response
     this.axios.interceptors.response.use(
       function (config) {
-        const statusCode = config.data?.data?.status;
+        const statusCode = config.data.statusCode;
+        console.log({statusCode});
+        
         if (statusCode >= 400 && statusCode <= 499) {
           return Promise.reject(config?.data?.data?.message);
         }
         return config;
       },
       function (error) {
-        const urlReq = error.response.config.url;
-        // const isAdminLoginUrl = urlReq.includes(apiUrls.LOGIN_ADMIN);
-        // if (error.response.status === 401 && !isLoginUrl) {
-        //   localStorage.removeItem(KEY_TOKEN);
-        //   localStorage.removeItem(KEY_USER);
-        //   window.location.reload();
-        //   return;
-        // }
-
+        console.log({error});
+        
+        if (error.response.status === 401 || error.response.status === 403) {
+          localStorage.removeItem(KEY_TOKEN);
+          localStorage.removeItem(KEY_USER);
+          window.location.reload();
+          return;
+        }
         return Promise.reject(error);
       }
     );

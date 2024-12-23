@@ -1,4 +1,21 @@
 {
+  "feedback": {
+    "title": "Customer Review",
+    "reviews": "reviews",
+    "filter": "Filter",
+    "recommendPlaceholder": "Recommend",
+    "travelerTypePlaceholder": "Traveler Type",
+    "ratingPlaceholder": "Rating",
+    "searchPlaceholder": "Search Here"
+  },
+  "card": {
+    "duration": "Duration",
+    "hours": "hours",
+    "days": "days",
+    "reviews": "reviews",
+    "perPerson": "per person",
+    "currency": "$"
+  },
   "header": {
     "navbar": {
       "home": "Home",
@@ -23,6 +40,15 @@
     "currencyOptions": {
       "USD": "U.S. Dollar ($)",
       "VND": "V.N Dong (VND)"
+    },
+    "companyMenu": {
+      "title": "Company",
+      "menu": {
+        "aboutUs": "About Us",
+        "blog": "Blog",
+        "pressRoom": "Press Room",
+        "careers": "Careers"
+      }
     },
     "helpMenu": {
       "title": "Help",
@@ -104,6 +130,9 @@
     }
   },
   "homePage": {
+    "reviews": "reviews",
+    "trendingNow": "Trending now",
+    "bookNowBtn": "Book now",
     "title": "We Find The Best Tours For You",
     "subtitleAboutTour": "Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint. Velit officia consequat duis enim velit mollit. Exercitation veniam consequat sunt nostrud amet.",
     "watchVideo": "Watch Video",
@@ -129,6 +158,26 @@
     "allPostButton": "View All Posts"
   },
   "cityTourDetail": {
+    "booking": "Booking",
+    "noOfGuest": "No. Of Guest",
+    "adults": "Adults",
+    "children": "Children",
+    "adult": "Adult",
+    "child": "Child",
+    "doneBtn": "Done",
+    "currency": "$",
+    "relatedToursInToday": "Related tours in Today",
+    "relatedToursIn": "Related tours in",
+    "formBooking": {
+      "confirmBooking": "Confirm Booking",
+      "saveToWishlist": "Save to Wishlist",
+      "shareTheActivity": "Share The Activity"
+    },
+    "reviews": "reviews",
+    "feedback": {
+      "helpful": "Helpful"
+    },
+    "subtotal": "Subtotal",
     "validations": {
       "startDateRequire": "Please select a start date.",
       "startDateInvalid": "The start date is invalid.",

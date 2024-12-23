@@ -139,7 +139,7 @@ const Typography = (props: Props) => {
       fontSize: "18px",
       fontWeight: 600,
     });
-    styles.set("size18Weight600", {
+    styles.set("size18Weight700", {
       fontSize: "18px",
       fontWeight: 700,
     });

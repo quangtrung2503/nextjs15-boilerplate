@@ -5,23 +5,26 @@ import { useRouter } from "next/navigation";
 import pageUrls from "@/constants/pageUrls";
 import { useTranslations } from "next-intl";
 import { AccountMenu } from "..";
+import useAuth from "@/hooks/useAuth";
 type Props = {
   account: AccountMenu;
 };
-const MenuAcount = (props: Props) => {
+const MenuAccount = (props: Props) => {
   const { account } = props;
+  const { avatarUrl, name, email } = account;
   const router = useRouter();
   const t = useTranslations("header");
+  const auth = useAuth();
   return (
     <CommonStyles.Box className="tw-p-4 tw-flex tw-flex-col tw-gap-4">
       <CommonStyles.Box className="tw-flex tw-gap-4">
-        <CommonStyles.Avatar src={account.avatarUrl ? account.avatarUrl : ""} />
+        <CommonStyles.Avatar src={avatarUrl ? avatarUrl : ""} />
         <CommonStyles.Box className="tw-flex tw-flex-col">
           <CommonStyles.Typography className="tw-text-primary tw-font-semibold">
-            {account.name}
+            {name}
           </CommonStyles.Typography>
           <CommonStyles.Typography className="tw-text-gray-500 tw-text-sm">
-            {account.email}
+            {email}
           </CommonStyles.Typography>
         </CommonStyles.Box>
       </CommonStyles.Box>
@@ -59,10 +62,12 @@ const MenuAcount = (props: Props) => {
         >
           {t("profileMenu.accountProfile")}
         </MenuItem>
-        <MenuItem className="tw-py-3">{t("profileMenu.logOut")}</MenuItem>
+        <MenuItem onClick={auth.signOut} className="tw-py-3">
+          {t("profileMenu.logOut")}
+        </MenuItem>
       </MenuList>
     </CommonStyles.Box>
   );
 };
 
-export default MenuAcount;
+export default MenuAccount;

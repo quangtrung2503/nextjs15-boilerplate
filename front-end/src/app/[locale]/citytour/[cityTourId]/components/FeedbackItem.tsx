@@ -1,8 +1,9 @@
 import React from "react";
 import CommonStyles from "@/components/common";
 import CommonIcons from "@/components/CommonIcons";
+import { useTranslations } from "next-intl";
 
-type FeedbackData = {
+interface FeedbackData {
   avatar: string;
   name: string;
   rating: number;
@@ -11,26 +12,21 @@ type FeedbackData = {
   content: string;
   isVerified: boolean;
   helpful: boolean;
-};
+}
 
-type Props = {
-  feedback: FeedbackData;
-};
-
-const FeedbackItem: React.FC<Props> = ({ feedback }) => {
-  const {
-    avatar,
-    name,
-    rating,
-    date,
-    title,
-    content,
-    isVerified,
-    helpful,
-  } = feedback;
-
+const FeedbackItem: React.FC<FeedbackData> = ({
+  avatar,
+  name,
+  rating,
+  date,
+  title,
+  content,
+  isVerified,
+  helpful,
+}) => {
+  const t = useTranslations("cityTourDetail");
   return (
-    <div className="tw-py-5 tw-border-b">
+    <CommonStyles.Box className="tw-py-5 tw-border-b">
       <CommonStyles.Box className="tw-flex tw-gap-10 tw-items-start">
         <CommonStyles.Box className="tw-flex tw-items-center tw-gap-5">
           <CommonStyles.Avatar
@@ -74,7 +70,7 @@ const FeedbackItem: React.FC<Props> = ({ feedback }) => {
           </CommonStyles.Box>
           <CommonStyles.Box className="tw-flex tw-items-center tw-gap-1">
             <CommonStyles.Typography type="size13Weight600">
-              Helpful?
+              {t("feedback.helpful")}?
             </CommonStyles.Typography>
             <CommonStyles.Typography
               type="size13Weight600"
@@ -87,7 +83,7 @@ const FeedbackItem: React.FC<Props> = ({ feedback }) => {
           </CommonStyles.Box>
         </CommonStyles.Box>
       </CommonStyles.Box>
-    </div>
+    </CommonStyles.Box>
   );
 };
 

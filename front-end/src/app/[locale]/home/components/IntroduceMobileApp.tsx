@@ -3,7 +3,7 @@ import { default as CommonStyles } from "@/components/common";
 import { Container } from "@mui/material";
 import CommonIcons from "@/components/CommonIcons";
 import { CommonButton } from "@/components/common/Button";
-import { introduceApp, mobileApp1, mobileApp2 } from "@/assets";
+import { commonImg } from "@/assets";
 
 export interface IntroduceMobileAppProps {
   introduceMobileApp: {
@@ -20,7 +20,7 @@ export interface IntroduceMobileAppProps {
 const IntroduceMobileApp = () => {
   return (
     <CommonStyles.Box
-      sx={{ backgroundImage: `url(${introduceApp.src})` }}
+      sx={{ backgroundImage: `url(${commonImg.introduceApp.src})` }}
       className="tw-w-full tw-relative tw-z-50 tw-h-[720px] tw-bg-no-repeat tw-bg-center tw-bg-cover"
     >
       {/* Overlay */}
@@ -30,12 +30,12 @@ const IntroduceMobileApp = () => {
         <CommonStyles.Box className="tw-col-span-6 tw-flex tw-items-center">
           <CommonStyles.Box className="tw-absolute tw-z-40">
             <img
-              src={mobileApp1.src}
+              src={commonImg.mobileApp1.src}
               className="tw-absolute tw-z-30 -tw-translate-y-5"
               alt=""
             />
             <img
-              src={mobileApp2.src}
+              src={commonImg.mobileApp2.src}
               className="tw-translate-y-10 tw-translate-x-20"
               alt=""
             />
