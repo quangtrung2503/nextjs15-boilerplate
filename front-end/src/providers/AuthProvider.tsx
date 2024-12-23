@@ -1,8 +1,6 @@
 "use client";
 
-import apiUrls from "@/constants/apiUrls";
 import pageUrls from "@/constants/pageUrls";
-import { ResponseCommon } from "@/interfaces/common";
 import { FormLoginValues } from "@/models/login.model";
 import { FormSignUpValues } from "@/models/signup.model";
 import httpService from "@/services/httpService";
@@ -13,8 +11,7 @@ import {
 } from "@/services/modules/auth/interfaces/signin.interface";
 import { SignUpResponse } from "@/services/modules/auth/interfaces/signup.interface";
 import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
-// import { RequestRegister, ResponseRegisterMessage } from 'modules/register/register.interface';
-// import registerServices from 'modules/register/register.services';
+import { useRouter } from "next/navigation";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 
 type AuthContextType = {
@@ -25,7 +22,6 @@ type AuthContextType = {
   signIn: (body: FormLoginValues) => void;
   signUp: (body: FormSignUpValues) => void;
   signOut: () => void;
-  // register: (body: RequestRegister) => void;
 };
 
 const AuthContext = React.createContext<AuthContextType>({
@@ -36,7 +32,6 @@ const AuthContext = React.createContext<AuthContextType>({
   signIn: () => {},
   signUp: () => {},
   signOut: () => {},
-  // register: () => {},
 });
 
 export const useSession = () => React.useContext(AuthContext);
@@ -44,7 +39,7 @@ export const useSession = () => React.useContext(AuthContext);
 export default function AuthProvider(props: { children: React.ReactNode }) {
   const { children } = props;
   const [state, setState] = useState<
-    Omit<AuthContextType, "signIn" | "signOut" | "register" | "signUp">
+    Omit<AuthContextType, "signIn" | "signOut" | "signUp">
   >({
     accessToken: httpService.getTokenFromLocalStorage() || "",
     user: httpService.getUserFromLocalStorage() || "",
@@ -60,15 +55,14 @@ export default function AuthProvider(props: { children: React.ReactNode }) {
       httpService.attachTokenToHeader(accessToken);
       httpService.saveTokenToLocalStorage(accessToken);
       httpService.saveUserToStorage(user);
-      // broadcastService.channelSwitchUser().postMessageReload();
     },
-    []
+    [],
   );
 
   const signIn = useCallback(
     (
       body: FormLoginValues,
-      router?: AppRouterInstance
+      router?: AppRouterInstance,
     ): Promise<ResponseLogin> => {
       return new Promise<ResponseLogin>((resolve, reject) => {
         (async () => {
@@ -100,12 +94,12 @@ export default function AuthProvider(props: { children: React.ReactNode }) {
         })();
       });
     },
-    [onSignSuccess]
+    [onSignSuccess],
   );
   const signUp = useCallback(
     (
       body: FormSignUpValues,
-      router?: AppRouterInstance
+      router?: AppRouterInstance,
     ): Promise<SignUpResponse> => {
       return new Promise((resolve, reject) => {
         (async () => {
@@ -118,27 +112,12 @@ export default function AuthProvider(props: { children: React.ReactNode }) {
         })();
       });
     },
-    []
+    [],
   );
-  const register = useCallback(
-    (body: FormSignUpValues): Promise<SignUpResponse> => {
-      return new Promise((resolve, reject) => {
-        (async () => {
-          try {
-            const response = await authServices.signup(body);
-            resolve(response);
-          } catch (error) {
-            reject(error);
-          }
-        })();
-      });
-    },
-    []
-  );
+
   const signOut = useCallback(() => {
     httpService.clearUserInfo();
-    // broadcastService.channelSwitchUser().postMessageReload();
-    window.location.href = pageUrls.SignIn;
+    window.location.href = pageUrls.Homepage;
   }, []);
 
   const values = useMemo(() => {

@@ -19,14 +19,9 @@ import SignUpModel from "@/models/signup.model";
 import useAuth from "@/hooks/useAuth";
 import { useNotifications } from "@/helpers/toast";
 import Loading from "@/components/common/Loading";
+import { defaultValue, FormValues, validationSchema } from "./forms";
 
-type FormValues = {
-  name: string;
-  phone?: string;
-  email: string;
-  password: string;
-  confirmPassword: string;
-};
+
 
 type ISignUpProps = {
   path: string;
@@ -44,33 +39,15 @@ const SignUp = (props: ISignUpProps) => {
       router.push(pageUrls.Homepage);
     }
   }, [isLogged]);
+  
+  
   const { handleSubmit, control } = useForm<FormValues>({
-    defaultValues: {
-      email: "",
-      password: "",
-      confirmPassword: "",
-      name: "",
-      phone: "",
-    },
+    defaultValues: defaultValue,
     reValidateMode: "onSubmit",
     criteriaMode: "all",
-    resolver: yupResolver(
-      Yup.object().shape({
-        name: Yup.string().required(t("validations.nameRequire")),
-        phone: Yup.string().matches(
-          /^[0-9]{10}$/,
-          t("validations.phoneFormat")
-        ),
-        email: Yup.string()
-          .email(t("validations.emailFormat"))
-          .required(t("validations.emailRequire")),
-        password: Yup.string().required(t("validations.passwordRequire")),
-        confirmPassword: Yup.string()
-          .oneOf([Yup.ref("password")], t("validations.passwordNotMatch"))
-          .required(t("validations.passwordRequire")),
-      })
-    ),
+    resolver: yupResolver(validationSchema), // Use the validation schema
   });
+  
 
   const onSubmit: SubmitHandler<FormValues> = async (values) => {
     const body = {
@@ -170,7 +147,7 @@ const SignUp = (props: ISignUpProps) => {
           <CommonStyles.Box className="tw-grid tw-grid-cols-12 tw-gap-5 tw-w-full">
             <RHFField
               name="name"
-              className="tw-col-span-6"
+              classNameContainer="tw-col-span-6"
               control={control}
               sx={{
                 fieldset: {
@@ -184,7 +161,7 @@ const SignUp = (props: ISignUpProps) => {
             />
             <RHFField
               name="phone"
-              className="tw-col-span-6"
+              classNameContainer="tw-col-span-6"
               control={control}
               sx={{
                 fieldset: {
@@ -198,7 +175,7 @@ const SignUp = (props: ISignUpProps) => {
             />
             <RHFField
               name="email"
-              className="tw-col-span-12"
+              classNameContainer="tw-col-span-12"
               control={control}
               sx={{
                 fieldset: {
@@ -212,7 +189,7 @@ const SignUp = (props: ISignUpProps) => {
             />
             <RHFField
               name="password"
-              className="tw-col-span-12"
+              classNameContainer="tw-col-span-12"
               control={control}
               sx={{
                 fieldset: {
@@ -227,7 +204,7 @@ const SignUp = (props: ISignUpProps) => {
             />
             <RHFField
               name="confirmPassword"
-              className="tw-col-span-12"
+              classNameContainer="tw-col-span-12"
               control={control}
               type="password"
               sx={{

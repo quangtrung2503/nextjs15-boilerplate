@@ -10,6 +10,7 @@ export default {
     USER_URL: `${BASE_URL}/user`,
     THEME_URL: `${BASE_URL}/theme`,
     TOUR_URL: `${BASE_URL}/tour`,
+    TOUR_CUS_URL: `${BASE_URL}/tour-customer`,
     POST_URL: `${BASE_URL}/post`,
     UPLOAD_URL: `${BASE_URL}/upload`,
     DESTINATION_URL: `${BASE_URL}/destination`,
