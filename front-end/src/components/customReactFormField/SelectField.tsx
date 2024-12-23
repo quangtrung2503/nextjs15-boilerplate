@@ -1,6 +1,5 @@
 "use client";
-
-import React, { ReactNode } from "react";
+import React from "react";
 import {
   FormControl,
   InputLabel,
@@ -13,117 +12,95 @@ import {
 import { SelectOption } from "@/interfaces/common";
 import { twMerge } from "tailwind-merge";
 import { FieldError } from "react-hook-form";
+import { default as CommonStyles } from "@/components/common";
 
 interface SelectFieldProps {
   label?: string;
-  name?: string;
   sx?: SxProps;
   size?: "small" | "medium";
-  value?: string | number;
   options?: SelectOption[];
-  classNameLabel?: string;
-  error?: boolean;
   placeholder?: string;
-  helperText?: string;
+  classNameLabel?: string;
   classNameContainer?: string;
   className?: string;
-  fullWidth?: boolean;
-  defaultValue?: string | number | undefined;
   variant?: "outlined" | "filled" | "standard";
-  onChange?: (event: SelectChangeEvent, child: ReactNode) => void;
+  required?: boolean;
+  onChange?: (event: SelectChangeEvent) => void;
   field: {
-    value: string | number | undefined; // Allow undefined to match React's controlled component requirements
-    onChange: (event: SelectChangeEvent) => void; // Match MUI's expected event type
+    value: string | number | undefined;
+    onChange: (event: SelectChangeEvent) => void;
     onBlur: () => void;
   };
   fieldState: { error?: FieldError };
-  required?: boolean;
 }
 
 const SelectField: React.FC<SelectFieldProps> = ({
   label,
-  name,
-  value,
-  defaultValue,
+  sx,
   size = "medium",
   options = [],
-  classNameLabel,
-  onChange,
-  className,
-  sx,
-  required,
-  error = false,
-  helperText = "",
-  classNameContainer = "",
-  fullWidth = true,
-  variant = "outlined",
-  field,
   placeholder,
+  classNameLabel,
+  classNameContainer,
+  className,
+  variant = "outlined",
+  required = false,
+  onChange,
+  field,
   fieldState,
-  ...props
 }) => {
   return (
-    <FormControl
-      size={size}
-      className={twMerge(classNameContainer)}
-      fullWidth={fullWidth}
-      variant={variant}
-      // error={error || !!fieldState.error}
-    >
+    <CommonStyles.Box className={twMerge("tw-w-full", classNameContainer)}>
       {label && (
-        <label
+        <InputLabel
           className={twMerge(
             required && "required",
             classNameLabel,
-            "tw-font-mulish tw-text-[15px] tw-mb-2 tw-font-bold tw-text-accent_gray_800",
+            "tw-text-xl tw-font-mulish tw-font-bold tw-text-accent_gray_800"
           )}
+          shrink
         >
           {label}
-        </label>
+        </InputLabel>
       )}
-      <Select
-        {...field}
-        value={value ? String(value) : String(field.value || "")} // Ensure string type
-        onChange={(event, child) => {
-          // const newValue = event.target.value; // This will always be a string
-
-          // Call React Hook Form's onChange handler with the string value
-          field.onChange(event as SelectChangeEvent<string>);
-
-          // Call custom onChange handler if provided
-          if (onChange) {
-            onChange(event as SelectChangeEvent<string>, child);
-          }
-        }}
-        onBlur={field.onBlur}
+      <FormControl
+        size={size}
+        fullWidth
+        error={!!fieldState?.error}
         sx={sx}
-        name={name}
-        MenuProps={{
-          disableScrollLock: true,
-        }}
-        // {...props}
+        variant={variant}
       >
-        {placeholder && (
-          <MenuItem disabled value="">
-            <em>{placeholder}</em>
-          </MenuItem>
+        <Select
+          {...field}
+          value={field.value?.toString() || ""}
+          onBlur={field.onBlur}
+          displayEmpty
+          onChange={onChange}
+          MenuProps={{ disableScrollLock: true }}
+          className={className}
+        >
+          {placeholder && (
+            <MenuItem disabled value="">
+              <CommonStyles.Typography className="tw-text-accent_gray_500">
+                {placeholder}
+              </CommonStyles.Typography>
+            </MenuItem>
+          )}
+          {options.map((option, index) => (
+            <MenuItem
+              key={index}
+              value={option.value}
+              className={twMerge("tw-flex tw-items-center")}
+            >
+              {option.label}
+            </MenuItem>
+          ))}
+        </Select>
+        {fieldState?.error?.message && (
+          <FormHelperText>{fieldState.error.message}</FormHelperText>
         )}
-        {options.map((option, index) => (
-          <MenuItem
-            key={index}
-            value={option.value}
-            className={twMerge("tw-flex tw-items-center", className)}
-          >
-            {option.label}
-          </MenuItem>
-        ))}
-      </Select>
-      {(helperText || fieldState.error?.message) && (
-        <FormHelperText>
-          {helperText || fieldState.error?.message}
-        </FormHelperText>
-      )}
-    </FormControl>
+      </FormControl>
+    </CommonStyles.Box>
   );
 };
 

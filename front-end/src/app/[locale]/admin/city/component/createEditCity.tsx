@@ -15,6 +15,7 @@ import cachedKeys from "@/constants/cachedKeys"
 import useGetCity from "@/services/modules/city/hook/useGetCity"
 import { useNotifications } from "@/helpers/toast"
 import CommonIcons from "@/components/CommonIcons"
+import { useTranslations } from "next-intl"
 
 interface createEditCityProps {
   toggle: () => void;
@@ -30,11 +31,12 @@ const CreateEditCity: FC<createEditCityProps> = (props) => {
   const { uploadImage } = useImageUploader();
   const { data } = useGetCity(Number(id), { isTrigger: !!id });
   const {showError} = useNotifications();
+  const t = useTranslations("cityAdmin")
   const schema = yup
   .object({
-    name: yup.string().required("Name is a required field"),
-    image: yup.string().required("Image is a required field"),
-    description: yup.string().required("Description is a required field"),
+    name: yup.string().required(t("nameRequire")),
+    image: yup.string().required(t("imageRequire")),
+    description: yup.string().required(t("descriptionRequire")),
     })
     .required();
     
@@ -81,12 +83,12 @@ const CreateEditCity: FC<createEditCityProps> = (props) => {
         showError(error);
       }
     } else {
-    showError("No file selected");
+    showError(t("noFileSelected"));
     }
   }
   return (
     <CommonStyles.Box className="tw-w-[500px] tw-relative">
-      <CommonStyles.Box className="tw-flex tw-justify-center"><CommonStyles.Typography type="size20Weight600">{id?"Edit city":"Create new city"}</CommonStyles.Typography></CommonStyles.Box>
+      <CommonStyles.Box className="tw-flex tw-justify-center"><CommonStyles.Typography type="size20Weight600">{id?t("editCity"):t("createNewCity")}</CommonStyles.Typography></CommonStyles.Box>
       <FormProvider {...methods} >
         <form onSubmit={methods.handleSubmit(onSubmit)}>
           <RHFField
@@ -95,14 +97,14 @@ const CreateEditCity: FC<createEditCityProps> = (props) => {
             control={methods.control}
             component={InputField}
             // defaultValue={initValue?.name}
-            label="Name"
+            label={t("name")}
           />
           <RHFField
             setValue={methods.setValue}
             className="tw-mb-3"
             name="image"
             control={methods.control}
-            label="Image"
+            label={t("image")}
             // defaultValue={initValue?.image}
             component={UploadField}
             onChange={(e) => handleUpload(e)}
@@ -113,10 +115,10 @@ const CreateEditCity: FC<createEditCityProps> = (props) => {
             // defaultValue={initValue?.description}
             control={methods.control}
             component={InputField}
-            label="Description"
+            label={t("description")}
           />
           <CommonStyles.Box className="tw-flex tw-justify-around">
-            <CommonStyles.CommonButton type="submit">Submit</CommonStyles.CommonButton>
+            <CommonStyles.CommonButton type="submit">{t("submit")}</CommonStyles.CommonButton>
           </CommonStyles.Box>
           <CommonStyles.Box  className="tw-absolute tw-top-0 tw-right-0 tw-cursor-pointer" onClick={toggle}><CommonIcons.Close /></CommonStyles.Box>
         </form>

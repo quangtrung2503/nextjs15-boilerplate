@@ -8,6 +8,7 @@ import { ThemeModule } from '../theme/theme.module';
 import { DestinationModule } from '../destination/destination.module';
 import { TourImageService } from './tour-image.service';
 import { TourCustomerController } from './tour-customer.controller';
+import { ReviewModule } from '../review/review.module';
 
 @Module({
   controllers: [TourController, TourCustomerController],
@@ -18,7 +19,8 @@ import { TourCustomerController } from './tour-customer.controller';
     I18nCustomModule,
     forwardRef(() => CityModule),
     forwardRef(() => ThemeModule),
-    forwardRef(() => DestinationModule)
+    forwardRef(() => DestinationModule),
+    forwardRef(() => ReviewModule)
   ],
 })
 export class TourModule {}

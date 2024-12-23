@@ -9,7 +9,8 @@ const ActionCell: React.FC<{
   row: Post;
   handleEditId: (id: number) => void;
   handleDeletePost: (id: number) => void;
-}> = ({ row, handleEditId, handleDeletePost }) => {
+  t: any
+}> = ({ row, handleEditId, handleDeletePost ,t}) => {
   const [anchorEl, setAnchorEl] = useState<HTMLDivElement | null>(null);
 
   const handleOpenPopover = (event: React.MouseEvent<HTMLDivElement>) => {
@@ -55,20 +56,20 @@ const ActionCell: React.FC<{
           >
             <CommonStyles.Box className="tw-p-2 tw-flex tw-flex-col tw-items-center">
               <CommonStyles.Typography className="tw-text-md tw-mb-1 tw-font-bold">
-                Are you sure you want to delete this Post?
+                {t("confirmDelete")}
               </CommonStyles.Typography>
               <CommonStyles.Box className="tw-flex tw-gap-4">
                 <CommonStyles.Box
                   className="tw-text-red-500 tw-cursor-pointer tw-border-solid tw-border-[1px] tw-bg-red-100 tw-rounded-md tw-px-2 tw-pb-1"
                   onClick={handleConfirmDelete}
                 >
-                  Delete
+                  {t("delete")}
                 </CommonStyles.Box>
                 <CommonStyles.Box
                   className="tw-text-gray-700 tw-cursor-pointer tw-border-solid tw-border-[1px] tw-rounded-md tw-px-2 tw-pb-1"
                   onClick={handleClosePopover}
                 >
-                  Cancel
+                  {t("cancel")}
                 </CommonStyles.Box>
               </CommonStyles.Box>
             </CommonStyles.Box>
@@ -82,9 +83,11 @@ const ActionCell: React.FC<{
 export const headCells = ({
   handleEditId,
   handleDeletePost,
+  t
 }: {
   handleEditId: (id: number) => void;
   handleDeletePost: (id: number) => void;
+  t: any
 }) => {
   return [
     {
@@ -97,7 +100,7 @@ export const headCells = ({
     },
     {
       id: "title",
-      label: "Title",
+      label: t("title"),
       numeric: false,
       Cell(row: Post, _index: number) {
         return <span>{row.title}</span>;
@@ -105,7 +108,7 @@ export const headCells = ({
     },
     {
       id: "content",
-      label: "Content",
+      label: t("content"),
       numeric: false,
       Cell(row: Post, _index: number) {
         return <span>{row.content}</span>;
@@ -113,7 +116,7 @@ export const headCells = ({
     },
     {
       id: "image",
-      label: "Image",
+      label: t("image"),
       numeric: false,
       Cell(row: Post, _index: number) {
         return (
@@ -131,7 +134,7 @@ export const headCells = ({
     },
     {
       id: "views",
-      label: "Views",
+      label: t("views"),
       numeric: false,
       Cell(row: Post, _index: number) {
         return <span>{row.views}</span>;
@@ -139,11 +142,12 @@ export const headCells = ({
     },
     {
       id: "actionPost",
-      label: "Action",
+      label: t("action"),
       numeric: false,
       Cell(row: Post, _index: number) {
         return (
           <ActionCell
+            t={t}
             row={row}
             handleEditId={handleEditId}
             handleDeletePost={handleDeletePost}

@@ -2,50 +2,49 @@ import React, { useRef, useState, useEffect } from "react";
 import { Container } from "@mui/material";
 import { default as CommonStyles } from "@/components/common";
 import CommonIcons from "@/components/CommonIcons";
-import CardGridItem from "@/components/Card/CardGirdItem";
-import Heading from "@/app/[locale]/home/components/Heading";
-import { title } from "process";
+import CardGridItem, { CardGridItemProps } from "@/components/Card/CardGirdItem";
+import { twMerge } from "tailwind-merge";
 type Props = {
-  data?: [];
+  data: CardGridItemProps[];
   title?: React.ReactNode;
+  classNameContainerHeading?: string;
 };
-const CardCarousel= (props: Props) => {
-  const {title, data} = props
+const CardCarousel: React.FC<Props> = ({
+  title,
+  data,
+  classNameContainerHeading,
+}) => {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [isAtStart, setIsAtStart] = useState(true);
   const [isAtEnd, setIsAtEnd] = useState(false);
 
-  // Scroll handler functions
   const handleScrollLeft = () => {
     scrollContainerRef.current?.scrollBy({
-      left: -300, // Adjust scroll amount
+      left: -300,
       behavior: "smooth",
     });
   };
 
   const handleScrollRight = () => {
     scrollContainerRef.current?.scrollBy({
-      left: 300, // Adjust scroll amount
+      left: 300,
       behavior: "smooth",
     });
   };
 
-  // Check scroll position
   const checkScrollPosition = () => {
     if (scrollContainerRef.current) {
       const { scrollLeft, scrollWidth, clientWidth } =
         scrollContainerRef.current;
 
-      // Update button states based on scroll position
       setIsAtStart(scrollLeft <= 0);
       setIsAtEnd(Math.abs(scrollLeft + clientWidth - scrollWidth) <= 1);
     }
   };
 
-  // Debounce implementation with type safety
   const debounce = <T extends (...args: any[]) => void>(
     func: T,
-    wait: number
+    wait: number,
   ): T => {
     let timeout: NodeJS.Timeout;
     return ((...args: Parameters<T>) => {
@@ -57,22 +56,24 @@ const CardCarousel= (props: Props) => {
   useEffect(() => {
     const scrollContainer = scrollContainerRef.current;
     const debouncedCheckScrollPosition = debounce(checkScrollPosition, 50);
-
     scrollContainer?.addEventListener("scroll", debouncedCheckScrollPosition);
-
     checkScrollPosition();
-
     return () => {
       scrollContainer?.removeEventListener(
         "scroll",
-        debouncedCheckScrollPosition
+        debouncedCheckScrollPosition,
       );
     };
   }, []);
 
   return (
-    <CommonStyles.Box className="tw-flex tw-flex-col tw-gap-y-5">
-      <Container className="tw-flex tw-items-center tw-justify-between">
+    <CommonStyles.Box className="tw-flex tw-flex-col tw-gap-y">
+      <Container
+        className={twMerge(
+          "tw-flex tw-items-center tw-justify-between",
+          classNameContainerHeading,
+        )}
+      >
         <CommonStyles.Box>{title}</CommonStyles.Box>
         <CommonStyles.Box className="tw-flex tw-items-center tw-gap-5">
           <CommonStyles.Box
@@ -97,28 +98,28 @@ const CardCarousel= (props: Props) => {
           </CommonStyles.Box>
         </CommonStyles.Box>
       </Container>
-      <div
+      <CommonStyles.Box
         className="tw-overflow-auto scrollbar-hide tw-w-full"
         ref={scrollContainerRef}
       >
-        <CommonStyles.Box className="tw-flex tw-gap-3 tw-w-fit tw-px-5">
-          {Array(15)
-            .fill(null)
-            .map((_, index) => (
+        <CommonStyles.Box className="tw-flex tw-gap-5 tw-w-fit tw-py-5">
+          {data.map((item, index) => (
               <CommonStyles.Box key={index} className="tw-w-[270px]">
                 <CardGridItem
-                  src="https://vietnam.travel/sites/default/files/inline-images/Ha%20Giang%20Loop-9.jpg"
-                  title="Alaska: Westminster to Greenwich River Thames"
+                  link={item.link}
+                  src={item.src}
+                  title={item.title}
                   duration={2}
-                  transport="Transport Facility"
-                  plan="Family Plan"
-                  price={35}
-                  feedback_quantity={500}
+                  transport={item.transport}
+                  plan={item.plan}
+                  price={item.price}
+                  feedback_quantity={item.feedback_quantity}
+                  feedback_average={item.feedback_average}
                 />
               </CommonStyles.Box>
             ))}
         </CommonStyles.Box>
-      </div>
+      </CommonStyles.Box>
     </CommonStyles.Box>
   );
 };

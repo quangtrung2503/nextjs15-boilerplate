@@ -76,6 +76,7 @@ export const CommonButton = (props: CommonButtonProps) => {
     });
 
     return {
+      ...sx,
       fontSize: "16px",
       textTransform: "capitalize",
       boxShadow: "none",
@@ -87,7 +88,6 @@ export const CommonButton = (props: CommonButtonProps) => {
       },
       ...styled.get(colorBtn),
       ...styledVariant.get(variant),
-      ...sx,
     };
   }, [colorBtn, sx, variant]) as SxProps;
 
@@ -95,6 +95,7 @@ export const CommonButton = (props: CommonButtonProps) => {
     <Button
       startIcon={startIcon}
       className={className}
+      // size="large"
       sx={{ ...stylesByColor }}
       variant={variant}
       {...rest}

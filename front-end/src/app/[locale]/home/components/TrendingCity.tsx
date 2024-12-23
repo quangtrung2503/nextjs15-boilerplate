@@ -3,7 +3,8 @@ import { default as CommonStyles } from "@/components/common";
 import { Container } from "@mui/material";
 import CommonIcons from "@/components/CommonIcons";
 import { CommonButton } from "@/components/common/Button";
-import { bgMask, mask } from "@/assets";
+import { commonImg } from "@/assets";
+import { useTranslations } from "next-intl";
 
 export interface TrendingCityProps {
   trendingCity: {
@@ -26,7 +27,7 @@ const TrendingCity: FC<TrendingCityProps> = ({ trendingCity }) => {
     reviews,
     content,
   } = trendingCity;
-
+const t = useTranslations("homePage")
   return (
     <CommonStyles.Box
       sx={{ backgroundImage: `url(${imageBanner})` }}
@@ -44,8 +45,8 @@ const TrendingCity: FC<TrendingCityProps> = ({ trendingCity }) => {
                 width: "300px",
                 height: "300px",
                 background: "#FFF1B5",
-                maskImage: `url(${mask.src})`,
-                WebkitMaskImage: `url(${mask.src})`,
+                maskImage: `url(${commonImg.mask.src})`,
+                WebkitMaskImage: `url(${commonImg.mask.src})`,
                 maskSize: "100% 100%",
                 WebkitMaskSize: "100% 100%",
                 maskRepeat: "no-repeat",
@@ -58,8 +59,8 @@ const TrendingCity: FC<TrendingCityProps> = ({ trendingCity }) => {
                 width: "300px",
                 height: "300px",
                 background: "#D0FFF6",
-                maskImage: `url(${mask.src})`,
-                WebkitMaskImage: `url(${mask.src})`,
+                maskImage: `url(${commonImg.mask.src})`,
+                WebkitMaskImage: `url(${commonImg.mask.src})`,
                 maskSize: "100% 100%",
                 WebkitMaskSize: "100% 100%",
                 maskRepeat: "no-repeat",
@@ -70,11 +71,11 @@ const TrendingCity: FC<TrendingCityProps> = ({ trendingCity }) => {
               style={{
                 width: "300px",
                 height: "300px",
-                background: `url(${bgMask.src})`,
+                background: `url(${commonImg.bgMask.src})`,
                 backgroundPosition: "center",
                 backgroundSize: "cover",
-                maskImage: `url(${mask.src})`,
-                WebkitMaskImage: `url(${mask.src})`,
+                maskImage: `url(${commonImg.mask.src})`,
+                WebkitMaskImage: `url(${commonImg.mask.src})`,
                 maskSize: "100% 100%",
                 WebkitMaskSize: "100% 100%",
                 maskRepeat: "no-repeat",
@@ -90,7 +91,7 @@ const TrendingCity: FC<TrendingCityProps> = ({ trendingCity }) => {
           {/* Heading Section */}
           <CommonStyles.Box className="tw-flex tw-flex-col tw-gap-y-4">
             <CommonStyles.Typography className="tw-bg-primary_light tw-py-1 tw-px-5 tw-rounded-full tw-size-fit">
-              Trending now
+              {t("trendingNow")}
             </CommonStyles.Typography>
 
             <CommonStyles.Box>
@@ -115,7 +116,7 @@ const TrendingCity: FC<TrendingCityProps> = ({ trendingCity }) => {
                     className="tw-ml-[2px]"
                     color="white"
                   >
-                    {rate.toFixed(1)} ({reviews} reviews)
+                    {rate.toFixed(1)} ({reviews} {t("reviews")})
                   </CommonStyles.Typography>
                 </CommonStyles.Box>
               </CommonStyles.Box>
@@ -129,7 +130,7 @@ const TrendingCity: FC<TrendingCityProps> = ({ trendingCity }) => {
           {/* Action Buttons */}
           <CommonStyles.Box className="tw-flex tw-items-center tw-gap-5">
             <CommonButton className="tw-rounded-full tw-px-10 tw-font-semibold">
-              Book now
+              {t("bookNowBtn")}
             </CommonButton>
             <CommonStyles.Divider
               orientation="vertical"

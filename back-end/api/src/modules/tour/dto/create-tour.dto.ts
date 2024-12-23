@@ -2,9 +2,9 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
 import { IsBoolean, IsDate, IsEnum, IsNotEmpty, IsNumber, IsOptional, IsPositive, IsString } from 'class-validator';
 import moment from 'moment';
-import { Duration, Package, Transport } from 'src/helpers/constants/enum.constant';
+import { Package, Transport } from 'src/helpers/constants/enum.constant';
 
-export const CreateTourDtoKeys: (keyof CreateTourDto)[] = ['name', 'price', 'description', 'transport', 'package', 'duration', 'numberOfPeople', 'startDate', 'endDate', 'isFeature', 'cancellationPolicy', 'healthPrecautions', 'ticketType', 'confirmation', 'guideLanguage' ,'cityId', 'themeId', 'destinationIds', 'images'];
+export const CreateTourDtoKeys: (keyof CreateTourDto)[] = ['name', 'price', 'transport', 'package', 'numberOfPeople', 'numberOfHours', 'startDate', 'endDate', 'isFeature', 'cancellationPolicy', 'healthPrecautions', 'ticketType', 'confirmation', 'guideLanguage', 'description', 'activity', 'included', 'notIncluded', 'safety', 'details', 'cityId', 'themeId', 'destinationIds', 'images'];
 
 export class CreateTourDto {
   @ApiProperty({
@@ -25,15 +25,6 @@ export class CreateTourDto {
   @IsNumber()
   @IsPositive()
   readonly price: number;
-
-  @ApiProperty({
-    example: 'See the highlights of London via 2 ...',
-    description: 'Description of tour',
-    required: true,
-  })
-  @IsNotEmpty()
-  @IsString()
-  readonly description: string;
 
   @ApiProperty({
     example: Transport.TRANSPORT_FACILITY,
@@ -58,17 +49,6 @@ export class CreateTourDto {
   readonly package: Package;
 
   @ApiProperty({
-    example: Duration.THREE_TO_FIVE_HOURS,
-    description: 'Duration of tour',
-    enum: Duration,
-    default: Duration.THREE_TO_FIVE_HOURS,
-    required: true,
-  })
-  @IsEnum(Duration)
-  @IsNotEmpty()
-  readonly duration: Duration;
-
-  @ApiProperty({
     example: 2,
     description: 'Number of people of tour',
     required: true,
@@ -77,6 +57,16 @@ export class CreateTourDto {
   @IsNumber()
   @IsPositive()
   readonly numberOfPeople: number;
+
+  @ApiProperty({
+    example: 3.5,
+    description: 'Number of hours of tour',
+    required: true,
+  })
+  @IsNotEmpty()
+  @IsNumber()
+  @IsPositive()
+  readonly numberOfHours: number;
 
   @ApiProperty({
     example: '2024-09-30',
@@ -157,6 +147,60 @@ export class CreateTourDto {
   @IsNotEmpty()
   @IsString()
   readonly guideLanguage: string;
+
+  @ApiProperty({
+    example: 'See the highlights of London via 2 ...',
+    description: 'Description of tour',
+    required: false,
+  })
+  @IsOptional()
+  @IsString()
+  readonly description?: string;
+
+  @ApiProperty({
+    example: 'See the highlights of London via 2 ...',
+    description: 'Activity of tour',
+    required: false,
+  })
+  @IsOptional()
+  @IsString()
+  readonly activity?: string;
+
+  @ApiProperty({
+    example: 'See the highlights of London via 2 ...',
+    description: 'What included of tour',
+    required: false,
+  })
+  @IsOptional()
+  @IsString()
+  readonly included?: string;
+
+  @ApiProperty({
+    example: 'See the highlights of London via 2 ...',
+    description: 'What not included of tour',
+    required: false,
+  })
+  @IsOptional()
+  @IsString()
+  readonly notIncluded?: string;
+
+  @ApiProperty({
+    example: 'See the highlights of London via 2 ...',
+    description: 'Safety of tour',
+    required: false,
+  })
+  @IsOptional()
+  @IsString()
+  readonly safety?: string;
+
+  @ApiProperty({
+    example: 'See the highlights of London via 2 ...',
+    description: 'Details of tour',
+    required: false,
+  })
+  @IsOptional()
+  @IsString()
+  readonly details?: string;
 
   @ApiProperty({
     example: 1,

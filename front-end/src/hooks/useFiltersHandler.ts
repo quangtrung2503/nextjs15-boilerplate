@@ -66,7 +66,7 @@ function useFiltersHandler<T>(initialFilters: T & CommonFilters) {
           return {
             ...prev,
             perPage: parseInt(event.target.value, 10),
-            page: 0,
+            page: 1,
           };
         }
 

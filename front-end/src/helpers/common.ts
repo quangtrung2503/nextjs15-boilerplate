@@ -24,6 +24,11 @@ export const fileToString = (file: string | File) => {
   return URL.createObjectURL(file);
 };
 
+export const calculateRating = (rating: number): number => {
+  const percentage = (rating / 5) * 100;
+  return percentage;
+};
+
 // export const removeLangFromPathname = (pathname?: string) => {
 //   let nextPathname = pathname;
 //   languages.forEach((lang) => {
