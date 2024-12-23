@@ -27,6 +27,7 @@ import { RegexConstant } from 'src/helpers/constants/regex.constant';
 import { AuthService } from 'src/core/auth/auth.service';
 import { ListCustomerDto } from './dto/user-filter.dto';
 import { funcListPaging } from 'src/helpers/common/list-paging';
+import { ParseIdPipe } from 'src/core/pipes/parse-id.pipe';
 
 @ApiTags('User')
 @Controller('user')
@@ -94,7 +95,7 @@ export class UserController {
   @Roles(UserRole.ADMIN)
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Patch('banned/:id')
-  async banned(@Param('id') id: number, @Body() body: UpdateUserBannedDto) {
+  async banned(@Param('id', ParseIdPipe) id: number, @Body() body: UpdateUserBannedDto) {
     const userFound = await this.userService.findOne({ where: { id, status: { notIn: [UserStatus.DELETED] } } });
     if (!userFound) throw new BaseException(Errors.BAD_REQUEST(this.i18n.t('common-message.user.banned.not_found')));
 
@@ -134,22 +135,6 @@ export class UserController {
     if (body.status === UserStatus.DELETED)
       throw new BaseException(Errors.BAD_REQUEST(this.i18n.t('common-message.user.createUser.invalid_status')));
 
-    const phoneExists = await this.userService.checkPhoneExistsInRoles(
-      body.phone,
-      [UserRole.ADMIN, UserRole.STAFF],
-    );
-
-    if (phoneExists)
-      throw new BaseException(Errors.BAD_REQUEST(this.i18n.t('common-message.user.createUser.phone_exists')),);
-
-    const emailExists = await this.userService.checkEmailExistsInRoles(
-      body.email,
-      [UserRole.ADMIN, UserRole.STAFF],
-    );
-
-    if (emailExists)
-      throw new BaseException(Errors.BAD_REQUEST(this.i18n.t('common-message.user.createUser.email_exists')),);
-
     const hashPassword = await this.authService.hashPassword(body.password)
 
     const data = await this.userService.create({ data: { ...body, password: hashPassword } });
@@ -162,7 +147,7 @@ export class UserController {
   @Roles(UserRole.ADMIN, UserRole.STAFF, UserRole.CUSTOMER)
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Get('profile/:id')
-  async findOne(@UserDecorator() user: IUserJwt, @Param('id') id: number) {
+  async findOne(@UserDecorator() user: IUserJwt, @Param('id', ParseIdPipe) id: number) {
     let _id = id;
     if (user.role == UserRole.STAFF || user.role == UserRole.CUSTOMER) {
       if (id != user.data.id) throw new BaseException(Errors.FORBIDDEN());
@@ -180,7 +165,7 @@ export class UserController {
   @Roles(UserRole.ADMIN, UserRole.STAFF, UserRole.CUSTOMER)
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Patch(':id')
-  async update(@UserDecorator() user: IUserJwt, @Param('id') id: number, @Body() body: UpdateUserDto) {
+  async update(@UserDecorator() user: IUserJwt, @Param('id', ParseIdPipe) id: number, @Body() body: UpdateUserDto) {
     const keyNotInDto = Object.keys(body).find((key: keyof UpdateUserDto) => !UpdateUserDtoKeys.includes(key))
     if (keyNotInDto) throw new BaseException(Errors.BAD_REQUEST(this.i18n.t('common-message.user.update.wrong_parameter', { keyNotInDto })));
 
@@ -197,37 +182,6 @@ export class UserController {
     const userFound = await this.userService.findOne({ where: { id: _id, status: { notIn: [UserStatus.DELETED] } } });
     if (!userFound) throw new BaseException(Errors.BAD_REQUEST(this.i18n.t('common-message.user.update.not_found')));
 
-    if (body.role && body.role == UserRole.CUSTOMER)
-      throw new BaseException(Errors.FORBIDDEN(this.i18n.t('common-message.user.update.invalid_role', { role: body.role })));
-
-    const rolesToCheck = user.role === UserRole.CUSTOMER
-      ? [UserRole.CUSTOMER]
-      : [UserRole.ADMIN, UserRole.STAFF];
-
-    if (body.email && body.email !== userFound.email) {
-      const emailExists = await this.userService.checkEmailExistsInRoles(
-        body.email,
-        rolesToCheck,
-      );
-      if (emailExists) {
-        throw new BaseException(
-          Errors.BAD_REQUEST(this.i18n.t('common-message.user.update.email_exists')),
-        );
-      }
-    }
-
-    if (body.phone && body.phone !== userFound.phone) {
-      const phoneExists = await this.userService.checkPhoneExistsInRoles(
-        body.phone,
-        rolesToCheck,
-      );
-      if (phoneExists) {
-        throw new BaseException(
-          Errors.BAD_REQUEST(this.i18n.t('common-message.user.update.phone_exists')),
-        );
-      }
-    }
-
     const updateDto = body;
 
     const data = await this.userService.update(id, {
@@ -240,7 +194,7 @@ export class UserController {
   @Roles(UserRole.ADMIN)
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Delete(':id')
-  async remove(@Param('id') id: number) {
+  async remove(@Param('id', ParseIdPipe) id: number) {
     const user = await this.userService.findOne({ where: { id, status: { notIn: [UserStatus.DELETED] } } });
     if (!user) throw new BaseException(Errors.BAD_REQUEST(this.i18n.t('common-message.user.remove.not_found')));
 
