@@ -14,6 +14,8 @@ import { FilterDestinationDto } from './dto/filter-destination.dto';
 import { UpdateDestinationDto } from './dto/update-destination.dto';
 import { I18nCustomService } from 'src/resources/i18n/i18n.service';
 import { TourService } from '../tour/tour.service';
+import { convertToEn } from 'src/helpers/functions/common.utils';
+import { ParseIdPipe } from 'src/core/pipes/parse-id.pipe';
 
 @ApiTags('Destination (Administrator)')
 @Controller('destination')
@@ -33,9 +35,16 @@ export class DestinationController {
     const keyNotInDto = Object.keys(body).find((key: keyof CreateDestinationDto) => !CreateDestinationDtoKeys.includes(key))
     if (keyNotInDto) throw new BaseException(Errors.BAD_REQUEST(this.i18n.t('common-message.destination.create.wrong_parameter', { keyNotInDto })));
 
-    return this.destinationService.create({
-      data: body
+    const newDestination = await this.destinationService.create({
+      data: {
+        ...body,
+        slug: ''
+      }
     });
+
+    return await this.destinationService.update(newDestination.id, {
+      slug: `${convertToEn(newDestination.name.split(' ').join('-'))}-i.${newDestination.id}`
+    })
   }
 
   @ApiBearerAuth()
@@ -80,7 +89,7 @@ export class DestinationController {
   @Roles(UserRole.ADMIN, UserRole.STAFF)
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Get(':id')
-  async findOne(@Param('id') id: number) {
+  async findOne(@Param('id', ParseIdPipe) id: number) {
     const destination = await this.destinationService.findOne({ 
       where: { id }
     });
@@ -93,14 +102,19 @@ export class DestinationController {
   @Roles(UserRole.ADMIN, UserRole.STAFF)
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Patch(':id')
-  async update(@Param('id') id: number, @Body() body: UpdateDestinationDto) {
+  async update(@Param('id', ParseIdPipe) id: number, @Body() body: UpdateDestinationDto) {
     const existingDestination = await this.destinationService.findOne({ where: { id } });
     if (!existingDestination) throw new BaseException(Errors.ITEM_NOT_FOUND(this.i18n.t('common-message.destination.update.not_found')));
 
     const keyNotInDto = Object.keys(body).find((key: keyof UpdateDestinationDto) => !CreateDestinationDtoKeys.includes(key))
     if (keyNotInDto) throw new BaseException(Errors.BAD_REQUEST(this.i18n.t('common-message.destination.update.wrong_parameter', { keyNotInDto })));
 
-    return this.destinationService.update(id, body);
+    const updatedData: Prisma.DestinationUpdateInput = { ...body };
+    if (body.name && body.name !== existingDestination.name) {
+      updatedData.slug = `${convertToEn(body.name.split(' ').join('-'))}-i.${id}`;
+    }
+
+    return this.destinationService.update(id, updatedData);
 
   }
 
@@ -108,7 +122,7 @@ export class DestinationController {
   @Roles(UserRole.ADMIN, UserRole.STAFF)
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Patch('set-active/:id')
-  async setActive(@Param('id') id: number) {
+  async setActive(@Param('id', ParseIdPipe) id: number) {
     const existingDestination = await this.destinationService.findOne({
       where: { id },
       include: { TourDestination: true }
@@ -167,7 +181,7 @@ export class DestinationController {
   @Roles(UserRole.ADMIN, UserRole.STAFF)
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Delete(':id')
-  async remove(@Param('id') id: number) {
+  async remove(@Param('id', ParseIdPipe) id: number) {
     const destination = await this.destinationService.findOne({ where: { id } });
     if (!destination) throw new BaseException(Errors.ITEM_NOT_FOUND(this.i18n.t('common-message.destination.remove.not_found')));
 
