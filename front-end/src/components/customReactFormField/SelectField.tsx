@@ -1,6 +1,5 @@
 "use client";
-
-import React, { ReactNode } from "react";
+import React from "react";
 import {
   FormControl,
   InputLabel,
@@ -13,93 +12,95 @@ import {
 import { SelectOption } from "@/interfaces/common";
 import { twMerge } from "tailwind-merge";
 import { FieldError } from "react-hook-form";
+import { default as CommonStyles } from "@/components/common";
 
 interface SelectFieldProps {
   label?: string;
-  name?: string;
   sx?: SxProps;
   size?: "small" | "medium";
-  value?: string | number;
   options?: SelectOption[];
+  placeholder?: string;
   classNameLabel?: string;
-  onChange?: (
-    event: SelectChangeEvent<string | number>,
-    child: ReactNode
-  ) => void;
-  error?: boolean;
-  placeholder?:string;
-  helperText?: string;
   classNameContainer?: string;
   className?: string;
-  fullWidth?: boolean;
-  defaultValue?: string | number | undefined;
   variant?: "outlined" | "filled" | "standard";
+  required?: boolean;
+  onChange?: (event: SelectChangeEvent) => void;
   field: {
-      value: string;
-      onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
-      onBlur: () => void;
-    };
-    fieldState: { error?: FieldError }; // Cập nhật kiểu ở đâ
+    value: string | number | undefined;
+    onChange: (event: SelectChangeEvent) => void;
+    onBlur: () => void;
+  };
+  fieldState: { error?: FieldError };
 }
 
 const SelectField: React.FC<SelectFieldProps> = ({
   label,
-  name,
-  defaultValue,
-  size,
-  value,
-  options = [],
-  classNameLabel,
-  onChange,
-  className,
   sx,
-  error = false,
-  helperText = "",
-  classNameContainer = "",
-  fullWidth = true,
-  variant,
-  field,
+  size = "medium",
+  options = [],
   placeholder,
+  classNameLabel,
+  classNameContainer,
+  className,
+  variant = "outlined",
+  required = false,
+  onChange,
+  field,
   fieldState,
-  ...props
 }) => {
   return (
-    <FormControl
-      size={size}
-      className={classNameContainer}
-      fullWidth={fullWidth}
-      variant={variant}
-      error={error}
-    >
-      {label && <InputLabel className={classNameLabel}>{label}</InputLabel>}
-      <Select
-        defaultValue={defaultValue}
+    <CommonStyles.Box className={twMerge("tw-w-full", classNameContainer)}>
+      {label && (
+        <InputLabel
+          className={twMerge(
+            required && "required",
+            classNameLabel,
+            "tw-text-xl tw-font-mulish tw-font-bold tw-text-accent_gray_800"
+          )}
+          shrink
+        >
+          {label}
+        </InputLabel>
+      )}
+      <FormControl
+        size={size}
+        fullWidth
+        error={!!fieldState?.error}
         sx={sx}
-        MenuProps={{
-          disableScrollLock: true, // Prevent scroll locking when menu is open
-        }}
-        label={label}
-        name={name}
-        value={value}
-        onChange={onChange}
-        className="tw-text-[#ffffff86]"
-        {...props}
+        variant={variant}
       >
-        {placeholder && <MenuItem disabled value="">
-            <em>Placeholder</em>
-          </MenuItem>}
-        {options.map((option, index) => (
-          <MenuItem
-            className={twMerge("rounded tw-flex tw-items-center", className)}
-            key={index}
-            value={option.value}
-          >
-            {option.label}
-          </MenuItem>
-        ))}
-      </Select>
-      {helperText && <FormHelperText>{helperText}</FormHelperText>}
-    </FormControl>
+        <Select
+          {...field}
+          value={field.value?.toString() || ""}
+          onBlur={field.onBlur}
+          displayEmpty
+          onChange={onChange}
+          MenuProps={{ disableScrollLock: true }}
+          className={className}
+        >
+          {placeholder && (
+            <MenuItem disabled value="">
+              <CommonStyles.Typography className="tw-text-accent_gray_500">
+                {placeholder}
+              </CommonStyles.Typography>
+            </MenuItem>
+          )}
+          {options.map((option, index) => (
+            <MenuItem
+              key={index}
+              value={option.value}
+              className={twMerge("tw-flex tw-items-center")}
+            >
+              {option.label}
+            </MenuItem>
+          ))}
+        </Select>
+        {fieldState?.error?.message && (
+          <FormHelperText>{fieldState.error.message}</FormHelperText>
+        )}
+      </FormControl>
+    </CommonStyles.Box>
   );
 };
 

@@ -12,6 +12,8 @@ import cachedKeys from "@/constants/cachedKeys"
 import useGetTheme from "@/services/modules/theme/hook/useGetTheme"
 import themeServices from "@/services/modules/theme/theme.services"
 import CheckboxField from "@/components/customReactFormField/CheckBoxField"
+import { Theme } from "@/services/modules/theme/intefaces/theme"
+import CommonIcons from "@/components/CommonIcons"
 
 interface createEditThemeProps {
   toggle: () => void;
@@ -31,9 +33,7 @@ const CreateEditTheme: FC<createEditThemeProps> = (props) => {
     })
     .required();
   const initValue = useMemo(() => {
-    if (data) {
-        return { name: data?.data.name || "",isDisplay: data?.data.isDisplay || false}
-    }
+        return { name: data?.data.name ?? "",isDisplay: data?.data.isDisplay ?? false}
   }, [data?.data]);
   const methods = useForm<FormValues>({
     defaultValues: initValue,
@@ -63,7 +63,7 @@ const CreateEditTheme: FC<createEditThemeProps> = (props) => {
     }
   };
   return (
-    <CommonStyles.Box className="tw-w-[500px]">
+    <CommonStyles.Box className="tw-w-[500px] tw-relative">
       <CommonStyles.Box className="tw-flex tw-justify-center"><CommonStyles.Typography type="size20Weight600">{id?"Edit Theme":"Create new Theme"}</CommonStyles.Typography></CommonStyles.Box>
       <FormProvider {...methods} >
         <form onSubmit={methods.handleSubmit(onSubmit)}>
@@ -84,8 +84,8 @@ const CreateEditTheme: FC<createEditThemeProps> = (props) => {
           />
           <CommonStyles.Box className="tw-flex tw-justify-around">
             <CommonStyles.CommonButton type="submit">Submit</CommonStyles.CommonButton>
-            <CommonStyles.CommonButton onClick={toggle} colorBtn="info">Cancel</CommonStyles.CommonButton>
           </CommonStyles.Box>
+          <CommonStyles.Box  className="tw-absolute tw-top-0 tw-right-0 tw-cursor-pointer" onClick={toggle}><CommonIcons.Close /></CommonStyles.Box>
         </form>
       </FormProvider>
     </CommonStyles.Box>

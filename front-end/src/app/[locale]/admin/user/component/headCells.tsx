@@ -2,6 +2,8 @@ import { default as CommonStyles } from "@/components/common"
 import CommonIcons from "@/components/CommonIcons"
 import { useState } from "react"
 import { Popover } from "@mui/material"
+import { User } from "@/services/modules/user/interfaces/user.inteface";
+import moment from "moment";
 
 const ActionCell: React.FC<{ row: User; handleEditId: (id: number) => void; handleDeleteUser: (id: number) => void }> = ({
   row,
@@ -110,7 +112,7 @@ export const headCells = ({
       label: "Date of birth",
       numeric: false,
       Cell(row: User, _index: number) {
-        return <span>{row.dateOfBirth}</span>;
+        return <span>{row.dateOfBirth && moment(row.dateOfBirth).format("DD/MM/YYYY").toLowerCase()}</span>;
       },
     },
     {

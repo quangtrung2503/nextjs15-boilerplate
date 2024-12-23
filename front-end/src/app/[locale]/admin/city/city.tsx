@@ -15,6 +15,7 @@ import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import RHFField from "@/components/customReactFormField/ReactFormField";
 import InputField from "@/components/customReactFormField/InputField";
 import SelectField from "@/components/customReactFormField/SelectField";
+import { useNotifications } from "@/helpers/toast";
 
 interface FormSearch {
   textSearch: string;
@@ -28,7 +29,7 @@ const City = () => {
   const { data: dataCity, refetch: refetchCity, loading: loadingCity } = useGetCities(filters, { refetchKey: cachedKeys.fetchCities });
   const { open, toggle, shouldRender } = useToggleDialog();
   const [id, setId] = useState<number | null>(null);
-
+  const {showError} = useNotifications();
   const handleEditId = (id: number) => {
     setId(id);
     toggle();
@@ -39,7 +40,7 @@ const City = () => {
       await refetchCity();
     }
     catch (error) {
-      console.error(error);
+      showError(error);
     }
   }
   const methods = useForm<FormSearch>({
@@ -68,33 +69,13 @@ const City = () => {
                 component={InputField}
               />
             </CommonStyles.Box>
-              {/* <RHFField
-                name="sortOrder"
-                options={[
-                  {
-                    key: "1",
-                    label: "DESC",
-                    value: "desc"
-                  },
-                  {
-                    key: "2",
-                    label: "ASC",
-                    value: "asc"
-                  }
-                ]}
-                className="tw-w-[20%] tw-ml-5"
-                control={methods.control}
-                fullWidth={false}
-                placeholder="Sort"
-                component={SelectField}
-              /> */}
               <CommonStyles.Box className="tw-w-[20%]">
                 <CommonStyles.CommonButton variant="outlined" className="outlined rounded tw-ml-5 tw-w-full" type="submit">Search</CommonStyles.CommonButton>
               </CommonStyles.Box>
             </form>
           </FormProvider>
         </CommonStyles.Box>
-        <CommonButton className="tw-text-nowrap" onClick={toggle} label="Create new city" />
+        <CommonButton className="tw-text-nowrap tw-px-7" onClick={toggle} label="Create new city" />
       </CommonStyles.Box>
       <CommonStyles.Box>
         {dataCity &&

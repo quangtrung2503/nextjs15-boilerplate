@@ -14,6 +14,7 @@ import TableCommon from "@/components/common/Table";
 import { headCells } from "./component/headCells";
 import CommonDialog from "@/components/common/Dialog";
 import CreateEditUser from "./component/createEditUser";
+import { useNotifications } from "@/helpers/toast";
 
 interface FormSearch {
   textSearch: string;
@@ -27,7 +28,7 @@ const User = () => {
   const { data: dataUser, refetch: refetchUser, loading: loadingUser } = useGetUsers(filters, { refetchKey: cachedKeys.fetchUsers });
   const { open, toggle, shouldRender } = useToggleDialog();
   const [id, setId] = useState<number | null>(null);
-
+  const {showError} = useNotifications();
   const handleEditId = (id: number) => {
     setId(id);
     toggle();
@@ -38,7 +39,7 @@ const User = () => {
       await refetchUser();
     }
     catch (error) {
-      console.error(error);
+      showError(error);
     }
   }
   const methods = useForm<FormSearch>({
@@ -73,7 +74,7 @@ const User = () => {
             </form>
           </FormProvider>
         </CommonStyles.Box>
-        <CommonStyles.CommonButton className="tw-text-nowrap" onClick={toggle} label="Create new User" />
+        <CommonStyles.CommonButton className="tw-text-nowrap tw-px-7" onClick={toggle} label="Create new User" />
       </CommonStyles.Box>
       <CommonStyles.Box>
         {dataUser &&

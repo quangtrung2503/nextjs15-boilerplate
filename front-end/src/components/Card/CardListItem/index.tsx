@@ -2,11 +2,12 @@ import { Card, CardContent, CardMedia } from "@mui/material";
 import { default as CommonStyles } from "../../common";
 import React from "react";
 import CommonIcons from "../../CommonIcons";
+import { useTranslations } from "next-intl";
 interface CardListItemProps {
   src: string;
   title: string;
   description?: string;
-  link?: string;
+  link: string;
   price?: number;
   options?: [];
   activity?: string;
@@ -32,72 +33,81 @@ const CardListItem = (props: CardListItemProps) => {
     activity = "Water Activity",
     ...rest
   } = props;
+  const t = useTranslations("card");
   return (
-    <Card className="tw-w-fit tw-p-0 tw-flex">
-      <CommonStyles.Box className="tw-w-fit">
-        <CardMedia
-          className="tw-min-h-[150px] tw-aspect-square tw-rounded-r-sm"
-          image={src}
-        />
-      </CommonStyles.Box>
-      <CardContent className="tw-flex tw-gap-12 tw-items-center">
-        <CommonStyles.Box className="tw-flex tw-flex-col tw-gap-y-3">
-          <CommonStyles.Box className="tw-flex tw-gap-5">
-            <CommonStyles.Typography className="tw-px-3 tw-py-1 tw-rounded-full tw-bg-primary tw-text-white">
-              {activity}
+    <Card className="CardListItem tw-w-fit tw-p-0 tw-flex">
+      <CommonStyles.Link href={link}>
+        <CommonStyles.Box className="tw-w-fit">
+          <CardMedia
+            className="tw-min-h-[150px] tw-aspect-square tw-rounded-r-sm"
+            image={src}
+          />
+        </CommonStyles.Box>
+        <CardContent className="tw-flex tw-gap-12 tw-items-center">
+          <CommonStyles.Box className="tw-flex tw-flex-col tw-gap-y-3">
+            <CommonStyles.Box className="tw-flex tw-gap-5">
+              <CommonStyles.Typography className="tw-px-3 tw-py-1 tw-rounded-full tw-bg-primary tw-text-white">
+                {activity}
+              </CommonStyles.Typography>
+              <CommonStyles.Box className="tw-flex tw-items-center">
+                <CommonStyles.Rating
+                  haveFeedback={false}
+                  readOnly
+                  valueTable={feedback_average}
+                />
+                <CommonStyles.Typography
+                  className="tw-ml-[2px]"
+                  color="var(--accent-gray-500)"
+                >
+                  ({feedback_quantity} reviews)
+                </CommonStyles.Typography>
+              </CommonStyles.Box>
+            </CommonStyles.Box>
+            <CommonStyles.Typography type="size20Weight800">
+              {title}
             </CommonStyles.Typography>
-            <CommonStyles.Box className="tw-flex tw-items-center">
-              <CommonStyles.Rating haveFeedback={false} readOnly valueTable={4} />
-              <CommonStyles.Typography
-                className="tw-ml-[2px]"
-                color="var(--accent-gray-500)"
-              >
-                ({feedback_quantity} reviews)
-              </CommonStyles.Typography>
+            <CommonStyles.Box className="tw-flex tw-items-center tw-gap-x-2 tw-text-accent_gray_800">
+              <CommonStyles.Box className="tw-flex tw-items-center tw-gap-1">
+                <CommonIcons.AccessTime className="tw-size-[16px]" />
+                <CommonStyles.Typography type="size14Weight400">
+                  {duration <= 24 && duration
+                    ? `${duration} ${t("hours")}`
+                    : `${duration / 24} ${t("days")}`}
+                </CommonStyles.Typography>
+              </CommonStyles.Box>
+              <CommonStyles.Divider orientation="vertical" className="tw-h-4" />
+              <CommonStyles.Box className="tw-flex tw-items-center tw-gap-1">
+                <CommonIcons.DriveEtaOutlined className="tw-size-[16px]" />
+                <CommonStyles.Typography type="size14Weight400">
+                  {transport}
+                </CommonStyles.Typography>
+              </CommonStyles.Box>
+              <CommonStyles.Divider orientation="vertical" className="tw-h-4" />
+              <CommonStyles.Box className="tw-flex tw-items-center tw-gap-1">
+                <CommonIcons.PeopleAltOutlined className="tw-size-[16px]" />
+                <CommonStyles.Typography type="size14Weight400">
+                  {plan}
+                </CommonStyles.Typography>
+              </CommonStyles.Box>
             </CommonStyles.Box>
           </CommonStyles.Box>
-          <CommonStyles.Typography type="size20Weight800">
-            {title}
-          </CommonStyles.Typography>
-          <CommonStyles.Box className="tw-flex tw-items-center tw-gap-x-2 tw-text-accent_gray_800">
-            <CommonStyles.Box className="tw-flex tw-items-center tw-gap-1">
-              <CommonIcons.AccessTime className="tw-size-[16px]" />
-              <CommonStyles.Typography type="size14Weight400">
-                {(duration <= 24 && duration) ? `${duration} hours` : `${(duration/24)} day`}
-              </CommonStyles.Typography>
-            </CommonStyles.Box>
-            <CommonStyles.Divider orientation="vertical" className="tw-h-4" />
-            <CommonStyles.Box className="tw-flex tw-items-center tw-gap-1">
-              <CommonIcons.DriveEtaOutlined className="tw-size-[16px]" />
-              <CommonStyles.Typography type="size14Weight400">
-                {transport}
-              </CommonStyles.Typography>
-            </CommonStyles.Box>
-            <CommonStyles.Divider orientation="vertical" className="tw-h-4" />
-            <CommonStyles.Box className="tw-flex tw-items-center tw-gap-1">
-              <CommonIcons.PeopleAltOutlined className="tw-size-[16px]" />
-              <CommonStyles.Typography type="size14Weight400">
-                {plan}
-              </CommonStyles.Typography>
-            </CommonStyles.Box>
+          <CommonStyles.Box>
+            <CommonStyles.Typography
+              type="size20Weight800"
+              color="var(--primary)"
+            >
+              {t("currency")}
+              {price?.toLocaleString("en-US", {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2,
+              })}
+            </CommonStyles.Typography>
+            <CommonStyles.Typography color="var(--accent-gray-500)">
+              {t("perPerson")}
+            </CommonStyles.Typography>
           </CommonStyles.Box>
-        </CommonStyles.Box>
-        <CommonStyles.Box>
-          <CommonStyles.Typography
-            type="size20Weight800"
-            color="var(--primary)"
-          >
-            $
-            {price?.toLocaleString("en-US", {
-              minimumFractionDigits: 2,
-              maximumFractionDigits: 2,
-            })}
-          </CommonStyles.Typography>
-          <CommonStyles.Typography color="var(--accent-gray-500)">
-            per person
-          </CommonStyles.Typography>
-        </CommonStyles.Box>
-      </CardContent>
+        </CardContent>
+      </CommonStyles.Link>
     </Card>
   );
 };

@@ -1,5 +1,4 @@
 "use client";
-import * as Yup from "yup";
 import { useTranslations } from "next-intl";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -19,18 +18,13 @@ import useAuth from "@/hooks/useAuth";
 import LoginModel from "@/models/login.model";
 import { useNotifications } from "@/helpers/toast";
 import Loading from "@/components/common/Loading";
-
-type FormValues = {
-  email: string;
-  password: string;
-};
+import { defaultValue, FormValues, validateSchema } from "./forms";
 
 type ISignInProps = {
   path: string;
 };
 
 const SignIn = (props: ISignInProps) => {
-  const [isLogin, setIsLogin] = useState<boolean>(true);
   const { showSuccess, showError, showInfo } = useNotifications();
   const auth = useAuth();
   const router = useRouter();
@@ -38,21 +32,11 @@ const SignIn = (props: ISignInProps) => {
   const isLogining = auth?.isLogining;
   const t = useTranslations("signIn");
 
-  const handleForgot = () => {
-    setIsLogin(false);
-  };
   const { handleSubmit, control } = useForm<FormValues>({
-    defaultValues: { email: "", password: "" },
+    defaultValues: defaultValue,
     reValidateMode: "onSubmit",
     criteriaMode: "all",
-    resolver: yupResolver(
-      Yup.object().shape({
-        email: Yup.string()
-          .email(t("validations.emailFormat"))
-          .required(t("validations.emailRequire")),
-        password: Yup.string().required(t("validations.passwordRequire")),
-      })
-    ),
+    resolver: yupResolver(validateSchema),
   });
   const onSubmit: SubmitHandler<FormValues> = async (values) => {
     const body = {
@@ -61,7 +45,7 @@ const SignIn = (props: ISignInProps) => {
     };
     try {
       const requestPayload = LoginModel.parseBodyToRequest(body);
-      const res = await auth?.signIn(requestPayload);
+      await auth?.signIn(requestPayload);
       showSuccess(t("loginSuccess"));
     } catch (error: any) {
       const err: any = error?.response.data.messages[0];
