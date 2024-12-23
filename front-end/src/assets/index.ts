@@ -91,5 +91,6 @@ export const commonImg = {
     detail3,
     detail4,
     detail5,
-    detail6
+    detail6,
+
 };

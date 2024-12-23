@@ -28,12 +28,19 @@ const FooterSection = ({
     {children}
   </CommonStyles.Box>
 );
-
 const Footer = () => {
   const t = useTranslations("footer");
   const paymentMethod = [
-    commonImg.UKFlag,
-    commonImg.VNFlag,
+    commonImg.mater_card,
+    commonImg.bit_pay,
+    commonImg.visa,
+    commonImg.american_express,
+    commonImg.discover,
+    commonImg.sofort,
+    commonImg.gg_pay,
+    commonImg.apple_pay,
+    commonImg.paypal,
+    commonImg.maestro,
   ];
   const { handleSubmit, control, getValues } = useForm<FooterOption>({
     defaultValues: {
@@ -79,16 +86,6 @@ const Footer = () => {
       <Container maxWidth="lg" className="tw-py-20">
         <Grid2 container spacing={12}>
           <Grid2 size={3} className="tw-flex tw-flex-col tw-gap-y-5">
-            {/* <FooterSection title="Language">
-              <SelectField
-              sx={{
-                fieldSet: {
-                  border: '1px solid var(--accent-gray-light)'
-                }
-              }}
-                onChange={(e) => {}}
-                defaultValue={"value2"}
-                size="small"
             <FooterSection title="Language">
               <RHFField
                 name="language"
@@ -104,17 +101,6 @@ const Footer = () => {
                 classNameContainer="tw-bg-transparent"
                 component={SelectField}
               />
-            </FooterSection> */}
-            {/* <FooterSection title="Currency">
-              <SelectField
-              sx={{
-                fieldSet: {
-                  border: '1px solid var(--accent-gray-light)'
-                }
-              }}
-                onChange={(e) => {}}
-                defaultValue={"USD"}
-                size="small"
             </FooterSection>
             <FooterSection title="Currency">
               <RHFField
@@ -134,7 +120,7 @@ const Footer = () => {
                 classNameContainer="tw-bg-transparent"
                 component={SelectField}
               />
-            </FooterSection> */}
+            </FooterSection>
           </Grid2>
           <Grid2 size={3}>
             <FooterSection title={t("companyMenu.title")}>
@@ -182,7 +168,7 @@ const Footer = () => {
             <FooterSection title="Payment method possible">
               <CommonStyles.Box className="tw-grid tw-grid-cols-5 tw-size-fit tw-gap-2">
                 {paymentMethod.map((item) => (
-                  <img key={item.src} src={item.src} alt="" />
+                  <img key={item.src} src={item.src} alt="" className="tw-w-10 tw-h-7"/>
                 ))}
               </CommonStyles.Box>
             </FooterSection>
@@ -219,5 +205,4 @@ const Footer = () => {
     </div>
   );
 };
-
 export default Footer;
