@@ -2,12 +2,13 @@ import { default as CommonStyles } from "@/components/common"
 import CommonIcons from "@/components/CommonIcons"
 import { useState } from "react"
 import { Popover } from "@mui/material"
-import { RadioButtonCheckedOutlined } from "@mui/icons-material";
+import { Theme } from "@/services/modules/theme/intefaces/theme";
 
-const ActionCell: React.FC<{ row: Theme; handleEditId: (id: number) => void; handleDeleteTheme: (id: number) => void }> = ({
+const ActionCell: React.FC<{ row: Theme; handleEditId: (id: number) => void; handleDeleteTheme: (id: number) => void;t: any }> = ({
   row,
   handleEditId,
-  handleDeleteTheme
+  handleDeleteTheme,
+  t
 }) => {
   const [anchorEl, setAnchorEl] = useState<HTMLDivElement | null>(null);
 
@@ -48,14 +49,14 @@ const ActionCell: React.FC<{ row: Theme; handleEditId: (id: number) => void; han
           >
             <CommonStyles.Box className="tw-p-2 tw-flex tw-flex-col tw-items-center">
               <CommonStyles.Typography className="tw-text-md tw-mb-1 tw-font-bold">
-                Are you sure you want to delete this Theme?
+                {t("themeAdmin.confirmDelete")}
               </CommonStyles.Typography>
               <CommonStyles.Box className="tw-flex tw-gap-4">
                 <CommonStyles.Box className="tw-text-red-500 tw-cursor-pointer tw-border-solid tw-border-[1px] tw-bg-red-100 tw-rounded-md tw-px-2 tw-pb-1" onClick={handleConfirmDelete}>
-                  Delete
+                  {t("delete")}
                 </CommonStyles.Box>
                 <CommonStyles.Box className="tw-text-gray-700 tw-cursor-pointer tw-border-solid tw-border-[1px] tw-rounded-md tw-px-2 tw-pb-1" onClick={handleClosePopover}>
-                  Cancel
+                  {t("cancel")}
                 </CommonStyles.Box>
               </CommonStyles.Box>
             </CommonStyles.Box>
@@ -68,10 +69,12 @@ const ActionCell: React.FC<{ row: Theme; handleEditId: (id: number) => void; han
 
 export const headCells = ({
   handleEditId,
-  handleDeleteTheme
+  handleDeleteTheme,
+  t
 }: {
   handleEditId: (id: number) => void;
   handleDeleteTheme: (id: number) => void;
+  t: any
 }) => {
   return [
     {
@@ -84,7 +87,7 @@ export const headCells = ({
     },
     {
       id: "name",
-      label: "Name",
+      label: t("themeAdmin.name"),
       numeric: false,
       Cell(row: Theme, _index: number) {
         return <span>{row.name}</span>;
@@ -92,7 +95,7 @@ export const headCells = ({
     },
     {
       id: "isDisplay",
-      label: "Display",
+      label: t("themeAdmin.isDisplay"),
       numeric: false,
       Cell(row: Theme, _index: number) {
         return <span>{row.isDisplay ? <CommonIcons.CheckCircleOutline /> : <></>}</span>;
@@ -100,10 +103,10 @@ export const headCells = ({
     },
     {
       id: "actionTheme",
-      label: "Action",
+      label: t("action"),
       numeric: false,
       Cell(row: Theme, _index: number) {
-        return <ActionCell row={row} handleEditId={handleEditId} handleDeleteTheme={handleDeleteTheme} />;
+        return <ActionCell row={row} handleEditId={handleEditId} handleDeleteTheme={handleDeleteTheme} t={t} />;
       },
     },
   ];

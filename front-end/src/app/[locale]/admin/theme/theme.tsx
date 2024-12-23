@@ -16,6 +16,7 @@ import { headCells } from "./component/headCells";
 import CommonDialog from "@/components/common/Dialog";
 import CreateEditTheme from "./component/createEditTheme";
 import { useNotifications } from "@/helpers/toast";
+import { useTranslations } from "next-intl";
 
 interface FormSearch {
   textSearch: string;
@@ -30,7 +31,7 @@ const Theme = () => {
   const { open, toggle, shouldRender } = useToggleDialog();
   const [id, setId] = useState<number | null>(null);
   const {showError} = useNotifications();
-
+  const t = useTranslations()
   const handleEditId = (id: number) => {
     setId(id);
     toggle();
@@ -65,18 +66,18 @@ const Theme = () => {
               <CommonStyles.Box  className="tw-w-[20%]">
               <RHFField
                 name="textSearch"
-                placeholder="Search Theme"
+                placeholder={t("themeAdmin.placeholderSearch")}
                 control={methods.control}
                 component={InputField}
               />
               </CommonStyles.Box>
               <CommonStyles.Box className="tw-w-[20%]">
-                <CommonStyles.CommonButton variant="outlined" className="outlined rounded tw-ml-5 tw-w-full" type="submit">Search</CommonStyles.CommonButton>
+                <CommonStyles.CommonButton variant="outlined" className="outlined rounded tw-ml-5 tw-w-full" type="submit">{t("search")}</CommonStyles.CommonButton>
               </CommonStyles.Box>
             </form>
           </FormProvider>
         </CommonStyles.Box>
-        <CommonButton className="tw-text-nowrap tw-px-7" onClick={toggle} label="Create new Theme" />
+        <CommonButton className="tw-text-nowrap tw-px-7" onClick={toggle} label={t("themeAdmin.createNewTheme")} />
       </CommonStyles.Box>
       <CommonStyles.Box>
         {dataTheme &&
@@ -90,7 +91,7 @@ const Theme = () => {
             handleCheckBox={handleCheckBox}
             handleSelectAllClick={handleSelectAll}
             page={filters?.page || 0}
-            headCells={headCells({ handleEditId, handleDeleteTheme })}
+            headCells={headCells({ handleEditId, handleDeleteTheme,t })}
             rows={dataTheme?.items}
             handleChangePage={handleChangePage}
             handleChangeRowsPerPage={changeRowPerPage}

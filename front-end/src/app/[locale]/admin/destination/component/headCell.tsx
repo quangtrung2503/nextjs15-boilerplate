@@ -5,10 +5,11 @@ import { Popover } from "@mui/material"
 import apiUrls from "@/constants/apiUrls"
 import { Destination } from "@/services/modules/destination/interface/destination"
 
-const ActionCell: React.FC<{ row: Destination; handleEditId: (id: number) => void; handleDeleteDestination: (id: number) => void }> = ({
+const ActionCell: React.FC<{ row: Destination; handleEditId: (id: number) => void; handleDeleteDestination: (id: number) => void ;t: any}> = ({
   row,
   handleEditId,
-  handleDeleteDestination
+  handleDeleteDestination,
+  t
 }) => {
   const [anchorEl, setAnchorEl] = useState<HTMLDivElement | null>(null);
 
@@ -49,14 +50,14 @@ const ActionCell: React.FC<{ row: Destination; handleEditId: (id: number) => voi
           >
             <CommonStyles.Box className="tw-p-2 tw-flex tw-flex-col tw-items-center">
               <CommonStyles.Typography className="tw-text-md tw-mb-1 tw-font-bold">
-                Are you sure you want to delete this Destination?
+                {t("confirmDelete")}
               </CommonStyles.Typography>
               <CommonStyles.Box className="tw-flex tw-gap-4">
                 <CommonStyles.Box className="tw-text-red-500 tw-cursor-pointer tw-border-solid tw-border-[1px] tw-bg-red-100 tw-rounded-md tw-px-2 tw-pb-1" onClick={handleConfirmDelete}>
-                  Delete
+                  {t("delete")}
                 </CommonStyles.Box>
                 <CommonStyles.Box className="tw-text-gray-700 tw-cursor-pointer tw-border-solid tw-border-[1px] tw-rounded-md tw-px-2 tw-pb-1" onClick={handleClosePopover}>
-                  Cancel
+                  {t("cancel")}
                 </CommonStyles.Box>
               </CommonStyles.Box>
             </CommonStyles.Box>
@@ -69,10 +70,12 @@ const ActionCell: React.FC<{ row: Destination; handleEditId: (id: number) => voi
 
 export const headCells = ({
   handleEditId,
-  handleDeleteDestination
+  handleDeleteDestination,
+  t
 }: {
   handleEditId: (id: number) => void;
   handleDeleteDestination: (id: number) => void;
+  t: any
 }) => {
   return [
     {
@@ -85,7 +88,7 @@ export const headCells = ({
     },
     {
       id: "name",
-      label: "Name",
+      label: t("name"),
       numeric: false,
       Cell(row: Destination, _index: number) {
         return <span>{row.name}</span>;
@@ -93,10 +96,10 @@ export const headCells = ({
     },
     {
       id: "actionDestination",
-      label: "Action",
+      label: t("action"),
       numeric: false,
       Cell(row: Destination, _index: number) {
-        return <ActionCell row={row} handleEditId={handleEditId} handleDeleteDestination={handleDeleteDestination} />;
+        return <ActionCell row={row} handleEditId={handleEditId} handleDeleteDestination={handleDeleteDestination} t={t} />;
       },
     },
   ];

@@ -5,10 +5,11 @@ import { Popover } from "@mui/material"
 import { User } from "@/services/modules/user/interfaces/user.inteface";
 import moment from "moment";
 
-const ActionCell: React.FC<{ row: User; handleEditId: (id: number) => void; handleDeleteUser: (id: number) => void }> = ({
+const ActionCell: React.FC<{ row: User; handleEditId: (id: number) => void; handleDeleteUser: (id: number) => void; t: any }> = ({
   row,
   handleEditId,
-  handleDeleteUser
+  handleDeleteUser,
+  t
 }) => {
   const [anchorEl, setAnchorEl] = useState<HTMLDivElement | null>(null);
 
@@ -49,14 +50,14 @@ const ActionCell: React.FC<{ row: User; handleEditId: (id: number) => void; hand
           >
             <CommonStyles.Box className="tw-p-2 tw-flex tw-flex-col tw-items-center">
               <CommonStyles.Typography className="tw-text-md tw-mb-1 tw-font-bold">
-                Are you sure you want to delete this User?
+                {t("userAdmin.confirmDelete")}
               </CommonStyles.Typography>
               <CommonStyles.Box className="tw-flex tw-gap-4">
                 <CommonStyles.Box className="tw-text-red-500 tw-cursor-pointer tw-border-solid tw-border-[1px] tw-bg-red-100 tw-rounded-md tw-px-2 tw-pb-1" onClick={handleConfirmDelete}>
-                  Delete
+                  {t("delete")}
                 </CommonStyles.Box>
                 <CommonStyles.Box className="tw-text-gray-700 tw-cursor-pointer tw-border-solid tw-border-[1px] tw-rounded-md tw-px-2 tw-pb-1" onClick={handleClosePopover}>
-                  Cancel
+                  {t("cancel")}
                 </CommonStyles.Box>
               </CommonStyles.Box>
             </CommonStyles.Box>
@@ -69,10 +70,12 @@ const ActionCell: React.FC<{ row: User; handleEditId: (id: number) => void; hand
 
 export const headCells = ({
   handleEditId,
-  handleDeleteUser
+  handleDeleteUser,
+  t
 }: {
   handleEditId: (id: number) => void;
   handleDeleteUser: (id: number) => void;
+  t: any
 }) => {
   return [
     {
@@ -85,7 +88,7 @@ export const headCells = ({
     },
     {
       id: "name",
-      label: "Name",
+      label: t("userAdmin.name"),
       numeric: false,
       Cell(row: User, _index: number) {
         return <span>{row.name}</span>;
@@ -93,7 +96,7 @@ export const headCells = ({
     },
     {
       id: "username",
-      label: "Username",
+      label: t("userAdmin.username"),
       numeric: false,
       Cell(row: User, _index: number) {
         return <span>{row.username}</span>;
@@ -101,7 +104,7 @@ export const headCells = ({
     },
     {
       id: "phone",
-      label: "Phone",
+      label: t("userAdmin.phone"),
       numeric: false,
       Cell(row: User, _index: number) {
         return <span>{row.phone}</span>;
@@ -109,7 +112,7 @@ export const headCells = ({
     },
     {
       id: "dataOfBirth",
-      label: "Date of birth",
+      label: t("userAdmin.dateOfBirth"),
       numeric: false,
       Cell(row: User, _index: number) {
         return <span>{row.dateOfBirth && moment(row.dateOfBirth).format("DD/MM/YYYY").toLowerCase()}</span>;
@@ -117,7 +120,7 @@ export const headCells = ({
     },
     {
       id: "sex",
-      label: "Sex",
+      label: t("userAdmin.sex"),
       numeric: false,
       Cell(row: User, _index: number) {
         return <span>{row.sex}</span>;
@@ -125,7 +128,7 @@ export const headCells = ({
     },
     {
       id: "status",
-      label: "Status",
+      label: t("userAdmin.status"),
       numeric: false,
       Cell(row: User, _index: number) {
         return <span>{row.status}</span>;
@@ -133,10 +136,10 @@ export const headCells = ({
     },
     {
       id: "actionUser",
-      label: "Action",
+      label: t("action"),
       numeric: false,
       Cell(row: User, _index: number) {
-        return <ActionCell row={row} handleEditId={handleEditId} handleDeleteUser={handleDeleteUser} />;
+        return <ActionCell row={row} handleEditId={handleEditId} handleDeleteUser={handleDeleteUser} t={t} />;
       },
     },
   ];

@@ -15,6 +15,7 @@ import { headCells } from "./component/headCells";
 import CommonDialog from "@/components/common/Dialog";
 import CreateEditUser from "./component/createEditUser";
 import { useNotifications } from "@/helpers/toast";
+import { useTranslations } from "next-intl";
 
 interface FormSearch {
   textSearch: string;
@@ -29,6 +30,8 @@ const User = () => {
   const { open, toggle, shouldRender } = useToggleDialog();
   const [id, setId] = useState<number | null>(null);
   const {showError} = useNotifications();
+  const t = useTranslations();
+
   const handleEditId = (id: number) => {
     setId(id);
     toggle();
@@ -63,32 +66,32 @@ const User = () => {
               <CommonStyles.Box className="tw-w-[20%]">
                 <RHFField
                   name="textSearch"
-                  placeholder="Search User"
+                  placeholder={t("userAdmin.placeholderSearch")}
                   control={methods.control}
                   component={InputField}
                 />
               </CommonStyles.Box>
               <CommonStyles.Box className="tw-w-[20%]">
-                <CommonStyles.CommonButton variant="outlined" className="outlined rounded tw-ml-5 tw-w-full" type="submit">Search</CommonStyles.CommonButton>
+                <CommonStyles.CommonButton variant="outlined" className="outlined rounded tw-ml-5 tw-w-full" type="submit">{t("search")}</CommonStyles.CommonButton>
               </CommonStyles.Box>
             </form>
           </FormProvider>
         </CommonStyles.Box>
-        <CommonStyles.CommonButton className="tw-text-nowrap tw-px-7" onClick={toggle} label="Create new User" />
+        <CommonStyles.CommonButton className="tw-text-nowrap tw-px-7" onClick={toggle} label={t("userAdmin.createNewUser")} />
       </CommonStyles.Box>
       <CommonStyles.Box>
         {dataUser &&
           <TableCommon
             isLoading={loadingUser}
             sxTableHead={{ fontWeight: "bold" }}
-            rowsPerPage={10}
+            rowsPerPage={filters.perPage}
             disableSort={false}
             selected={selected}
             totalCount={dataUser.totalItems}
             handleCheckBox={handleCheckBox}
             handleSelectAllClick={handleSelectAll}
             page={filters?.page || 0}
-            headCells={headCells({ handleEditId, handleDeleteUser })}
+            headCells={headCells({ handleEditId, handleDeleteUser,t })}
             rows={dataUser?.items}
             handleChangePage={handleChangePage}
             handleChangeRowsPerPage={changeRowPerPage}
