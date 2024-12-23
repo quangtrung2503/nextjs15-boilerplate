@@ -14,6 +14,8 @@ import moment from 'moment';
 import { funcListPaging } from 'src/helpers/common/list-paging';
 import { I18nCustomService } from 'src/resources/i18n/i18n.service';
 import { TourService } from '../tour/tour.service';
+import { convertToEn } from 'src/helpers/functions/common.utils';
+import { ParseIdPipe } from 'src/core/pipes/parse-id.pipe';
 
 @ApiTags('Theme (Administrator)')
 @Controller('theme')
@@ -33,9 +35,16 @@ export class ThemeController {
     const keyNotInDto = Object.keys(body).find((key: keyof CreateThemeDto) => !CreateThemeDtoKeys.includes(key))
     if (keyNotInDto) throw new BaseException(Errors.BAD_REQUEST(this.i18n.t('common-message.theme.create.wrong_parameter', { keyNotInDto })));
 
-    return this.themeService.create({
-      data: body
+    const newTheme = await this.themeService.create({
+      data: {
+        ...body,
+        slug: ''
+      }
     });
+
+    return await this.themeService.update(newTheme.id, {
+      slug: `${convertToEn(newTheme.name.split(' ').join('-'))}-i.${newTheme.id}`
+    })
   }
 
   @ApiBearerAuth()
@@ -80,7 +89,7 @@ export class ThemeController {
   @Roles(UserRole.ADMIN, UserRole.STAFF, UserRole.CUSTOMER)
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Get(':id')
-  async findOne(@Param('id') id: number) {
+  async findOne(@Param('id', ParseIdPipe) id: number) {
     const theme = await this.themeService.findOne({ 
       where: { id }
     });
@@ -93,22 +102,26 @@ export class ThemeController {
   @Roles(UserRole.ADMIN, UserRole.STAFF)
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Patch(':id')
-  async update(@Param('id') id: number, @Body() body: UpdateThemeDto) {
+  async update(@Param('id', ParseIdPipe) id: number, @Body() body: UpdateThemeDto) {
     const existingTheme = await this.themeService.findOne({ where: { id } });
     if (!existingTheme) throw new BaseException(Errors.ITEM_NOT_FOUND(this.i18n.t('common-message.theme.update.not_found')));
 
     const keyNotInDto = Object.keys(body).find((key: keyof UpdateThemeDto) => !CreateThemeDtoKeys.includes(key))
     if (keyNotInDto) throw new BaseException(Errors.BAD_REQUEST(this.i18n.t('common-message.theme.update.wrong_parameter', { keyNotInDto })));
 
-    return this.themeService.update(id, body);
+    const updatedData: Prisma.ThemeUpdateInput = { ...body };
+    if (body.name && body.name !== existingTheme.name) {
+      updatedData.slug = `${convertToEn(body.name.split(' ').join('-'))}-i.${id}`;
+    }
 
+    return this.themeService.update(id, updatedData);
   }
 
   @ApiBearerAuth()
   @Roles(UserRole.ADMIN, UserRole.STAFF)
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Patch('set-active/:id')
-  async setActive(@Param('id') id: number) {
+  async setActive(@Param('id', ParseIdPipe) id: number) {
     const existingTheme = await this.themeService.findOne({ where: { id } });
     if (!existingTheme) throw new BaseException(Errors.ITEM_NOT_FOUND(this.i18n.t('common-message.theme.setActive.not_found')));
 
@@ -138,7 +151,7 @@ export class ThemeController {
   @Roles(UserRole.ADMIN, UserRole.STAFF)
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Delete(':id')
-  async remove(@Param('id') id: number) {
+  async remove(@Param('id', ParseIdPipe) id: number) {
     const theme = await this.themeService.findOne({ where: { id } });
     if (!theme) throw new BaseException(Errors.ITEM_NOT_FOUND(this.i18n.t('common-message.theme.remove.not_found')));
 
