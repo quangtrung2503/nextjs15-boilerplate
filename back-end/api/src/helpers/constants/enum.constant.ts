@@ -67,3 +67,29 @@ export enum Duration {
   FULL_DAY = 'Full day (7+ hours)',
   MULTI_DAY = 'Multi-day'
 }
+
+export enum BookingStatus {
+  PENDING = 'Pending',
+  CONFIRMED = 'Confirmed',
+  CANCELLED = 'Cancelled',
+  PAYMENT_CONFIRMED = 'Payment Confirmed',
+}
+
+export enum PaymentMethod {
+  CASH = 'Cash',
+  BANK_TRANSFER = 'Bank Transfer',
+  CREDIT_CARD = 'Credit Card'
+}
+
+export enum BookingCancellationReason {
+  CHANGE_OF_PLANS = 'Change of Plans', // Khách thay đổi kế hoạch cá nhân
+  HEALTH_ISSUES = 'Health Issues', // Gặp vấn đề về sức khỏe
+  FAMILY_EMERGENCY = 'Family Emergency', // Khẩn cấp gia đình
+  FINANCIAL_ISSUES = 'Financial Issues', // Vấn đề tài chính
+  SCHEDULE_CONFLICT = 'Schedule Conflict', // Trùng lịch trình
+  TRAVEL_RESTRICTIONS = 'Travel Restrictions', // Hạn chế đi lại
+  WEATHER_CONCERNS = 'Weather Concerns', // Lo ngại về thời tiết
+  FOUND_BETTER_OPTION = 'Found a Better Option', // Tìm được lựa chọn khác phù hợp hơn
+  PERSONAL_REASONS = 'Personal Reasons', // Lý do cá nhân
+  OTHER = 'Other', // Lý do khác không cụ thể
+}
