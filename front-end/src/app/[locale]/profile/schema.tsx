@@ -7,18 +7,14 @@ export const schemaPersonalInformation = yup.object().shape({
     .string()
     .matches(/^[0-9]{10}$/, "Phone number must be 10 digits")
     .required("Phone number is required"), 
-  location: yup.string().required("Location is required"),
+  address: yup.string().required("Location is required"),
 }).required();
 
 export const schemaSecurityInformation = yup.object().shape({
-  email: yup.string().email('Invalid email address')
-    .matches(
-      /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
-      'Email must match specific pattern')
-    .required('Email is required'),
-  password: yup.string().required("Password is a required"),
+  currentPassword: yup.string().required("Password is a required"),
+  newPassword: yup.string().required("Password is a required"),
   confirmPassword: yup
     .string()
     .required("Confirm password is required")
-    .oneOf([yup.ref('password')], "Passwords must match"),
+    .oneOf([yup.ref('newPassword')], "Passwords must match"),
 }).required();

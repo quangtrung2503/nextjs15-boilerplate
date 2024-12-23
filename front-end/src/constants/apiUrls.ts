@@ -3,8 +3,9 @@ export const PUBLIC_URL = `${process.env.NEXT_PUBLIC_URL}`;
 export default {
     IMG_URL: `${PUBLIC_URL}`,
     AUTH: {
-      SIGN_UP: `${BASE_URL}/auth/sign-up-customer`,
+      SIGN_UP: `${BASE_URL}/`,
       SIGN_IN: `${BASE_URL}/auth/login`,
+      CHANGE_PASSWORD: `${BASE_URL}/auth/change-password`
     },
     CITY_URL: `${BASE_URL}/city`,
     USER_URL: `${BASE_URL}/user`,
@@ -13,5 +14,5 @@ export default {
     POST_URL: `${BASE_URL}/post`,
     UPLOAD_URL: `${BASE_URL}/upload`,
     DESTINATION_URL: `${BASE_URL}/destination`,
-
+    PROFILE_URL: `${BASE_URL}/user/profile`
 }

@@ -4,13 +4,15 @@ import TextField, { TextFieldProps } from '@mui/material/TextField';
 import { Control, Controller } from 'react-hook-form';
 import { twMerge } from 'tailwind-merge';
 import InputAdornment from '@mui/material/InputAdornment';
-import { Box } from '@mui/material';
+import { Box, IconButton } from '@mui/material';
+import { Visibility, VisibilityOff } from '@mui/icons-material';
 
 type InputFieldProps = {
   name: string;
   control: Control<any>;
   regex?: RegExp;
   icon?: React.ReactNode;
+  defaultValue?: string;
 };
 
 const InputField: React.FC<InputFieldProps & TextFieldProps> = ({
@@ -18,7 +20,8 @@ const InputField: React.FC<InputFieldProps & TextFieldProps> = ({
   control,
   placeholder,
   label,
-  type,
+  type = 'text', // Mặc định là 'text'
+  defaultValue,
   className,
   regex,
   icon,
@@ -40,6 +43,12 @@ const InputField: React.FC<InputFieldProps & TextFieldProps> = ({
           }
         };
 
+        const [showPassword, setShowPassword] = React.useState<boolean>(false);
+
+        const handleToggleShowPassword = () => {
+          setShowPassword(prev => !prev);
+        };
+
         return (
           <Box className="tw-mt-2.5 tw-mb-5">
             {label && (
@@ -58,16 +67,25 @@ const InputField: React.FC<InputFieldProps & TextFieldProps> = ({
                 hasError ? 'tw-border-red-500' : 'tw-bg-[#F4F4F5]',
                 className
               )}
-              type={type}
+              type={type === 'password' && showPassword ? 'text' : type}
               value={value || ''}
               onChange={onChangeHandler}
               slotProps={{
                 input: {
-                  endAdornment: icon ? (
+                  endAdornment: type === 'password' ? (
                     <InputAdornment position="end">
+                      <IconButton onClick={handleToggleShowPassword} edge="end">
+                        {showPassword ? <VisibilityOff /> : <Visibility />}
+                      </IconButton>
                       {icon}
                     </InputAdornment>
-                  ) : null,
+                  ) : (
+                    icon ? (
+                      <InputAdornment position="end">
+                        {icon}
+                      </InputAdornment>
+                    ) : null
+                  ),
                 }
               }}
               sx={{

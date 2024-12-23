@@ -29,7 +29,7 @@ const Tabs: React.FC<TabsProps> = ({tabs, activeTab, onTabChange}) => {
               cursor: "pointer",
             },
           }}
-          className="tw-h-14 tw-border-none tw-py-0 tw-px-8 tw-justify-start tw-font-medium tw-rounded-none tw-normal-case"
+          className="tw-h-14 tw-border-none tw-py-0 tw-pl-8 tw-justify-start tw-text-left tw-font-medium tw-rounded-none tw-normal-case"
         >
           {tab.label}
         </Button>

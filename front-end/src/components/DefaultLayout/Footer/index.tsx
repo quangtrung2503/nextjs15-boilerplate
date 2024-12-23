@@ -85,7 +85,7 @@ const currencyOptions: SelectOption[] = [
       <Container maxWidth="lg" className="tw-py-20">
         <Grid2 container spacing={12}>
           <Grid2 size={3} className="tw-flex tw-flex-col tw-gap-y-5">
-            <FooterSection title="Language">
+            {/* <FooterSection title="Language">
               <SelectField
               sx={{
                 fieldSet: {
@@ -98,8 +98,8 @@ const currencyOptions: SelectOption[] = [
                 options={languageOptions}
                 classNameContainer="tw-bg-transparent"
               />
-            </FooterSection>
-            <FooterSection title="Currency">
+            </FooterSection> */}
+            {/* <FooterSection title="Currency">
               <SelectField
               sx={{
                 fieldSet: {
@@ -112,7 +112,7 @@ const currencyOptions: SelectOption[] = [
                 options={currencyOptions}
                 classNameContainer="tw-bg-transparent"
               />
-            </FooterSection>
+            </FooterSection> */}
           </Grid2>
           <Grid2 size={3}>
             <FooterSection title="Company">

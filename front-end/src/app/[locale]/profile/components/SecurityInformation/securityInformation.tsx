@@ -4,33 +4,54 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { Box, Typography } from "@mui/material";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { schemaSecurityInformation } from "../../schema";
+import { useState } from "react";
+import profileServices from "@/services/modules/profile/profile.services";
+import { useNotifications } from "@/helpers/toast";
 
 interface ISecurityProfile {
-  email: string;
-  password: string;
+  currentPassword: string;
+  newPassword: string;
   confirmPassword: string;
 }
 
 const SecurityInformation: React.FC = () => {
+  const [loading, setLoading] = useState(false);
+  const { showSuccess, showError, showInfo } = useNotifications();
+  
+  const initValue: ISecurityProfile = {
+    currentPassword: '',
+    newPassword: '',
+    confirmPassword: '',
+  }
+
   const {
     handleSubmit,
     control,
     formState: { errors },
   } = useForm({
     resolver: yupResolver(schemaSecurityInformation),
-    defaultValues: {
-      email: "",
-      password: "",
-      confirmPassword: "",
-    },
+    defaultValues: initValue
   });
 
-  console.log({ errors });
-
-  const onSubmitFormSecurityInformation: SubmitHandler<ISecurityProfile> = (
-    data,
-  ) => {
-    console.log("Security data", data);
+  const onSubmitFormSecurityInformation= async (dataPassword:ISecurityProfile) => {
+    try {
+      setLoading(true);
+     const dataPasswordUser: ISecurityProfile = {
+      currentPassword: dataPassword.currentPassword,
+      newPassword: dataPassword.newPassword,
+      confirmPassword: dataPassword.confirmPassword,
+    }
+      console.log("Data", dataPasswordUser);
+       await profileServices.setPasswordUser(dataPassword);
+     showSuccess("Set Password Success");
+    } catch (error: any) {
+      const err: any = error?.response.data.messages[0];
+      console.log(err);
+      
+     showError(err);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -43,12 +64,17 @@ const SecurityInformation: React.FC = () => {
           Security
         </Typography>
         <form onSubmit={handleSubmit(onSubmitFormSecurityInformation)}>
-          <InputField name="email" control={control} label="Email Address" />
-          <InputField
-            name="password"
+        <InputField
+            name="currentPassword"
             type="password"
             control={control}
-            label="Password"
+            label="Current Password"
+          />
+          <InputField
+            name="newPassword"
+            type="password"
+            control={control}
+            label="New Password"
           />
           <InputField
             name="confirmPassword"
