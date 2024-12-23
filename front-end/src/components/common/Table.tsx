@@ -590,7 +590,7 @@ function TableCommon<T>({
               component='div'
               count={totalCount}
               rowsPerPage={rowsPerPage ? rowsPerPage : 5}
-              page={page - 1}
+              page={page-1}
               onPageChange={handleChangePage}
               onRowsPerPageChange={handleChangeRowsPerPage}
               nextIconButtonProps={{ style: { display: 'none' } }}
@@ -600,16 +600,16 @@ function TableCommon<T>({
               //   "t('Common.displayedRow', { from, to, count })"
               // }
             />
-            {/* <CustomPagination
+            <CustomPagination
               className='pagination-list'
               count={Math.ceil(totalCount / (rowsPerPage || 1))}
               size='medium'
               page={page}
               variant='outlined'
               color='primary'
-              onChange={(e, page) => handleChangePage(e, page - 1)}
+              onChange={(e, page) => handleChangePage(e, page)}
               renderItem={(item) => <PaginationItem className='pagination-item' {...item} />}
-            /> */}
+            />
           </CommonStyles.Box>
         )}
       </Paper>
@@ -617,54 +617,54 @@ function TableCommon<T>({
   );
 }
 
-// const CustomPagination = styled(Pagination)<PaginationProps>(({ theme }) => ({
-//   '& nav': {
-//     borderRadius: '4px',
-//   },
-//   '& ul > li': {
-//     '& .Mui-selected': {
-//       background: theme.colors?.primaryDefault,
-//       color: theme.colors?.white,
-//       borderColor: theme.colors?.primaryDefault,
-//       ':hover': {
-//         background: theme.colors?.primaryDefault,
-//       },
-//     },
-//     '& button': {
-//       borderRadius: 0,
-//       margin: 0,
-//       ':hover': {
-//         background: `${theme.colors?.primary100}50`,
-//       },
-//     },
-//     ':nth-child(2n)': {
-//       '& button': {
-//         borderRightWidth: 0,
-//         borderLeftWidth: 0,
-//       },
-//     },
-//     ':first-child': {
-//       '& button': {
-//         borderTopLeftRadius: '4px',
-//         borderBottomLeftRadius: '4px',
-//       },
-//     },
-//     ':last-child': {
-//       '& button': {
-//         borderTopRightRadius: '4px',
-//         borderBottomRightRadius: '4px',
-//       },
-//     },
-//     '& div': {
-//       border: '1px solid rgba(0, 0, 0, 0.23)',
-//       borderRadius: 0,
-//       height: '32px',
-//       justifyContent: 'center',
-//       alignItems: 'center',
-//       display: 'flex',
-//       margin: 0,
-//     },
-//   },
-// }));
+const CustomPagination = styled(Pagination)<PaginationProps>(({ theme }) => ({
+  '& nav': {
+    borderRadius: '4px',
+  },
+  '& ul > li': {
+    '& .Mui-selected': {
+      background: '#7bbcb0',
+      color: "#FFFFFF",
+      borderColor: '#7bbcb0',
+      ':hover': {
+        background: '#7bbcb0',
+      },
+    },
+    '& button': {
+      borderRadius: 0,
+      margin: 0,
+      ':hover': {
+        background: `7bbcb050`,
+      },
+    },
+    ':nth-child(2n)': {
+      '& button': {
+        borderRightWidth: 0,
+        borderLeftWidth: 0,
+      },
+    },
+    ':first-child': {
+      '& button': {
+        borderTopLeftRadius: '4px',
+        borderBottomLeftRadius: '4px',
+      },
+    },
+    ':last-child': {
+      '& button': {
+        borderTopRightRadius: '4px',
+        borderBottomRightRadius: '4px',
+      },
+    },
+    '& div': {
+      border: '1px solid rgba(0, 0, 0, 0.23)',
+      borderRadius: 0,
+      height: '32px',
+      justifyContent: 'center',
+      alignItems: 'center',
+      display: 'flex',
+      margin: 0,
+    },
+  },
+}));
 
 export default TableCommon;

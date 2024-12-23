@@ -5,7 +5,6 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
-import { bgLogin } from "@/assets";
 import RHFField from "@/components/customReactFormField/ReactFormField";
 import InputField from "@/components/customReactFormField/InputField";
 import { default as CommonStyles } from "@/components/common";
@@ -19,6 +18,7 @@ import LoginModel from "@/models/login.model";
 import { useNotifications } from "@/helpers/toast";
 import Loading from "@/components/common/Loading";
 import { defaultValue, FormValues, validateSchema } from "./forms";
+import { commonImg } from "@/assets";
 
 type ISignInProps = {
   path: string;
@@ -76,7 +76,7 @@ const SignIn = (props: ISignInProps) => {
   return (
     <CommonStyles.Box className="tw-flex tw-items-center tw-justify-center">
       <img
-        src={bgLogin.src}
+        src={commonImg.bgLogin.src}
         className="tw-fixed tw-inset-0 tw-w-full tw-min-h-screen tw-blur-sm"
         alt=""
       />

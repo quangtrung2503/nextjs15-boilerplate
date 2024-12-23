@@ -36,7 +36,7 @@ const useGetCity = (
   const [loading, setLoading] = useState(false);
   const [refetching, setRefetching] = useState(false);
   const [error, setError] = useState<unknown>(null);
-  const {showError} = useNotifications();
+  const { showError } = useNotifications();
   //! Function
   const fetch: () => Promise<AxiosResponse<ResponseCity>> | undefined = useCallback(() => {
     if (!isTrigger) {
@@ -46,11 +46,12 @@ const useGetCity = (
     return new Promise((resolve, reject) => {
       (async () => {
         try {
-          const response = await requestAPI(id,{
+          const response = await requestAPI(id, {
             signal: signal.current.signal,
           });
           resolve(response);
         } catch (error) {
+          console.log(error);
           setError(error);
           reject(error);
         }
@@ -82,6 +83,7 @@ const useGetCity = (
       setRefetching(false);
     } catch (error: any) {
       if (!error.isCanceled) {
+        console.log(error);
         showError(error);
       }
     }
@@ -101,6 +103,7 @@ const useGetCity = (
       }
       setLoading(false);
     } catch (error) {
+      console.log(error);
       showError(error);
       setLoading(false);
     }

@@ -1,15 +1,13 @@
-import { City } from "@/services/modules/city/interfaces/city"
 import { default as CommonStyles } from "@/components/common"
 import CommonIcons from "@/components/CommonIcons"
 import { useState } from "react"
 import { Popover } from "@mui/material"
-import apiUrls from "@/constants/apiUrls"
+import { Tour } from "@/services/modules/tour/interface/tour";
 
-const ActionCell: React.FC<{ row: City; handleEditId: (id: number) => void; handleDeleteCity: (id: number) => void ;t:any}> = ({
+const ActionCell: React.FC<{ row: Tour; handleEditId: (id: number) => void; handleDeleteTour: (id: number) => void }> = ({
   row,
   handleEditId,
-  handleDeleteCity,
-  t
+  handleDeleteTour
 }) => {
   const [anchorEl, setAnchorEl] = useState<HTMLDivElement | null>(null);
 
@@ -23,7 +21,7 @@ const ActionCell: React.FC<{ row: City; handleEditId: (id: number) => void; hand
 
   const handleConfirmDelete = () => {
     handleClosePopover();
-    handleDeleteCity(Number(row.id));
+    handleDeleteTour(Number(row.id));
   };
 
   const isPopoverOpen = Boolean(anchorEl);
@@ -50,14 +48,14 @@ const ActionCell: React.FC<{ row: City; handleEditId: (id: number) => void; hand
           >
             <CommonStyles.Box className="tw-p-2 tw-flex tw-flex-col tw-items-center">
               <CommonStyles.Typography className="tw-text-md tw-mb-1 tw-font-bold">
-                {t("confirmDelete")}
+                Are you sure you want to delete this Tour?
               </CommonStyles.Typography>
               <CommonStyles.Box className="tw-flex tw-gap-4">
                 <CommonStyles.Box className="tw-text-red-500 tw-cursor-pointer tw-border-solid tw-border-[1px] tw-bg-red-100 tw-rounded-md tw-px-2 tw-pb-1" onClick={handleConfirmDelete}>
-                  {t("delete")}
+                  Delete
                 </CommonStyles.Box>
                 <CommonStyles.Box className="tw-text-gray-700 tw-cursor-pointer tw-border-solid tw-border-[1px] tw-rounded-md tw-px-2 tw-pb-1" onClick={handleClosePopover}>
-                  {t("cancel")}
+                  Cancel
                 </CommonStyles.Box>
               </CommonStyles.Box>
             </CommonStyles.Box>
@@ -70,52 +68,42 @@ const ActionCell: React.FC<{ row: City; handleEditId: (id: number) => void; hand
 
 export const headCells = ({
   handleEditId,
-  handleDeleteCity,
-  t
+  handleDeleteTour
 }: {
   handleEditId: (id: number) => void;
-  handleDeleteCity: (id: number) => void;
-  t: any
+  handleDeleteTour: (id: number) => void;
 }) => {
   return [
     {
       id: "id",
       label: "STT",
       numeric: true,
-      Cell(row: City, _index: number) {
+      Cell(row: Tour, _index: number) {
         return <span>{_index+1}</span>;
       },
     },
     {
       id: "name",
-      label: t("name"),
+      label: "Name",
       numeric: false,
-      Cell(row: City, _index: number) {
+      Cell(row: Tour, _index: number) {
         return <span>{row.name}</span>;
       },
     },
     {
-      id: "image",
-      label: t("image"),
+      id: "isDisplay",
+      label: "Display",
       numeric: false,
-      Cell(row: City, _index: number) {
-        return <span>{row.image && <img className="tw-w-[100px] tw-h-auto" src={`${apiUrls.IMG_URL}/${row.image}`} alt={`${row.name}-images`} />}</span>;
+      Cell(row: Tour, _index: number) {
+        return <span>{row.isDisplay ? <CommonIcons.CheckCircleOutline /> : <></>}</span>;
       },
     },
     {
-      id: "description",
-      label: t("description"),
+      id: "actionTour",
+      label: "Action",
       numeric: false,
-      Cell(row: City, _index: number) {
-        return <span>{row.description}</span>;
-      },
-    },
-    {
-      id: "actionCity",
-      label: t("action"),
-      numeric: false,
-      Cell(row: City, _index: number) {
-        return <ActionCell row={row} handleEditId={handleEditId} handleDeleteCity={handleDeleteCity} t={t} />;
+      Cell(row: Tour, _index: number) {
+        return <ActionCell row={row} handleEditId={handleEditId} handleDeleteTour={handleDeleteTour} />;
       },
     },
   ];
