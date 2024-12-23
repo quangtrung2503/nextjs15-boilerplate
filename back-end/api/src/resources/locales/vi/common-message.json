@@ -5,9 +5,7 @@
       "invalid_phone": "Số điện thoại cần ít nhất 9 ký tự",
       "invalid_email": "Email không hợp lệ",
       "invalid_password": "Mật khẩu cần ít nhất 8 ký tự, bao gồm ít nhất một chữ cái, một số và một ký tự đặc biệt",
-      "wrong_confirm_password": "Mật khẩu không khớp",
-      "phone_exists": "Số điện thoại đã tồn tại",
-      "email_exists": "Email đã tồn tại"
+      "wrong_confirm_password": "Mật khẩu không khớp"
     },
     "login": {
       "user_not_found": "Email",
@@ -34,9 +32,7 @@
       "invalid_phone": "Số điện thoại cần ít nhất 9 ký tự",
       "invalid_email": "Email không hợp lệ",
       "invalid_password": "Mật khẩu cần ít nhất 8 ký tự, bao gồm ít nhất một chữ cái, một số và một ký tự đặc biệt",
-      "invalid_status": "Trạng thái người dùng phải là ACTIVE hoặc BANNED",
-      "phone_exists": "Số điện thoại đã tồn tại",
-      "email_exists": "Email đã tồn tại"
+      "invalid_status": "Trạng thái người dùng phải là ACTIVE hoặc BANNED"
     },
     "findOne": {
       "not_found": "Người dùng"
@@ -44,9 +40,7 @@
     "update": {
       "wrong_parameter": "{keyNotInDto} không được định nghĩa trong các tham số",
       "forbidden": "{role} không thể cập nhật {key}",
-      "not_found": "Người dùng không tồn tại hoặc đã bị xóa",
-      "phone_exists": "Số điện thoại đã tồn tại",
-      "email_exists": "Email đã tồn tại"
+      "not_found": "Người dùng không tồn tại hoặc đã bị xóa"
     },
     "remove": {
       "not_found": "Người dùng không tồn tại hoặc đã bị xóa"
@@ -169,6 +163,45 @@
     "removeFromWishlist": {
       "not_found": "Chuyến đi"
     }
+  },
+  "booking": {
+    "create": {
+      "wrong_parameter": "{keyNotInDto} không được định nghĩa trong các tham số",
+      "tour_not_found": "Không tìm thấy tour",
+      "invalid_start_date_before_tour": "Ngày bắt đầu đi không được trước ngày bắt đầu tour",
+      "invalid_end_date_after_tour": "Ngày kết thúc đi không được sau ngày kết thúc tour",
+      "invalid_start_date": "Ngày bắt đầu đi không được là ngày quá khứ",
+      "invalid_end_date": "Ngày kết thúc đi phải sau ngày bắt đầu đi"
+    },
+    "cancel": {
+      "not_found": "Đơn đặt",
+      "already_cancelled": "Đơn đặt đã được hủy trước đó",
+      "too_late_to_cancel": "Bạn chỉ được hủy đơn đặt trước ngày tour bắt đầu ít nhất 1 ngày"
+    },
+    "updateStatus": {
+      "wrong_parameter": "{keyNotInDto} không được định nghĩa trong các tham số",
+      "not_found": "Đơn đặt"
+    }
+  },
+  "review": {
+    "create": {
+      "wrong_parameter": "{keyNotInDto} không được định nghĩa trong các tham số",
+      "tour_not_found": "Chuyến đi"
+    },
+    "update": {
+      "wrong_parameter": "{keyNotInDto} không được định nghĩa trong các tham số",
+      "not_found": "Đánh giá"
+    },
+    "updateHelpful": {
+      "not_found": "Đánh giá"
+    },
+    "setActive": {
+      "not_found": "Đánh giá"
+    }
+  },
+
+  "validation": {
+    "invalid_id": "ID phải là một số hợp lệ"
   },
   "test-fall-back": "VI"
 }
