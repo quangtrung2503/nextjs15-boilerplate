@@ -16,7 +16,7 @@ import SelectField from "@/components/customReactFormField/SelectField";
 import useGetCities from "@/services/modules/city/hook/useGetAllCity";
 import useGetDestinations from "@/services/modules/destination/hook/useGetAllDestination";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { getOptionEnum, Transport } from "@/helpers/common";
+import { getOptionEnum, Package, Transport } from "@/helpers/common";
 import UploadField from "@/components/customReactFormField/UploadField";
 import { isArray } from "lodash";
 import apiUrls from "@/constants/apiUrls";
@@ -52,6 +52,7 @@ interface FormValues {
   images: string[];
 }
 const transportOption = getOptionEnum(Transport);
+const packageOption = getOptionEnum(Package);
 const CreateEditTour: FC<createEditTourProps> = (props) => {
   const { toggle, id } = props;
   const { data, loading } = useGetTour(Number(id), { isTrigger: !!id });
@@ -270,7 +271,8 @@ const CreateEditTour: FC<createEditTourProps> = (props) => {
               <RHFField
                 name="package"
                 control={methods.control}
-                component={InputField}
+                component={SelectField}
+                options={packageOption}
                 placeholder={t("placeholderPackage")}
                 label={t("package")}
               />
