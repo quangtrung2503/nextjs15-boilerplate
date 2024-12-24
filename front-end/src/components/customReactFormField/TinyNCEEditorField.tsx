@@ -19,6 +19,7 @@ interface CustomInputProps {
   className?: string;
   placeholder?: string;
   classNameContainer?: string;
+  height?: number;
   id: string; // Add `id` for TinyMCE editor
 }
 
@@ -32,6 +33,7 @@ const TinyMCEEditorField: React.FC<CustomInputProps> = ({
   placeholder,
   classNameLabel,
   classNameContainer,
+  height,
   id
 }) => {
   const ref = useRef();
@@ -42,8 +44,7 @@ const TinyMCEEditorField: React.FC<CustomInputProps> = ({
           {label}
         </InputLabel>
       )}
-      <TinyMceCommon ref={ref} fieldState={fieldState} field={field} id={id} />
-      {fieldState.error && <span className="text-red-500">{fieldState.error.message}</span>}
+      <TinyMceCommon placeholder={placeholder} height={height} ref={ref} fieldState={fieldState} field={field} id={id} />
     </CommonStyles.Box>
   );
 };

@@ -4,7 +4,7 @@ import tourCustomerServices, { ResponseTourCustomer } from "../tourCustomer.serv
 import { useSave } from "@/stores/useStore";
 import { AxiosResponse } from "axios";
 import { useNotifications } from "@/helpers/toast";
-import { ApiResponse } from "../interface/tour";
+import { ApiResponse } from "../interfaces/tour";
 
 /********************************************************
  * SNIPPET GENERATED

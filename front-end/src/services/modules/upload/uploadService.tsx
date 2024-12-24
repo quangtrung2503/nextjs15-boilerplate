@@ -7,6 +7,7 @@ interface UploadFile {
     fileType: string
 }
 export type ResponseUploadFile = AxiosResponse<ResponseCommon<UploadFile>>;
+export type ResponseUploadFiles = AxiosResponse<ResponseCommon<ResponseCommon<UploadFile[]>>>;
 
 class UploadService {
     async uploadSingle(file: FormData, configs?: AxiosRequestConfig): Promise<ResponseUploadFile> {
@@ -20,7 +21,7 @@ class UploadService {
             },
         );
     }
-    async uploadMultiple(file: FormData,configs?: AxiosRequestConfig) : Promise<ResponseUploadFile>{
+    async uploadMultiple(file: FormData,configs?: AxiosRequestConfig) : Promise<ResponseUploadFiles>{
       return await httpService.post(`${apiUrls.UPLOAD_URL}`,
         file,
         {
