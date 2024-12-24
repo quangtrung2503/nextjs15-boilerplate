@@ -311,5 +311,38 @@
   "cancel": "Cancel",
   "admin": {
     "Destination": "City"
+  },
+  "breadcrumb": {
+    "myProfile": "My profile",
+    "home": "Home"
+  },
+  "profile": {
+    "unknownAddress": "Unknown Address",
+    "unknownDate": "Unknown Date",
+    "personalInformation": " Personal Information",
+    "save": "Save",
+    "security": "Security",
+    "updateDataSuccess": "Update Data Successful",
+    "setPassSuccess": "Set Password Success",
+    "menuProfile": {
+      "information": "Profile Information",
+      "booking": "Booking History",
+      "newsletter": "Newsletter Subscription",
+      "manager": "Manage Notifications"
+    }
+  },
+  "uploadField": {
+    "upload": "Upload"
+  },
+  "validation": {
+    "usernameRequired": "Username is required",
+    "dateOfBirthRequired": "Date of birth is required",
+    "phoneInvalid": "Phone number must be 10 digits",
+    "phoneRequired": "Phone number is required",
+    "locationRequired": "Location is required",
+    "currentPasswordRequired": "Current password is required",
+    "newPasswordRequired": "New password is required",
+    "confirmPasswordRequired": "Confirm password is required",
+    "passwordsMustMatch": "Passwords must match"
   }
 }

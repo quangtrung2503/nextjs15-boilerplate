@@ -57,7 +57,7 @@ const Landing = () => {
           label: "label8",
         },
       ];
-    const t = useTranslations('LandingPage');
+    // const t = useTranslations('LandingPage');
     const { theme, setTheme } = useThemeContext();
     const schema = yup
   .object({
@@ -104,12 +104,12 @@ const Landing = () => {
         <AccordionMUI title="Theme" options={options} />
         <Loading />
       </CommonStyles.Box>
-      <SelectField
+      {/* <SelectField
         options={options}
         onChange={(e) => {
           console.log(e.target.value);
         }}
-      />
+      /> */}
       <form onSubmit={handleSubmit(onSubmit)}>
         <RHFField
           name="username"
