@@ -198,9 +198,9 @@ export default function HomePage() {
                         padding: 0,
                       },
                       "& input::-webkit-outer-spin-button, & input::-webkit-inner-spin-button":
-                        {
-                          WebkitAppearance: "none",
-                        },
+                      {
+                        WebkitAppearance: "none",
+                      },
                     }}
                     type="number"
                     name="guests"

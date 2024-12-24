@@ -40,7 +40,7 @@ export const CommonDatePicker: React.FC<IDatePickerProps> = ({
   const PickerComponent = isMobileDate ? MobileDatePicker : DatePicker;
 
   return (
-    <div className="flex flex-col">
+    <div className="tw-flex tw-flex-col tw-w-full">
       {label && (
         <label
           className={twMerge(
@@ -69,22 +69,22 @@ export const CommonDatePicker: React.FC<IDatePickerProps> = ({
                 color: "#495560",
                 height: "54px",
                 paddingLeft: "20px",
-                
+
               },
               div: {
                 button: {
                   padding: "6px",
                   marginRight: 0,
                 },
-                ":hover":{
-                  ".css-u6ogs3-MuiInputBase-root-MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline":{
-                    border: fieldState.error ? "#d32f2f solid 1px": "none",
+                ":hover": {
+                  ".css-u6ogs3-MuiInputBase-root-MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline": {
+                    border: fieldState.error ? "#d32f2f solid 1px" : "none",
                   }
                 }
               },
               fieldset: {
                 padding: 0,
-                border: fieldState.error ? "#d32f2f solid 1px": border ? "#cfcfcf solid 1px":"none",
+                border: fieldState.error ? "#d32f2f solid 1px" : border ? "#cfcfcf solid 1px" : "none",
               },
               borderRadius: "3px",
               backgroundColor: "#F4F4F5",

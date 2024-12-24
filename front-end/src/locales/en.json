@@ -82,6 +82,16 @@
     "subStoryTitle": "Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint. Velit officia consequat duis enim velit mollit",
     "allPostButton": "View All Posts"
   },
+  "cityTour": {
+    "validations": {
+      "startDateRequire": "Please select a start date.",
+      "startDateInvalid": "The start date is invalid.",
+      "startDateMin": "The start date cannot be in the past.",
+      "endDateRequire": "Please select an end date.",
+      "endDateInvalid": "The end date is invalid.",
+      "endDateAfterStartDate": "The end date must be after the start date."
+    }
+  },
   "landingPage": {
     "metaTitle": "Welcome to our website",
     "metaDescription": "Discover the latest trends, products, and services at our website.",

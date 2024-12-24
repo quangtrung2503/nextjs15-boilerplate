@@ -33,14 +33,14 @@ const CardListItem = (props: CardListItemProps) => {
     ...rest
   } = props;
   return (
-    <Card className="tw-w-fit tw-p-0 tw-flex">
+    <Card className="tw-w-full tw-p-0 tw-flex">
       <CommonStyles.Box className="tw-w-fit">
         <CardMedia
           className="tw-min-h-[150px] tw-aspect-square tw-rounded-r-sm"
           image={src}
         />
       </CommonStyles.Box>
-      <CardContent className="tw-flex tw-gap-12 tw-items-center">
+      <CardContent className="tw-flex tw-w-full tw-justify-between tw-items-center tw-px-4">
         <CommonStyles.Box className="tw-flex tw-flex-col tw-gap-y-3">
           <CommonStyles.Box className="tw-flex tw-gap-5">
             <CommonStyles.Typography className="tw-px-3 tw-py-1 tw-rounded-full tw-bg-primary tw-text-white">
@@ -63,7 +63,7 @@ const CardListItem = (props: CardListItemProps) => {
             <CommonStyles.Box className="tw-flex tw-items-center tw-gap-1">
               <CommonIcons.AccessTime className="tw-size-[16px]" />
               <CommonStyles.Typography type="size14Weight400">
-                {(duration <= 24 && duration) ? `${duration} hours` : `${(duration/24)} day`}
+                {(duration <= 24 && duration) ? `${duration} hours` : `${(duration / 24)} day`}
               </CommonStyles.Typography>
             </CommonStyles.Box>
             <CommonStyles.Divider orientation="vertical" className="tw-h-4" />

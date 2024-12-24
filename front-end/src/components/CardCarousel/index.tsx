@@ -9,8 +9,8 @@ type Props = {
   data?: [];
   title?: React.ReactNode;
 };
-const CardCarousel= (props: Props) => {
-  const {title, data} = props
+const CardCarousel = (props: Props) => {
+  const { title, data } = props
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [isAtStart, setIsAtStart] = useState(true);
   const [isAtEnd, setIsAtEnd] = useState(false);
@@ -76,21 +76,19 @@ const CardCarousel= (props: Props) => {
         <CommonStyles.Box>{title}</CommonStyles.Box>
         <CommonStyles.Box className="tw-flex tw-items-center tw-gap-5">
           <CommonStyles.Box
-            className={`tw-rounded-full tw-w-[50px] tw-aspect-square tw-flex tw-items-center tw-justify-center ${
-              isAtStart
-                ? "tw-border-secondary tw-shadow-direction_carousel tw-cursor-not-allowed tw-border-[1px] tw-border-solid"
-                : "tw-cursor-pointer tw-shadow-direction_carousel tw-bg-secondary"
-            }`}
+            className={`tw-rounded-full tw-w-[50px] tw-aspect-square tw-flex tw-items-center tw-justify-center ${isAtStart
+              ? "tw-border-secondary tw-shadow-direction_carousel tw-cursor-not-allowed tw-border-[1px] tw-border-solid"
+              : "tw-cursor-pointer tw-shadow-direction_carousel tw-bg-secondary"
+              }`}
             onClick={!isAtStart ? handleScrollLeft : undefined}
           >
             <CommonIcons.LeftDirection />
           </CommonStyles.Box>
           <CommonStyles.Box
-            className={`tw-rounded-full tw-w-[50px] tw-aspect-square tw-flex tw-items-center tw-justify-center ${
-              isAtEnd
-                ? "tw-border-secondary tw-shadow-direction_carousel tw-cursor-not-allowed tw-border-[1px] tw-border-solid"
-                : "tw-cursor-pointer tw-shadow-direction_carousel tw-bg-secondary"
-            }`}
+            className={`tw-rounded-full tw-w-[50px] tw-aspect-square tw-flex tw-items-center tw-justify-center ${isAtEnd
+              ? "tw-border-secondary tw-shadow-direction_carousel tw-cursor-not-allowed tw-border-[1px] tw-border-solid"
+              : "tw-cursor-pointer tw-shadow-direction_carousel tw-bg-secondary"
+              }`}
             onClick={!isAtEnd ? handleScrollRight : undefined}
           >
             <CommonIcons.RightDirection />
@@ -101,7 +99,7 @@ const CardCarousel= (props: Props) => {
         className="tw-overflow-auto scrollbar-hide tw-w-full"
         ref={scrollContainerRef}
       >
-        <CommonStyles.Box className="tw-flex tw-gap-3 tw-w-fit tw-px-5">
+        <CommonStyles.Box className="tw-flex tw-gap-3 tw-w-fit">
           {Array(15)
             .fill(null)
             .map((_, index) => (

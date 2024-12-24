@@ -27,19 +27,19 @@ interface SelectFieldProps {
     child: ReactNode
   ) => void;
   error?: boolean;
-  placeholder?:string;
+  placeholder?: string;
   helperText?: string;
   classNameContainer?: string;
   className?: string;
   fullWidth?: boolean;
   defaultValue?: string | number | undefined;
   variant?: "outlined" | "filled" | "standard";
-  field: {
-      value: string;
-      onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
-      onBlur: () => void;
-    };
-    fieldState: { error?: FieldError }; // Cập nhật kiểu ở đâ
+  field?: {
+    value: string;
+    onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+    onBlur: () => void;
+  };
+  fieldState?: { error?: FieldError }; // Cập nhật kiểu ở đâ
 }
 
 const SelectField: React.FC<SelectFieldProps> = ({
@@ -82,12 +82,12 @@ const SelectField: React.FC<SelectFieldProps> = ({
         name={name}
         value={value}
         onChange={onChange}
-        className="tw-text-[#ffffff86]"
+        className={twMerge(className)}
         {...props}
       >
         {placeholder && <MenuItem disabled value="">
-            <em>Placeholder</em>
-          </MenuItem>}
+          <em>Placeholder</em>
+        </MenuItem>}
         {options.map((option, index) => (
           <MenuItem
             className={twMerge("rounded tw-flex tw-items-center", className)}

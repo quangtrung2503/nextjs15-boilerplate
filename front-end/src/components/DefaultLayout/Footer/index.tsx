@@ -70,16 +70,16 @@ const Footer = () => {
       ),
     },
   ];
-const currencyOptions: SelectOption[] = [
-  {
-    value: 'USD',
-    label: "U.S. Dollar ($)"
-  },
-  {
-    value: 'VND',
-    label: "V.N. Dong (VND)"
-  },
-]
+  const currencyOptions: SelectOption[] = [
+    {
+      value: 'USD',
+      label: "U.S. Dollar ($)"
+    },
+    {
+      value: 'VND',
+      label: "V.N. Dong (VND)"
+    },
+  ]
   return (
     <div className="tw-bg-[#13253F]">
       <Container maxWidth="lg" className="tw-py-20">
@@ -87,30 +87,32 @@ const currencyOptions: SelectOption[] = [
           <Grid2 size={3} className="tw-flex tw-flex-col tw-gap-y-5">
             <FooterSection title="Language">
               <SelectField
-              sx={{
-                fieldSet: {
-                  border: '1px solid var(--accent-gray-light)'
-                }
-              }}
-                onChange={(e) => {}}
+                sx={{
+                  fieldSet: {
+                    border: '1px solid var(--accent-gray-light)'
+                  }
+                }}
+                onChange={(e) => { }}
                 defaultValue={"value2"}
                 size="small"
                 options={languageOptions}
                 classNameContainer="tw-bg-transparent"
+                className="tw-text-[#FFFFFF99]"
               />
             </FooterSection>
             <FooterSection title="Currency">
               <SelectField
-              sx={{
-                fieldSet: {
-                  border: '1px solid var(--accent-gray-light)'
-                }
-              }}
-                onChange={(e) => {}}
+                sx={{
+                  fieldSet: {
+                    border: '1px solid var(--accent-gray-light)'
+                  }
+                }}
+                onChange={(e) => { }}
                 defaultValue={"USD"}
                 size="small"
                 options={currencyOptions}
                 classNameContainer="tw-bg-transparent"
+                className="tw-text-[#FFFFFF99]"
               />
             </FooterSection>
           </Grid2>

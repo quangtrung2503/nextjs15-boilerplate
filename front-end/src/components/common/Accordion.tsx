@@ -40,9 +40,9 @@ const AccordionSummary = styled((props: AccordionSummaryProps) => (
   borderBottom: `1px solid #f4f4f5 !important`,
   flexDirection: "row",
   [`& .${accordionSummaryClasses.expandIconWrapper}.${accordionSummaryClasses.expanded}`]:
-    {
-      transform: "rotate(90deg)",
-    },
+  {
+    transform: "rotate(90deg)",
+  },
   [`& .${accordionSummaryClasses.content}`]: {
     marginRight: theme.spacing(1),
   },
@@ -71,7 +71,7 @@ const AccordionMUI = (props: AccordionMUIProps) => {
   const visibleOptions = showMore ? options : options.slice(0, 7);
 
   return (
-    <div className="tw-w-full tw-shadow-md tw-rounded-md tw-overflow-hidden">
+    <div className="tw-w-full tw-shadow-filter tw-rounded-md tw-overflow-hidden">
       <Accordion
         expanded={expanded === "panel1"}
         onChange={handleChange("panel1")}
@@ -90,7 +90,7 @@ const AccordionMUI = (props: AccordionMUIProps) => {
                   paddingY: "3px",
                   boxShadow: "5px",
                   "&:hover": {
-                    backgroundColor: "rgba(0, 0, 0, 0.1)", 
+                    backgroundColor: "rgba(0, 0, 0, 0.1)",
                   },
                 }}
                 key={index}
@@ -99,14 +99,14 @@ const AccordionMUI = (props: AccordionMUIProps) => {
               />
             ))}
           </FormGroup>
-          {options.length > 7 && (
+          {options.length >= 7 && (
             <CommonStyles.Typography
               type="size14Weight700"
-              className="tw-!cursor-pointer tw-mt-3"
+              className="tw-cursor-pointer tw-mt-3"
               color="#7BBCB0"
               onClick={handleShowMore}
             >
-              {showMore ? "Show Less" : "Show More"}
+              {showMore ? "Show Less Destinations" : "Show More Destinations"}
             </CommonStyles.Typography>
           )}
         </AccordionDetails>
