@@ -1,11 +1,11 @@
-import * as React from 'react';
-import InputLabel from '@mui/material/InputLabel';
-import TextField, { TextFieldProps } from '@mui/material/TextField';
-import { Control, Controller } from 'react-hook-form';
-import { twMerge } from 'tailwind-merge';
-import InputAdornment from '@mui/material/InputAdornment';
-import { Box, IconButton } from '@mui/material';
-import { Visibility, VisibilityOff } from '@mui/icons-material';
+import * as React from "react";
+import InputLabel from "@mui/material/InputLabel";
+import TextField, { TextFieldProps } from "@mui/material/TextField";
+import { Control, Controller } from "react-hook-form";
+import { twMerge } from "tailwind-merge";
+import InputAdornment from "@mui/material/InputAdornment";
+import { Box, IconButton } from "@mui/material";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
 
 type InputFieldProps = {
   name: string;
@@ -20,13 +20,17 @@ const InputField: React.FC<InputFieldProps & TextFieldProps> = ({
   control,
   placeholder,
   label,
-  type = 'text', // Mặc định là 'text'
+  type = "text",
   defaultValue,
   className,
   regex,
   icon,
   ...rest
 }) => {
+  const [showPassword, setShowPassword] = React.useState<boolean>(false);
+  const handleToggleShowPassword = () => {
+    setShowPassword((prev) => !prev);
+  };
   return (
     <Controller
       name={name}
@@ -36,24 +40,20 @@ const InputField: React.FC<InputFieldProps & TextFieldProps> = ({
         const { errors } = formState;
         const hasError = !!errors[name]?.message;
 
-        const onChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const onChangeHandler = (
+          event: React.ChangeEvent<HTMLInputElement>,
+        ) => {
           const inputValue = event.target.value;
           if (!regex || regex.test(inputValue)) {
             onChange(event);
           }
         };
 
-        const [showPassword, setShowPassword] = React.useState<boolean>(false);
-
-        const handleToggleShowPassword = () => {
-          setShowPassword(prev => !prev);
-        };
-
         return (
           <Box className="tw-mt-2.5 tw-mb-5">
             {label && (
-              <InputLabel 
-                className="tw-font-mulish tw-text-left tw-font-bold tw-text-lg tw-text-[#1C2B38]" 
+              <InputLabel
+                className="tw-font-mulish tw-text-left tw-font-bold tw-text-lg tw-text-[#1C2B38]"
                 shrink
               >
                 {label}
@@ -64,42 +64,48 @@ const InputField: React.FC<InputFieldProps & TextFieldProps> = ({
               {...rest}
               className={twMerge(
                 "tw-rounded-md tw-relative tw-bg- tw-border tw-text-sm tw-w-full tw-bg-accent_gray_200",
-                hasError ? 'tw-border-accent_red' : 'tw-bg-accent_gray_200',
-                className
+                hasError ? "tw-border-accent_red" : "tw-bg-accent_gray_200",
+                className,
               )}
-              type={type === 'password' && showPassword ? 'text' : type}
-              value={value || ''}
+              type={type === "password" && showPassword ? "text" : type}
+              value={value || ""}
               onChange={onChangeHandler}
               slotProps={{
                 input: {
-                  endAdornment: type === 'password' ? (
-                    <InputAdornment position="end">
-                      <IconButton onClick={handleToggleShowPassword} edge="end">
-                        {showPassword ? <VisibilityOff /> : <Visibility />}
-                      </IconButton>
-                      {icon}
-                    </InputAdornment>
-                  ) : (
-                    icon ? (
+                  endAdornment:
+                    type === "password" ? (
                       <InputAdornment position="end">
+                        <IconButton
+                          onClick={handleToggleShowPassword}
+                          edge="end"
+                        >
+                          {showPassword ? <VisibilityOff /> : <Visibility />}
+                        </IconButton>
                         {icon}
                       </InputAdornment>
-                    ) : null
-                  ),
-                }
+                    ) : icon ? (
+                      <InputAdornment position="end">{icon}</InputAdornment>
+                    ) : null,
+                },
               }}
               sx={{
-                '& .MuiOutlinedInput-root': {
-                  '& fieldset': {
-                    borderColor: hasError ? 'var(--accent-red)' : 'var(--accent-gray-200)',
+                "& .MuiOutlinedInput-root": {
+                  "& fieldset": {
+                    borderColor: hasError
+                      ? "var(--accent-red)"
+                      : "var(--accent-gray-200)",
                   },
-                  '&:hover fieldset': {
-                    borderColor: hasError ? 'var(--accent-red)' : 'var(--accent-gray-200)',
+                  "&:hover fieldset": {
+                    borderColor: hasError
+                      ? "var(--accent-red)"
+                      : "var(--accent-gray-200)",
                   },
-                  '&.Mui-focused fieldset': {
-                    borderColor: hasError ? 'var(--accent-red)' : 'var(--accent-gray-200)',
-                  }
-                }
+                  "&.Mui-focused fieldset": {
+                    borderColor: hasError
+                      ? "var(--accent-red)"
+                      : "var(--accent-gray-200)",
+                  },
+                },
               }}
             />
             {hasError && (
