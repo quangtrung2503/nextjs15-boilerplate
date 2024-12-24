@@ -417,13 +417,15 @@ export default function HomePage() {
         <IntroduceMobileApp />
       </CommonStyles.Box>
       {/* VI. From The Gallery */}
-      <CommonStyles.Box>
-        <Gallery />
-      </CommonStyles.Box>
-      {/* VII. Latest Stories */}
-      <CommonStyles.Box>
-        <LatestStories />
-      </CommonStyles.Box>
+      <Container>
+        <CommonStyles.Box>
+          <Gallery />
+        </CommonStyles.Box>
+        {/* VII. Latest Stories */}
+        <CommonStyles.Box>
+          <LatestStories />
+        </CommonStyles.Box>
+      </Container>
     </CommonStyles.Box>
   );
 }
