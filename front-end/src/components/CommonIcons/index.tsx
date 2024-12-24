@@ -7,6 +7,9 @@ import Twitter1 from "./Icons/Twitter";
 import Logo from "./Icons/Logo";
 import FacebookLogin from "./Icons/FacebookLogin";
 import GoogleLogin from "./Icons/GoogleLogin";
+import RoomIcon from "@mui/icons-material/Room";
+import CakeIcon from "@mui/icons-material/Cake";
+
 import Ios from "./Icons/Ios";
 import Android from "./Icons/Android";
 import { LocationIcon } from "./Icons/Location";
@@ -18,6 +21,7 @@ import { TaxiIcon } from "./Icons/Taxi";
 import { BusIcon } from "./Icons/Bus";
 import RightDirection from "./Icons/RightDirection";
 import LeftDirection from "./Icons/LeftDirection";
+
 import Share from "./Icons/Share";
 import CacbonMobile from "./Icons/CacbonMobile";
 import Duration from "./Icons/Duration";
@@ -28,6 +32,7 @@ import Cancelation from "./Icons/Cancelation";
 import FilterMui from "./Icons/FilterMui";
 import Car from "./Icons/Car";
 import Avatar1 from "./Icons/Avatar";
+
 const CommonIcons = {
   ...Icons,
   Facebook1,
@@ -37,6 +42,8 @@ const CommonIcons = {
   Pinterest1,
   Twitter1,
   Logo,
+  RoomIcon,
+  CakeIcon,
   Ios,
   Android,
   LocationIcon,
@@ -57,6 +64,6 @@ const CommonIcons = {
   Cancelation,
   FilterMui,
   Car,
-  Avatar1
+  Avatar1,
 };
 export default CommonIcons;

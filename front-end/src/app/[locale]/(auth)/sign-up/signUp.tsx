@@ -13,13 +13,13 @@ import Link from "@/components/common/Link";
 import { CommonButton } from "@/components/common/Button";
 import CommonIcons from "@/components/CommonIcons";
 
+import { commonImg } from "@/assets";
 import pageUrls from "@/constants/pageUrls";
 import SignUpModel from "@/models/signup.model";
 import useAuth from "@/hooks/useAuth";
 import { useNotifications } from "@/helpers/toast";
 import Loading from "@/components/common/Loading";
 import { defaultValue, FormValues, validationSchema} from "./forms";
-import { commonImg } from "@/assets";
 
 
 

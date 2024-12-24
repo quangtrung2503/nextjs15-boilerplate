@@ -78,14 +78,34 @@ implements NestInterceptor<T, Response> {
 
   private mapDuplicateField(target: string): string {
     switch (target) {
+      case 'user_email_key':
+        return I18nContext.current().lang === 'en' ? 'Email' : 'Email';
+      case 'user_phone_key':
+        return I18nContext.current().lang === 'en' ? 'Phone' : 'Số điện thoại';
       case 'user_username_key':
         return I18nContext.current().lang === 'en' ? 'Username' : 'Tên đăng nhập';
       case 'city_name_key':
         return I18nContext.current().lang === 'en' ? 'City' : 'Thành phố';
+      case 'city_slug_key':
+        return I18nContext.current().lang === 'en'? 'City slug' : 'Tên đường dẫn thành phố';
       case 'theme_name_key':
         return I18nContext.current().lang === 'en' ? 'Theme' : 'Chủ đề';
+      case 'theme_slug_key':
+        return I18nContext.current().lang === 'en'? 'Theme slug' : 'Tên đường dẫn chủ đề';
       case 'destination_name_key':
         return I18nContext.current().lang === 'en' ? 'Destination' : 'Điểm đến';
+      case 'destination_slug_key':
+        return I18nContext.current().lang === 'en'? 'Destination slug' : 'Tên đường dẫn điểm đến';
+      case 'tour_name_key':
+        return I18nContext.current().lang === 'en' ? 'Tour' : 'Chuyến đi';
+      case 'tour_slug_key':
+        return I18nContext.current().lang === 'en'? 'Tour slug' : 'Tên đường dẫn chuyến đi';
+      case 'post_title_key':
+        return I18nContext.current().lang === 'en' ? 'Post' : 'Bài viết';
+      case 'post_slug_key':
+        return I18nContext.current().lang === 'en'? 'Post slug' : 'Tên đường dẫn bài viết';
+      case 'review_helpful_userId_reviewId_key':
+        return I18nContext.current().lang === 'en'? 'Review helpful' : 'Đánh giá bình luận hữu ích';
       default:
         return '';
     }
@@ -103,6 +123,8 @@ implements NestInterceptor<T, Response> {
         return I18nContext.current().lang === 'en' ? 'Theme' : 'Chủ đề';
       case 'destinationId':
         return I18nContext.current().lang === 'en' ? 'Destination' : 'Điểm đến';
+      case 'tourId':
+        return I18nContext.current().lang === 'en'? 'Tour' : 'Chuyến đi';
       default:
         return fieldName;
     }

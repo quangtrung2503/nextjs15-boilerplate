@@ -14,6 +14,7 @@ import { UserDecorator } from 'src/core/auth/decorators/user.decorator';
 import { IUserJwt } from 'src/core/auth/strategies/jwt.strategy';
 import { FilterWishlistDto } from './dto/filter-wishlist.dto';
 import { funcListPaging } from 'src/helpers/common/list-paging';
+import { ParseIdPipe } from 'src/core/pipes/parse-id.pipe';
 
 @ApiTags('Wishlist (Customer)')
 @Controller('wishlist-customer')
@@ -26,7 +27,7 @@ export class WishlistController {
   ) {}
 
   @ApiBearerAuth()
-  @Roles(UserRole.CUSTOMER)
+  @Roles(UserRole.ADMIN, UserRole.STAFF, UserRole.CUSTOMER)
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Post()
   async addToWishlist(@UserDecorator() user: IUserJwt, @Body() body: CreateWishlistDto) {
@@ -60,7 +61,7 @@ export class WishlistController {
   }
 
   @ApiBearerAuth()
-  @Roles(UserRole.CUSTOMER)
+  @Roles(UserRole.ADMIN, UserRole.STAFF, UserRole.CUSTOMER)
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Get()
   async getWishlist(@UserDecorator() user: IUserJwt, @Query() options: FilterWishlistDto) {
@@ -97,10 +98,10 @@ export class WishlistController {
   }
 
   @ApiBearerAuth()
-  @Roles(UserRole.CUSTOMER)
+  @Roles(UserRole.ADMIN, UserRole.STAFF, UserRole.CUSTOMER)
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Delete(':id')
-  async removeFromWishlist(@UserDecorator() user: IUserJwt, @Param('id') id: number) {
+  async removeFromWishlist(@UserDecorator() user: IUserJwt, @Param('id', ParseIdPipe) id: number) {
     const itemWishlist = await this.wishlistService.findOne({ where: { id } });
     if (!itemWishlist) throw new BaseException(Errors.ITEM_NOT_FOUND(this.i18n.t('common-message.wishlist.removeFromWishlist.not_found')));
 

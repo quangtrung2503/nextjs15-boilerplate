@@ -1,11 +1,12 @@
-import React, { Fragment, useRef, useState } from "react";
-import { FieldError, useFormContext, UseFormSetValue } from "react-hook-form";
-import { Button, InputLabel, SxProps } from "@mui/material";
+import React, { useRef, useState } from "react";
+import { FieldError, UseFormSetValue } from "react-hook-form";
+import {  SxProps } from "@mui/material";
 import { default as CommonStyles } from "@/components/common";
-import apiUrls from "@/constants/apiUrls";
 import Box from "../common/Box";
 import useImageUploader from "@/hooks/useUpload";
 import { useNotifications } from "@/helpers/toast";
+import { useTranslations } from "next-intl";
+
 interface UploadFieldProps {
   field: {
     name: string;
@@ -39,6 +40,9 @@ const UploadField = (props: UploadFieldProps) => {
   //! State
   const [loading,setLoading] = useState(false);
   
+  const t = useTranslations('uploadField');
+  //! State
+
   // const handleUpload = async (e: ChangeEvent<HTMLInputElement>) => {
   //     const file = e.target.files?.[0];
   //     if (file) {
@@ -84,6 +88,7 @@ const UploadField = (props: UploadFieldProps) => {
     }
     //   // setValue(field?.name || "",event.target.files?.[0]);
   };
+
   return (
     <CommonStyles.Box className={className}>
       <label className="tw-font-mulish tw-text-[15px] tw-font-bold tw-text-accent_gray_800">
@@ -106,7 +111,7 @@ const UploadField = (props: UploadFieldProps) => {
           renderButton
         ) : (
           <CommonStyles.CommonButton loading={loading} className={`tw-w-full tw-mt-2 tw-bg-gray-300 ${fieldState.error && "tw-border-solid tw-border-[1px] tw-border-[#d32f2f]"}`}>
-            Upload
+            {t("upload")}
           </CommonStyles.CommonButton>
         )}
       </Box>

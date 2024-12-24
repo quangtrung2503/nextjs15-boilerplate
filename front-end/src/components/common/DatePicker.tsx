@@ -81,7 +81,7 @@ export const CommonDatePicker: React.FC<IDatePickerProps> = ({
         className={twMerge("tw-rounded-none", className)}
       />
       {fieldState.error && (
-        <span className="tw-text-[#d32f2f] tw-text-xs tw-ml-3">
+        <span className="tw-text-[#d32f2f] tw-font-mulish tw-text-sm">
           {fieldState.error.message}
         </span>
       )}

@@ -39,9 +39,11 @@ const CreateEditCity: FC<createEditCityProps> = (props) => {
     description: yup.string().required(t("descriptionRequire")),
     })
     .required();
+    
   const initValue = useMemo(() => {
     return { name:  data?.data.name ?? "", image: data?.data.image ?? "", description: data?.data.description ?? ""}
   }, [data?.data]);
+
   const methods = useForm<FormValues>({
     defaultValues: initValue,
     resolver: yupResolver(schema)
@@ -98,7 +100,7 @@ const CreateEditCity: FC<createEditCityProps> = (props) => {
             label={t("name")}
           />
           <RHFField
-          setValue={setValue}
+            setValue={setValue}
             className="tw-mb-3"
             name="image"
             control={methods.control}
