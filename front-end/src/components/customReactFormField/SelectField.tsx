@@ -106,23 +106,41 @@ const SelectField: React.FC<SelectFieldProps> = ({
         MenuProps={{
           disableScrollLock: true,
         }}
-      // renderValue={(selected) =>
-      //   multiple && Array.isArray(selected) ? (
-      //     <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
-      //       {selected.map((value) => (
-      //         <Chip key={value} label={options.find((opt) => opt.value === value)?.label || value} />
-      //       ))}
-      //     </Box>
-      //   ) : (
-      //     selected?.label
-      //   )
-      // }
+        displayEmpty
+        renderValue={(selected) => {
+          // Nếu multiple và không có giá trị được chọn
+          if (multiple && Array.isArray(selected) && selected.length === 0) {
+            return <span className="tw-text-accent_gray_300">{placeholder}</span>;
+          }
+
+          // Nếu single và giá trị rỗng
+          if (!multiple && (!selected || selected === "")) {
+            return <span className="tw-text-accent_gray_300">{placeholder}</span>;
+          }
+
+          // Nếu multiple, hiển thị danh sách Chip
+          if (multiple && Array.isArray(selected)) {
+            return (
+              <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
+                {selected.map((value) => (
+                  <Chip
+                    key={value}
+                    label={options.find((opt) => opt.value === value)?.label || value}
+                  />
+                ))}
+              </Box>
+            );
+          }
+
+          // Nếu single, hiển thị giá trị đã chọn
+          return options.find((opt) => opt.value === selected)?.label || selected;
+        }}
       >
-        {placeholder && !multiple && (
-          <MenuItem disabled value="">
-            <em>{placeholder}</em>
+        {/* {placeholder && !multiple && (
+          <MenuItem className="" disabled value="">
+            <span className="tw-text-accent_gray_300">{placeholder}</span>
           </MenuItem>
-        )}
+        )} */}
         {options.map((option) => (
           <MenuItem key={option.value} value={option.value} className={twMerge(className)}>
             {option.label}

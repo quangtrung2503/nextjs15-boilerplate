@@ -4,4 +4,5 @@ export default {
   fetchThemes: "fetchThemes",
   fetchPosts: "fetchPosts",
   fetchDestinations: "fetchDestinations",
+  fetchTours: "fetchTours",
 } as const;

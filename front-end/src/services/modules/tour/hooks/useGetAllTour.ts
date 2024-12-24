@@ -3,9 +3,9 @@ import cloneDeep from "lodash/cloneDeep";
 import { isEmpty, isObject } from "lodash";
 import { ResponseList } from "@/interfaces/common";
 import { useSave } from "@/stores/useStore";
-import themeServices, { FiltersGetThemes, RequestGetThemes, ResponseThemeList } from "../theme.services";
-import { Theme } from "../intefaces/theme";
 import { useNotifications } from "@/helpers/toast";
+import tourServices, { FiltersGetTours, RequestGetTours, ResponseTourList } from "../tour.services";
+import { Tour } from "../interfaces/tour";
 
 /********************************************************
  * SNIPPET GENERATED
@@ -21,7 +21,7 @@ import { useNotifications } from "@/helpers/toast";
  ********************************************************/
 
 //* Check parse body request
-const parseRequest = (filters: FiltersGetThemes): RequestGetThemes => {
+const parseRequest = (filters: FiltersGetTours): RequestGetTours => {
   return cloneDeep({
     page: filters.page,
     perPage: filters.perPage,
@@ -31,10 +31,10 @@ const parseRequest = (filters: FiltersGetThemes): RequestGetThemes => {
   });
 };
 
-const requestAPI = themeServices.getThemes;
+const requestAPI = tourServices.getTours;
 
-const useGetThemes = (
-  filters: FiltersGetThemes,
+const useGetTours = (
+  filters: FiltersGetTours,
   options: { isTrigger?: boolean; refetchKey?: string } = {
     isTrigger: true,
     refetchKey: "",
@@ -44,7 +44,7 @@ const useGetThemes = (
   const { isTrigger = true, refetchKey = "" } = options;
   const signal = useRef(new AbortController());
   const save = useSave();
-  const [data, setData] = useState<ResponseList<Theme[]>>();
+  const [data, setData] = useState<ResponseList<Tour[]>>();
   const [loading, setLoading] = useState(false);
   const [refetching, setRefetching] = useState(false);
   const [error, setError] = useState<unknown>(null);
@@ -52,7 +52,7 @@ const useGetThemes = (
   const {showError} = useNotifications();
 
   //! Function
-  const fetch: () => Promise<ResponseThemeList> | undefined = useCallback(() => {
+  const fetch: () => Promise<ResponseTourList> | undefined = useCallback(() => {
     if (!isTrigger) {
       return;
     }
@@ -71,17 +71,17 @@ const useGetThemes = (
         }
       })();
     });
-  }, [filters,isTrigger]);
+  }, [filters, isTrigger]);
 
-  const checkConditionPass = useCallback((response: ResponseThemeList) => {
+  const checkConditionPass = useCallback((response: ResponseTourList) => {
     //* Check condition of response here to set data
     if (isObject(response?.data)) {
       setData(response?.data.data);
-      setHasMore(data?data.currentPage<data.totalPage:false);
+      setHasMore(data?data.currentPage < data.totalPage : false);
     }
   }, []);
 
-  //* Refetch implicity (without changing loading state)
+  //* Refetch impliTour (without changing loading state)
   const refetch = useCallback(async () => {
     try {
       if (signal.current) {
@@ -134,7 +134,6 @@ const useGetThemes = (
           checkConditionPass(response);
         }
       } catch (error) {
-      console.log(error);
         showError(error);
       } finally {
         setLoading(false);
@@ -162,4 +161,4 @@ const useGetThemes = (
   };
 };
 
-export default useGetThemes;
+export default useGetTours;

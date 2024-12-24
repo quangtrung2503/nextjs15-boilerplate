@@ -1,8 +1,7 @@
-import React, { Fragment, useRef } from "react";
-import { FieldError, useFormContext, UseFormSetValue } from "react-hook-form";
-import { Button, InputLabel, SxProps } from "@mui/material";
+import React, { useRef, useState } from "react";
+import { FieldError, UseFormSetValue } from "react-hook-form";
+import {  SxProps } from "@mui/material";
 import { default as CommonStyles } from "@/components/common";
-import apiUrls from "@/constants/apiUrls";
 import Box from "../common/Box";
 import useImageUploader from "@/hooks/useUpload";
 import { useNotifications } from "@/helpers/toast";
@@ -25,7 +24,6 @@ interface UploadFieldProps {
   renderButton?: React.ReactNode;
   setValue: UseFormSetValue<any>;
 }
-
 const UploadField = (props: UploadFieldProps) => {
   const {
     label,
@@ -37,8 +35,11 @@ const UploadField = (props: UploadFieldProps) => {
     setValue,
   } = props;
   const uploadRef = useRef<HTMLInputElement>(null);
-  const { uploadImage } = useImageUploader();
+  const { uploadImage,uploadImages } = useImageUploader();
   const { showError } = useNotifications();
+  //! State
+  const [loading,setLoading] = useState(false);
+  
   const t = useTranslations('uploadField');
   //! State
 
@@ -55,23 +56,33 @@ const UploadField = (props: UploadFieldProps) => {
   //     showError("No file selected");
   //     }
   //   }
-
   const handleChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
     if (files) {
       if (multiple) {
-        // Explicitly cast the FileList to an array of File objects
-        const fileArray = Array.from(files as FileList).map(
-          (file: File) => file.name,
-        );
-        setValue(field?.name || "", fileArray);
+        try{
+          setLoading(true);
+          const res = await uploadImages(files);
+          setValue(field?.name || "",res.data.data.data.map((file)=>file.uri).concat(field.value))
+        }
+        catch(error){
+          showError(error)
+        }
+        finally{
+          setLoading(false)
+        }
+        // setValue(field?.name || "", fileArray);
       } else {
         // If single file, store the file name or URL
         try {
+          setLoading(true);
           const res = await uploadImage(files[0]);
           setValue(field?.name || "", res.data.data.uri);
         } catch (error) {
           showError(error);
+        }
+        finally{
+          setLoading(false);
         }
       }
     }
@@ -99,13 +110,17 @@ const UploadField = (props: UploadFieldProps) => {
         {renderButton ? (
           renderButton
         ) : (
-          <CommonStyles.CommonButton className="tw-w-full tw-mt-2 tw-bg-gray-300">
-            {t('upload')}
+          <CommonStyles.CommonButton loading={loading} className={`tw-w-full tw-mt-2 tw-bg-gray-300 ${fieldState.error && "tw-border-solid tw-border-[1px] tw-border-[#d32f2f]"}`}>
+            {t("upload")}
           </CommonStyles.CommonButton>
         )}
       </Box>
+      {fieldState.error && (
+        <span className="tw-text-[#d32f2f] tw-text-xs tw-ml-3">
+          {fieldState.error.message}
+        </span>
+      )}
     </CommonStyles.Box>
   );
 };
-
 export default React.memo(UploadField);
