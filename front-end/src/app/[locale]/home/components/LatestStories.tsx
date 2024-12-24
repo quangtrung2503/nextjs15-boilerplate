@@ -9,7 +9,7 @@ import { useTranslations } from "next-intl";
 const LatestStories = () => {
   const t = useTranslations("homePage");
   return (
-    <CommonStyles.Box className="tw-flex tw-flex-col tw-w-full tw-gap-y-6">
+    <CommonStyles.Box className="tw-flex tw-flex-col tw-w-full tw-gap-12">
       {/* <Container className="tw-flex tw-flex-col tw-gap-y-8"> */}
       <CommonStyles.Box className="tw-flex tw-justify-between tw-items-center">
         <Heading

@@ -10,7 +10,6 @@ interface DefaultLayoutProps {
 const DefaultLayout = (props: DefaultLayoutProps) => {
   const pathname = usePathname()
   const hideHeaderFooter = pathname.includes("auth");
-  console.log({ pathname });
   const { children } = props;
   return (
     <>

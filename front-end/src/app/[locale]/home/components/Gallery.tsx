@@ -19,7 +19,7 @@ const Gallery = () => {
     commonImg.gallery8,
   ];
   return (
-    <CommonStyles.Box className="tw-flex tw-flex-col tw-gap-6">
+    <CommonStyles.Box className="tw-flex tw-flex-col tw-gap-12">
       <CommonStyles.Box className="tw-flex tw-justify-between tw-items-center">
         <Heading title={t("galleryTitle")} des={t("subGalleryTitle")} />
         <CommonButton colorBtn="info">{t("allImageButton")}</CommonButton>

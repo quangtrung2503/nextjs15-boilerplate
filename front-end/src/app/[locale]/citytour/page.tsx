@@ -18,6 +18,7 @@ import CardCarousel from '@/components/CardCarousel'
 import Gallery from '../home/components/Gallery'
 import LatestStories from '../home/components/LatestStories'
 import { mocDataCard } from '../home/HomePage'
+import { yupResolver } from '@hookform/resolvers/yup'
 
 
 interface Availability {
@@ -46,6 +47,7 @@ const CityTourPage = () => {
     },
     reValidateMode: "onSubmit",
     criteriaMode: "all",
+    resolver: yupResolver(validateSchema),
   });
 
   const { control: ControlFilter, getValues } = useForm<Filter>({
@@ -60,6 +62,7 @@ const CityTourPage = () => {
       startDate: values?.startDate,
       endDate: values?.endDate,
     };
+    console.log(body)
     try {
       // const requestPayload = LoginModel.parseBodyToRequest(body);
       // const res = await auth?.signIn(requestPayload);

@@ -417,7 +417,7 @@ export default function HomePage() {
         <IntroduceMobileApp />
       </CommonStyles.Box>
       {/* VI. From The Gallery */}
-      <Container>
+      <Container className="tw-flex tw-flex-col tw-gap-12">
         <CommonStyles.Box>
           <Gallery />
         </CommonStyles.Box>
