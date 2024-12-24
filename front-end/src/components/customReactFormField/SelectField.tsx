@@ -13,7 +13,6 @@ import {
 import { SelectOption } from "@/interfaces/common";
 import { twMerge } from "tailwind-merge";
 import { FieldError } from "react-hook-form";
-
 interface SelectFieldProps {
   label?: string;
   name?: string;
@@ -40,7 +39,6 @@ interface SelectFieldProps {
   required?: boolean;
   multiple?: boolean; // Enable multiple selection
 }
-
 const SelectField: React.FC<SelectFieldProps> = ({
   label,
   name,
@@ -67,13 +65,11 @@ const SelectField: React.FC<SelectFieldProps> = ({
   const handleChange = (event: SelectChangeEvent<string | string[]>) => {
     // Update field value for React Hook Form
     field.onChange(event);
-
     // Trigger custom onChange if provided
     if (onChange) {
       onChange(event);
     }
   };
-
   return (
     <FormControl
       size={size}
@@ -116,12 +112,12 @@ const SelectField: React.FC<SelectFieldProps> = ({
           if (multiple && Array.isArray(selected) && selected.length === 0) {
             return <span className="tw-text-accent_gray_300">{placeholder}</span>;
           }
-      
+
           // Nếu single và giá trị rỗng
           if (!multiple && (!selected || selected === "")) {
             return <span className="tw-text-accent_gray_300">{placeholder}</span>;
           }
-      
+
           // Nếu multiple, hiển thị danh sách Chip
           if (multiple && Array.isArray(selected)) {
             return (
@@ -135,7 +131,7 @@ const SelectField: React.FC<SelectFieldProps> = ({
               </Box>
             );
           }
-      
+
           // Nếu single, hiển thị giá trị đã chọn
           return options.find((opt) => opt.value === selected)?.label || selected;
         }}
@@ -159,5 +155,4 @@ const SelectField: React.FC<SelectFieldProps> = ({
     </FormControl>
   );
 };
-
 export default SelectField;

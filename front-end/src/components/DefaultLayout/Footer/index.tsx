@@ -168,7 +168,7 @@ const Footer = () => {
             <FooterSection title="Payment method possible">
               <CommonStyles.Box className="tw-grid tw-grid-cols-5 tw-size-fit tw-gap-2">
                 {paymentMethod.map((item) => (
-                  <img key={item.src} src={item.src} alt="" className="tw-w-10 tw-h-7"/>
+                  <img key={item.src} src={item.src} alt="" className="tw-w-10 tw-h-7" />
                 ))}
               </CommonStyles.Box>
             </FooterSection>

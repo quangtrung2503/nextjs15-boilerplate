@@ -2,7 +2,7 @@
 import * as Yup from "yup";
 import CommonStyles from "@/components/common";
 import { Container } from "@mui/material";
-import {commonImg } from "@/assets";
+import { commonImg } from "@/assets";
 import CommonIcons from "@/components/CommonIcons";
 import RHFField from "@/components/customReactFormField/ReactFormField";
 import { CommonButton } from "@/components/common/Button";

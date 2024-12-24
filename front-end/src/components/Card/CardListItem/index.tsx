@@ -35,15 +35,15 @@ const CardListItem = (props: CardListItemProps) => {
   } = props;
   const t = useTranslations("card");
   return (
-    <Card className="CardListItem tw-w-fit tw-p-0 tw-flex">
-      <CommonStyles.Link href={link}>
+    <Card className="CardListItem tw-w-full tw-p-0 tw-flex">
+      <CommonStyles.Link href={link} className="tw-w-full tw-p-0 tw-flex">
         <CommonStyles.Box className="tw-w-fit">
           <CardMedia
             className="tw-min-h-[150px] tw-aspect-square tw-rounded-r-sm"
             image={src}
           />
         </CommonStyles.Box>
-        <CardContent className="tw-flex tw-gap-12 tw-items-center">
+        <CardContent className="tw-flex tw-justify-between tw-w-full tw-items-center">
           <CommonStyles.Box className="tw-flex tw-flex-col tw-gap-y-3">
             <CommonStyles.Box className="tw-flex tw-gap-5">
               <CommonStyles.Typography className="tw-px-3 tw-py-1 tw-rounded-full tw-bg-primary tw-text-white">
@@ -91,7 +91,7 @@ const CardListItem = (props: CardListItemProps) => {
               </CommonStyles.Box>
             </CommonStyles.Box>
           </CommonStyles.Box>
-          <CommonStyles.Box>
+          <CommonStyles.Box className="tw-mr-3">
             <CommonStyles.Typography
               type="size20Weight800"
               color="var(--primary)"
