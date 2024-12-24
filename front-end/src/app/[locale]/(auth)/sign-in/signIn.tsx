@@ -36,7 +36,7 @@ const SignIn = (props: ISignInProps) => {
     defaultValues: defaultValue,
     reValidateMode: "onSubmit",
     criteriaMode: "all",
-    resolver: yupResolver(validateSchema),
+    resolver: yupResolver(validateSchema(t)),
   });
   const onSubmit: SubmitHandler<FormValues> = async (values) => {
     const body = {

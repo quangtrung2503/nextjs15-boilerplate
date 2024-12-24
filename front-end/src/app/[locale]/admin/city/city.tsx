@@ -10,7 +10,7 @@ import CreateEditCity from "./component/createEditCity";
 import cachedKeys from "@/constants/cachedKeys";
 import { headCells } from "./component/headCells";
 import { useState } from "react";
-import cityServices from "@/services/modules/city/cityServices";
+import cityServices from "@/services/modules/city/city.services";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import RHFField from "@/components/customReactFormField/ReactFormField";
 import InputField from "@/components/customReactFormField/InputField";
@@ -84,7 +84,7 @@ const City = () => {
           <TableCommon
             isLoading={loadingCity}
             sxTableHead={{ fontWeight: "bold" }}
-            rowsPerPage={10}
+            rowsPerPage={filters.perPage}
             disableSort={false}
             selected={selected}
             totalCount={dataCity.totalItems}

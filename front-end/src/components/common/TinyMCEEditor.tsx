@@ -56,10 +56,10 @@ const TinyMceCommon = forwardRef((props: Props, ref: any) => {
         initialValue={initialValue}
         {...props}
       />
-      {error && (
-        <Typography style={{ color: "red", fontSize: 14 }}>
-          {error.message}
-        </Typography>
+      {fieldState.error && (
+        <span className="tw-text-[#d32f2f] tw-text-xs tw-ml-3">
+          {fieldState.error.message}
+        </span>
       )}
     </>
   );

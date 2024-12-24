@@ -96,7 +96,7 @@ const CreateEditUser: FC<createEditUserProps> = (props) => {
     defaultValues: initValue,
     resolver: yupResolver(schema),
   });
-  const { reset } = methods;
+  const { reset, setValue } = methods;
 
   useEffect(() => {
     if (data?.data) {
@@ -257,6 +257,7 @@ const CreateEditUser: FC<createEditUserProps> = (props) => {
             </CommonStyles.Box>
             <CommonStyles.Box className="tw-col-span-12">
               <RHFField
+              setValue={setValue}
                 className="tw-mb-3"
                 name="avatar"
                 control={methods.control}

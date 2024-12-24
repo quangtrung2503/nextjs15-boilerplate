@@ -2,12 +2,14 @@ import { default as CommonStyles } from "@/components/common"
 import CommonIcons from "@/components/CommonIcons"
 import { useState } from "react"
 import { Popover } from "@mui/material"
-import { Tour } from "@/services/modules/tour/interface/tour";
+import { Tour } from "@/services/modules/tour/interfaces/tour";
+import moment from "moment";
 
-const ActionCell: React.FC<{ row: Tour; handleEditId: (id: number) => void; handleDeleteTour: (id: number) => void }> = ({
+const ActionCell: React.FC<{ row: Tour; handleEditId: (id: number) => void; handleDeleteTour: (id: number) => void;t: any }> = ({
   row,
   handleEditId,
-  handleDeleteTour
+  handleDeleteTour,
+  t
 }) => {
   const [anchorEl, setAnchorEl] = useState<HTMLDivElement | null>(null);
 
@@ -48,14 +50,14 @@ const ActionCell: React.FC<{ row: Tour; handleEditId: (id: number) => void; hand
           >
             <CommonStyles.Box className="tw-p-2 tw-flex tw-flex-col tw-items-center">
               <CommonStyles.Typography className="tw-text-md tw-mb-1 tw-font-bold">
-                Are you sure you want to delete this Tour?
+                {t("tourAdmin.confirmDelete")}
               </CommonStyles.Typography>
               <CommonStyles.Box className="tw-flex tw-gap-4">
                 <CommonStyles.Box className="tw-text-red-500 tw-cursor-pointer tw-border-solid tw-border-[1px] tw-bg-red-100 tw-rounded-md tw-px-2 tw-pb-1" onClick={handleConfirmDelete}>
-                  Delete
+                  {t("delete")}
                 </CommonStyles.Box>
                 <CommonStyles.Box className="tw-text-gray-700 tw-cursor-pointer tw-border-solid tw-border-[1px] tw-rounded-md tw-px-2 tw-pb-1" onClick={handleClosePopover}>
-                  Cancel
+                  {t("cancel")}
                 </CommonStyles.Box>
               </CommonStyles.Box>
             </CommonStyles.Box>
@@ -68,10 +70,12 @@ const ActionCell: React.FC<{ row: Tour; handleEditId: (id: number) => void; hand
 
 export const headCells = ({
   handleEditId,
-  handleDeleteTour
+  handleDeleteTour,
+  t
 }: {
   handleEditId: (id: number) => void;
   handleDeleteTour: (id: number) => void;
+  t: any
 }) => {
   return [
     {
@@ -84,18 +88,66 @@ export const headCells = ({
     },
     {
       id: "name",
-      label: "Name",
+      label: t("tourAdmin.name"),
       numeric: false,
       Cell(row: Tour, _index: number) {
         return <span>{row.name}</span>;
       },
     },
     {
-      id: "isDisplay",
-      label: "Display",
+      id: "price",
+      label: t("tourAdmin.price"),
       numeric: false,
       Cell(row: Tour, _index: number) {
-        return <span>{row.isDisplay ? <CommonIcons.CheckCircleOutline /> : <></>}</span>;
+        return <span>{row.price}</span>;
+      },
+    },
+    {
+      id: "transport",
+      label: t("tourAdmin.transport"),
+      numeric: false,
+      Cell(row: Tour, _index: number) {
+        return <span>{row.transport}</span>;
+      },
+    },
+    {
+      id: "package",
+      label: t("tourAdmin.package"),
+      numeric: false,
+      Cell(row: Tour, _index: number) {
+        return <span>{row.package}</span>;
+      },
+    },
+    {
+      id: "numberOfPeople",
+      label: t("tourAdmin.numberOfPeople"),
+      numeric: false,
+      Cell(row: Tour, _index: number) {
+        return <span>{row.numberOfPeople}</span>;
+      },
+    },
+    {
+      id: "numberOfHours",
+      label: t("tourAdmin.numberOfHours"),
+      numeric: false,
+      Cell(row: Tour, _index: number) {
+        return <span>{row.numberOfHours}</span>;
+      },
+    },
+    {
+      id: "startDate",
+      label: t("tourAdmin.startDate"),
+      numeric: false,
+      Cell(row: Tour, _index: number) {
+        return <span>{row.startDate && moment(row.startDate).format("DD/MM/YYYY").toLowerCase()}</span>;
+      },
+    },
+    {
+      id: "endDate",
+      label: t("tourAdmin.endDate"),
+      numeric: false,
+      Cell(row: Tour, _index: number) {
+        return <span>{row.endDate && moment(row.endDate).format("DD/MM/YYYY").toLowerCase()}</span>;
       },
     },
     {
@@ -103,7 +155,7 @@ export const headCells = ({
       label: "Action",
       numeric: false,
       Cell(row: Tour, _index: number) {
-        return <ActionCell row={row} handleEditId={handleEditId} handleDeleteTour={handleDeleteTour} />;
+        return <ActionCell row={row} handleEditId={handleEditId} handleDeleteTour={handleDeleteTour} t={t} />;
       },
     },
   ];

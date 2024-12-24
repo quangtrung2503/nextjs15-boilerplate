@@ -8,7 +8,7 @@ import { yupResolver } from "@hookform/resolvers/yup"
 import InputField from "@/components/customReactFormField/InputField"
 import UploadField from "@/components/customReactFormField/UploadField"
 import useImageUploader from "@/hooks/useUpload"
-import cityServices from "@/services/modules/city/cityServices"
+import cityServices from "@/services/modules/city/city.services"
 import { City } from "@/services/modules/city/interfaces/city"
 import { useGet } from "@/stores/useStore"
 import cachedKeys from "@/constants/cachedKeys"
@@ -47,7 +47,7 @@ const CreateEditCity: FC<createEditCityProps> = (props) => {
     resolver: yupResolver(schema)
   });
   
-  const { reset } = methods;
+  const { reset, setValue } = methods;
   useEffect(() => {
     if (data?.data) {
       // Reset form values when data is loaded
@@ -98,6 +98,7 @@ const CreateEditCity: FC<createEditCityProps> = (props) => {
             label={t("name")}
           />
           <RHFField
+          setValue={setValue}
             className="tw-mb-3"
             name="image"
             control={methods.control}
