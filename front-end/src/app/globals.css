@@ -27,6 +27,7 @@
   --accent-gray-dark: #1c2b38;
   --accent-gray-800: #495560;
   --accent-gray-500: #778088;
+  --accent-gray-200: #F4F4F5;
   --accent-border-input-color: #cfcfcf;
   --accent-gray-light: #ffffff99;
 
@@ -55,5 +56,5 @@ body {
   background: var(--background);
 }
 *{
-  font-family: 'Mulish', 'sans-serif';
+  font-family: 'Mulish';
 }

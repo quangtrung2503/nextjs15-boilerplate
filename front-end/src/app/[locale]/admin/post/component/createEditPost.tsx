@@ -1,4 +1,5 @@
-import { ChangeEvent, FC, useEffect, useMemo } from "react"
+"use client"
+import { ChangeEvent, FC, useEffect, useMemo, useState } from "react"
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form"
 import * as yup from "yup"
 import { default as CommonStyles } from "@/components/common"
@@ -13,6 +14,11 @@ import useGetPost from "@/services/modules/post/hook/useGetPost"
 import { Post } from "@/services/modules/post/interface/post"
 import postServices from "@/services/modules/post/post.services"
 import UploadField from "@/components/customReactFormField/UploadField"
+import TinyMCEEditor from "@/components/common/TinyMCEEditor"
+import TinyMCEEditorField from "@/components/customReactFormField/TinyNCEEditorField"
+import { useNotifications } from "@/helpers/toast"
+import CommonIcons from "@/components/CommonIcons"
+import { useTranslations } from "next-intl"
 
 interface createEditPostProps {
   toggle: () => void;
@@ -25,22 +31,23 @@ interface FormValues {
 }
 const CreateEditPost: FC<createEditPostProps> = (props) => {
   const { toggle, id } = props;
-  const { uploadImage } = useImageUploader();
+  const { uploadImage,uploadImages } = useImageUploader();
   const { data } = useGetPost(Number(id), { isTrigger: !!id });
+  const {showError} = useNotifications();
+  const t = useTranslations("postAdmin");
+
   const schema = yup
     .object({
-      title: yup.string().required("Title is a required field"),
-      content: yup.string().required("Content is a required field"),
-      image: yup.string().required("Image is a required field"),
+      title: yup.string().required(t("titleRequire")),
+      content: yup.string().required(t("contentRequire")),
+      image: yup.string().required(t("imageRequire")),
     })
     .required();
   const initValue = useMemo(() => {
-    if (data) {
       return {
-        title: data?.data.title || "",
-        content: data.data.content || "",
-        image: data.data.image || ""
-      }
+        title: data?.data.title ?? "",
+        content: data?.data.content ?? "",
+        image: data?.data.image ?? ""
     }
   }, [data?.data]);
   const methods = useForm<FormValues>({
@@ -68,28 +75,29 @@ const CreateEditPost: FC<createEditPostProps> = (props) => {
       toggle();
     }
     catch (error) {
-      console.log(error);
+      showError(error);
     }
   };
 
   const handleUpload = async (e: ChangeEvent<HTMLInputElement>) => {
-      const file = e.target.files?.[0];
-      if (file) {
-        try {
-          const res = await uploadImage(file);;
-          methods.setValue("image", res.data.data.uri);
-        } catch (error) {
-          console.error(error);
-        }
-      } else {
-        console.error("No file selected");
-  
+    const file = e.target.files?.[0];
+    if (file) {
+      try {
+        const res = await uploadImage(file);;
+        methods.setValue("image", res.data.data.uri);
+      } catch (error) {
+        showError(error);
       }
+    } else {
+      showError(t("noFileSelected"));
     }
+  }  
 
   return (
-    <CommonStyles.Box className="tw-w-[500px]">
-      <CommonStyles.Box className="tw-flex tw-justify-center"><CommonStyles.Typography type="size20Weight600">{id ? "Edit Post" : "Create new Post"}</CommonStyles.Typography></CommonStyles.Box>
+    <CommonStyles.Box className="tw-w-[500px] tw-relative">
+      <CommonStyles.Box className="tw-flex tw-justify-center">
+        <CommonStyles.Typography type="size20Weight600">{id ? t("editPost") : t("createNewPost")}</CommonStyles.Typography>
+        </CommonStyles.Box>
       <FormProvider {...methods} >
         <form onSubmit={methods.handleSubmit(onSubmit)}>
           <RHFField
@@ -97,32 +105,32 @@ const CreateEditPost: FC<createEditPostProps> = (props) => {
             name="title"
             control={methods.control}
             component={InputField}
-            defaultValue={initValue?.title}
-            label="Name"
+            // defaultValue={initValue?.title}
+            label={t("title")}
           />
-          
           <RHFField
-            className="tw-mb-3"
+            id="content"
             name="content"
             control={methods.control}
-            component={InputField}
-            defaultValue={initValue?.title}
-            label="Content"
+            component={TinyMCEEditorField}
+            // defaultValue={initValue?.title}
+            label={t("content")}
           />
 
           <RHFField
             className="tw-mb-3"
             name="image"
             control={methods.control}
-            label="Image"
-            defaultValue={initValue?.image}
+            multiple
+            label={t("image")}
+            // defaultValue={initValue?.image}
             component={UploadField}
             onChange={(e) => handleUpload(e)}
           />
           <CommonStyles.Box className="tw-flex tw-justify-around">
-            <CommonStyles.CommonButton type="submit">Submit</CommonStyles.CommonButton>
-            <CommonStyles.CommonButton onClick={toggle} colorBtn="info">Cancel</CommonStyles.CommonButton>
+            <CommonStyles.CommonButton type="submit">{t("submit")}</CommonStyles.CommonButton>
           </CommonStyles.Box>
+          <CommonStyles.Box  className="tw-absolute tw-top-0 tw-right-0 tw-cursor-pointer" onClick={toggle}><CommonIcons.Close /></CommonStyles.Box>
         </form>
       </FormProvider>
     </CommonStyles.Box>

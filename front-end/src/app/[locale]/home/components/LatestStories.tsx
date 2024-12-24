@@ -9,7 +9,8 @@ import { useTranslations } from "next-intl";
 const LatestStories = () => {
   const t = useTranslations("homePage");
   return (
-    <Container className="tw-flex tw-flex-col tw-gap-y-8">
+    <CommonStyles.Box className="tw-flex tw-flex-col tw-w-full tw-gap-y-6">
+      {/* <Container className="tw-flex tw-flex-col tw-gap-y-8"> */}
       <CommonStyles.Box className="tw-flex tw-justify-between tw-items-center">
         <Heading
           title={t("storyTitle")}
@@ -32,7 +33,8 @@ const LatestStories = () => {
             );
           })}
       </CommonStyles.Box>
-    </Container>
+      {/* </Container> */}
+    </CommonStyles.Box>
   );
 };
 

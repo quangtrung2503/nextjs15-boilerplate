@@ -7,6 +7,10 @@ import { CommonButton } from "./Button";
 import Divider from "./Divider";
 import Rating from "./Rating";
 import Avatar from "./Avatar";
+import HtmlContent from "./HtmlContent";
+import Chip from "./Chip";
+import RatingBar from "./RatingBar";
+import PopoverMui from "./Popover";
 import AccordionMUI from "./Accordion";
 
 export default {
@@ -18,5 +22,9 @@ export default {
   Divider,
   Rating,
   Avatar,
-  AccordionMUI,
+  HtmlContent,
+  Chip,
+  RatingBar,
+  PopoverMui,
+  AccordionMUI
 }

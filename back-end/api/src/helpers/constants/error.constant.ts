@@ -40,8 +40,8 @@ export const Errors: IErrors = {
     message: data || (I18nContext.current().lang === 'en' ? 'Something went wrong' : 'Đã xảy ra lỗi'),
   }),
   ITEM_NOT_FOUND: (data: string) => ({
-    errCode: HttpStatus.BAD_REQUEST.toString(),
-    statusCode: HttpStatus.BAD_REQUEST,
+    errCode: HttpStatus.NOT_FOUND.toString(),
+    statusCode: HttpStatus.NOT_FOUND,
     message: I18nContext.current().lang === 'en' ? `${data} does not exists` : `${data} không tồn tại`,
   }),
   BAD_REQUEST: (data?: string) => ({

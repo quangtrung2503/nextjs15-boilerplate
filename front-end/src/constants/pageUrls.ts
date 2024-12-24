@@ -17,6 +17,11 @@ const pageUrls = {
     Notification: "/admin/notification",
     User: "/admin/user",
     Product: "/admin/product",
+    CityPage: "/admin/city",
+    Post: "/admin/post",
+    Tour: "/admin/tour",
+    Theme: "/admin/theme",
+    Destination: "/admin/destination",
   },
   Invoices: "/sales/invoices",
   Warehousing: {

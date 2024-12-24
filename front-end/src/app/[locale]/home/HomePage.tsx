@@ -1,11 +1,6 @@
 "use client";
 
-import {
-  alaska,
-  banner,
-  bannerTrendingCity,
-  imagesTrendingCity,
-} from "@/assets";
+import { commonImg } from "@/assets";
 import { default as CommonStyles } from "@/components/common";
 import { LocationOn, PlayArrow } from "@mui/icons-material";
 import { CommonButton } from "@/components/common/Button";
@@ -71,15 +66,15 @@ const popularCity: PopularCityProps = {
       color: "#5C9BDE",
     },
   ],
-  imageBanner: alaska.src,
+  imageBanner: commonImg.alaska.src,
   name: "Alaska",
   title:
     "Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint. Velit officia consequat duis enim velit mollit. Exercitation veniam consequat sunt nostrud amet.0",
 };
 
 const trendingCity = {
-  imageBanner: bannerTrendingCity.src,
-  image: imagesTrendingCity.src,
+  imageBanner: commonImg.bannerTrendingCity.src,
+  image: commonImg.imagesTrendingCity.src,
   title: "Wilderlife of Alaska",
   place: "Alaska, USA",
   rate: 4.9,
@@ -87,6 +82,85 @@ const trendingCity = {
   content:
     "Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint. Velit officia consequat duis enim velit mollit. Exercitation veniam consequat sunt nostrud amet.",
 };
+export const mocDataCard = [
+  {
+    link: "/citytour/1",
+    src: "https://vietnam.travel/sites/default/files/inline-images/Ha%20Giang%20Loop-9.jpg",
+    title: "Alaska: Westminster to Greenwich River Thames",
+    duration: 2,
+    transport: "Transport Facility",
+    plan: "Family Plan",
+    price: 35,
+    feedback_quantity: 500,
+    feedback_average: 4.5,
+  },
+  {
+    link: "/citytour/1",
+    src: "https://vietnam.travel/sites/default/files/inline-images/Ha%20Giang%20Loop-9.jpg",
+    title: "Alaska: Westminster to Greenwich River Thames",
+    duration: 2,
+    transport: "Transport Facility",
+    plan: "Family Plan",
+    price: 35,
+    feedback_quantity: 500,
+    feedback_average: 4.5,
+  },
+  {
+    link: "/citytour/1",
+    src: "https://vietnam.travel/sites/default/files/inline-images/Ha%20Giang%20Loop-9.jpg",
+    title: "Alaska: Westminster to Greenwich River Thames",
+    duration: 2,
+    transport: "Transport Facility",
+    plan: "Family Plan",
+    price: 35,
+    feedback_quantity: 500,
+    feedback_average: 4.5,
+  },
+  {
+    link: "/citytour/1",
+    src: "https://vietnam.travel/sites/default/files/inline-images/Ha%20Giang%20Loop-9.jpg",
+    title: "Alaska: Westminster to Greenwich River Thames",
+    duration: 2,
+    transport: "Transport Facility",
+    plan: "Family Plan",
+    price: 35,
+    feedback_quantity: 500,
+    feedback_average: 4.5,
+  },
+  {
+    link: "/citytour/1",
+    src: "https://vietnam.travel/sites/default/files/inline-images/Ha%20Giang%20Loop-9.jpg",
+    title: "Alaska: Westminster to Greenwich River Thames",
+    duration: 2,
+    transport: "Transport Facility",
+    plan: "Family Plan",
+    price: 35,
+    feedback_quantity: 500,
+    feedback_average: 4.5,
+  },
+  {
+    link: "/citytour/1",
+    src: "https://vietnam.travel/sites/default/files/inline-images/Ha%20Giang%20Loop-9.jpg",
+    title: "Alaska: Westminster to Greenwich River Thames",
+    duration: 2,
+    transport: "Transport Facility",
+    plan: "Family Plan",
+    price: 35,
+    feedback_quantity: 500,
+    feedback_average: 4.5,
+  },
+  {
+    link: "/citytour/1",
+    src: "https://vietnam.travel/sites/default/files/inline-images/Ha%20Giang%20Loop-9.jpg",
+    title: "Alaska: Westminster to Greenwich River Thames",
+    duration: 2,
+    transport: "Transport Facility",
+    plan: "Family Plan",
+    price: 35,
+    feedback_quantity: 500,
+    feedback_average: 4.5,
+  },
+];
 export default function HomePage() {
   const t = useTranslations("homePage");
   const { control, handleSubmit } = useForm<FormValues>({
@@ -104,7 +178,7 @@ export default function HomePage() {
         <CommonStyles.Box
           className="tw-h-[740px] tw-flex tw-items-center tw-justify-center tw-bg-cover tw-bg-center"
           sx={{
-            backgroundImage: `url('${banner.src}')`,
+            backgroundImage: `url('${commonImg.banner.src}')`,
           }}
         >
           <CommonStyles.Box>
@@ -308,6 +382,7 @@ export default function HomePage() {
               return (
                 <CommonStyles.Box key={index} className="tw-col-span-3">
                   <CardGridItem
+                    link=""
                     src="https://vietnam.travel/sites/default/files/inline-images/Ha%20Giang%20Loop-9.jpg"
                     title="Alaska: Westminster to Greenwich River Thames"
                     duration={2}
@@ -328,6 +403,7 @@ export default function HomePage() {
       {/* IV. Featured Destinations */}
       <CommonStyles.Box>
         <CardCarousel
+          data={mocDataCard}
           title={
             <Heading
               title={t("featuredDestinationsHeading")}

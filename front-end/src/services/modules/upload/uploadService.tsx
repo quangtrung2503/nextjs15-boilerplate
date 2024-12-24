@@ -20,6 +20,17 @@ class UploadService {
             },
         );
     }
+    async uploadMultiple(file: FormData,configs?: AxiosRequestConfig) : Promise<ResponseUploadFile>{
+      return await httpService.post(`${apiUrls.UPLOAD_URL}`,
+        file,
+        {
+          ...configs,
+          headers: {
+            "Content-Type": "multipart/form-data",
+          }
+        }
+      )
+    }
 }
 
 export default new UploadService();

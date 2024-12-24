@@ -1,4 +1,76 @@
 {
+  "feedback": {
+    "title": "Customer Review",
+    "reviews": "reviews",
+    "filter": "Filter",
+    "recommendPlaceholder": "Recommend",
+    "travelerTypePlaceholder": "Traveler Type",
+    "ratingPlaceholder": "Rating",
+    "searchPlaceholder": "Search Here"
+  },
+  "card": {
+    "duration": "Duration",
+    "hours": "hours",
+    "days": "days",
+    "reviews": "reviews",
+    "perPerson": "per person",
+    "currency": "$"
+  },
+  "header": {
+    "navbar": {
+      "home": "Home",
+      "aboutUs": "About Us",
+      "popularDestinations": "Popular Destinations",
+      "ourPackages": "Our Packages",
+      "help": "Help"
+    },
+    "signInButton": "Sign In",
+    "profileMenu": {
+      "accountProfile": "Account Profile",
+      "logOut": "Log Out"
+    }
+  },
+  "footer": {
+    "languagePlaceholder": "Language",
+    "currencyPlaceholder": "Currency",
+    "languageOptions": {
+      "en": "English (UK)",
+      "vi": "Vietnamese (VN)"
+    },
+    "currencyOptions": {
+      "USD": "U.S. Dollar ($)",
+      "VND": "V.N Dong (VND)"
+    },
+    "companyMenu": {
+      "title": "Company",
+      "menu": {
+        "aboutUs": "About Us",
+        "blog": "Blog",
+        "pressRoom": "Press Room",
+        "careers": "Careers"
+      }
+    },
+    "helpMenu": {
+      "title": "Help",
+      "menu": {
+        "contactUs": "Contact Us",
+        "faq": "FAQs",
+        "termsAndConditions": "Terms and Conditions",
+        "privacyPolicy": "Privacy Policy",
+        "siteMap": "Site Maps"
+      }
+    },
+    "paymentMenu": {
+      "title": "Payment methods possible"
+    },
+    "companyDesMenu": {
+      "title": "Company",
+      "menu": {
+        "des": "Become a Tour guide for Us"
+      }
+    },
+    "copyRight": "Copyright 2021 Tour Guide. All Rights Reserved"
+  },
   "signIn": {
     "functionIsUnderDevelopment": "Function is under development",
     "metaTitle": "Sign in",
@@ -58,6 +130,9 @@
     }
   },
   "homePage": {
+    "reviews": "reviews",
+    "trendingNow": "Trending now",
+    "bookNowBtn": "Book now",
     "title": "We Find The Best Tours For You",
     "subtitleAboutTour": "Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint. Velit officia consequat duis enim velit mollit. Exercitation veniam consequat sunt nostrud amet.",
     "watchVideo": "Watch Video",
@@ -82,14 +157,42 @@
     "subStoryTitle": "Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint. Velit officia consequat duis enim velit mollit",
     "allPostButton": "View All Posts"
   },
-  "cityTour": {
+  "cityTourDetail": {
+    "booking": "Booking",
+    "noOfGuest": "No. Of Guest",
+    "adults": "Adults",
+    "children": "Children",
+    "adult": "Adult",
+    "child": "Child",
+    "doneBtn": "Done",
+    "currency": "$",
+    "relatedToursInToday": "Related tours in Today",
+    "relatedToursIn": "Related tours in",
+    "formBooking": {
+      "confirmBooking": "Confirm Booking",
+      "saveToWishlist": "Save to Wishlist",
+      "shareTheActivity": "Share The Activity"
+    },
+    "reviews": "reviews",
+    "feedback": {
+      "helpful": "Helpful"
+    },
+    "subtotal": "Subtotal",
     "validations": {
       "startDateRequire": "Please select a start date.",
       "startDateInvalid": "The start date is invalid.",
       "startDateMin": "The start date cannot be in the past.",
       "endDateRequire": "Please select an end date.",
       "endDateInvalid": "The end date is invalid.",
-      "endDateAfterStartDate": "The end date must be after the start date."
+      "endDateAfterStartDate": "The end date must be after the start date.",
+      "noOfGuestRequire": "Please specify the number of guests.",
+      "adultQuantityRequire": "Please enter the number of adults.",
+      "adultQuantityInvalid": "The number of adults must be a valid number.",
+      "adultQuantityMin": "There must be at least 1 adult.",
+      "adultQuantityMax": "The number of adults cannot exceed 10.",
+      "childQuantityInvalid": "The number of children must be a valid number.",
+      "childQuantityMin": "The number of children cannot be less than 0.",
+      "childQuantityMax": "The number of children cannot exceed 10."
     }
   },
   "landingPage": {
@@ -97,5 +200,116 @@
     "metaDescription": "Discover the latest trends, products, and services at our website.",
     "title": "Welcome to our website",
     "gotoLogin": "Sign in"
+  },
+  "cityAdmin": {
+    "metaTitle": "City admin",
+    "placeholderSearch": "Search city",
+    "search": "Search",
+    "createNewCity": "Create new city",
+    "nameRequire": "Name is a require field",
+    "metaDescription": "Admin manager city",
+    "imageRequire": "Image is a required field",
+    "descriptionRequire": "Description is a required field",
+    "noFileSelected": "No file selected",
+    "editCity": "Edit city",
+    "image": "Image",
+    "description": "Description",
+    "name": "Name",
+    "submit": "Submit",
+    "action": "Action",
+    "confirmDelete": "Are you sure you want to delete this city?",
+    "delete": "Delete",
+    "cancel": "Cancel"
+  },
+  "destinationAdmin": {
+    "placeholderSearch": "Search destination",
+    "search": "Search",
+    "createNewDestination": "Create new destination",
+    "nameRequire": "Name is a require field",
+    "imageRequire": "Image is a required field",
+    "noFileSelected": "No file selected",
+    "editDestination": "Edit destination",
+    "image": "Image",
+    "description": "Description",
+    "name": "Name",
+    "submit": "Submit",
+    "action": "Action",
+    "confirmDelete": "Are you sure you want to delete this destination?",
+    "delete": "Delete",
+    "cancel": "Cancel"
+  },
+  "postAdmin": {
+    "placeholderSearch": "Search post",
+    "search": "Search",
+    "createNewPost": "Create new post",
+    "titleRequire": "Title is a require field",
+    "contentRequire": "Content is a required field",
+    "imageRequire": "Image is a required field",
+    "noFileSelected": "No file selected",
+    "editPost": "Edit Post",
+    "image": "Image",
+    "content": "Content",
+    "description": "Description",
+    "title": "Title",
+    "submit": "Submit",
+    "action": "Action",
+    "views": "Views",
+    "confirmDelete": "Are you sure you want to delete this post?",
+    "delete": "Delete",
+    "cancel": "Cancel"
+  },
+  "themeAdmin": {
+    "placeholderSearch": "Search theme",
+    "createNewTheme": "Create new theme",
+    "titleRequire": "Title is a require field",
+    "contentRequire": "Content is a required field",
+    "imageRequire": "Image is a required field",
+    "editTheme": "Edit theme",
+    "image": "Image",
+    "content": "Content",
+    "description": "Description",
+    "title": "Title",
+    "name": "Name",
+    "isDisplay": "Display",
+    "views": "Views",
+    "confirmDelete": "Are you sure you want to delete this theme?"
+  },
+  "userAdmin": {
+    "placeholderSearch": "Search user",
+    "createNewUser": "Create new user",
+    "editUser": "Edit user",
+    "name": "Name",
+    "username": "Username",
+    "phone": "Phone",
+    "dateOfBirth": "Date of birth",
+    "sex": "Sex",
+    "status": "Status",
+    "nameRequire": "Name is a required field",
+    "usernameRequire": "Username is a required field",
+    "passwordRequire": "Password is a required field",
+    "password": "Password",
+    "phoneRequired": "Phone is a required field",
+    "phoneValid": "Invalid phone number",
+    "emailValid": "Invalid email",
+    "emailRequire": "Email is a required field",
+    "address": "Address",
+    "addressRequire": "Address is a required field",
+    "sexRequire": "Sex is a required field",
+    "statusRequire": "Status is a required field",
+    "roleRequire": "Role is a required field",
+    "role": "Role",
+    "email": "Email",
+    "avatar": "Avatar",
+    "dateOfBirthRequired": "Date of birth is a required field",
+    "confirmDelete": "Are you sure you want to delete this user?"
+  },
+  "action": "Action",
+  "noFileSelected": "No file selected",
+  "search": "Search",
+  "submit": "Submit",
+  "delete": "Delete",
+  "cancel": "Cancel",
+  "admin": {
+    "Destination": "City"
   }
 }

@@ -1,9 +1,9 @@
 "use client";
 import React, { Fragment, ReactNode } from "react";
-import { InputLabel, InputProps, SxProps, TextField } from "@mui/material";
+import { FormControl, InputLabel, InputProps, SxProps, TextField } from "@mui/material";
 import { FieldError } from "react-hook-form";
 import { twMerge } from "tailwind-merge";
-import {default as CommonStyles} from "@/components/common";
+import { default as CommonStyles } from "@/components/common";
 
 interface CustomInputProps extends InputProps {
   field: {
@@ -36,24 +36,27 @@ const InputField: React.FC<CustomInputProps> = ({
   onChange
 }) => {
   return (
-    <CommonStyles.Box className={twMerge("tw-w-full",classNameContainer)}>
-      {label && (
-        <InputLabel className={twMerge(classNameLabel,'tw-text-xl tw-font-mulish tw-font-bold tw-text-accent_gray_800')} shrink>
-          {label}
-        </InputLabel>
-      )}
-      <TextField
-      // label={label}
-        type={type}
-        {...field}
-        className={className}
-        placeholder={placeholder}
-        variant="outlined"
-        sx={sx}
-        fullWidth
-        error={!!fieldState.error}
-        helperText={fieldState.error?.message || ""}
-      />
+    <CommonStyles.Box className={twMerge("tw-w-full", classNameContainer)}>
+      {/* <FormControl> */}
+
+        {label && (
+          <InputLabel className={twMerge(classNameLabel, 'tw-text-xl tw-font-mulish tw-font-bold tw-text-accent_gray_800')} shrink>
+            {label}
+          </InputLabel>
+        )}
+        <TextField
+          // label={label}
+          type={type}
+          {...field}
+          className={className}
+          placeholder={placeholder}
+          variant="outlined"
+          sx={sx}
+          fullWidth
+          error={!!fieldState.error}
+          helperText={fieldState.error?.message || ""}
+        />
+      {/* </FormControl> */}
     </CommonStyles.Box>
   );
 };

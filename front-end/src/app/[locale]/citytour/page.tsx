@@ -17,14 +17,18 @@ import CardListItem from '@/components/Card/CardListItem'
 import CardCarousel from '@/components/CardCarousel'
 import Gallery from '../home/components/Gallery'
 import LatestStories from '../home/components/LatestStories'
+import { mocDataCard } from '../home/HomePage'
 
 
 interface Availability {
   startDate: Date,
   endDate: Date
 }
+interface Filter {
+  filter: string,
+}
 const CityTourPage = () => {
-  const t = useTranslations("cityTour");
+  const t = useTranslations("cityTourDetail");
   const { showSuccess, showError } = useNotifications();
   const validateSchema = Yup.object().shape({
     startDate: Yup.date()
@@ -39,6 +43,14 @@ const CityTourPage = () => {
   const { handleSubmit, control, setValue } = useForm<Availability>({
     defaultValues: {
       startDate: undefined, endDate: undefined
+    },
+    reValidateMode: "onSubmit",
+    criteriaMode: "all",
+  });
+
+  const { control: ControlFilter, getValues } = useForm<Filter>({
+    defaultValues: {
+      filter: 'Popularity'
     },
     reValidateMode: "onSubmit",
     criteriaMode: "all",
@@ -68,7 +80,7 @@ const CityTourPage = () => {
   ]
   const themeOptions = [
     { label: "Water activities", value: "water_activities" },
-    { label: "Good for social distancing fefafagag", value: "good_for_social_distancing" },
+    { label: "Good for social distancing", value: "good_for_social_distancing" },
     { label: "Adrenaline", value: "adrenaline" },
     { label: "Nature", value: "nature" },
     { label: "Hidden gems", value: "hidden_gems" },
@@ -95,7 +107,8 @@ const CityTourPage = () => {
   ];
 
   return (
-    <div className='tw-mb-20 tw-flex tw-flex-col '>
+    <CommonStyles.Box className='tw-flex tw-flex-col tw-pt-6 tw-mb-20'>
+      {/* <div className='tw-flex tw-flex-col tw-mb-12 tw-py-6'> */}
       <Container>
         <CommonStyles.Box className='tw-flex tw-justify-between tw-items-center'>
           <CommonStyles.Box>
@@ -110,24 +123,33 @@ const CityTourPage = () => {
             <CommonStyles.Typography type='size15Weight700' className='tw-text-accent_gray_dark tw-text-nowrap tw-mt-2'>
               Sort by:
             </CommonStyles.Typography>
-            <SelectField
-              onChange={(e) => { }}
+
+            <RHFField
+              name="filter"
               defaultValue={"Popularity"}
-              size="small"
+              control={ControlFilter}
+              onChange={(e) => {
+                console.log(e.target.value);
+              }}
+              size='small'
+              sx={{
+                fieldSet: { border: 'none' }
+              }}
               options={sortbyOptions}
-              classNameContainer="tw-bg-[#F4F4F5]"
-              className='tw-w-[310px]'
+              // className="tw-text-[#FFFFFF99] "
+              classNameContainer='tw-w-[310px] tw-bg-accent_gray_200'
+              component={SelectField}
             />
           </CommonStyles.Box>
         </CommonStyles.Box>
       </Container>
 
       <CommonStyles.Box className='tw-flex tw-mt-[17px] tw-bg-[#F9FAFD]'>
-        <Container className='tw-grid tw-grid-cols-12 tw-mt-[30px] tw-gap-6'>
+        <Container className='tw-grid tw-grid-cols-12 tw-pt-8 tw-gap-6'>
           <CommonStyles.Box className='tw-col-span-3 tw-flex tw-flex-col tw-gap-3'>
             <form
               onSubmit={handleSubmit(onSubmit)}
-              className=" tw-bg-white tw-rounded-md tw-shadow-filter tw-pt-4"
+              className=" tw-bg-white tw-rounded-md tw-shadow-md tw-pt-4"
             >
               <CommonStyles.Box className="tw-flex tw-flex-col tw-items-start tw-gap-4 tw-mx-auto">
                 <CommonStyles.Typography type='size18Weight700' className='tw-text-accent_gray_dark tw-px-7'>
@@ -180,8 +202,9 @@ const CityTourPage = () => {
               {Array(10)
                 .fill(null)
                 .map((_, index) => (
-                  <CommonStyles.Box key={index} className="">
+                  <CommonStyles.Box key={index}>
                     <CardListItem
+                      link=''
                       src="https://vietnam.travel/sites/default/files/inline-images/Ha%20Giang%20Loop-9.jpg"
                       title="Alaska: Westminster to Greenwich River Thames"
                       duration={2}
@@ -202,8 +225,8 @@ const CityTourPage = () => {
         </Container>
       </CommonStyles.Box >
 
-      <Container className='tw-flex tw-flex-col tw-gap-16'>
-        <CommonStyles.Box className='tw-flex tw-flex-col tw-gap-5 tw-pt-14 '>
+      <Container className='tw-flex tw-flex-col tw-gap-12'>
+        <CommonStyles.Box className='tw-flex tw-flex-col tw-gap-4 tw-pt-14 '>
           <CommonStyles.Typography type='size22Weight700' className='tw-text-accent_gray_dark'>
             Outside The City Specials
           </CommonStyles.Typography>
@@ -211,6 +234,8 @@ const CityTourPage = () => {
 
           <CommonStyles.Box>
             <CardCarousel
+              classNameContainerHeading="tw-px-0"
+              data={mocDataCard}
               title={
                 <CommonStyles.Typography type='size12Weight800' className="tw-text-center tw-px-6 tw-py-2 tw-rounded-full tw-bg-primary tw-text-white">
                   Water Activities
@@ -219,6 +244,8 @@ const CityTourPage = () => {
           </CommonStyles.Box>
           <CommonStyles.Box>
             <CardCarousel
+              classNameContainerHeading="tw-px-0"
+              data={mocDataCard}
               title={
                 <CommonStyles.Typography type='size12Weight800' className="tw-text-center tw-px-6 tw-py-2 tw-rounded-full tw-bg-accent_blue tw-text-white">
                   Special Foods
@@ -227,6 +254,8 @@ const CityTourPage = () => {
           </CommonStyles.Box>
           <CommonStyles.Box >
             <CardCarousel
+              classNameContainerHeading="tw-px-0"
+              data={mocDataCard}
               title={
                 <CommonStyles.Typography type='size12Weight800' className="tw-text-center tw-px-6 tw-py-2 tw-rounded-full tw-bg-accent_red tw-text-white">
                   River Activity
@@ -242,7 +271,8 @@ const CityTourPage = () => {
           <LatestStories />
         </CommonStyles.Box>
       </Container>
-    </div >
+      {/* </div > */}
+    </CommonStyles.Box>
   )
 }
 

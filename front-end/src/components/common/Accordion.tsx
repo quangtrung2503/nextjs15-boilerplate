@@ -71,13 +71,13 @@ const AccordionMUI = (props: AccordionMUIProps) => {
   const visibleOptions = showMore ? options : options.slice(0, 7);
 
   return (
-    <div className="tw-w-full tw-shadow-filter tw-rounded-md tw-overflow-hidden">
+    <div className="tw-w-full tw-shadow-md tw-rounded-md tw-overflow-hidden">
       <Accordion
         expanded={expanded === "panel1"}
         onChange={handleChange("panel1")}
       >
         <AccordionSummary aria-controls="panel1d-content" id="panel1d-header">
-          <CommonStyles.Typography type="size16Weight600">
+          <CommonStyles.Typography type="size18Weight700">
             {title}
           </CommonStyles.Typography>
         </AccordionSummary>
@@ -89,6 +89,8 @@ const AccordionMUI = (props: AccordionMUIProps) => {
                   width: "100%",
                   paddingY: "3px",
                   boxShadow: "5px",
+                  fontSize: "14px !important",
+                  fontFamily: "'Mulish'",
                   "&:hover": {
                     backgroundColor: "rgba(0, 0, 0, 0.1)",
                   },

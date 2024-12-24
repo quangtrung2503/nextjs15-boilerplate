@@ -3,6 +3,7 @@ import httpService from "@/services/httpService";
 import { AxiosRequestConfig, AxiosResponse } from "axios";
 import apiUrls from "@/constants/apiUrls";
 import queryString from "query-string";
+import { User } from "./interfaces/user.inteface";
 export interface FiltersGetUsers extends CommonFilters { }
 export interface RequestGetUsers extends CommonFilters { }
 
@@ -20,13 +21,18 @@ class UserService {
 
   getUser(id: number, configs?: AxiosRequestConfig) {
     return httpService.get(
-      `${apiUrls.USER_URL}/${id}`,
+      `${apiUrls.USER_URL}/profile/${id}`,
       configs
     );
   }
 
   createUser(payload: User, configs?: AxiosRequestConfig) {
     return httpService.post(`${apiUrls.USER_URL}/create-user`, payload, configs);
+  }
+
+  updateUser(payload: Omit<User,'password | username'>,configs?: AxiosRequestConfig){
+    const {id,...data} = payload;
+    return httpService.patch(`${apiUrls.USER_URL}/${id}`, data, configs);
   }
 
   deleteUser(id: number, configs?: AxiosRequestConfig) {

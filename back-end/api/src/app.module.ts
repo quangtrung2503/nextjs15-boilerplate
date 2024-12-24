@@ -22,6 +22,8 @@ import { DestinationModule } from './modules/destination/destination.module';
 import { PostModule } from './modules/post/post.module';
 import { TourModule } from './modules/tour/tour.module';
 import { WishlistModule } from './modules/wishlist/wishlist.module';
+import { BookingModule } from './modules/booking/booking.module';
+import { ReviewModule } from './modules/review/review.module';
 
 @Module({
   imports: [
@@ -51,7 +53,9 @@ import { WishlistModule } from './modules/wishlist/wishlist.module';
     DestinationModule,
     PostModule,
     TourModule,
-    WishlistModule
+    WishlistModule,
+    BookingModule,
+    ReviewModule
   ],
   controllers: [AppController],
   providers: [

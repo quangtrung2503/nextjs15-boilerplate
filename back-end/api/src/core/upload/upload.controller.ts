@@ -6,6 +6,7 @@ import {
 import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import { ApiBody, ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { mimeTypeToMediaType } from 'src/helpers/functions/common.utils';
+import * as path from 'path';
 
 @ApiTags('Upload')
 @Controller('upload')
@@ -31,10 +32,17 @@ export class UploadController {
   async uploadFiles(@UploadedFiles(
   ) files: Array<Express.Multer.File>) {
     return {
-      data: files.map((file) => ({
-        uri: `${file.destination.split('/public/')[1]}/${file.filename}`,
-        fileType: mimeTypeToMediaType(file.mimetype)
-      })),
+      // data: files.map((file) => ({
+      //   uri: `${file.destination.split('/public/')[1]}/${file.filename}`,
+      //   fileType: mimeTypeToMediaType(file.mimetype)
+      // })),
+      data: files.map((file) => {
+        const relativePath = path.relative('public', path.join(file.destination, file.filename));
+        return {
+          uri: relativePath.replace(/\\/g, '/'), // Chuyển Windows path sang dạng URL
+          fileType: mimeTypeToMediaType(file.mimetype),
+        };
+      }),
     };
   }
 
@@ -54,10 +62,15 @@ export class UploadController {
     })
     @UseInterceptors(FileInterceptor('file'))
     async uploadFile(@UploadedFile() file: Express.Multer.File) {
-      console.info('file', file)
+      console.info('file', file.destination, file.filename)
+      // return {
+      //   uri: `${file.destination.split('/public/')[1]}/${file.filename}`,
+      //   fileType: mimeTypeToMediaType(file.mimetype)
+      // };
+      const relativePath = path.relative('public', path.join(file.destination, file.filename));
       return {
-        uri: `${file.destination.split('/public/')[1]}/${file.filename}`,
-        fileType: mimeTypeToMediaType(file.mimetype)
+        uri: relativePath.replace(/\\/g, '/'), // Chuyển Windows path sang dạng URL
+        fileType: mimeTypeToMediaType(file.mimetype),
       };
     }
 }

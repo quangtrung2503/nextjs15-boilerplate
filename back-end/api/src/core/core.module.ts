@@ -7,6 +7,8 @@ import configurationCommon from 'src/helpers/common/configuration.common';
 import { CronTasksModule } from './cron-tasks/cron-tasks.module';
 import { NodeMailerModule } from './node-mailer/node-mailer.module';
 import { UploadModule } from './upload/upload.module';
+import { ParseIdPipe } from './pipes/parse-id.pipe';
+import { I18nCustomModule } from 'src/resources/i18n/i18n.module';
 
 @Module({
   imports: [
@@ -25,9 +27,10 @@ import { UploadModule } from './upload/upload.module';
     UploadModule,
     NodeMailerModule,
     CronTasksModule,
-    PrismaModule
+    PrismaModule,
+    I18nCustomModule
   ],
-  providers: [],
-  exports: [],
+  providers: [ParseIdPipe],
+  exports: [ParseIdPipe],
 })
 export class CoreModule { }

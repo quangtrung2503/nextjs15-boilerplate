@@ -3,11 +3,13 @@ import { default as CommonStyles } from "@/components/common"
 import CommonIcons from "@/components/CommonIcons"
 import { useState } from "react"
 import { Popover } from "@mui/material"
+import apiUrls from "@/constants/apiUrls"
 
-const ActionCell: React.FC<{ row: City; handleEditId: (id: number) => void; handleDeleteCity: (id: number) => void }> = ({
+const ActionCell: React.FC<{ row: City; handleEditId: (id: number) => void; handleDeleteCity: (id: number) => void ;t:any}> = ({
   row,
   handleEditId,
-  handleDeleteCity
+  handleDeleteCity,
+  t
 }) => {
   const [anchorEl, setAnchorEl] = useState<HTMLDivElement | null>(null);
 
@@ -48,14 +50,14 @@ const ActionCell: React.FC<{ row: City; handleEditId: (id: number) => void; hand
           >
             <CommonStyles.Box className="tw-p-2 tw-flex tw-flex-col tw-items-center">
               <CommonStyles.Typography className="tw-text-md tw-mb-1 tw-font-bold">
-                Are you sure you want to delete this city?
+                {t("confirmDelete")}
               </CommonStyles.Typography>
               <CommonStyles.Box className="tw-flex tw-gap-4">
                 <CommonStyles.Box className="tw-text-red-500 tw-cursor-pointer tw-border-solid tw-border-[1px] tw-bg-red-100 tw-rounded-md tw-px-2 tw-pb-1" onClick={handleConfirmDelete}>
-                  Delete
+                  {t("delete")}
                 </CommonStyles.Box>
                 <CommonStyles.Box className="tw-text-gray-700 tw-cursor-pointer tw-border-solid tw-border-[1px] tw-rounded-md tw-px-2 tw-pb-1" onClick={handleClosePopover}>
-                  Cancel
+                  {t("cancel")}
                 </CommonStyles.Box>
               </CommonStyles.Box>
             </CommonStyles.Box>
@@ -68,10 +70,12 @@ const ActionCell: React.FC<{ row: City; handleEditId: (id: number) => void; hand
 
 export const headCells = ({
   handleEditId,
-  handleDeleteCity
+  handleDeleteCity,
+  t
 }: {
   handleEditId: (id: number) => void;
   handleDeleteCity: (id: number) => void;
+  t: any
 }) => {
   return [
     {
@@ -84,7 +88,7 @@ export const headCells = ({
     },
     {
       id: "name",
-      label: "Name",
+      label: t("name"),
       numeric: false,
       Cell(row: City, _index: number) {
         return <span>{row.name}</span>;
@@ -92,15 +96,15 @@ export const headCells = ({
     },
     {
       id: "image",
-      label: "Image",
+      label: t("image"),
       numeric: false,
       Cell(row: City, _index: number) {
-        return <span>{row.image}</span>;
+        return <span>{row.image && <img className="tw-w-[100px] tw-h-auto" src={`${apiUrls.IMG_URL}/${row.image}`} alt={`${row.name}-images`} />}</span>;
       },
     },
     {
       id: "description",
-      label: "Description",
+      label: t("description"),
       numeric: false,
       Cell(row: City, _index: number) {
         return <span>{row.description}</span>;
@@ -108,10 +112,10 @@ export const headCells = ({
     },
     {
       id: "actionCity",
-      label: "Action",
+      label: t("action"),
       numeric: false,
       Cell(row: City, _index: number) {
-        return <ActionCell row={row} handleEditId={handleEditId} handleDeleteCity={handleDeleteCity} />;
+        return <ActionCell row={row} handleEditId={handleEditId} handleDeleteCity={handleDeleteCity} t={t} />;
       },
     },
   ];

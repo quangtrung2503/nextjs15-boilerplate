@@ -57,10 +57,10 @@ export class ThemeCustomerController {
     );
   }
 
-  @Get(':id')
-  async findOne(@Param('id') id: number) {
+  @Get(':slug')
+  async findOne(@Param('slug') slug: string) {
     const theme = await this.themeService.findOne({ 
-      where: { id, isActive: true },
+      where: { slug, isActive: true },
     });
     if (!theme) throw new BaseException(Errors.ITEM_NOT_FOUND(this.i18n.t('common-message.theme.findOne.not_found')));
 

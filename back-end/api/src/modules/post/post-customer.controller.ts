@@ -73,17 +73,17 @@ export class PostCustomerController {
     }
   }
 
-  @Get(':id')
-  async findOne(@Param('id') id: number) {
+  @Get(':slug')
+  async findOne(@Param('slug') slug: string) {
     const post = await this.postService.findOne({
-      where: { id, isActive: true },
+      where: { slug, isActive: true },
       include: {
         User: true
       }
     });
     if (!post) throw new BaseException(Errors.ITEM_NOT_FOUND(this.i18n.t('common-message.post.findOne.not_found')));
 
-    const updatePost = await this.postService.update(+id, {
+    const updatePost = await this.postService.update(post.id, {
       views: post.views + 1
     });
 

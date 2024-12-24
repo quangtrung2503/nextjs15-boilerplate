@@ -12,6 +12,9 @@ import cachedKeys from "@/constants/cachedKeys"
 import useGetTheme from "@/services/modules/theme/hook/useGetTheme"
 import themeServices from "@/services/modules/theme/theme.services"
 import CheckboxField from "@/components/customReactFormField/CheckBoxField"
+import { Theme } from "@/services/modules/theme/intefaces/theme"
+import CommonIcons from "@/components/CommonIcons"
+import { useTranslations } from "next-intl"
 
 interface createEditThemeProps {
   toggle: () => void;
@@ -23,17 +26,16 @@ interface FormValues {
 }
 const CreateEditTheme: FC<createEditThemeProps> = (props) => {
   const { toggle, id } = props;
-  const { uploadImage } = useImageUploader();
   const { data } = useGetTheme(Number(id), { isTrigger: !!id });
+  const t = useTranslations();
+
   const schema = yup
     .object({
       name: yup.string().required("Name is a required field"),
     })
     .required();
   const initValue = useMemo(() => {
-    if (data) {
-        return { name: data?.data.name || "",isDisplay: data?.data.isDisplay || false}
-    }
+        return { name: data?.data.name ?? "",isDisplay: data?.data.isDisplay ?? false}
   }, [data?.data]);
   const methods = useForm<FormValues>({
     defaultValues: initValue,
@@ -63,8 +65,8 @@ const CreateEditTheme: FC<createEditThemeProps> = (props) => {
     }
   };
   return (
-    <CommonStyles.Box className="tw-w-[500px]">
-      <CommonStyles.Box className="tw-flex tw-justify-center"><CommonStyles.Typography type="size20Weight600">{id?"Edit Theme":"Create new Theme"}</CommonStyles.Typography></CommonStyles.Box>
+    <CommonStyles.Box className="tw-w-[500px] tw-relative">
+      <CommonStyles.Box className="tw-flex tw-justify-center"><CommonStyles.Typography type="size20Weight600">{id?t("themeAdmin.editTheme"):t("themeAdmin.createNewTheme")}</CommonStyles.Typography></CommonStyles.Box>
       <FormProvider {...methods} >
         <form onSubmit={methods.handleSubmit(onSubmit)}>
           <RHFField
@@ -73,19 +75,19 @@ const CreateEditTheme: FC<createEditThemeProps> = (props) => {
             control={methods.control}
             component={InputField}
             defaultValue={initValue?.name}
-            label="Name"
+            label={t("themeAdmin.name")}
           />
           <RHFField
             name="isDisplay"
             defaultValue={initValue?.isDisplay}
             control={methods.control}
             component={CheckboxField}
-            label="Display"
+            label={t("themeAdmin.isDisplay")}
           />
           <CommonStyles.Box className="tw-flex tw-justify-around">
-            <CommonStyles.CommonButton type="submit">Submit</CommonStyles.CommonButton>
-            <CommonStyles.CommonButton onClick={toggle} colorBtn="info">Cancel</CommonStyles.CommonButton>
+            <CommonStyles.CommonButton type="submit">{t("submit")}</CommonStyles.CommonButton>
           </CommonStyles.Box>
+          <CommonStyles.Box  className="tw-absolute tw-top-0 tw-right-0 tw-cursor-pointer" onClick={toggle}><CommonIcons.Close /></CommonStyles.Box>
         </form>
       </FormProvider>
     </CommonStyles.Box>

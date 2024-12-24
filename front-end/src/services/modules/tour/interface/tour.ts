@@ -1,25 +1,84 @@
 import { TransportOfTour } from "@/helpers/common";
+export interface Tour {
+  id: number;
+  name: string;
+  price: number;
+  transport: string;
+  package: string;
+  duration: string;
+  numberOfPeople: number;
+  startDate: string;
+  endDate: string;
+  isFeature?: boolean;
+  isActive: boolean;
+  cancellationPolicy: string;
+  healthPrecautions: string;
+  ticketType: string;
+  confirmation: string;
+  guideLanguage: string;
+  description?: string;
+  activity?: string;
+  included?: string;
+  notIncluded?: string;
+  safety?: string;
+  details?: string;
+  cityId: number;
+  themeId: number;
+  createdAt: string;
+  updatedAt: string;
+  City: City;
+  Theme?: Theme;
+  TourDestination: TourDestination[];
+  TourImage: TourImage[];
+  averageRating: number;
+  totalReviews: number;
+};
+export interface City {
+  id: number;
+  name: string;
+  image: string;
+  description: string;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
+};
 
-export interface Tour{
-  id?: number;
-  name: string
-  price: number,
-  description: string,
-  transport: TransportOfTour,
-  package: string,
-  duration: string,
-  numberOfHours: number,
-  numberOfPeople: number,
-  startDate: Date,
-  endDate: Date,
-  isFeature: boolean,
-  cancellationPolicy: string,
-  healthPrecautions: string,
-  ticketType: string,
-  confirmation: string,
-  guideLanguage: string,
-  cityId: number,
-  themeId: number,
-  destinationId: number,
-  images: string[]
-}
+export interface Theme {
+  id: number;
+  name: string;
+  isDisplay: boolean;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export interface Destination {
+  id: number;
+  name: string;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export interface TourDestination {
+  id: number;
+  tourId: number;
+  destinationId: number;
+  createdAt: string;
+  updatedAt: string;
+  Destination: Destination;
+};
+
+export interface TourImage {
+  id: number;
+  tourId: number;
+  image: string;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export interface ApiResponse {
+  tour: Tour;
+  listTourInToday: Tour[];
+  listTourSameCity: Tour[];
+};
