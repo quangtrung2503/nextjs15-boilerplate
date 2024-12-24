@@ -57,7 +57,7 @@ const Landing = () => {
       label: "label8",
     },
   ];
-  const t = useTranslations('landingPage');
+  // const t = useTranslations('LandingPage');
   const { theme, setTheme } = useThemeContext();
   const schema = yup
     .object({
@@ -77,6 +77,7 @@ const Landing = () => {
       {/* <CommonIcons.AbcTwoTone/> */}
       <CommonStyles.Box className="tw-w-[270px] tw-p-5">
         <CardGridItem
+          link=""
           src="https://vietnam.travel/sites/default/files/inline-images/Ha%20Giang%20Loop-9.jpg"
           title="Alaska: Westminster to Greenwich River Thames"
           duration={2}
@@ -92,6 +93,7 @@ const Landing = () => {
         />
       </CommonStyles.Box>
       <CardListItem
+        link=""
         src="https://vietnam.travel/sites/default/files/inline-images/Ha%20Giang%20Loop-9.jpg"
         title="Alaska: Westminster to Greenwich River Thames"
         duration={2}
@@ -104,12 +106,12 @@ const Landing = () => {
         <AccordionMUI title="Theme" options={options} />
         <Loading />
       </CommonStyles.Box>
-      <SelectField
+      {/* <SelectField
         options={options}
         onChange={(e) => {
           console.log(e.target.value);
         }}
-      />
+      /> */}
       <form onSubmit={handleSubmit(onSubmit)}>
         <RHFField
           name="username"
