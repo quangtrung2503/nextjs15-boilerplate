@@ -13,6 +13,9 @@ import UploadField from "@/components/customReactFormField/UploadField";
 import { useForm } from "react-hook-form";
 import { useEffect } from "react";
 import { PUBLIC_URL } from "@/constants/apiUrls";
+import { useTranslations } from 'next-intl';
+
+
 interface ProfileUser {
   name?: string;
   location?: string | undefined;
@@ -21,12 +24,16 @@ interface ProfileUser {
   onAvatarChange?: (avatar: string) => void;
 }
 
+interface ProfileFormValues {
+  avatar: string;
+}
+
 export default function ProfileCard(props: ProfileUser) {
+  const t = useTranslations('profile')
   const { name, location, dateOfBirth, avatar, onAvatarChange } = props;
-  const { control, handleSubmit, setValue, watch } = useForm<any>({
+  const { control, setValue, watch } = useForm<ProfileFormValues>({
     defaultValues: { avatar: "" },
   });
-  // const [avatar, setAvatar] = useState<string | undefined>(initialAvatar);
   const avatarChange = watch("avatar");
 
   useEffect(() => {
@@ -86,7 +93,7 @@ export default function ProfileCard(props: ProfileUser) {
                   ? (() => {
                       return location.split(",")[0].trim();
                     })()
-                  : "Unknown Address"}
+                  : t("unknownAddress")}
               </CommonStyles.Typography>
             </CommonStyles.Box>
             <CommonStyles.Divider orientation="vertical" className="tw-h-4" />
@@ -95,7 +102,7 @@ export default function ProfileCard(props: ProfileUser) {
               <CommonStyles.Typography type="size14Weight400">
                 {dateOfBirth
                   ? moment(dateOfBirth).format("Do MMMM")
-                  : "Unknown Date"}
+                  : t("unknownDate")}
               </CommonStyles.Typography>
             </CommonStyles.Box>
           </CommonStyles.Box>

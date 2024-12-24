@@ -1,20 +1,26 @@
 import * as yup from 'yup';
 
-export const schemaPersonalInformation = yup.object().shape({
-  name: yup.string().required("Username is required"),
-  dateOfBirth: yup.string().required("Date of birth is required"),
-  phone: yup
-    .string()
-    .matches(/^[0-9]{10}$/, "Phone number must be 10 digits")
-    .required("Phone number is required"), 
-  address: yup.string().required("Location is required"),
-}).required();
+export const createSchemaPersonalInformation = (t: any) =>
+  yup
+    .object({
+      name: yup.string().required(t('validation.usernameRequired')),
+      dateOfBirth: yup.string().required(t('validation.dateOfBirthRequired')),
+      phone: yup
+        .string()
+        .matches(/^[0-9]{10}$/, t('validation.phoneInvalid'))
+        .required(t('validation.phoneRequired')),
+      address: yup.string().required(t('validation.locationRequired')),
+    })
+    .required();
 
-export const schemaSecurityInformation = yup.object().shape({
-  currentPassword: yup.string().required("Password is a required"),
-  newPassword: yup.string().required("Password is a required"),
-  confirmPassword: yup
-    .string()
-    .required("Confirm password is required")
-    .oneOf([yup.ref('newPassword')], "Passwords must match"),
-}).required();
+export const createSchemaSecurityInformation = (t: any) =>
+  yup
+    .object({
+      currentPassword: yup.string().required(t('validation.currentPasswordRequired')),
+      newPassword: yup.string().required(t('validation.newPasswordRequired')),
+      confirmPassword: yup
+        .string()
+        .required(t('validation.confirmPasswordRequired'))
+        .oneOf([yup.ref('newPassword')], t('validation.passwordsMustMatch')),
+    })
+    .required();

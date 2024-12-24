@@ -16,7 +16,6 @@ export {default as mater_card} from './images/payment_method/mater_card.png'
 export {default as paypal} from './images/payment_method/paypal.png'
 export {default as sofort} from './images/payment_method/sofort.png'
 export {default as visa} from './images/payment_method/visa.png'
-export {default as avatar_profile} from './images/avatarProfile.jpg'
 import { default as american_express } from './images/payment_method/american_express.png';
 import { default as apple_pay } from './images/payment_method/apple_pay.png';
 import { default as bit_pay } from './images/payment_method/bit_pay.png';

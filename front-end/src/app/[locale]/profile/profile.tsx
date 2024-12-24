@@ -4,39 +4,43 @@ import React, { useEffect, useState } from "react";
 import { Box } from "@mui/material";
 import Grid from "@mui/material/Grid2";
 import ProfileCard from "@/app/[locale]/profile/components/CardProfile/cardProfile";
-import PersonalProfile from "./components/PersonalInformation/personalInfor";
+import PersonalProfile from "./components/PersonalInformation/personalInformation";
 import SecurityInformation from "./components/SecurityInformation/securityInformation";
-import Tabs from "./components/Tabs/tabs";
+import MenuProfile from "./components/MenuProfile/menuProfile";
 import Divider from "@/components/common/Divider";
-import { tabs } from "./components/Tabs/tabsData";
+import { menuProfile } from "./components/MenuProfile/menuProfileData";
 import useAuth from "@/hooks/useAuth";
 import { default as CommonStyles } from "@/components/common";
 import Loading from "@/app/loading";
 import withAuth from "@/HOCs/withAuth";
 import useGetProfile from "@/services/modules/profile/hook/useGetProfile";
-import DivBreadcrumbs from "./components/BreadCrump/breakcrump";
+import CardBreadcrumbs from "./components/BreadCrump/breadcrumb";
 import { useNotifications } from "@/helpers/toast";
+import { useTranslations } from "next-intl";
 
 const FormProfileWithCustomComponent: React.FC = () => {
+  const t = useTranslations("profile");
   const auth = useAuth();
   const user = auth.user;
   const [avatar, setAvatar] = useState<string | undefined>();
-  const [activeTab, setActiveTab] = useState<number>(tabs[0].value);
+  const [activeMenuProfile, setActiveMenuProfile] = useState<number>(
+    menuProfile[0].value,
+  );
   const { showSuccess } = useNotifications();
 
-  const handleTabChange = (tabValue: number) => {
-    setActiveTab(tabValue);
+  const handleMenuProfileChange = (menuProfileValue: number) => {
+    setActiveMenuProfile(menuProfileValue);
   };
   //Process data in from Personal Information and Security
   const { data, loading, refetch } = useGetProfile(Number(user?.id));
-   const onSuccessApp = async () => {
-    await refetch()
-    showSuccess("Cập nhật thông tin thành công.");
-  }
+  const onSuccessApp = async () => {
+    await refetch();
+    showSuccess(t("updateDataSuccess"));
+  };
 
   useEffect(() => {
     if (data?.avatar) {
-      setAvatar(data.avatar); 
+      setAvatar(data.avatar);
     }
   }, [data]);
 
@@ -50,8 +54,8 @@ const FormProfileWithCustomComponent: React.FC = () => {
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
-            position: 'fixed',
-            zIndex:10
+            position: "fixed",
+            zIndex: 10,
           }}
         >
           <Loading />
@@ -59,7 +63,7 @@ const FormProfileWithCustomComponent: React.FC = () => {
       ) : (
         <></>
       )}
-      <DivBreadcrumbs />
+      <CardBreadcrumbs />
       <Box
         sx={{ margin: "60px 185px" }}
         className={"tw-h-full tw-flex-grow tw-shadow-2xl tw-rounded"}
@@ -75,22 +79,23 @@ const FormProfileWithCustomComponent: React.FC = () => {
                 location={data?.address}
                 dateOfBirth={data?.dateOfBirth}
                 avatar={data?.avatar}
-                onAvatarChange={(newAvatar: string) => setAvatar(newAvatar)} 
+                onAvatarChange={(newAvatar: string) => setAvatar(newAvatar)}
               />
-              <Tabs
-                tabs={tabs}
-                activeTab={activeTab}
-                onTabChange={handleTabChange}
+              <MenuProfile
+                menuProfiles={menuProfile}
+                activeMenuProfile={activeMenuProfile}
+                onMenuProfileChange={handleMenuProfileChange}
               />
             </Box>
           </Grid>
           <Grid size={9} className={"tw-flex tw-flex-col"}>
-            {activeTab === 1 ? (
+            {activeMenuProfile === 1 ? (
               <Box>
-                <PersonalProfile 
-                  data={data} 
+                <PersonalProfile
+                  data={data}
                   avatar={avatar}
-                  onSuccess={onSuccessApp} />
+                  onSuccess={onSuccessApp}
+                />
                 <Divider />
                 <SecurityInformation />
               </Box>

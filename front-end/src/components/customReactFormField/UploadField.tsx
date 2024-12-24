@@ -6,6 +6,7 @@ import apiUrls from "@/constants/apiUrls";
 import Box from "../common/Box";
 import useImageUploader from "@/hooks/useUpload";
 import { useNotifications } from "@/helpers/toast";
+import { useTranslations } from "next-intl";
 
 interface UploadFieldProps {
   field: {
@@ -38,6 +39,7 @@ const UploadField = (props: UploadFieldProps) => {
   const uploadRef = useRef<HTMLInputElement>(null);
   const { uploadImage } = useImageUploader();
   const { showError } = useNotifications();
+  const t = useTranslations('uploadField');
   //! State
 
   // const handleUpload = async (e: ChangeEvent<HTMLInputElement>) => {
@@ -98,7 +100,7 @@ const UploadField = (props: UploadFieldProps) => {
           renderButton
         ) : (
           <CommonStyles.CommonButton className="tw-w-full tw-mt-2 tw-bg-gray-300">
-            Upload
+            {t('upload')}
           </CommonStyles.CommonButton>
         )}
       </Box>

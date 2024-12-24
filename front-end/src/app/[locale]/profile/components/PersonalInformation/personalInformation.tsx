@@ -3,7 +3,9 @@ import InputField from "@/components/react-hook-form/InputForm/InputField";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Box, Typography } from "@mui/material";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { schemaPersonalInformation } from "../../schema";
+import { createSchemaPersonalInformation } from "../../schema";
+
+
 import {
   Profile,
   UpdateProfile,
@@ -12,6 +14,8 @@ import { useEffect, useState } from "react";
 import { CommonDatePicker } from "@/components/common/DatePicker";
 import profileServices from "@/services/modules/profile/profile.services";
 import RHFField from "@/components/customReactFormField/ReactFormField";
+import { useTranslations } from "next-intl";
+
 
 interface IPersonalProfile {
   data?: Profile;
@@ -26,12 +30,16 @@ interface FormData {
   email?: string;
 }
 
+
 const PersonalProfile: React.FC<IPersonalProfile> = (
   props: IPersonalProfile,
 ) => {
   const { data, avatar, onSuccess } = props;
   const { id, name, dateOfBirth, phone, address, email } = data ?? {};
   const [loading, setLoading] = useState(false);
+  const t = useTranslations();
+  const schemaPersonalInformation = createSchemaPersonalInformation(t);
+
   const {
     handleSubmit,
     formState: { errors },
@@ -83,7 +91,7 @@ const PersonalProfile: React.FC<IPersonalProfile> = (
           variant="h6"
           className="tw-pt-9 tw-text-left tw-text-lg tw-font-semibold tw-text-accent_gray_dark"
         >
-          Personal Information
+          {t('profile.personalInformation')}
         </Typography>
         <form onSubmit={handleSubmit(onSubmitSetPersonalInformation)}>
           <InputField name="name" control={control} label="Name" />
@@ -121,6 +129,7 @@ const PersonalProfile: React.FC<IPersonalProfile> = (
             label="Email Address"
             type="email"
             fullWidth
+            disabled
           />
           <CommonButton
             className={
@@ -129,7 +138,7 @@ const PersonalProfile: React.FC<IPersonalProfile> = (
             type="submit"
             loading={loading}
           >
-            Save
+            {t('profile.save')}
           </CommonButton>
         </form>
       </Box>

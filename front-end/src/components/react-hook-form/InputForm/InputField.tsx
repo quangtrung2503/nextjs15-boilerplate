@@ -63,8 +63,8 @@ const InputField: React.FC<InputFieldProps & TextFieldProps> = ({
               {...field}
               {...rest}
               className={twMerge(
-                "tw-rounded-md tw-relative tw-bg- tw-border tw-text-sm tw-w-full tw-bg-[#F4F4F5]",
-                hasError ? 'tw-border-red-500' : 'tw-bg-[#F4F4F5]',
+                "tw-rounded-md tw-relative tw-bg- tw-border tw-text-sm tw-w-full tw-bg-accent_gray_200",
+                hasError ? 'tw-border-accent_red' : 'tw-bg-accent_gray_200',
                 className
               )}
               type={type === 'password' && showPassword ? 'text' : type}
@@ -91,13 +91,13 @@ const InputField: React.FC<InputFieldProps & TextFieldProps> = ({
               sx={{
                 '& .MuiOutlinedInput-root': {
                   '& fieldset': {
-                    borderColor: hasError ? '#ef4444' : 'white',
+                    borderColor: hasError ? 'var(--accent-red)' : 'var(--accent-gray-200)',
                   },
                   '&:hover fieldset': {
-                    borderColor: hasError ? '#ef4444' : 'white',
+                    borderColor: hasError ? 'var(--accent-red)' : 'var(--accent-gray-200)',
                   },
                   '&.Mui-focused fieldset': {
-                    borderColor: hasError ? '#ef4444' : 'white',
+                    borderColor: hasError ? 'var(--accent-red)' : 'var(--accent-gray-200)',
                   }
                 }
               }}
