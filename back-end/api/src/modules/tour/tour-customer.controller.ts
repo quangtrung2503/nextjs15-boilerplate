@@ -14,7 +14,7 @@ import { TourService } from './tour.service';
 import { processTourList } from './functions/tour.utils';
 import { FilterReviewDto } from './dto/filter-review.dto';
 import { ReviewService } from '../review/review.service';
-import { Duration } from 'src/helpers/constants/enum.constant';
+import { Duration, TourSortField } from 'src/helpers/constants/enum.constant';
 import { ParseIdPipe } from 'src/core/pipes/parse-id.pipe';
 
 @ApiTags('Tour (Customer)')
@@ -97,7 +97,7 @@ export class TourCustomerController {
           case Duration.THREE_TO_FIVE_HOURS:
             return { numberOfHours: { gt: 3, lte: 5 } };
           case Duration.FIVE_TO_SEVEN_HOURS:
-            return { numberOfHours: { gt: 5, lte: 7} };
+            return { numberOfHours: { gt: 5, lte: 7 } };
           case Duration.FULL_DAY:
             return { numberOfHours: { gt: 7, lte: 24 } };
           case Duration.MULTI_DAY:
@@ -128,11 +128,23 @@ export class TourCustomerController {
       }
     }
 
+    let orderBy: any = {};
+
+    if (options?.sortField === TourSortField.POPULARITY) {
+      orderBy = {
+        Booking: {
+          _count: options?.sortOrder
+        }
+      };
+    } else {
+      orderBy = {
+        [options?.sortField]: options?.sortOrder,
+      };
+    }
+
     const whereInput: Prisma.TourFindManyArgs = {
       where: where,
-      orderBy: {
-        [options?.sortField]: options?.sortOrder,
-      },
+      orderBy: orderBy,
       include: {
         City: true,
         Theme: true,
@@ -152,7 +164,8 @@ export class TourCustomerController {
           select: {
             Review: {
               where: { isActive: true }
-            }
+            },
+            Booking: true
           }
         }
       }
@@ -306,25 +319,15 @@ export class TourCustomerController {
       isActive: true
     };
 
-    if (options.textSearch) {
+    if (options.ratings?.length) {
       where = {
         ...where,
-        OR: [
-          { title: { contains: options.textSearch } },
-          {
-            User: {
-              name: { contains: options.textSearch },
-              email: { contains: options.textSearch }
-            }
-          }
-        ]
-      }
-    }
-
-    if (options.ratings) {
-      where = {
-        ...where,
-        rating: { in: options.ratings }
+        OR: options.ratings.map(rating => ({
+          AND: [
+            { rating: { gte: rating - 0.5 } },
+            { rating: { lt: rating + 0.5 } }
+          ]
+        }))
       }
     }
 
@@ -372,17 +375,100 @@ export class TourCustomerController {
     return {
       ...reviews,
       stats: {
-        avgRating: Number(stats._avg.rating?.toFixed(1)) || 0,
         avgRatingGuide: Number(stats._avg.ratingGuide?.toFixed(1)) || 0,
         avgRatingTransportation: Number(stats._avg.ratingTransportation?.toFixed(1)) || 0,
         avgRatingValueOfMoney: Number(stats._avg.ratingValueOfMoney?.toFixed(1)) || 0,
         avgRatingSafety: Number(stats._avg.ratingSafety?.toFixed(1)) || 0,
+        avgRating: Number((((Number(stats._avg.ratingGuide?.toFixed(1)) || 0) +
+          (Number(stats._avg.ratingTransportation?.toFixed(1)) || 0) +
+          (Number(stats._avg.ratingValueOfMoney?.toFixed(1)) || 0) +
+          (Number(stats._avg.ratingSafety?.toFixed(1)) || 0)) / 4).toFixed(1)),
         totalReviews: stats._count._all
       }
     };
   }
 
-  @Get('/galary/get-images')
+  @Get('trending/get-best-trending')
+  async getTrendingTour() {
+    const thirtyDaysAgo = moment().subtract(30, 'days').startOf('day').toDate();
+
+    const trendingTour = await this.tourService.findOne({
+      where: {
+        isActive: true,
+        startDate: {
+          gte: moment().startOf('day').toDate()
+        }
+      },
+      orderBy: [
+        {
+          Booking: {
+            _count: 'desc'
+          }
+        },
+        {
+          Review: {
+            _count: 'desc'
+          }
+        }
+      ],
+      include: {
+        City: true,
+        TourImage: true,
+        Review: {
+          where: {
+            isActive: true,
+            createdAt: {
+              gte: thirtyDaysAgo
+            }
+          },
+          select: {
+            rating: true
+          }
+        },
+        _count: {
+          select: {
+            Review: {
+              where: {
+                isActive: true,
+                createdAt: {
+                  gte: thirtyDaysAgo
+                }
+              }
+            },
+            Booking: {
+              where: {
+                createdAt: {
+                  gte: thirtyDaysAgo
+                }
+              }
+            }
+          }
+        }
+      }
+    });
+
+    if (!trendingTour) {
+      return null;
+    }
+
+    // Tính toán rating trung bình
+    const reviews = trendingTour.Review || [];
+    const totalRating = reviews.reduce((sum, review) => sum + review.rating, 0);
+    const averageRating = reviews.length > 0 ? totalRating / reviews.length : 0;
+
+    delete trendingTour.Review;
+    const { _count, ...tourData } = trendingTour;
+
+    return {
+      ...tourData,
+      averageRating: Number(averageRating.toFixed(1)),
+      totalReviews: _count.Review,
+      totalBookings: _count.Booking,
+      period: '30 days',
+    };
+  }
+
+  @Get('/gallery/get-images')
   async findAllTourImages(@Query() options: FilterTourImageDto) {
     const whereInput: Prisma.TourImageFindManyArgs = {
       where: {
@@ -394,6 +480,13 @@ export class TourCustomerController {
       orderBy: {
         [options?.sortField]: options?.sortOrder,
       },
+      include: {
+        Tour: {
+          select: {
+            slug: true,
+          }
+        },
+      }
     };
 
     return await funcListPaging(

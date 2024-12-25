@@ -104,8 +104,8 @@ implements NestInterceptor<T, Response> {
         return I18nContext.current().lang === 'en' ? 'Post' : 'Bài viết';
       case 'post_slug_key':
         return I18nContext.current().lang === 'en'? 'Post slug' : 'Tên đường dẫn bài viết';
-      case 'review_helpful_userId_reviewId_key':
-        return I18nContext.current().lang === 'en'? 'Review helpful' : 'Đánh giá bình luận hữu ích';
+      case 'review_userId_tourId_key':
+        return I18nContext.current().lang === 'en'? 'Review' : 'Đánh giá';
       default:
         return '';
     }

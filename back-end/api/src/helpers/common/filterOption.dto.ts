@@ -37,6 +37,7 @@ export class FilterOptions {
     sortField?: string;
 
   @ApiProperty({
+    enum: SortOrder,
     example: 'desc',
     required: false,
   })

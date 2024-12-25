@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
 
-export const CreateReviewDtoKeys: (keyof CreateReviewDto)[] = ['tourId', 'ratingGuide', 'ratingTransportation', 'ratingValueOfMoney', 'ratingSafety', 'rating', 'title', 'content']
+export const CreateReviewDtoKeys: (keyof CreateReviewDto)[] = ['tourId', 'ratingGuide', 'ratingTransportation', 'ratingValueOfMoney', 'ratingSafety', 'title', 'content']
 
 export class CreateReviewDto {
   @ApiProperty({
@@ -48,15 +48,6 @@ export class CreateReviewDto {
   @IsNotEmpty()
   @IsNumber()
   readonly ratingSafety: number;
-
-  @ApiProperty({
-    example: 5,
-    description: 'Rating',
-    required: true,
-  })
-  @IsNotEmpty()
-  @IsNumber()
-  readonly rating: number;
 
   @ApiProperty({
     example: 'Good tour, really well organised',
