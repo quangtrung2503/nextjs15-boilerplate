@@ -71,7 +71,7 @@ const useGetThemes = (
         }
       })();
     });
-  }, [filters, isTrigger]);
+  }, [filters,isTrigger]);
 
   const checkConditionPass = useCallback((response: ResponseThemeList) => {
     //* Check condition of response here to set data
@@ -134,6 +134,7 @@ const useGetThemes = (
           checkConditionPass(response);
         }
       } catch (error) {
+      console.log(error);
         showError(error);
       } finally {
         setLoading(false);

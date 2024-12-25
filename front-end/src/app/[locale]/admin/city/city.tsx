@@ -10,12 +10,13 @@ import CreateEditCity from "./component/createEditCity";
 import cachedKeys from "@/constants/cachedKeys";
 import { headCells } from "./component/headCells";
 import { useState } from "react";
-import cityServices from "@/services/modules/city/cityServices";
+import cityServices from "@/services/modules/city/city.services";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import RHFField from "@/components/customReactFormField/ReactFormField";
 import InputField from "@/components/customReactFormField/InputField";
 import SelectField from "@/components/customReactFormField/SelectField";
 import { useNotifications } from "@/helpers/toast";
+import { useTranslations } from "next-intl";
 
 interface FormSearch {
   textSearch: string;
@@ -30,6 +31,7 @@ const City = () => {
   const { open, toggle, shouldRender } = useToggleDialog();
   const [id, setId] = useState<number | null>(null);
   const {showError} = useNotifications();
+  const t = useTranslations("cityAdmin");
   const handleEditId = (id: number) => {
     setId(id);
     toggle();
@@ -64,32 +66,32 @@ const City = () => {
             <CommonStyles.Box className="tw-w-[20%]">
               <RHFField
                 name="textSearch"
-                placeholder="Search city"
+                placeholder={t("placeholderSearch")}
                 control={methods.control}
                 component={InputField}
               />
             </CommonStyles.Box>
               <CommonStyles.Box className="tw-w-[20%]">
-                <CommonStyles.CommonButton variant="outlined" className="outlined rounded tw-ml-5 tw-w-full" type="submit">Search</CommonStyles.CommonButton>
+                <CommonStyles.CommonButton variant="outlined" className="outlined rounded tw-ml-5 tw-w-full" type="submit">{t("search")}</CommonStyles.CommonButton>
               </CommonStyles.Box>
             </form>
           </FormProvider>
         </CommonStyles.Box>
-        <CommonButton className="tw-text-nowrap tw-px-7" onClick={toggle} label="Create new city" />
+        <CommonButton className="tw-text-nowrap tw-px-7" onClick={toggle} label={t("createNewCity")} />
       </CommonStyles.Box>
       <CommonStyles.Box>
         {dataCity &&
           <TableCommon
             isLoading={loadingCity}
             sxTableHead={{ fontWeight: "bold" }}
-            rowsPerPage={10}
+            rowsPerPage={filters.perPage}
             disableSort={false}
             selected={selected}
             totalCount={dataCity.totalItems}
             handleCheckBox={handleCheckBox}
             handleSelectAllClick={handleSelectAll}
             page={filters?.page || 0}
-            headCells={headCells({ handleEditId, handleDeleteCity })}
+            headCells={headCells({ handleEditId, handleDeleteCity,t })}
             rows={dataCity?.items}
             handleChangePage={handleChangePage}
             handleChangeRowsPerPage={changeRowPerPage}

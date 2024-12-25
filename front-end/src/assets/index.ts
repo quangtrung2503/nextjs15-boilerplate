@@ -6,6 +6,16 @@ import { default as imagesTrendingCity } from "./images/imageTrendingCity.jpg";
 import { default as VNFlag } from './images/VNFlag.jpg';
 import { default as UKFlag } from './images/UKFlag.png';
 // Payment methods
+export {default as american_express} from './images/payment_method/american_express.png'
+export {default as apple_pay} from './images/payment_method/apple_pay.png'
+export {default as bit_pay} from './images/payment_method/bit_pay.png'
+export {default as discover} from './images/payment_method/discover.png'
+export {default as gg_pay} from './images/payment_method/gg_pay.png'
+export {default as maestro} from './images/payment_method/maestro.png'
+export {default as mater_card} from './images/payment_method/mater_card.png'
+export {default as paypal} from './images/payment_method/paypal.png'
+export {default as sofort} from './images/payment_method/sofort.png'
+export {default as visa} from './images/payment_method/visa.png'
 import { default as american_express } from './images/payment_method/american_express.png';
 import { default as apple_pay } from './images/payment_method/apple_pay.png';
 import { default as bit_pay } from './images/payment_method/bit_pay.png';
@@ -80,5 +90,6 @@ export const commonImg = {
     detail3,
     detail4,
     detail5,
-    detail6
+    detail6,
+
 };

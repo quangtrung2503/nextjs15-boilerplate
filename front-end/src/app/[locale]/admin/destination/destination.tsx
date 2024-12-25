@@ -14,6 +14,7 @@ import destinationServices from "@/services/modules/destination/destination.serv
 import useGetDestinations from "@/services/modules/destination/hook/useGetAllDestination";
 import { headCells } from "./component/headCell";
 import CreateEditDestination from "./component/createEditDestination";
+import { useTranslations } from "next-intl";
 
 interface FormSearch {
   textSearch: string;
@@ -27,7 +28,7 @@ const Destination = () => {
   const { data: dataDestination, refetch: refetchDestination, loading: loadingDestination } = useGetDestinations(filters, { refetchKey: cachedKeys.fetchDestinations });
   const { open, toggle, shouldRender } = useToggleDialog();
   const [id, setId] = useState<number | null>(null);
-
+  const t = useTranslations("destinationAdmin")
   const handleEditId = (id: number) => {
     setId(id);
     toggle();
@@ -62,13 +63,13 @@ const Destination = () => {
             <CommonStyles.Box className="tw-w-[20%]">
               <RHFField
                 name="textSearch"
-                placeholder="Search Destination"
+                placeholder={t("placeholderSearch")}
                 control={methods.control}
                 component={InputField}
               />
             </CommonStyles.Box>
               <CommonStyles.Box className="tw-w-[20%]">
-                <CommonStyles.CommonButton variant="outlined" className="outlined rounded tw-ml-5 tw-w-full" type="submit">Search</CommonStyles.CommonButton>
+                <CommonStyles.CommonButton variant="outlined" className="outlined rounded tw-ml-5 tw-w-full" type="submit">{t("search")}</CommonStyles.CommonButton>
               </CommonStyles.Box>
             </form>
           </FormProvider>
@@ -87,7 +88,7 @@ const Destination = () => {
             handleCheckBox={handleCheckBox}
             handleSelectAllClick={handleSelectAll}
             page={filters?.page || 0}
-            headCells={headCells({ handleEditId, handleDeleteDestination })}
+            headCells={headCells({ handleEditId, handleDeleteDestination,t })}
             rows={dataDestination?.items}
             handleChangePage={handleChangePage}
             handleChangeRowsPerPage={changeRowPerPage}

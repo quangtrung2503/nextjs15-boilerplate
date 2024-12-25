@@ -13,13 +13,13 @@ import Link from "@/components/common/Link";
 import { CommonButton } from "@/components/common/Button";
 import CommonIcons from "@/components/CommonIcons";
 
-import { bgLogin } from "@/assets";
+import { commonImg } from "@/assets";
 import pageUrls from "@/constants/pageUrls";
 import SignUpModel from "@/models/signup.model";
 import useAuth from "@/hooks/useAuth";
 import { useNotifications } from "@/helpers/toast";
 import Loading from "@/components/common/Loading";
-import { defaultValue, FormValues, validationSchema } from "./forms";
+import { defaultValue, FormValues, validationSchema} from "./forms";
 
 
 
@@ -45,7 +45,7 @@ const SignUp = (props: ISignUpProps) => {
     defaultValues: defaultValue,
     reValidateMode: "onSubmit",
     criteriaMode: "all",
-    resolver: yupResolver(validationSchema), // Use the validation schema
+    resolver: yupResolver(validationSchema(t)), // Use the validation schema
   });
   
 
@@ -86,7 +86,7 @@ const SignUp = (props: ISignUpProps) => {
   return (
     <CommonStyles.Box className="tw-flex tw-items-center tw-justify-center">
       <img
-        src={bgLogin.src}
+        src={commonImg.bgLogin.src}
         className="tw-fixed tw-inset-0 tw-w-full tw-min-h-screen tw-blur-sm"
         alt=""
       />

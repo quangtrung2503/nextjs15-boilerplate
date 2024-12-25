@@ -2,7 +2,7 @@ import { useEffect, useState, useCallback, useRef } from "react";
 import cloneDeep from "lodash/cloneDeep";
 import { isEmpty, isObject } from "lodash";
 import { ResponseList } from "@/interfaces/common";
-import cityServices, { FiltersGetCities, RequestGetCities, ResponseCityList } from "../cityServices";
+import cityServices, { FiltersGetCities, RequestGetCities, ResponseCityList } from "../city.services";
 import { useSave } from "@/stores/useStore";
 import { City } from "../interfaces/city";
 import { useNotifications } from "@/helpers/toast";

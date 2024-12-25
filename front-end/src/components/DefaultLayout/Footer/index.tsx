@@ -28,12 +28,19 @@ const FooterSection = ({
     {children}
   </CommonStyles.Box>
 );
-
 const Footer = () => {
   const t = useTranslations("footer");
   const paymentMethod = [
-    commonImg.UKFlag,
-    commonImg.VNFlag,
+    commonImg.mater_card,
+    commonImg.bit_pay,
+    commonImg.visa,
+    commonImg.american_express,
+    commonImg.discover,
+    commonImg.sofort,
+    commonImg.gg_pay,
+    commonImg.apple_pay,
+    commonImg.paypal,
+    commonImg.maestro,
   ];
   const { handleSubmit, control, getValues } = useForm<FooterOption>({
     defaultValues: {
@@ -161,7 +168,7 @@ const Footer = () => {
             <FooterSection title="Payment method possible">
               <CommonStyles.Box className="tw-grid tw-grid-cols-5 tw-size-fit tw-gap-2">
                 {paymentMethod.map((item) => (
-                  <img key={item.src} src={item.src} alt="" />
+                  <img key={item.src} src={item.src} alt="" className="tw-w-10 tw-h-7" />
                 ))}
               </CommonStyles.Box>
             </FooterSection>
@@ -198,5 +205,4 @@ const Footer = () => {
     </div>
   );
 };
-
 export default Footer;
