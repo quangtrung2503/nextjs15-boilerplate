@@ -21,6 +21,7 @@ interface CustomInputProps extends InputProps {
   placeholder?: string;
   rightIcon?: ReactNode;
   classNameContainer?: string;
+  readonly?: boolean
 }
 
 const InputField: React.FC<CustomInputProps> = ({
@@ -33,6 +34,7 @@ const InputField: React.FC<CustomInputProps> = ({
   placeholder,
   classNameLabel,
   classNameContainer,
+  readOnly,
   onChange
 }) => {
   return (
@@ -52,6 +54,11 @@ const InputField: React.FC<CustomInputProps> = ({
           placeholder={placeholder}
           variant="outlined"
           sx={sx}
+          slotProps={{
+            input: {
+              readOnly: readOnly ?? false
+            }
+          }}
           fullWidth
           error={!!fieldState.error}
           helperText={fieldState.error?.message || ""}

@@ -4,6 +4,7 @@ import { useState } from "react"
 import { Popover } from "@mui/material"
 import { User } from "@/services/modules/user/interfaces/user.inteface";
 import moment from "moment";
+import { useNotifications } from "@/helpers/toast";
 
 const ActionCell: React.FC<{ row: User; handleEditId: (id: number) => void; handleDeleteUser: (id: number) => void; t: any }> = ({
   row,
@@ -12,7 +13,8 @@ const ActionCell: React.FC<{ row: User; handleEditId: (id: number) => void; hand
   t
 }) => {
   const [anchorEl, setAnchorEl] = useState<HTMLDivElement | null>(null);
-
+  const {showError,showSuccess} = useNotifications();
+  
   const handleOpenPopover = (event: React.MouseEvent<HTMLDivElement>) => {
     setAnchorEl(event.currentTarget);
   };
@@ -22,8 +24,14 @@ const ActionCell: React.FC<{ row: User; handleEditId: (id: number) => void; hand
   };
 
   const handleConfirmDelete = () => {
-    handleClosePopover();
-    handleDeleteUser(Number(row.id));
+    try{
+      handleClosePopover();
+      handleDeleteUser(Number(row.id));
+      showSuccess(t("deleteSuccess"))
+    }
+    catch(error){
+      showError(error);
+    }
   };
 
   const isPopoverOpen = Boolean(anchorEl);

@@ -27,7 +27,7 @@ import Loading from "@/components/common/Loading";
 import TinyMCEEditorField from "@/components/customReactFormField/TinyNCEEditorField";
 
 interface createEditTourProps {
-  toggle: () => void;
+  handleClose: () => void;
   id?: number;
 }
 interface FormValues {
@@ -54,7 +54,7 @@ interface FormValues {
 const transportOption = getOptionEnum(Transport);
 const packageOption = getOptionEnum(Package);
 const CreateEditTour: FC<createEditTourProps> = (props) => {
-  const { toggle, id } = props;
+  const { id, handleClose } = props;
   const { data, loading } = useGetTour(Number(id), { isTrigger: !!id });
   const { showError,showSuccess } = useNotifications();
   const t = useTranslations("tourAdmin");
@@ -214,13 +214,13 @@ const CreateEditTour: FC<createEditTourProps> = (props) => {
       id
         ? await tourServices.updateTour({ id, ...body })
         : await tourServices.createTour(body);
-      toggle();
       id? showSuccess(t("editSuccess")) : showSuccess(t("createSuccess"))
       await fetchTour();
     } catch (error) {
       showError(error);
     }finally{
       setLoadingPost(false);
+      handleClose();
     }
   };
   const handleDeleteImage = (image: string) => {
@@ -481,7 +481,7 @@ const CreateEditTour: FC<createEditTourProps> = (props) => {
           </CommonStyles.Box>
           <CommonStyles.Box
             className="tw-absolute tw-top-0 tw-right-0 tw-cursor-pointer"
-            onClick={toggle}
+            onClick={handleClose}
           >
             <CommonIcons.Close />
           </CommonStyles.Box>

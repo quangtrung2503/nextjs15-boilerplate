@@ -19,10 +19,11 @@ import moment, { Moment } from "moment";
 import { useNotifications } from "@/helpers/toast";
 import CommonIcons from "@/components/CommonIcons";
 import { useTranslations } from "next-intl";
+import apiUrls from "@/constants/apiUrls";
 
 interface createEditUserProps {
-  toggle: () => void;
   id?: number;
+  handleClose: ()=>void
 }
 interface FormValues {
   name: string;
@@ -32,7 +33,7 @@ interface FormValues {
   dateOfBirth: string;
   sex: Gender;
   status: UserStatus;
-  email: string;
+  email?: string;
   address: string;
   avatar?: string;
   role: Role;
@@ -42,22 +43,30 @@ const StatusOption = getOptionEnum(UserStatus);
 const RoleOption = getOptionEnum(Role);
 
 const CreateEditUser: FC<createEditUserProps> = (props) => {
-  const { toggle, id } = props;
+  const { id, handleClose } = props;
   const { uploadImage } = useImageUploader();
   const { data } = useGetUser(Number(id), { isTrigger: !!id });
-  const {showError} = useNotifications();
+  const {showError,showSuccess} = useNotifications();
   const t = useTranslations();
 
   const schema = yup.object({
     name: yup.string().required(t("userAdmin.nameRequire")),
-    username: id ? yup.string().optional() : yup.string().required(t("userAdmin.usernameRequire")),
-    password: id ? yup.string().optional() : yup.string().required(t("userAdmin.passwordRequire")),
+    username: id ? yup.string().optional() : yup.string().required(t("userAdmin.usernameRequire"))
+    .matches(
+      /^[a-zA-Z0-9_]{8,}$/,
+      t("userAdmin.invalidUsername")
+    ),
+    password: id ? yup.string().optional() : yup.string().required(t("userAdmin.passwordRequire"))
+    .matches(
+      /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+      t("userAdmin.invalidPassword")
+    ),
     phone: yup
       .string()
       .matches(/^\d{10}$/, t("userAdmin.phoneValid"))
       .required(t("userAdmin.phoneRequired")),
     dateOfBirth: yup.string().required(t("userAdmin.dateOfBirthRequired")),
-    email: yup
+    email: id ? yup.string().optional() : yup
       .string()
       .email(t("userAdmin.emailValid"))
       .required(t("userAdmin.emailRequire")),
@@ -96,7 +105,7 @@ const CreateEditUser: FC<createEditUserProps> = (props) => {
     defaultValues: initValue,
     resolver: yupResolver(schema),
   });
-  const { reset, setValue } = methods;
+  const { reset, setValue, watch } = methods;
 
   useEffect(() => {
     if (data?.data) {
@@ -122,7 +131,6 @@ const CreateEditUser: FC<createEditUserProps> = (props) => {
     try {
       const body = {
         id: Number(id),
-        email: data.email,
         name: data.name,
         phone: data.phone,
         nickName: data.nickName,
@@ -135,7 +143,8 @@ const CreateEditUser: FC<createEditUserProps> = (props) => {
       };
       id ? await userServices.updateUser(body) : await userServices.createUser(data);
       await fetchUsers();
-      toggle();
+      showSuccess(id?t("editSuccess"):t("createSuccess"));
+      handleClose();
     } catch (error) {
       showError(error);
     }
@@ -150,12 +159,16 @@ const CreateEditUser: FC<createEditUserProps> = (props) => {
         showError(error);
       }
     } else {
-    showError(t("noFileSelected"));
+      showError(t("noFileSelected"));
     }
   };
 
+  const handleDeleteImage = () => {
+    setValue("avatar","");
+  };
+
   return (
-    <CommonStyles.Box className="tw-w-[500px] tw-relative">
+    <CommonStyles.Box className="tw-w-[800px] tw-relative">
       <CommonStyles.Box className="tw-flex tw-justify-center">
         <CommonStyles.Typography type="size20Weight600">
           {id ? t("userAdmin.editUser") : t("userAdmin.createNewUser")}
@@ -164,21 +177,33 @@ const CreateEditUser: FC<createEditUserProps> = (props) => {
       <FormProvider {...methods}>
         <form onSubmit={methods.handleSubmit(onSubmit)}>
           <CommonStyles.Box className="tw-grid tw-grid-cols-12 tw-gap-3">
-            <CommonStyles.Box className="tw-col-span-12">
+            <CommonStyles.Box className="tw-col-span-6">
               <RHFField
                 className=""
                 name="name"
                 control={methods.control}
                 component={InputField}
                 label={t("userAdmin.name")}
+                placeholder={t("userAdmin.placeholderName")}
               />
             </CommonStyles.Box>
+            <CommonStyles.Box className="tw-col-span-6">
+              <RHFField
+                name="phone"
+                control={methods.control}
+                component={InputField}
+                label={t("userAdmin.phone")}
+                placeholder={t("userAdmin.placeholderPhone")}
+              />
+            </CommonStyles.Box>
+
             {!id && <><CommonStyles.Box className="tw-col-span-12">
               <RHFField
                 className=""
                 name="username"
                 control={methods.control}
                 component={InputField}
+                placeholder={t("userAdmin.placeholderUsername")}
                 label={t("userAdmin.username")}
               />
             </CommonStyles.Box>
@@ -188,24 +213,19 @@ const CreateEditUser: FC<createEditUserProps> = (props) => {
                   type="password"
                   control={methods.control}
                   component={InputField}
+                  placeholder={t("userAdmin.placeholderPassword")}
                   label={t("userAdmin.password")}
                 />
               </CommonStyles.Box></>}
-            <CommonStyles.Box className="tw-col-span-12">
-              <RHFField
-                name="phone"
-                control={methods.control}
-                component={InputField}
-                label={t("userAdmin.phone")}
-              />
-            </CommonStyles.Box>
-
+            
             <CommonStyles.Box className="tw-col-span-12">
               <RHFField
                 name="email"
                 control={methods.control}
                 component={InputField}
+                placeholder={t("userAdmin.placeholderEmail")}
                 label={t("userAdmin.email")}
+                readOnly
               />
             </CommonStyles.Box>
             <CommonStyles.Box className="tw-col-span-12">
@@ -213,11 +233,12 @@ const CreateEditUser: FC<createEditUserProps> = (props) => {
                 name="address"
                 control={methods.control}
                 component={InputField}
+                placeholder={t("userAdmin.placeholderAddress")}
                 label={t("userAdmin.address")}
               />
             </CommonStyles.Box>
 
-            <CommonStyles.Box className="tw-col-span-6">
+            <CommonStyles.Box className="tw-col-span-3">
               <RHFField
                 name="dateOfBirth"
                 control={methods.control}
@@ -228,28 +249,31 @@ const CreateEditUser: FC<createEditUserProps> = (props) => {
               />
             </CommonStyles.Box>
 
-            <CommonStyles.Box className="tw-col-span-6">
+            <CommonStyles.Box className="tw-col-span-3">
               <RHFField
                 name="role"
                 control={methods.control}
                 component={SelectField}
                 options={RoleOption}
+                placeholder={t("userAdmin.placeholderRole")}
                 label={t("userAdmin.role")}
               />
             </CommonStyles.Box>
-            <CommonStyles.Box className="tw-col-span-6">
+            <CommonStyles.Box className="tw-col-span-3">
               <RHFField
                 name="sex"
                 control={methods.control}
                 component={SelectField}
                 options={GenderOption}
+                placeholder={t("userAdmin.placeholderSex")}
                 label={t("userAdmin.sex")}
               />
             </CommonStyles.Box>
-            <CommonStyles.Box className="tw-col-span-6">
+            <CommonStyles.Box className="tw-col-span-3">
               <RHFField
                 name="status"
                 control={methods.control}
+                placeholder={t("userAdmin.placeholderStatus")}
                 component={SelectField}
                 options={StatusOption}
                 label={t("userAdmin.status")}
@@ -266,13 +290,30 @@ const CreateEditUser: FC<createEditUserProps> = (props) => {
                 onChange={(e) => handleUpload(e)}
               />
             </CommonStyles.Box>
+            {watch("avatar") != "" && <CommonStyles.Box className="tw-col-span-12 tw-flex tw-flex-wrap">
+                  <CommonStyles.Box
+                    className="tw-relative tw-w-fit"
+                  > <img
+                      className="tw-max-w-[100px] tw-h-auto tw-p-5"
+                      src={`${apiUrls.IMG_URL}/${watch("avatar")}`}
+                      alt="Uploaded Image"
+                    />
+                    <CommonStyles.Box
+                      className="tw-absolute tw-top-0 tw-right-0 tw-cursor-pointer"
+                      onClick={() => handleDeleteImage()}
+                    >
+                      <CommonIcons.CancelOutlined className="tw-text-accent_gray_500" />
+                    </CommonStyles.Box>
+                  </CommonStyles.Box>
+            </CommonStyles.Box>
+            }
           </CommonStyles.Box>
           <CommonStyles.Box className="tw-flex tw-justify-around">
             <CommonStyles.CommonButton type="submit">
               {t("submit")}
             </CommonStyles.CommonButton>
           </CommonStyles.Box>
-          <CommonStyles.Box  className="tw-absolute tw-top-0 tw-right-0 tw-cursor-pointer" onClick={toggle}><CommonIcons.Close /></CommonStyles.Box>
+          <CommonStyles.Box  className="tw-absolute tw-top-0 tw-right-0 tw-cursor-pointer" onClick={handleClose}><CommonIcons.Close /></CommonStyles.Box>
 
         </form>
       </FormProvider>

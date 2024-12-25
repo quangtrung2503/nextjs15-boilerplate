@@ -4,6 +4,7 @@ import CommonIcons from "@/components/CommonIcons"
 import { useState } from "react"
 import { Popover } from "@mui/material"
 import apiUrls from "@/constants/apiUrls"
+import { useNotifications } from "@/helpers/toast"
 
 const ActionCell: React.FC<{ row: City; handleEditId: (id: number) => void; handleDeleteCity: (id: number) => void ;t:any}> = ({
   row,
@@ -12,7 +13,7 @@ const ActionCell: React.FC<{ row: City; handleEditId: (id: number) => void; hand
   t
 }) => {
   const [anchorEl, setAnchorEl] = useState<HTMLDivElement | null>(null);
-
+  const {showError,showSuccess} = useNotifications();
   const handleOpenPopover = (event: React.MouseEvent<HTMLDivElement>) => {
     setAnchorEl(event.currentTarget);
   };
@@ -22,8 +23,14 @@ const ActionCell: React.FC<{ row: City; handleEditId: (id: number) => void; hand
   };
 
   const handleConfirmDelete = () => {
-    handleClosePopover();
-    handleDeleteCity(Number(row.id));
+    try{
+      handleClosePopover();
+      handleDeleteCity(Number(row.id));
+      showSuccess(t("deleteSuccess"))
+    }
+    catch(error){
+      showError(error);
+    }
   };
 
   const isPopoverOpen = Boolean(anchorEl);
@@ -107,7 +114,13 @@ export const headCells = ({
       label: t("description"),
       numeric: false,
       Cell(row: City, _index: number) {
-        return <span>{row.description}</span>;
+        const maxLength = 200;
+        const description =
+          row.description.length > maxLength
+            ? row.description.slice(0, maxLength) + "..."
+            : row.description;
+
+        return <span>{description}</span>;
       },
     },
     {

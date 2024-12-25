@@ -3,6 +3,7 @@ import CommonIcons from "@/components/CommonIcons"
 import { useState } from "react"
 import { Popover } from "@mui/material"
 import { Theme } from "@/services/modules/theme/intefaces/theme";
+import { useNotifications } from "@/helpers/toast";
 
 const ActionCell: React.FC<{ row: Theme; handleEditId: (id: number) => void; handleDeleteTheme: (id: number) => void;t: any }> = ({
   row,
@@ -11,7 +12,8 @@ const ActionCell: React.FC<{ row: Theme; handleEditId: (id: number) => void; han
   t
 }) => {
   const [anchorEl, setAnchorEl] = useState<HTMLDivElement | null>(null);
-
+  const {showError,showSuccess} = useNotifications();
+  
   const handleOpenPopover = (event: React.MouseEvent<HTMLDivElement>) => {
     setAnchorEl(event.currentTarget);
   };
@@ -21,8 +23,14 @@ const ActionCell: React.FC<{ row: Theme; handleEditId: (id: number) => void; han
   };
 
   const handleConfirmDelete = () => {
-    handleClosePopover();
-    handleDeleteTheme(Number(row.id));
+    try{
+      handleClosePopover();
+      handleDeleteTheme(Number(row.id));
+      showSuccess(t("deleteSuccess"))
+    }
+    catch(error){
+      showError(error);
+    }
   };
 
   const isPopoverOpen = Boolean(anchorEl);

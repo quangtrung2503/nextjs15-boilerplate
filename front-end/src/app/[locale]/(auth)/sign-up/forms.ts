@@ -1,6 +1,5 @@
 import { useTranslations } from "next-intl";
 import * as Yup from "yup";
-const t = useTranslations("signUp");
 
 export interface FormValues {
     name: string;

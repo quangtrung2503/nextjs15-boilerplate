@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Popover } from "@mui/material";
 import { Post } from "@/services/modules/post/interface/post";
 import apiUrls from "@/constants/apiUrls";
+import { useNotifications } from "@/helpers/toast";
 
 const ActionCell: React.FC<{
   row: Post;
@@ -12,7 +13,8 @@ const ActionCell: React.FC<{
   t: any
 }> = ({ row, handleEditId, handleDeletePost ,t}) => {
   const [anchorEl, setAnchorEl] = useState<HTMLDivElement | null>(null);
-
+  const {showError,showSuccess} = useNotifications();
+  
   const handleOpenPopover = (event: React.MouseEvent<HTMLDivElement>) => {
     setAnchorEl(event.currentTarget);
   };
@@ -22,8 +24,14 @@ const ActionCell: React.FC<{
   };
 
   const handleConfirmDelete = () => {
-    handleClosePopover();
+    try{
+      handleClosePopover();
     handleDeletePost(Number(row.id));
+      showSuccess(t("deleteSuccess"))
+    }
+    catch(error){
+      showError(error);
+    }
   };
 
   const isPopoverOpen = Boolean(anchorEl);

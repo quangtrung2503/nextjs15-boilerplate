@@ -14,18 +14,20 @@ import { Destination } from "@/services/modules/destination/interface/destinatio
 import destinationServices from "@/services/modules/destination/destination.services"
 import CommonIcons from "@/components/CommonIcons"
 import { useTranslations } from "next-intl"
+import { useNotifications } from "@/helpers/toast"
 
 interface createEditDestinationProps {
-  toggle: () => void;
   id?: number;
+  handleClose: () => void;
 }
 interface FormValues {
   name: string;
 }
 const CreateEditDestination: FC<createEditDestinationProps> = (props) => {
-  const { toggle, id } = props;
+  const { id, handleClose } = props;
   const { data } = useGetDestination(Number(id), { isTrigger: !!id });
   const t = useTranslations("destinationAdmin");
+  const {showError,showSuccess} = useNotifications();
 
   const schema = yup
     .object({
@@ -55,10 +57,11 @@ const CreateEditDestination: FC<createEditDestinationProps> = (props) => {
       id ? data = { ...data, id } : { data };
       id? await destinationServices.updateDestination(data): await destinationServices.createDestination(data);
       await fetchDestinations();
-      toggle();
+      showSuccess(id?t("editSuccess"):t("createSuccess"));
+      handleClose();
     }
     catch (error) {
-      console.log(error);
+      showError(error);
     }
   };
   return (
@@ -72,12 +75,13 @@ const CreateEditDestination: FC<createEditDestinationProps> = (props) => {
             control={methods.control}
             component={InputField}
             defaultValue={initValue?.name}
+            placeholder={t("placeholderName")}
             label={t("name")}
           />
           <CommonStyles.Box className="tw-flex tw-justify-around">
             <CommonStyles.CommonButton type="submit">{t("submit")}</CommonStyles.CommonButton>
           </CommonStyles.Box>
-          <CommonStyles.Box  className="tw-absolute tw-top-0 tw-right-0 tw-cursor-pointer" onClick={toggle}><CommonIcons.Close /></CommonStyles.Box>
+          <CommonStyles.Box  className="tw-absolute tw-top-0 tw-right-0 tw-cursor-pointer" onClick={handleClose}><CommonIcons.Close /></CommonStyles.Box>
 
         </form>
       </FormProvider>

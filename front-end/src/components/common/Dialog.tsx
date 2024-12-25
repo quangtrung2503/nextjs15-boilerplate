@@ -21,7 +21,7 @@ export default function CommonDialog(props: DialogProps) {
     <Dialog
       open={open}
       onClose={() => {
-        onClose && onClose(), toggle();
+        onClose && onClose();toggle();
       }}
       maxWidth={maxWidth}
     >

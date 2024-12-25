@@ -13,7 +13,7 @@ import TableHead from '@mui/material/TableHead';
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
 import TableSortLabel from '@mui/material/TableSortLabel';
-import { Theme, useTheme } from '@mui/material/styles';
+import { useTheme } from '@mui/material/styles';
 import { visuallyHidden } from '@mui/utils';
 import { useTranslations } from 'next-intl';
 import * as React from 'react';
@@ -21,6 +21,7 @@ import { Order, OrderType } from '@/interfaces/common';
 import {default as CommonStyles} from "@/components/common";
 import { CommonButton } from './Button';
 import HeadFilters, { RenderComponentHeadFilter, TypeOfFilterHeader } from './HeaderFilter';
+import CommonIcons from '../CommonIcons';
 
 
 const PaperProps = {
@@ -312,6 +313,7 @@ export interface HeadCell<T> {
 }
 
 interface TableCommonProps<T> {
+  labelNoData?: string;
   order?: OrderType;
   orderBy?: any;
   selected: readonly (string | number)[];
@@ -369,9 +371,9 @@ function TableCommon<T>({
   onClick,
   styleRow,
   isSummary,
-  disableSort = true,
   actionSelectedMenu = [],
   labelActionMenu,
+  labelNoData="No data"
 }: TableCommonProps<T>) {
   const theme = useTheme();
   const isSelected = (name: string) => selected.indexOf(name) !== -1;
@@ -513,7 +515,7 @@ function TableCommon<T>({
               showCheckBox={showCheckBox}
               sxTableHead={sxTableHead}
               sortByIsNotActived={sortByIsNotActived}
-              disableSort={disableSort}
+              // disableSort={disableSort}
               selectedItem={selected}
               actionSelectedMenu={actionSelectedMenu}
               labelActionMenu={labelActionMenu}
@@ -536,11 +538,11 @@ function TableCommon<T>({
                         fontSize: '14px',
                       }}
                     >
-                      "Icon No Data"
+                      <CommonIcons.NoDataIcon />
                       <CommonStyles.Typography
                         variant='body1'
                       >
-                        "Nodata"
+                        {labelNoData}
                       </CommonStyles.Typography>
                     </CommonStyles.Box>
                   </TableCell>

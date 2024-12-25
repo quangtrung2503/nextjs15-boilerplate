@@ -59,6 +59,10 @@ const Tour = () => {
       }
     })
   };
+  const handleClose = ()=>{
+    toggle();
+    setId(null);
+  }
   return (
     <CommonStyles.Box className="tw-px-10">
       <CommonStyles.Box className="tw-flex tw-justify-between tw-mb-5 tw-items-center">
@@ -100,7 +104,7 @@ const Tour = () => {
             handleRequestSort={handleRequestSort}
           />}
       </CommonStyles.Box>
-      {shouldRender && <CommonDialog maxWidth="md" onClose={() => setId(null)} open={open} toggle={toggle} body={<CreateEditTour toggle={toggle} id={Number(id)} />} />}
+      {shouldRender && <CommonDialog maxWidth="md" onClose={() => setId(null)} open={open} toggle={toggle} body={<CreateEditTour handleClose={handleClose} id={Number(id)} />} />}
     </CommonStyles.Box>
   );
 }
