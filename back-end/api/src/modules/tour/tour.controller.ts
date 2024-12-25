@@ -17,7 +17,7 @@ import { FilterTourDto } from './dto/filter-tour.dto';
 import { UpdateTourDto } from './dto/update-tour.dto';
 import { TourImageService } from './tour-image.service';
 import { TourService } from './tour.service';
-import { Duration } from 'src/helpers/constants/enum.constant';
+import { Duration, TourSortField } from 'src/helpers/constants/enum.constant';
 import { convertToEn } from 'src/helpers/functions/common.utils';
 import { ParseIdPipe } from 'src/core/pipes/parse-id.pipe';
 
@@ -90,18 +90,13 @@ export class TourController {
       startDate: body.startDate,
       endDate: body.endDate,
       isFeature: body.isFeature,
-      cancellationPolicy: body.cancellationPolicy,
-      healthPrecautions: body.healthPrecautions,
-      ticketType: body.ticketType,
-      confirmation: body.confirmation,
-      guideLanguage: body.guideLanguage,
 
       description: body.description,
       activity: body.activity,
       included: body.included,
       notIncluded: body.notIncluded,
       safety: body.safety,
-      details: body.details,
+      language: body.language,
 
       cityId: body.cityId,
       themeId: body.themeId,
@@ -220,11 +215,23 @@ export class TourController {
       }
     }
 
+    let orderBy: any = {};
+
+    if (options?.sortField === TourSortField.POPULARITY) {
+      orderBy = {
+        Booking: {
+          _count: options?.sortOrder
+        }
+      };
+    } else {
+      orderBy = {
+        [options?.sortField]: options?.sortOrder,
+      };
+    }
+
     const whereInput: Prisma.TourFindManyArgs = {
       where: where,
-      orderBy: {
-        [options?.sortField]: options?.sortOrder,
-      },
+      orderBy: orderBy,
       include: {
         City: true,
         Theme: true,
@@ -380,18 +387,13 @@ export class TourController {
       startDate: body.startDate,
       endDate: body.endDate,
       isFeature: body.isFeature,
-      cancellationPolicy: body.cancellationPolicy,
-      healthPrecautions: body.healthPrecautions,
-      ticketType: body.ticketType,
-      confirmation: body.confirmation,
-      guideLanguage: body.guideLanguage,
 
       description: body.description,
       activity: body.activity,
       included: body.included,
       notIncluded: body.notIncluded,
       safety: body.safety,
-      details: body.details,
+      language: body.language,
 
       ...(body.cityId && { City: { connect: { id: body.cityId } } }),
       ...(body.themeId && { Theme: { connect: { id: body.themeId } } }),

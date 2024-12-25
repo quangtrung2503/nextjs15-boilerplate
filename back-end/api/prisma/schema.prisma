@@ -46,10 +46,23 @@ model User {
   Post            Post[]
   Wishlist        Wishlist[]
   Booking         Booking[]
-  ReviewHelpful   ReviewHelpful[]
 
   @@fulltext([username, email, phone, name, nickName])
   @@map("user")
+}
+
+model Video {
+  id          Int     @id @default(autoincrement())
+  title       String  @db.VarChar(255)
+  description String  @db.Text
+  thumbnail   String  @db.VarChar(255)
+  video       String  @db.VarChar(255)
+  isDisplay   Boolean @default(true)
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+
+  @@map("video")
 }
 
 model City {
@@ -97,30 +110,25 @@ model Destination {
 }
 
 model Tour {
-  id                 Int      @id @default(autoincrement())
-  name               String   @unique @db.VarChar(255)
-  slug               String   @unique @db.VarChar(255)
-  price              Float
-  transport          String   @db.VarChar(255)
-  package            String   @db.VarChar(255)
-  numberOfHours      Int
-  numberOfPeople     Int
-  startDate          DateTime
-  endDate            DateTime
-  isFeature          Boolean  @default(false)
-  isActive           Boolean  @default(true)
-  cancellationPolicy String   @db.VarChar(255)
-  healthPrecautions  String   @db.VarChar(255)
-  ticketType         String   @db.VarChar(255)
-  confirmation       String   @db.VarChar(255)
-  guideLanguage      String   @db.VarChar(255)
+  id             Int      @id @default(autoincrement())
+  name           String   @db.VarChar(255)
+  slug           String   @unique @db.VarChar(255)
+  price          Float
+  transport      String   @db.VarChar(255)
+  package        String   @db.VarChar(255)
+  numberOfHours  Int
+  numberOfPeople Int
+  startDate      DateTime
+  endDate        DateTime
+  isFeature      Boolean  @default(false)
+  isActive       Boolean  @default(true)
 
-  description String? @db.Text
-  activity    String? @db.Text
-  included    String? @db.Text
-  notIncluded String? @db.Text
-  safety      String? @db.Text
-  details     String? @db.Text
+  description String @db.Text
+  activity    String @db.Text
+  included    String @db.Text
+  notIncluded String @db.Text
+  safety      String @db.Text
+  language    String @db.Text
 
   cityId  Int
   themeId Int
@@ -177,10 +185,9 @@ model Review {
   ratingTransportation Int
   ratingValueOfMoney   Int
   ratingSafety         Int
-  rating               Int
+  rating               Float
   title                String   @db.VarChar(255)
   content              String?  @db.Text
-  countHelpful         Int      @default(0)
   isActive             Boolean  @default(true)
   createdAt            DateTime @default(now()) @map("created_at")
   updatedAt            DateTime @default(now()) @updatedAt @map("updated_at")
@@ -188,31 +195,16 @@ model Review {
   // relation fields
   User          User            @relation(fields: [userId], references: [id])
   Tour          Tour            @relation(fields: [tourId], references: [id], onDelete: Cascade)
-  ReviewHelpful ReviewHelpful[]
 
+  @@unique([userId, tourId])
   @@map("review")
-}
-
-model ReviewHelpful {
-  id        Int      @id @default(autoincrement())
-  userId    Int
-  reviewId  Int
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
-
-  // relation fields
-  User   User   @relation(fields: [userId], references: [id])
-  Review Review @relation(fields: [reviewId], references: [id], onDelete: Cascade)
-
-  @@unique([userId, reviewId])
-  @@map("review_helpful")
 }
 
 model Post {
   id            Int      @id @default(autoincrement())
   userCreatedId Int
   image         String   @db.VarChar(255)
-  title         String   @unique @db.VarChar(255)
+  title         String   @db.VarChar(255)
   content       String   @db.Text
   views         Int      @default(0)
   slug          String   @unique @db.VarChar(255)

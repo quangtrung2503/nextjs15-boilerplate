@@ -192,11 +192,23 @@
       "wrong_parameter": "{keyNotInDto} không được định nghĩa trong các tham số",
       "not_found": "Đánh giá"
     },
-    "updateHelpful": {
-      "not_found": "Đánh giá"
-    },
     "setActive": {
       "not_found": "Đánh giá"
+    }
+  },
+  "video": {
+    "create": {
+      "wrong_parameter": "{keyNotInDto} không được định nghĩa trong các tham số"
+    },
+    "findOne": {
+      "not_found": "Video"
+    },
+    "update": {
+      "wrong_parameter": "{keyNotInDto} không được định nghĩa trong các tham số",
+      "not_found": "Video"
+    },
+    "remove": {
+      "not_found": "Video"
     }
   },
 
