@@ -48,6 +48,10 @@ const User = () => {
   const methods = useForm<FormSearch>({
     defaultValues: { textSearch: "", sortOrder: "desc" },
   });
+  const handleClose = ()=>{
+    toggle();
+    setId(null);
+  }
   const handleSearch: SubmitHandler<FormSearch> = async (data: FormSearch) => {
     setFilters((prev) => {
       return {
@@ -99,10 +103,11 @@ const User = () => {
           />}
       </CommonStyles.Box>
       {shouldRender && <CommonDialog
+        maxWidth="lg"
         onClose={() => setId(null)}
         open={open}
         toggle={toggle}
-        body={<CreateEditUser toggle={toggle} id={Number(id)} />} />}
+        body={<CreateEditUser handleClose={handleClose} id={Number(id)} />} />}
     </CommonStyles.Box>
   );
 }

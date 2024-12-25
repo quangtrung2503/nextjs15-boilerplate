@@ -57,6 +57,10 @@ const City = () => {
       }
     })
   };
+  const handleClose = ()=>{
+    toggle();
+    setId(null);
+  }
   return (
     <CommonStyles.Box className="tw-px-10">
       <CommonStyles.Box className="tw-flex tw-justify-between tw-mb-5 tw-items-center">
@@ -96,9 +100,10 @@ const City = () => {
             handleChangePage={handleChangePage}
             handleChangeRowsPerPage={changeRowPerPage}
             handleRequestSort={handleRequestSort}
+            labelNoData={t("labelNoData")}
           />}
       </CommonStyles.Box>
-      {shouldRender && <CommonDialog onClose={() => setId(null)} open={open} toggle={toggle} body={<CreateEditCity toggle={toggle} id={Number(id)} />} />}
+      {shouldRender && <CommonDialog onClose={()=>setId(null)} open={open} toggle={toggle} body={<CreateEditCity id={Number(id)} handleClose={handleClose} />} />}
     </CommonStyles.Box>
   );
 }

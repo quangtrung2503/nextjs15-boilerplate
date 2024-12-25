@@ -19,6 +19,7 @@ import { LocalIcon } from "./Icons/Local";
 import { WalletIcon } from "./Icons/Wallet";
 import { TaxiIcon } from "./Icons/Taxi";
 import { BusIcon } from "./Icons/Bus";
+import { NoDataIcon } from "./Icons/NoData";
 import RightDirection from "./Icons/RightDirection";
 import LeftDirection from "./Icons/LeftDirection";
 
@@ -64,6 +65,7 @@ const CommonIcons = {
   Cancelation,
   FilterMui,
   Car,
+  NoDataIcon,
   Avatar1,
 };
 export default CommonIcons;

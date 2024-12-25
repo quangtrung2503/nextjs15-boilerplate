@@ -15,23 +15,25 @@ import CheckboxField from "@/components/customReactFormField/CheckBoxField"
 import { Theme } from "@/services/modules/theme/intefaces/theme"
 import CommonIcons from "@/components/CommonIcons"
 import { useTranslations } from "next-intl"
+import { useNotifications } from "@/helpers/toast"
 
 interface createEditThemeProps {
-  toggle: () => void;
   id?: number;
+  handleClose: ()=>void
 }
 interface FormValues {
   name: string;
   isDisplay?: boolean;
 }
 const CreateEditTheme: FC<createEditThemeProps> = (props) => {
-  const { toggle, id } = props;
+  const { id, handleClose } = props;
   const { data } = useGetTheme(Number(id), { isTrigger: !!id });
   const t = useTranslations();
+  const {showError,showSuccess} = useNotifications();
 
   const schema = yup
     .object({
-      name: yup.string().required("Name is a required field"),
+      name: yup.string().required(t("themeAdmin.nameRequire")),
     })
     .required();
   const initValue = useMemo(() => {
@@ -58,12 +60,14 @@ const CreateEditTheme: FC<createEditThemeProps> = (props) => {
       id ? data = { ...data, id } : { data };
       id? await themeServices.updateTheme(data): await themeServices.createTheme(data);
       await fetchThemes();
-      toggle();
+      showSuccess(id?t("editSuccess"):t("createSuccess"));
+      handleClose();
     }
     catch (error) {
-      console.log(error);
+      showError(error)
     }
   };
+
   return (
     <CommonStyles.Box className="tw-w-[500px] tw-relative">
       <CommonStyles.Box className="tw-flex tw-justify-center"><CommonStyles.Typography type="size20Weight600">{id?t("themeAdmin.editTheme"):t("themeAdmin.createNewTheme")}</CommonStyles.Typography></CommonStyles.Box>
@@ -76,6 +80,7 @@ const CreateEditTheme: FC<createEditThemeProps> = (props) => {
             component={InputField}
             defaultValue={initValue?.name}
             label={t("themeAdmin.name")}
+            placeholder={t("themeAdmin.placeholderName")}
           />
           <RHFField
             name="isDisplay"
@@ -87,7 +92,7 @@ const CreateEditTheme: FC<createEditThemeProps> = (props) => {
           <CommonStyles.Box className="tw-flex tw-justify-around">
             <CommonStyles.CommonButton type="submit">{t("submit")}</CommonStyles.CommonButton>
           </CommonStyles.Box>
-          <CommonStyles.Box  className="tw-absolute tw-top-0 tw-right-0 tw-cursor-pointer" onClick={toggle}><CommonIcons.Close /></CommonStyles.Box>
+          <CommonStyles.Box  className="tw-absolute tw-top-0 tw-right-0 tw-cursor-pointer" onClick={handleClose}><CommonIcons.Close /></CommonStyles.Box>
         </form>
       </FormProvider>
     </CommonStyles.Box>
