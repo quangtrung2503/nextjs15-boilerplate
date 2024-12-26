@@ -4,7 +4,6 @@ import { ReviewService } from './review.service';
 import { PrismaService } from 'prisma/prisma.service';
 import { I18nCustomService } from 'src/resources/i18n/i18n.service';
 import { TourService } from '../tour/tour.service';
-import { ReviewHelpfulService } from './review-helpful.service';
 import { Roles } from 'src/core/auth/decorators/roles.decorator';
 import { Prisma, UserRole } from '@prisma/client';
 import { JwtAuthGuard } from 'src/core/auth/guards/jwt-auth.guard';
@@ -22,7 +21,6 @@ export class ReviewController {
     private readonly prismaService: PrismaService,
     private readonly i18n: I18nCustomService,
     private readonly tourService: TourService,
-    private readonly reviewHelpfulService: ReviewHelpfulService
   ) { }
 
   @ApiBearerAuth()
@@ -32,27 +30,15 @@ export class ReviewController {
   async findAll(@Query() options: FilterReviewDto) {
     let where: Prisma.ReviewWhereInput = {};
 
-    if (options.textSearch) {
+    if (options.ratings?.length) {
       where = {
         ...where,
-        OR: [
-          { title: { contains: options.textSearch } },
-          {
-            User: {
-              OR: [
-                { name: { contains: options.textSearch } },
-                { email: { contains: options.textSearch } }
-              ]
-            }
-          },
-        ]
-      }
-    }
-
-    if (options.ratings) {
-      where = {
-        ...where,
-        rating: { in: options.ratings }
+        OR: options.ratings.map(rating => ({
+          AND: [
+            { rating: { gte: rating - 0.5 } },
+            { rating: { lt: rating + 0.5 } }
+          ]
+        }))
       }
     }
 

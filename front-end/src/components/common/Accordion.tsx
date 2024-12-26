@@ -40,9 +40,9 @@ const AccordionSummary = styled((props: AccordionSummaryProps) => (
   borderBottom: `1px solid #f4f4f5 !important`,
   flexDirection: "row",
   [`& .${accordionSummaryClasses.expandIconWrapper}.${accordionSummaryClasses.expanded}`]:
-    {
-      transform: "rotate(90deg)",
-    },
+  {
+    transform: "rotate(90deg)",
+  },
   [`& .${accordionSummaryClasses.content}`]: {
     marginRight: theme.spacing(1),
   },
@@ -77,7 +77,7 @@ const AccordionMUI = (props: AccordionMUIProps) => {
         onChange={handleChange("panel1")}
       >
         <AccordionSummary aria-controls="panel1d-content" id="panel1d-header">
-          <CommonStyles.Typography type="size16Weight600">
+          <CommonStyles.Typography type="size18Weight700">
             {title}
           </CommonStyles.Typography>
         </AccordionSummary>
@@ -89,8 +89,10 @@ const AccordionMUI = (props: AccordionMUIProps) => {
                   width: "100%",
                   paddingY: "3px",
                   boxShadow: "5px",
+                  fontSize: "14px !important",
+                  fontFamily: "'Mulish'",
                   "&:hover": {
-                    backgroundColor: "rgba(0, 0, 0, 0.1)", 
+                    backgroundColor: "rgba(0, 0, 0, 0.1)",
                   },
                 }}
                 key={index}
@@ -99,14 +101,14 @@ const AccordionMUI = (props: AccordionMUIProps) => {
               />
             ))}
           </FormGroup>
-          {options.length > 7 && (
+          {options.length >= 7 && (
             <CommonStyles.Typography
               type="size14Weight700"
-              className="tw-!cursor-pointer tw-mt-3"
+              className="tw-cursor-pointer tw-mt-3"
               color="#7BBCB0"
               onClick={handleShowMore}
             >
-              {showMore ? "Show Less" : "Show More"}
+              {showMore ? "Show Less Destinations" : "Show More Destinations"}
             </CommonStyles.Typography>
           )}
         </AccordionDetails>

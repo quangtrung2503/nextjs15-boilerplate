@@ -67,7 +67,7 @@ const CardCarousel: React.FC<Props> = ({
   }, []);
 
   return (
-    <CommonStyles.Box className="tw-flex tw-flex-col tw-gap-y">
+    <CommonStyles.Box className="tw-flex tw-flex-col">
       <Container
         className={twMerge(
           "tw-flex tw-items-center tw-justify-between",
@@ -77,21 +77,19 @@ const CardCarousel: React.FC<Props> = ({
         <CommonStyles.Box>{title}</CommonStyles.Box>
         <CommonStyles.Box className="tw-flex tw-items-center tw-gap-5">
           <CommonStyles.Box
-            className={`tw-rounded-full tw-w-[50px] tw-aspect-square tw-flex tw-items-center tw-justify-center ${
-              isAtStart
-                ? "tw-border-secondary tw-shadow-direction_carousel tw-cursor-not-allowed tw-border-[1px] tw-border-solid"
-                : "tw-cursor-pointer tw-shadow-direction_carousel tw-bg-secondary"
-            }`}
+            className={`tw-rounded-full tw-w-[50px] tw-aspect-square tw-flex tw-items-center tw-justify-center ${isAtStart
+              ? "tw-border-secondary tw-shadow-direction_carousel tw-cursor-not-allowed tw-border-[1px] tw-border-solid"
+              : "tw-cursor-pointer tw-shadow-direction_carousel tw-bg-secondary"
+              }`}
             onClick={!isAtStart ? handleScrollLeft : undefined}
           >
             <CommonIcons.LeftDirection />
           </CommonStyles.Box>
           <CommonStyles.Box
-            className={`tw-rounded-full tw-w-[50px] tw-aspect-square tw-flex tw-items-center tw-justify-center ${
-              isAtEnd
-                ? "tw-border-secondary tw-shadow-direction_carousel tw-cursor-not-allowed tw-border-[1px] tw-border-solid"
-                : "tw-cursor-pointer tw-shadow-direction_carousel tw-bg-secondary"
-            }`}
+            className={`tw-rounded-full tw-w-[50px] tw-aspect-square tw-flex tw-items-center tw-justify-center ${isAtEnd
+              ? "tw-border-secondary tw-shadow-direction_carousel tw-cursor-not-allowed tw-border-[1px] tw-border-solid"
+              : "tw-cursor-pointer tw-shadow-direction_carousel tw-bg-secondary"
+              }`}
             onClick={!isAtEnd ? handleScrollRight : undefined}
           >
             <CommonIcons.RightDirection />
@@ -104,20 +102,20 @@ const CardCarousel: React.FC<Props> = ({
       >
         <CommonStyles.Box className="tw-flex tw-gap-5 tw-w-fit tw-py-5">
           {data.map((item, index) => (
-              <CommonStyles.Box key={index} className="tw-w-[270px]">
-                <CardGridItem
-                  link={item.link}
-                  src={item.src}
-                  title={item.title}
-                  duration={2}
-                  transport={item.transport}
-                  plan={item.plan}
-                  price={item.price}
-                  feedback_quantity={item.feedback_quantity}
-                  feedback_average={item.feedback_average}
-                />
-              </CommonStyles.Box>
-            ))}
+            <CommonStyles.Box key={index} className="tw-w-[270px]">
+              <CardGridItem
+                link={item.link}
+                src={item.src}
+                title={item.title}
+                duration={2}
+                transport={item.transport}
+                plan={item.plan}
+                price={item.price}
+                feedback_quantity={item.feedback_quantity}
+                feedback_average={item.feedback_average}
+              />
+            </CommonStyles.Box>
+          ))}
         </CommonStyles.Box>
       </CommonStyles.Box>
     </CommonStyles.Box>

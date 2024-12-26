@@ -4,7 +4,7 @@ import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { PrismaService } from 'prisma/prisma.service';
 import { I18nCustomService } from 'src/resources/i18n/i18n.service';
 import { Roles } from 'src/core/auth/decorators/roles.decorator';
-import { UserRole } from '@prisma/client';
+import { Prisma, UserRole } from '@prisma/client';
 import { JwtAuthGuard } from 'src/core/auth/guards/jwt-auth.guard';
 import { RolesGuard } from 'src/core/auth/guards/roles.guard';
 import { UserDecorator } from 'src/core/auth/decorators/user.decorator';
@@ -13,8 +13,8 @@ import { CreateReviewDto, CreateReviewDtoKeys } from './dto/create-review.dto';
 import { BaseException, Errors } from 'src/helpers/constants/error.constant';
 import { TourService } from '../tour/tour.service';
 import { UpdateReviewDto } from './dto/update-review.dto';
-import { ReviewHelpfulService } from './review-helpful.service';
 import { ParseIdPipe } from 'src/core/pipes/parse-id.pipe';
+import { calculateRating } from './functions';
 
 @ApiTags('Review (Customer)')
 @Controller('review-customer')
@@ -24,7 +24,6 @@ export class ReviewCustomerController {
     private readonly prismaService: PrismaService,
     private readonly i18n: I18nCustomService,
     private readonly tourService: TourService,
-    private readonly reviewHelpfulService: ReviewHelpfulService
   ) { }
 
   @ApiBearerAuth()
@@ -40,9 +39,12 @@ export class ReviewCustomerController {
     });
     if (!tourExists) throw new BaseException(Errors.ITEM_NOT_FOUND(this.i18n.t('common-message.review.create.tour_not_found')));
 
+    const rating = calculateRating(body);
+
     return await this.reviewService.create({
       data: {
         ...body,
+        rating,
         userId: user.data.id
       }
     })
@@ -59,65 +61,27 @@ export class ReviewCustomerController {
     const existingReview = await this.reviewService.findOne({ where: { id } });
     if (!existingReview) throw new BaseException(Errors.ITEM_NOT_FOUND(this.i18n.t('common-message.review.update.not_found')));
 
-    return this.reviewService.update(id,
-      {
-        ...body,
-        User: {
-          connect: { id: user.data.id }
-        }
-      }
-    );
-  }
+    if (existingReview.userId !== user.data.id)
+      throw new BaseException(Errors.FORBIDDEN(this.i18n.t('common-message.review.update.forbidden')));
 
-  @ApiBearerAuth()
-  @Roles(UserRole.ADMIN, UserRole.STAFF, UserRole.CUSTOMER)
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Patch('helpful/:id')
-  async updateHelpful(@UserDecorator() user: IUserJwt, @Param('id', ParseIdPipe) id: number) {
-    const existingReview = await this.reviewService.findOne({ where: { id } });
-    if (!existingReview) throw new BaseException(Errors.ITEM_NOT_FOUND(this.i18n.t('common-message.review.updateHelpful.not_found')));
-
-    const existingHelpful = await this.prismaService.reviewHelpful.findUnique({
-      where: {
-        userId_reviewId: {
-          userId: user.data.id,
-          reviewId: id
-        }
-      }
-    });
-
-
-    if (existingHelpful) {
-      await Promise.all([
-        this.reviewHelpfulService.remove({
-          where: {
-            id: existingHelpful.id
-          }
-        }),
-        this.reviewService.update(id, {
-          countHelpful: {
-            decrement: 1
-          }
-        })
-      ]);
-    } else {
-      await Promise.all([
-        this.reviewHelpfulService.create({
-          data: {
-            userId: user.data.id,
-            reviewId: id
-          }
-        }),
-        this.reviewService.update(id, {
-          countHelpful: {
-            increment: 1
-          }
-        })
-      ]);
+    const updateData: Prisma.ReviewUpdateInput = { ...body };
+    if (
+      body.ratingGuide ||
+      body.ratingTransportation ||
+      body.ratingValueOfMoney ||
+      body.ratingSafety
+    ) {
+      const newRatingFields = {
+        ratingGuide: body.ratingGuide ?? existingReview.ratingGuide,
+        ratingTransportation:
+          body.ratingTransportation ?? existingReview.ratingTransportation,
+        ratingValueOfMoney:
+          body.ratingValueOfMoney ?? existingReview.ratingValueOfMoney,
+        ratingSafety: body.ratingSafety ?? existingReview.ratingSafety,
+      };
+      updateData.rating = calculateRating(newRatingFields);
     }
 
-    const updatedReview = await this.reviewService.findOne({ where: { id } });
-
-    return updatedReview;
+    return this.reviewService.update(id, updateData);
   }
 }

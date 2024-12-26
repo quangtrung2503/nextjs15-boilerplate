@@ -2,8 +2,8 @@ import { default as CommonStyles } from "@/components/common"
 import CommonIcons from "@/components/CommonIcons"
 import { useState } from "react"
 import { Popover } from "@mui/material"
-import apiUrls from "@/constants/apiUrls"
 import { Destination } from "@/services/modules/destination/interface/destination"
+import { useNotifications } from "@/helpers/toast"
 
 const ActionCell: React.FC<{ row: Destination; handleEditId: (id: number) => void; handleDeleteDestination: (id: number) => void ;t: any}> = ({
   row,
@@ -12,7 +12,8 @@ const ActionCell: React.FC<{ row: Destination; handleEditId: (id: number) => voi
   t
 }) => {
   const [anchorEl, setAnchorEl] = useState<HTMLDivElement | null>(null);
-
+  const {showError,showSuccess} = useNotifications();
+  
   const handleOpenPopover = (event: React.MouseEvent<HTMLDivElement>) => {
     setAnchorEl(event.currentTarget);
   };
@@ -22,10 +23,15 @@ const ActionCell: React.FC<{ row: Destination; handleEditId: (id: number) => voi
   };
 
   const handleConfirmDelete = () => {
-    handleClosePopover();
-    handleDeleteDestination(Number(row.id));
+    try{
+      handleClosePopover();
+      showSuccess(t("deleteSuccess"))
+      handleDeleteDestination(Number(row.id));
+    }
+    catch(error){
+      showError(error);
+    }
   };
-
   const isPopoverOpen = Boolean(anchorEl);
 
   return (
@@ -92,6 +98,14 @@ export const headCells = ({
       numeric: false,
       Cell(row: Destination, _index: number) {
         return <span>{row.name}</span>;
+      },
+    },
+    {
+      id: "isFeature",
+      label: t("feature"),
+      numeric: false,
+      Cell(row: Destination, _index: number) {
+        return <span>{row.isFeature ? <CommonIcons.CheckCircleOutline /> : <></>}</span>;
       },
     },
     {

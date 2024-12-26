@@ -5,7 +5,7 @@ export interface User{
   id?: number;
   username?: string;
   password?: string;
-  email: string;
+  email?: string;
   name: string;
   phone: string;
   nickName?: string;

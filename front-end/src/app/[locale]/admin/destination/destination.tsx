@@ -54,6 +54,10 @@ const Destination = () => {
       }
     })
   };
+  const handleClose = ()=>{
+    setId(null);
+    toggle();
+  }
   return (
     <CommonStyles.Box className="tw-px-10">
       <CommonStyles.Box className="tw-flex tw-justify-between tw-mb-5 tw-items-center">
@@ -95,7 +99,7 @@ const Destination = () => {
             handleRequestSort={handleRequestSort}
           />}
       </CommonStyles.Box>
-      {shouldRender && <CommonDialog onClose={() => setId(null)} open={open} toggle={toggle} body={<CreateEditDestination toggle={toggle} id={Number(id)} />} />}
+      {shouldRender && <CommonDialog onClose={() => setId(null)} open={open} toggle={toggle} body={<CreateEditDestination handleClose={handleClose} id={Number(id)} />} />}
     </CommonStyles.Box>
   );
 }

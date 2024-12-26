@@ -13,6 +13,10 @@ import TableCommon from "@/components/common/Table";
 import CommonDialog from "@/components/common/Dialog";
 import { useNotifications } from "@/helpers/toast";
 import tourServices from "@/services/modules/tour/tour.services";
+import useGetTours from "@/services/modules/tour/hooks/useGetAllTour";
+import { useTranslations } from "next-intl";
+import { headCells } from "./component/headCells";
+import CreateEditTour from "./component/createEditTour";
 
 interface FormSearch {
   textSearch: string;
@@ -27,6 +31,8 @@ const Tour = () => {
   const { open, toggle, shouldRender } = useToggleDialog();
   const [id, setId] = useState<number | null>(null);
   const {showError} = useNotifications();
+  const t = useTranslations();
+
 
   const handleEditId = (id: number) => {
     setId(id);
@@ -53,6 +59,10 @@ const Tour = () => {
       }
     })
   };
+  const handleClose = ()=>{
+    toggle();
+    setId(null);
+  }
   return (
     <CommonStyles.Box className="tw-px-10">
       <CommonStyles.Box className="tw-flex tw-justify-between tw-mb-5 tw-items-center">
@@ -62,18 +72,18 @@ const Tour = () => {
               <CommonStyles.Box  className="tw-w-[20%]">
               <RHFField
                 name="textSearch"
-                placeholder="Search Tour"
+                placeholder={t("tourAdmin.placeholderSearch")}
                 control={methods.control}
                 component={InputField}
               />
               </CommonStyles.Box>
               <CommonStyles.Box className="tw-w-[20%]">
-                <CommonStyles.CommonButton variant="outlined" className="outlined rounded tw-ml-5 tw-w-full" type="submit">Search</CommonStyles.CommonButton>
+                <CommonStyles.CommonButton variant="outlined" className="outlined rounded tw-ml-5 tw-w-full" type="submit">{t("search")}</CommonStyles.CommonButton>
               </CommonStyles.Box>
             </form>
           </FormProvider>
         </CommonStyles.Box>
-        <CommonButton className="tw-text-nowrap tw-px-7" onClick={toggle} label="Create new Tour" />
+        <CommonButton className="tw-text-nowrap tw-px-7" onClick={toggle} label={t("tourAdmin.createNewTour")} />
       </CommonStyles.Box>
       <CommonStyles.Box>
         {dataTour &&
@@ -87,14 +97,14 @@ const Tour = () => {
             handleCheckBox={handleCheckBox}
             handleSelectAllClick={handleSelectAll}
             page={filters?.page || 0}
-            headCells={headCells({ handleEditId, handleDeleteTour })}
+            headCells={headCells({ handleEditId, handleDeleteTour,t })}
             rows={dataTour?.items}
             handleChangePage={handleChangePage}
             handleChangeRowsPerPage={changeRowPerPage}
             handleRequestSort={handleRequestSort}
           />}
       </CommonStyles.Box>
-      {/* {shouldRender && <CommonDialog onClose={() => setId(null)} open={open} toggle={toggle} body={<CreateEditTour toggle={toggle} id={Number(id)} />} />} */}
+      {shouldRender && <CommonDialog maxWidth="md" onClose={() => setId(null)} open={open} toggle={toggle} body={<CreateEditTour handleClose={handleClose} id={Number(id)} />} />}
     </CommonStyles.Box>
   );
 }

@@ -443,6 +443,7 @@ export enum Package {
   FAMILY_PLAN = 'Family Plan',
   COUPLE_PLAN = 'Couple Plan',
   SINGLE_PLAN = 'Single Plan',
+  BUSINESS_TOUR = 'Business Tour' 
 }
 export enum Duration {
   ZERO_TO_THREE_HOURS = '0-3 hours',
@@ -450,4 +451,16 @@ export enum Duration {
   FIVE_TO_SEVEN_HOURS = '5-7 hours',
   FULL_DAY = 'Full day (7+ hours)',
   MULTI_DAY = 'Multi-day'
+}
+export enum Rating {
+  ONE = 1,
+  TWO = 2,
+  THREE = 3,
+  FOUR = 4,
+  FIVE = 5
+}
+export enum TourSortField {
+  CREATED_AT = 'createdAt',
+  PRICE = 'price',
+  POPULARITY = 'popularity'
 }

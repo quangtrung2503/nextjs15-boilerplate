@@ -21,7 +21,7 @@ interface CustomInputProps extends InputProps {
     onBlur: () => void;
   };
   onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  fieldState: { error?: FieldError }; // Cập nhật kiểu ở đây
+  fieldState: { error?: FieldError }; 
   label?: string;
   sx?: SxProps;
   type?: string;

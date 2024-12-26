@@ -19,7 +19,7 @@ import SignUpModel from "@/models/signup.model";
 import useAuth from "@/hooks/useAuth";
 import { useNotifications } from "@/helpers/toast";
 import Loading from "@/components/common/Loading";
-import { defaultValue, FormValues, validationSchema } from "./forms";
+import { defaultValue, FormValues, validationSchema} from "./forms";
 
 
 
@@ -45,7 +45,7 @@ const SignUp = (props: ISignUpProps) => {
     defaultValues: defaultValue,
     reValidateMode: "onSubmit",
     criteriaMode: "all",
-    resolver: yupResolver(validationSchema), // Use the validation schema
+    resolver: yupResolver(validationSchema(t)), // Use the validation schema
   });
   
 

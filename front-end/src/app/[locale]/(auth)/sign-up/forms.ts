@@ -1,6 +1,5 @@
 import { useTranslations } from "next-intl";
 import * as Yup from "yup";
-const t = useTranslations("signUp");
 
 export interface FormValues {
     name: string;
@@ -9,7 +8,7 @@ export interface FormValues {
     password: string;
     confirmPassword: string;
 };
-export const validationSchema = Yup.object().shape({
+export const validationSchema = (t:any)=> Yup.object().shape({
     name: Yup.string().required(t("validations.nameRequire")),
     phone: Yup.string()
         .matches(/^([0-9]{10})?$/, t("validations.phoneFormat")),

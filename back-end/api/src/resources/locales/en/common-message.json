@@ -192,11 +192,23 @@
       "wrong_parameter": "{keyNotInDto} is not defined in parameters",
       "not_found": "Review"
     },
-    "updateHelpful": {
-      "not_found": "Review"
-    },
     "setActive": {
       "not_found": "Review"
+    }
+  },
+  "video": {
+    "create": {
+      "wrong_parameter": "{keyNotInDto} is not defined in parameters"
+    },
+    "findOne": {
+      "not_found": "Video"
+    },
+    "update": {
+      "wrong_parameter": "{keyNotInDto} is not defined in parameters",
+      "not_found": "Video"
+    },
+    "remove": {
+      "not_found": "Video"
     }
   },
 

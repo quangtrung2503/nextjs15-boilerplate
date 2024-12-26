@@ -10,7 +10,7 @@ import CreateEditCity from "./component/createEditCity";
 import cachedKeys from "@/constants/cachedKeys";
 import { headCells } from "./component/headCells";
 import { useState } from "react";
-import cityServices from "@/services/modules/city/cityServices";
+import cityServices from "@/services/modules/city/city.services";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import RHFField from "@/components/customReactFormField/ReactFormField";
 import InputField from "@/components/customReactFormField/InputField";
@@ -57,6 +57,10 @@ const City = () => {
       }
     })
   };
+  const handleClose = ()=>{
+    toggle();
+    setId(null);
+  }
   return (
     <CommonStyles.Box className="tw-px-10">
       <CommonStyles.Box className="tw-flex tw-justify-between tw-mb-5 tw-items-center">
@@ -84,7 +88,7 @@ const City = () => {
           <TableCommon
             isLoading={loadingCity}
             sxTableHead={{ fontWeight: "bold" }}
-            rowsPerPage={10}
+            rowsPerPage={filters.perPage}
             disableSort={false}
             selected={selected}
             totalCount={dataCity.totalItems}
@@ -96,9 +100,10 @@ const City = () => {
             handleChangePage={handleChangePage}
             handleChangeRowsPerPage={changeRowPerPage}
             handleRequestSort={handleRequestSort}
+            labelNoData={t("labelNoData")}
           />}
       </CommonStyles.Box>
-      {shouldRender && <CommonDialog onClose={() => setId(null)} open={open} toggle={toggle} body={<CreateEditCity toggle={toggle} id={Number(id)} />} />}
+      {shouldRender && <CommonDialog onClose={()=>setId(null)} open={open} toggle={toggle} body={<CreateEditCity id={Number(id)} handleClose={handleClose} />} />}
     </CommonStyles.Box>
   );
 }

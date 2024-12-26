@@ -14,18 +14,22 @@ import { Destination } from "@/services/modules/destination/interface/destinatio
 import destinationServices from "@/services/modules/destination/destination.services"
 import CommonIcons from "@/components/CommonIcons"
 import { useTranslations } from "next-intl"
+import { useNotifications } from "@/helpers/toast"
+import CheckboxField from "@/components/customReactFormField/CheckBoxField"
 
 interface createEditDestinationProps {
-  toggle: () => void;
   id?: number;
+  handleClose: () => void;
 }
 interface FormValues {
   name: string;
+  isFeature?: boolean;
 }
 const CreateEditDestination: FC<createEditDestinationProps> = (props) => {
-  const { toggle, id } = props;
+  const { id, handleClose } = props;
   const { data } = useGetDestination(Number(id), { isTrigger: !!id });
   const t = useTranslations("destinationAdmin");
+  const {showError,showSuccess} = useNotifications();
 
   const schema = yup
     .object({
@@ -33,7 +37,7 @@ const CreateEditDestination: FC<createEditDestinationProps> = (props) => {
     })
     .required();
   const initValue = useMemo(() => {
-        return { name: data?.data.name ?? ""}
+        return { name: data?.data.name ?? "",isFeature: data?.data.isFeature ?? false}
   }, [data?.data]);
   const methods = useForm<FormValues>({
     defaultValues: initValue,
@@ -45,7 +49,8 @@ const CreateEditDestination: FC<createEditDestinationProps> = (props) => {
     if (data?.data) {
       // Reset form values when data is loaded
       reset({
-        name: data.data.name || "",
+        name: data.data.name ?? "",
+        isFeature: data.data.isFeature ?? false
       });
     }
   }, [data?.data, reset]);
@@ -55,10 +60,11 @@ const CreateEditDestination: FC<createEditDestinationProps> = (props) => {
       id ? data = { ...data, id } : { data };
       id? await destinationServices.updateDestination(data): await destinationServices.createDestination(data);
       await fetchDestinations();
-      toggle();
+      showSuccess(id?t("editSuccess"):t("createSuccess"));
+      handleClose();
     }
     catch (error) {
-      console.log(error);
+      showError(error);
     }
   };
   return (
@@ -72,12 +78,22 @@ const CreateEditDestination: FC<createEditDestinationProps> = (props) => {
             control={methods.control}
             component={InputField}
             defaultValue={initValue?.name}
+            placeholder={t("placeholderName")}
             label={t("name")}
           />
+          
+          <CommonStyles.Box className="tw-col-span-12">
+              <RHFField
+                name="isFeature"
+                control={methods.control}
+                component={CheckboxField}
+                label={t("feature")}
+              />
+            </CommonStyles.Box>
           <CommonStyles.Box className="tw-flex tw-justify-around">
             <CommonStyles.CommonButton type="submit">{t("submit")}</CommonStyles.CommonButton>
           </CommonStyles.Box>
-          <CommonStyles.Box  className="tw-absolute tw-top-0 tw-right-0 tw-cursor-pointer" onClick={toggle}><CommonIcons.Close /></CommonStyles.Box>
+          <CommonStyles.Box  className="tw-absolute tw-top-0 tw-right-0 tw-cursor-pointer" onClick={handleClose}><CommonIcons.Close /></CommonStyles.Box>
 
         </form>
       </FormProvider>

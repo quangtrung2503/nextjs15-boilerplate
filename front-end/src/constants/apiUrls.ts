@@ -7,6 +7,7 @@ export default {
       SIGN_IN: `${BASE_URL}/auth/login`,
       CHANGE_PASSWORD: `${BASE_URL}/auth/change-password`
     },
+    VIDEO_URL: `${BASE_URL}/video`,
     CITY_URL: `${BASE_URL}/city`,
     USER_URL: `${BASE_URL}/user`,
     THEME_URL: `${BASE_URL}/theme`,
