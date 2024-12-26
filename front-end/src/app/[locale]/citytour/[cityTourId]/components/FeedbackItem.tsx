@@ -41,9 +41,6 @@ const FeedbackItem: React.FC<FeedbackData> = ({
               className="tw-flex tw-items-center tw-gap-2"
             >
               {name}
-              {isVerified && (
-                <CommonIcons.DoneAllRounded className="tw-text-primary" />
-              )}
             </CommonStyles.Typography>
             <CommonStyles.Typography
               type="size13Weight600"
@@ -54,7 +51,7 @@ const FeedbackItem: React.FC<FeedbackData> = ({
           </CommonStyles.Box>
         </CommonStyles.Box>
         <CommonStyles.Box className="tw-flex tw-justify-between tw-items-start tw-flex-1">
-          <CommonStyles.Box className="tw-flex tw-flex-col tw-gap-5 tw-w-3/4">
+          <CommonStyles.Box className="tw-flex tw-flex-col tw-gap-5 tw-w-full">
             <CommonStyles.Typography
               type="size15Weight700"
               className="tw-text-accent_gray_dark"
@@ -66,19 +63,6 @@ const FeedbackItem: React.FC<FeedbackData> = ({
               className="tw-text-accent_gray_800"
             >
               {content}
-            </CommonStyles.Typography>
-          </CommonStyles.Box>
-          <CommonStyles.Box className="tw-flex tw-items-center tw-gap-1">
-            <CommonStyles.Typography type="size13Weight600">
-              {t("feedback.helpful")}?
-            </CommonStyles.Typography>
-            <CommonStyles.Typography
-              type="size13Weight600"
-              className={
-                helpful ? "tw-text-primary" : "tw-text-accent_gray_500"
-              }
-            >
-              {helpful ? "Yes" : "No"}
             </CommonStyles.Typography>
           </CommonStyles.Box>
         </CommonStyles.Box>

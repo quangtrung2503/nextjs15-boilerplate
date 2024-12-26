@@ -69,7 +69,7 @@ const popularCity: PopularCityProps = {
   imageBanner: commonImg.alaska.src,
   name: "Alaska",
   title:
-    "Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint. Velit officia consequat duis enim velit mollit. Exercitation veniam consequat sunt nostrud amet.0",
+    "Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint. Velit officia consequat duis enim velit mollit. Exercitation veniam consequat sunt nostrud amet.",
 };
 
 const trendingCity = {

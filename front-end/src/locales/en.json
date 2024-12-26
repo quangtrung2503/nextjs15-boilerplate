@@ -2,11 +2,12 @@
   "feedback": {
     "title": "Customer Review",
     "reviews": "reviews",
-    "filter": "Filter",
+    "filter": "Filtering",
     "recommendPlaceholder": "Recommend",
     "travelerTypePlaceholder": "Traveler Type",
     "ratingPlaceholder": "Rating",
-    "searchPlaceholder": "Search Here"
+    "searchPlaceholder": "Search Here",
+    "viewMoreComment": "View More Comments"
   },
   "card": {
     "duration": "Duration",
@@ -163,8 +164,8 @@
     "child": "Child",
     "doneBtn": "Done",
     "currency": "$",
-    "relatedToursInToday": "Related tours in Today",
-    "relatedToursIn": "Related tours in",
+    "relatedToursInToday": "Related Tours In Today",
+    "relatedToursIn": "Related Tours In",
     "formBooking": {
       "confirmBooking": "Confirm Booking",
       "saveToWishlist": "Save to Wishlist",
@@ -459,6 +460,14 @@
     "security": "Security",
     "updateDataSuccess": "Update Data Successful",
     "setPassSuccess": "Set Password Success",
+    "name": "Name",
+    "dateOfBirth": "Date of birth",
+    "phone": "Phone",
+    "location": "Location",
+    "email": "Email",
+    "currentPassword": "Current Password",
+    "newPassword": "New Password",
+    "confirmPassword": "Confirm Password",
     "menuProfile": {
       "information": "Profile Information",
       "booking": "Booking History",
