@@ -39,7 +39,6 @@ interface FormValues {
   numberOfHours: number;
   startDate: string;
   endDate: string;
-  isFeature?: boolean;
   description: string;
   activity: string;
   included: string;
@@ -50,6 +49,7 @@ interface FormValues {
   language: string;
   destinationIds: number[];
   images: string[];
+  guideMeetingAddress: string;
 }
 const transportOption = getOptionEnum(Transport);
 const packageOption = getOptionEnum(Package);
@@ -99,7 +99,6 @@ const CreateEditTour: FC<createEditTourProps> = (props) => {
         .array()
         .min(1, t("destinationRequire"))
         .required(t("destinationRequire")),
-      isFeature: yup.boolean().optional(),
       description: yup.string().required(t("descriptionRequire")),
       activity: yup.string().required(t("activityRequire")),
       included: yup.string().required(t("includedRequire")),
@@ -108,6 +107,7 @@ const CreateEditTour: FC<createEditTourProps> = (props) => {
       images: yup.array()
       .min(1, t("imagesRequire"))
       .required(t("imagesRequire")),
+      guideMeetingAddress: yup.string().required(t("guideMeetingAddressRequired"))
     })
     .required();
   const { filters } = useFiltersHandler({});
@@ -126,7 +126,6 @@ const CreateEditTour: FC<createEditTourProps> = (props) => {
       numberOfHours: data?.data.numberOfHours ?? 0,
       startDate: data?.data.startDate ?? "",
       endDate: data?.data.endDate ?? "",
-      isFeature: data?.data.isFeature ?? undefined,
       language: data?.data.language ?? "",
       cityId: data?.data.cityId ?? undefined,
       themeId: data?.data.themeId ?? undefined,
@@ -136,6 +135,7 @@ const CreateEditTour: FC<createEditTourProps> = (props) => {
       notIncluded: data?.data.notIncluded ?? "",
       safety: data?.data.safety ?? "",
       images: data?.data.images ?? [],
+      guideMeetingAddress: data?.data.guideMeetingAddress ?? ""
     };
   }, [data?.data]);
 
@@ -186,7 +186,6 @@ const CreateEditTour: FC<createEditTourProps> = (props) => {
       numberOfHours: data?.data.numberOfHours || 0,
       startDate: data?.data.startDate || "",
       endDate: data?.data.endDate || "",
-      isFeature: data?.data.isFeature ?? undefined,
       language: data?.data.language || "",
       cityId: data?.data.cityId || undefined,
       themeId: data?.data.themeId || undefined,
@@ -199,6 +198,7 @@ const CreateEditTour: FC<createEditTourProps> = (props) => {
       notIncluded: data?.data.notIncluded || "",
       safety: data?.data.safety || "",
       images: data?.data.TourImage?.map((image) => image.image) || [],
+      guideMeetingAddress: data?.data.guideMeetingAddress ?? ""
     });
   }, [data?.data, reset]);
 
@@ -340,15 +340,6 @@ const CreateEditTour: FC<createEditTourProps> = (props) => {
 
             <CommonStyles.Box className="tw-col-span-12">
               <RHFField
-                name="isFeature"
-                control={methods.control}
-                component={CheckboxField}
-                label={t("feature")}
-              />
-            </CommonStyles.Box>
-
-            <CommonStyles.Box className="tw-col-span-12">
-              <RHFField
               id="language"
                 name="language"
                 height={200}
@@ -439,6 +430,15 @@ const CreateEditTour: FC<createEditTourProps> = (props) => {
                 options={destinationsOption}
                 multiple
                 label={t("destination")}
+              />
+            </CommonStyles.Box>
+            <CommonStyles.Box className="tw-col-span-12">
+              <RHFField
+                name="guideMeetingAddress"
+                placeholder={t("placeholderGuideMeetingAddress")}
+                control={methods.control}
+                component={InputField}
+                label={t("guideMeetingAddress")}
               />
             </CommonStyles.Box>
             <CommonStyles.Box className="tw-col-span-12">
