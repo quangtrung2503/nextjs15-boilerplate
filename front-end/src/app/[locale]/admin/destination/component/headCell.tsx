@@ -2,7 +2,6 @@ import { default as CommonStyles } from "@/components/common"
 import CommonIcons from "@/components/CommonIcons"
 import { useState } from "react"
 import { Popover } from "@mui/material"
-import apiUrls from "@/constants/apiUrls"
 import { Destination } from "@/services/modules/destination/interface/destination"
 import { useNotifications } from "@/helpers/toast"
 
@@ -99,6 +98,14 @@ export const headCells = ({
       numeric: false,
       Cell(row: Destination, _index: number) {
         return <span>{row.name}</span>;
+      },
+    },
+    {
+      id: "isFeature",
+      label: t("feature"),
+      numeric: false,
+      Cell(row: Destination, _index: number) {
+        return <span>{row.isFeature ? <CommonIcons.CheckCircleOutline /> : <></>}</span>;
       },
     },
     {

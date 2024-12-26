@@ -5,4 +5,5 @@ export default {
   fetchPosts: "fetchPosts",
   fetchDestinations: "fetchDestinations",
   fetchTours: "fetchTours",
+  fetchVideos: "fetchVideos"
 } as const;

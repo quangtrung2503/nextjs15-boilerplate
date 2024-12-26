@@ -9,7 +9,6 @@ export interface Tour {
   numberOfHours: number;
   startDate: string;
   endDate: string;
-  isFeature?: boolean;
   description: string;
   activity: string;
   included: string;
@@ -28,6 +27,7 @@ export interface Tour {
   averageRating?: number;
   images: string[];
   totalReviews?: number;
+  guideMeetingAddress: string;
 };
 export interface City {
   id: number;

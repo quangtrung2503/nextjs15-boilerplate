@@ -15,6 +15,7 @@ import destinationServices from "@/services/modules/destination/destination.serv
 import CommonIcons from "@/components/CommonIcons"
 import { useTranslations } from "next-intl"
 import { useNotifications } from "@/helpers/toast"
+import CheckboxField from "@/components/customReactFormField/CheckBoxField"
 
 interface createEditDestinationProps {
   id?: number;
@@ -22,6 +23,7 @@ interface createEditDestinationProps {
 }
 interface FormValues {
   name: string;
+  isFeature?: boolean;
 }
 const CreateEditDestination: FC<createEditDestinationProps> = (props) => {
   const { id, handleClose } = props;
@@ -35,7 +37,7 @@ const CreateEditDestination: FC<createEditDestinationProps> = (props) => {
     })
     .required();
   const initValue = useMemo(() => {
-        return { name: data?.data.name ?? ""}
+        return { name: data?.data.name ?? "",isFeature: data?.data.isFeature ?? false}
   }, [data?.data]);
   const methods = useForm<FormValues>({
     defaultValues: initValue,
@@ -47,7 +49,8 @@ const CreateEditDestination: FC<createEditDestinationProps> = (props) => {
     if (data?.data) {
       // Reset form values when data is loaded
       reset({
-        name: data.data.name || "",
+        name: data.data.name ?? "",
+        isFeature: data.data.isFeature ?? false
       });
     }
   }, [data?.data, reset]);
@@ -78,6 +81,15 @@ const CreateEditDestination: FC<createEditDestinationProps> = (props) => {
             placeholder={t("placeholderName")}
             label={t("name")}
           />
+          
+          <CommonStyles.Box className="tw-col-span-12">
+              <RHFField
+                name="isFeature"
+                control={methods.control}
+                component={CheckboxField}
+                label={t("feature")}
+              />
+            </CommonStyles.Box>
           <CommonStyles.Box className="tw-flex tw-justify-around">
             <CommonStyles.CommonButton type="submit">{t("submit")}</CommonStyles.CommonButton>
           </CommonStyles.Box>

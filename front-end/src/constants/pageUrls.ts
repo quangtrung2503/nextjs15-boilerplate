@@ -16,6 +16,7 @@ const pageUrls = {
     Post: '/admin/post',
     Tour: '/admin/tour',
     Theme: '/admin/theme',
+    Video: '/admin/video',
     Destination: '/admin/destination'
   },
   Invoices: '/sales/invoices',

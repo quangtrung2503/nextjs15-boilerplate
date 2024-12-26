@@ -73,7 +73,6 @@ class HttpService {
     this.axios.interceptors.response.use(
       function (config) {
         const statusCode = config.data.statusCode;
-        console.log({statusCode});
         
         if (statusCode >= 400 && statusCode <= 499) {
           return Promise.reject(config?.data?.data?.message);
