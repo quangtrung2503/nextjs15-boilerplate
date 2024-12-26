@@ -2,9 +2,18 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
 import { IsArray, IsBoolean, IsEnum, IsNumber, IsOptional } from 'class-validator';
 import { FilterOptions } from 'src/helpers/common/filterOption.dto';
-import { Duration } from 'src/helpers/constants/enum.constant';
+import { Duration, TourSortField } from 'src/helpers/constants/enum.constant';
 
 export class FilterTourDto extends FilterOptions {
+  @ApiProperty({
+    enum: TourSortField,
+    default: TourSortField.PRICE,
+    required: false
+  })
+  @IsEnum(TourSortField)
+  @IsOptional()
+    sortField?: TourSortField;
+
   @ApiProperty({
     example: true,
     required: false

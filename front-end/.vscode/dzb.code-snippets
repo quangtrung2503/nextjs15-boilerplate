@@ -53,14 +53,14 @@
       "};",
       "",
       "export default $1;",
-      ""
+      "",
     ],
-    "description": "genDialog"
+    "description": "genDialog",
   },
   "genToggleDialog": {
     "prefix": "genToggleDialog",
     "body": ["const [open$1, toggle$1, shouldRender$1] = useToggleDialog();"],
-    "description": "genToggleDialog"
+    "description": "genToggleDialog",
   },
   "genHooks": {
     "prefix": "genHooks",
@@ -228,9 +228,9 @@
       "};",
       "",
       "export default $1;",
-      ""
+      "",
     ],
-    "description": "genHooks"
+    "description": "genHooks",
   },
   "genHooksPagination": {
     "prefix": "genHooksPagination",
@@ -433,9 +433,9 @@
       "};",
       "",
       "export default $1;",
-      ""
+      "",
     ],
-    "description": "genHooksPagination"
+    "description": "genHooksPagination",
   },
   "genComponentTable": {
     "prefix": "genComponentTable",
@@ -561,9 +561,9 @@
       "};",
       "",
       "export default React.memo($1);",
-      ""
+      "",
     ],
-    "description": "genComponentTable"
+    "description": "genComponentTable",
   },
   "genComponent": {
     "prefix": "genComponent",
@@ -583,8 +583,8 @@
       "};",
       "",
       "export default $1;",
-      ""
+      "",
     ],
-    "description": "genComponent"
-  }
+    "description": "genComponent",
+  },
 }

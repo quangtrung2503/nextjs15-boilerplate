@@ -272,9 +272,9 @@ export default function HomePage() {
                         padding: 0,
                       },
                       "& input::-webkit-outer-spin-button, & input::-webkit-inner-spin-button":
-                        {
-                          WebkitAppearance: "none",
-                        },
+                      {
+                        WebkitAppearance: "none",
+                      },
                     }}
                     type="number"
                     name="guests"
@@ -417,13 +417,15 @@ export default function HomePage() {
         <IntroduceMobileApp />
       </CommonStyles.Box>
       {/* VI. From The Gallery */}
-      <CommonStyles.Box>
-        <Gallery />
-      </CommonStyles.Box>
-      {/* VII. Latest Stories */}
-      <CommonStyles.Box>
-        <LatestStories />
-      </CommonStyles.Box>
+      <Container className="tw-flex tw-flex-col tw-gap-12">
+        <CommonStyles.Box>
+          <Gallery />
+        </CommonStyles.Box>
+        {/* VII. Latest Stories */}
+        <CommonStyles.Box>
+          <LatestStories />
+        </CommonStyles.Box>
+      </Container>
     </CommonStyles.Box>
   );
 }

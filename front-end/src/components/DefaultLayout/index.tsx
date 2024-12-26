@@ -9,8 +9,7 @@ interface DefaultLayoutProps {
 }
 const DefaultLayout = (props: DefaultLayoutProps) => {
   const pathname = usePathname()
-  const hideHeaderFooter = pathname.includes("sign") || pathname.includes("admin");
-  
+  const hideHeaderFooter = pathname.includes("auth");
   const { children } = props;
   return (
     <>

@@ -24,6 +24,7 @@ import { TourModule } from './modules/tour/tour.module';
 import { WishlistModule } from './modules/wishlist/wishlist.module';
 import { BookingModule } from './modules/booking/booking.module';
 import { ReviewModule } from './modules/review/review.module';
+import { VideoModule } from './modules/video/video.module';
 
 @Module({
   imports: [
@@ -48,6 +49,7 @@ import { ReviewModule } from './modules/review/review.module';
       inject: [BackendConfigService],
     }),
     UserModule,
+    VideoModule,
     CityModule,
     ThemeModule,
     DestinationModule,

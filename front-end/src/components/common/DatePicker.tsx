@@ -7,7 +7,7 @@ import { FieldError } from "react-hook-form";
 import moment, { Moment } from "moment";
 
 interface IDatePickerProps {
-  label?: string;  
+  label?: string;
   name: string;
   className?: string;
   required?: boolean;
@@ -51,7 +51,7 @@ export const CommonDatePicker: React.FC<IDatePickerProps> = ({
         </label>
       )}
       <PickerComponent
-      format="DD/MM/YYYY"
+        format="DD/MM/YYYY"
         value={field.value ? moment(field.value) : null} // Đảm bảo giá trị không undefined
         onChange={(newValue) => {
           field.onChange(newValue); // Cập nhật giá trị
@@ -69,8 +69,8 @@ export const CommonDatePicker: React.FC<IDatePickerProps> = ({
                 border: fieldState.error
                   ? "#d32f2f solid 1px"
                   : border
-                  ? "#cfcfcf solid 1px"
-                  : "none",
+                    ? "#cfcfcf solid 1px"
+                    : "none",
               },
               borderRadius: "3px",
               backgroundColor: "#F4F4F5",

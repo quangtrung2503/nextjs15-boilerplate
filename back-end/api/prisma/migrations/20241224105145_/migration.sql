@@ -26,6 +26,20 @@ CREATE TABLE `user` (
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
+CREATE TABLE `video` (
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `title` VARCHAR(255) NOT NULL,
+    `description` TEXT NOT NULL,
+    `thumbnail` VARCHAR(255) NOT NULL,
+    `video` VARCHAR(255) NOT NULL,
+    `isDisplay` BOOLEAN NOT NULL DEFAULT true,
+    `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updated_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
 CREATE TABLE `city` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `name` VARCHAR(255) NOT NULL,
@@ -84,23 +98,17 @@ CREATE TABLE `tour` (
     `endDate` DATETIME(3) NOT NULL,
     `isFeature` BOOLEAN NOT NULL DEFAULT false,
     `isActive` BOOLEAN NOT NULL DEFAULT true,
-    `cancellationPolicy` VARCHAR(255) NOT NULL,
-    `healthPrecautions` VARCHAR(255) NOT NULL,
-    `ticketType` VARCHAR(255) NOT NULL,
-    `confirmation` VARCHAR(255) NOT NULL,
-    `guideLanguage` VARCHAR(255) NOT NULL,
-    `description` TEXT NULL,
-    `activity` TEXT NULL,
-    `included` TEXT NULL,
-    `notIncluded` TEXT NULL,
-    `safety` TEXT NULL,
-    `details` TEXT NULL,
+    `description` TEXT NOT NULL,
+    `activity` TEXT NOT NULL,
+    `included` TEXT NOT NULL,
+    `notIncluded` TEXT NOT NULL,
+    `safety` TEXT NOT NULL,
+    `language` TEXT NOT NULL,
     `cityId` INTEGER NOT NULL,
     `themeId` INTEGER NOT NULL,
     `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updated_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
 
-    UNIQUE INDEX `tour_name_key`(`name`),
     UNIQUE INDEX `tour_slug_key`(`slug`),
     FULLTEXT INDEX `tour_name_idx`(`name`),
     PRIMARY KEY (`id`)
@@ -137,26 +145,14 @@ CREATE TABLE `review` (
     `ratingTransportation` INTEGER NOT NULL,
     `ratingValueOfMoney` INTEGER NOT NULL,
     `ratingSafety` INTEGER NOT NULL,
-    `rating` INTEGER NOT NULL,
+    `rating` DOUBLE NOT NULL,
     `title` VARCHAR(255) NOT NULL,
     `content` TEXT NULL,
-    `countHelpful` INTEGER NOT NULL DEFAULT 0,
     `isActive` BOOLEAN NOT NULL DEFAULT true,
     `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updated_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
 
-    PRIMARY KEY (`id`)
-) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-
--- CreateTable
-CREATE TABLE `review_helpful` (
-    `id` INTEGER NOT NULL AUTO_INCREMENT,
-    `userId` INTEGER NOT NULL,
-    `reviewId` INTEGER NOT NULL,
-    `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
-    `updated_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
-
-    UNIQUE INDEX `review_helpful_userId_reviewId_key`(`userId`, `reviewId`),
+    UNIQUE INDEX `review_userId_tourId_key`(`userId`, `tourId`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -173,7 +169,6 @@ CREATE TABLE `post` (
     `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updated_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
 
-    UNIQUE INDEX `post_title_key`(`title`),
     UNIQUE INDEX `post_slug_key`(`slug`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -229,12 +224,6 @@ ALTER TABLE `review` ADD CONSTRAINT `review_userId_fkey` FOREIGN KEY (`userId`) 
 
 -- AddForeignKey
 ALTER TABLE `review` ADD CONSTRAINT `review_tourId_fkey` FOREIGN KEY (`tourId`) REFERENCES `tour`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE `review_helpful` ADD CONSTRAINT `review_helpful_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `user`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE `review_helpful` ADD CONSTRAINT `review_helpful_reviewId_fkey` FOREIGN KEY (`reviewId`) REFERENCES `review`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `post` ADD CONSTRAINT `post_userCreatedId_fkey` FOREIGN KEY (`userCreatedId`) REFERENCES `user`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;

@@ -4,7 +4,7 @@ import { IsBoolean, IsDate, IsEnum, IsNotEmpty, IsNumber, IsOptional, IsPositive
 import moment from 'moment';
 import { Package, Transport } from 'src/helpers/constants/enum.constant';
 
-export const CreateTourDtoKeys: (keyof CreateTourDto)[] = ['name', 'price', 'transport', 'package', 'numberOfPeople', 'numberOfHours', 'startDate', 'endDate', 'isFeature', 'cancellationPolicy', 'healthPrecautions', 'ticketType', 'confirmation', 'guideLanguage', 'description', 'activity', 'included', 'notIncluded', 'safety', 'details', 'cityId', 'themeId', 'destinationIds', 'images'];
+export const CreateTourDtoKeys: (keyof CreateTourDto)[] = ['name', 'price', 'transport', 'package', 'numberOfPeople', 'numberOfHours', 'startDate', 'endDate', 'isFeature', 'description', 'activity', 'included', 'notIncluded', 'safety', 'language', 'cityId', 'themeId', 'destinationIds', 'images'];
 
 export class CreateTourDto {
   @ApiProperty({
@@ -104,103 +104,58 @@ export class CreateTourDto {
   readonly isFeature: boolean;
 
   @ApiProperty({
-    example: 'Cancel up to 24 hours in advance to receive a full refund',
-    description: 'Cancellation Policy of tour',
-    required: true,
-  })
-  @IsNotEmpty()
-  @IsString()
-  readonly cancellationPolicy: string;
-
-  @ApiProperty({
-    example: 'Special health and safety measures apply. Learn more',
-    description: 'Health Precautions of tour',
-    required: true,
-  })
-  @IsNotEmpty()
-  @IsString()
-  readonly healthPrecautions: string;
-
-  @ApiProperty({
-    example: 'Use your phone or print your voucher',
-    description: 'Ticket Type of tour',
-    required: true,
-  })
-  @IsNotEmpty()
-  @IsString()
-  readonly ticketType: string;
-
-  @ApiProperty({
-    example: 'Don’t wait for the confirmation!',
-    description: 'Confirmation of tour',
-    required: true,
-  })
-  @IsNotEmpty()
-  @IsString()
-  readonly confirmation: string;
-
-  @ApiProperty({
-    example: 'English',
-    description: 'Guide Language of tour',
-    required: true,
-  })
-  @IsNotEmpty()
-  @IsString()
-  readonly guideLanguage: string;
-
-  @ApiProperty({
     example: 'See the highlights of London via 2 ...',
     description: 'Description of tour',
-    required: false,
+    required: true,
   })
-  @IsOptional()
+  @IsNotEmpty()
   @IsString()
-  readonly description?: string;
+  readonly description: string;
 
   @ApiProperty({
     example: 'See the highlights of London via 2 ...',
     description: 'Activity of tour',
-    required: false,
+    required: true,
   })
-  @IsOptional()
+  @IsNotEmpty()
   @IsString()
-  readonly activity?: string;
+  readonly activity: string;
 
   @ApiProperty({
     example: 'See the highlights of London via 2 ...',
     description: 'What included of tour',
-    required: false,
+    required: true,
   })
-  @IsOptional()
+  @IsNotEmpty()
   @IsString()
-  readonly included?: string;
+  readonly included: string;
 
   @ApiProperty({
     example: 'See the highlights of London via 2 ...',
     description: 'What not included of tour',
-    required: false,
+    required: true,
   })
-  @IsOptional()
+  @IsNotEmpty()
   @IsString()
-  readonly notIncluded?: string;
+  readonly notIncluded: string;
 
   @ApiProperty({
     example: 'See the highlights of London via 2 ...',
     description: 'Safety of tour',
-    required: false,
+    required: true,
   })
-  @IsOptional()
+  @IsNotEmpty()
   @IsString()
-  readonly safety?: string;
+  readonly safety: string;
 
   @ApiProperty({
     example: 'See the highlights of London via 2 ...',
     description: 'Details of tour',
-    required: false,
+    required: true,
   })
-  @IsOptional()
+  @IsNotEmpty()
   @IsString()
-  readonly details?: string;
+  readonly language: string;
 
   @ApiProperty({
     example: 1,

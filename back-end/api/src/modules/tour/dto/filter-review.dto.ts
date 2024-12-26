@@ -1,23 +1,28 @@
 import { ApiProperty, OmitType } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
-import { IsArray, IsNumber, IsOptional } from 'class-validator';
+import { IsArray, IsEnum, IsOptional } from 'class-validator';
 import { FilterOptions } from 'src/helpers/common/filterOption.dto';
+import { Rating } from 'src/helpers/constants/enum.constant';
 
-export class FilterReviewDto extends OmitType(FilterOptions, ['from', 'to']) {
+export class FilterReviewDto extends OmitType(FilterOptions, ['textSearch', 'from', 'to']) {
   @ApiProperty({
-    example: [1, 2, 3],
-    description: 'Array of ratings',
+    enum: Rating,
+    isArray: true,
+    example: [Rating.FOUR, Rating.FIVE],
+    description: 'Array of ratings (1-5)',
     required: false,
-    type: [Number]
   })
   @Transform(({ value }) => {
-    if (typeof value === 'string') {
-      return value.split(',').map(id => Number(id.trim()));
+    if (Array.isArray(value)) {
+      return value.map(v => Number(v));
     }
-    return value?.map(Number);
+    if (typeof value === 'string') {
+      return value.split(',').map(v => Number(v.trim()));
+    }
+    return value;
   })
   @IsArray()
-  @IsNumber({}, { each: true })
+  @IsEnum(Rating, { each: true })
   @IsOptional()
-    ratings?: number[];
+    ratings?: Rating[];
 }
