@@ -266,7 +266,7 @@ const CityTourDetail = () => {
         <CommonStyles.Box className="tw-flex tw-flex-col tw-gap-5">
           <CommonStyles.Box>
             <CardCarousel
-              classNameContainerHeading="tw-px-0"
+              classNameContainerHeading="tw-px-0 tw-font-volkhov"
               data={mocDataCard}
               title={
                 <CommonStyles.Typography type="size22Weight700">
