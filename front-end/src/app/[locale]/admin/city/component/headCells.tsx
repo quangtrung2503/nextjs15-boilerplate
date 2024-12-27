@@ -124,6 +124,26 @@ export const headCells = ({
       },
     },
     {
+      id: "tag",
+      label: t("tag"),
+      sxCell: {width: "50%"},
+      numeric: false,
+      Cell(row: City, _index: number){
+        return <span>
+          <CommonStyles.Box className="tw-flex tw-items-center tw-flex-wrap">
+          {row.Tag?.map((tag,index)=>{
+            return <CommonStyles.Box key={index} boxShadow="0px 4px 10px 0px #00000014" sx={{color: `${tag.color}`}} className="tw-px-6 tw-py-3 tw-size-fit tw-rounded-[3px]">
+                  <CommonStyles.Box className="tw-flex tw-items-center tw-gap-3">
+                    <img src={`${apiUrls.IMG_URL}/${tag.icon}`} className="tw-max-w-[40px] tw-max-h-[20px] tw-rounded-full" />
+                    <CommonStyles.Typography type="size14Weight700" className={`tw-text-[${tag.color}]`}>{tag.name}</CommonStyles.Typography>
+                  </CommonStyles.Box>
+                </CommonStyles.Box>
+          })}
+          </CommonStyles.Box>
+        </span> 
+      }
+    },
+    {
       id: "actionCity",
       label: t("action"),
       numeric: false,

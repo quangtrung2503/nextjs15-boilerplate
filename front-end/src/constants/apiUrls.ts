@@ -16,5 +16,6 @@ export default {
     POST_URL: `${BASE_URL}/post`,
     UPLOAD_URL: `${BASE_URL}/upload`,
     DESTINATION_URL: `${BASE_URL}/destination`,
-    PROFILE_URL: `${BASE_URL}/user/profile`
+    PROFILE_URL: `${BASE_URL}/user/profile`,
+    TAG_URL: `${BASE_URL}/tag`
 }

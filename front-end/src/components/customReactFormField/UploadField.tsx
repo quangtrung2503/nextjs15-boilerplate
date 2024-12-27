@@ -69,7 +69,10 @@ const UploadField = (props: UploadFieldProps) => {
           showError(error)
         }
         finally{
-          setLoading(false)
+          setLoading(false);
+          if(uploadRef && uploadRef.current) {
+            uploadRef.current.value = ''
+          }
         }
         // setValue(field?.name || "", fileArray);
       } else {
@@ -83,6 +86,9 @@ const UploadField = (props: UploadFieldProps) => {
         }
         finally{
           setLoading(false);
+          if(uploadRef && uploadRef.current) {
+            uploadRef.current.value = ''
+          }
         }
       }
     }

@@ -2,13 +2,14 @@ import { default as CommonStyles } from "@/components/common"
 import CommonIcons from "@/components/CommonIcons"
 import { useState } from "react"
 import { Popover } from "@mui/material"
-import { Theme } from "@/services/modules/theme/interfaces/theme";
 import { useNotifications } from "@/helpers/toast";
+import { Tag } from "@/services/modules/tag/interfaces/tag";
+import apiUrls from "@/constants/apiUrls";
 
-const ActionCell: React.FC<{ row: Theme; handleEditId: (id: number) => void; handleDeleteTheme: (id: number) => void;t: any }> = ({
+const ActionCell: React.FC<{ row: Tag; handleEditId: (id: number) => void; handleDeleteTag: (id: number) => void;t: any }> = ({
   row,
   handleEditId,
-  handleDeleteTheme,
+  handleDeleteTag,
   t
 }) => {
   const [anchorEl, setAnchorEl] = useState<HTMLDivElement | null>(null);
@@ -25,7 +26,7 @@ const ActionCell: React.FC<{ row: Theme; handleEditId: (id: number) => void; han
   const handleConfirmDelete = () => {
     try{
       handleClosePopover();
-      handleDeleteTheme(Number(row.id));
+      handleDeleteTag(Number(row.id));
       showSuccess(t("deleteSuccess"))
     }
     catch(error){
@@ -57,7 +58,7 @@ const ActionCell: React.FC<{ row: Theme; handleEditId: (id: number) => void; han
           >
             <CommonStyles.Box className="tw-p-2 tw-flex tw-flex-col tw-items-center">
               <CommonStyles.Typography className="tw-text-md tw-mb-1 tw-font-bold">
-                {t("themeAdmin.confirmDelete")}
+                {t("confirmDelete")}
               </CommonStyles.Typography>
               <CommonStyles.Box className="tw-flex tw-gap-4">
                 <CommonStyles.Box className="tw-text-red-500 tw-cursor-pointer tw-border-solid tw-border-[1px] tw-bg-red-100 tw-rounded-md tw-px-2 tw-pb-1" onClick={handleConfirmDelete}>
@@ -77,11 +78,11 @@ const ActionCell: React.FC<{ row: Theme; handleEditId: (id: number) => void; han
 
 export const headCells = ({
   handleEditId,
-  handleDeleteTheme,
+  handleDeleteTag,
   t
 }: {
   handleEditId: (id: number) => void;
-  handleDeleteTheme: (id: number) => void;
+  handleDeleteTag: (id: number) => void;
   t: any
 }) => {
   return [
@@ -89,32 +90,31 @@ export const headCells = ({
       id: "id",
       label: "STT",
       numeric: true,
-      Cell(row: Theme, _index: number) {
+      Cell(row: Tag, _index: number) {
         return <span>{_index+1}</span>;
       },
     },
     {
       id: "name",
-      label: t("themeAdmin.name"),
+      label: t("name"),
       numeric: false,
-      Cell(row: Theme, _index: number) {
-        return <span>{row.name}</span>;
+      Cell(row: Tag, _index: number) {
+        return <span>
+          <CommonStyles.Box boxShadow="0px 4px 10px 0px #00000014" sx={{color: `${row.color}`}} className="tw-px-6 tw-py-3 tw-size-fit tw-rounded-[3px]">
+      <CommonStyles.Box className="tw-flex tw-items-center tw-gap-3">
+        <img src={`${apiUrls.IMG_URL}/${row.icon}`} className="tw-max-w-[40px] tw-rounded-full" />
+        <CommonStyles.Typography type="size14Weight700" className={`tw-text-[${row.color}]`}>{row.name}</CommonStyles.Typography>
+      </CommonStyles.Box>
+    </CommonStyles.Box>
+        </span>;
       },
     },
     {
-      id: "isDisplay",
-      label: t("themeAdmin.isDisplay"),
-      numeric: false,
-      Cell(row: Theme, _index: number) {
-        return <span>{row.isDisplay ? <CommonIcons.CheckCircleOutline /> : <></>}</span>;
-      },
-    },
-    {
-      id: "actionTheme",
+      id: "actionTag",
       label: t("action"),
       numeric: false,
-      Cell(row: Theme, _index: number) {
-        return <ActionCell row={row} handleEditId={handleEditId} handleDeleteTheme={handleDeleteTheme} t={t} />;
+      Cell(row: Tag, _index: number) {
+        return <ActionCell row={row} handleEditId={handleEditId} handleDeleteTag={handleDeleteTag} t={t} />;
       },
     },
   ];

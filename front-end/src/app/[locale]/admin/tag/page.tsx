@@ -5,43 +5,41 @@ import CommonDialog from "@/components/common/Dialog";
 import TableCommon, { HeadCell } from "@/components/common/Table";
 import useFiltersHandler from "@/hooks/useFiltersHandler";
 import useToggleDialog from "@/hooks/useToggleDialog";
-import useGetCities from "@/services/modules/city/hook/useGetAllCity";
-import CreateEditCity from "./component/createEditCity";
 import cachedKeys from "@/constants/cachedKeys";
-import { headCells } from "./component/headCells";
 import { useState } from "react";
-import cityServices from "@/services/modules/city/city.services";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import RHFField from "@/components/customReactFormField/ReactFormField";
 import InputField from "@/components/customReactFormField/InputField";
-import SelectField from "@/components/customReactFormField/SelectField";
 import { useNotifications } from "@/helpers/toast";
 import { useTranslations } from "next-intl";
 import CommonIcons from "@/components/CommonIcons";
-import Loading from "@/components/common/Loading";
+import useGetTags from "@/services/modules/tag/hook/useGetTags";
+import tagServices from "@/services/modules/tag/tag.services";
+import { headCells } from "./component/headCells";
+import CreateEditTag from "./component/createEditTag";
 
 interface FormSearch {
   textSearch: string;
   sortOrder: string;
 }
-const City = () => {
+const Tag = () => {
   const { filters, selected, setFilters, handleChangePage, handleChangeRowsPerPage: changeRowPerPage, handleRequestSort, handleSelectAllClick: handleSelectAll, handleCheckBox, } = useFiltersHandler({
     page: 1,
     perPage: 10
   });
-  const { data: dataCity, refetch: refetchCity, loading: loadingCity } = useGetCities(filters, { refetchKey: cachedKeys.fetchCities });
+  const { data: dataTag, refetch: refetchTag, loading: loadingTag } = useGetTags(filters, { refetchKey: cachedKeys.fetchTags });
   const { open, toggle, shouldRender } = useToggleDialog();
   const [id, setId] = useState<number | null>(null);
   const {showError} = useNotifications();
-  const t = useTranslations("cityAdmin");
+  const t = useTranslations("tagAdmin");
   const handleEditId = (id: number) => {
     setId(id);
     toggle();
   }
-  const handleDeleteCity = async (id: number) => {
+  const handleDeleteTag = async (id: number) => {
     try {
-      await cityServices.deleteCity(id);
-      await refetchCity();
+      await tagServices.deleteTag(id);
+      await refetchTag();
     }
     catch (error) {
       showError(error);
@@ -63,11 +61,6 @@ const City = () => {
     toggle();
     setId(null);
   }
-
-  if(!dataCity || loadingCity){
-    return <Loading />
-  }
-
   return (
     <CommonStyles.Box className="tw-px-10">
       <CommonStyles.Box className="tw-flex tw-justify-between tw-mb-5 tw-items-center">
@@ -79,6 +72,18 @@ const City = () => {
                 sx={{
                   fieldset:{
                   borderRadius: 30,
+                  "&:-webkit-autofill": {
+                    WebkitBoxShadow: "0 0 0 100px white inset",  
+                    WebkitTextFillColor: "#000", 
+                    transition: "background-color 5000s ease-in-out 0s",
+                  },
+                  "& input": {
+                    "&:-webkit-autofill": {
+                      WebkitBoxShadow: "0 0 0 100px white inset",
+                      WebkitTextFillColor: "#000",
+                      borderRadius: 30,
+                    },
+                  },
                 },}}
                 className="tw-rounded-[30px] tw-bg-white"
                 name="textSearch"
@@ -91,31 +96,31 @@ const City = () => {
             </form>
           </FormProvider>
         </CommonStyles.Box>
-        <CommonButton variant="outlined" className="active tw-text-nowrap tw-px-7" onClick={toggle} label={t("createNewCity")} />
+        <CommonButton variant="outlined" className="active tw-text-nowrap tw-px-7" onClick={toggle} label={t("createNewTag")} />
       </CommonStyles.Box>
       <CommonStyles.Box>
-        {dataCity &&
+        {dataTag &&
           <TableCommon
-            isLoading={loadingCity}
+            isLoading={loadingTag}
             sxTableHead={{ fontWeight: "bold" }}
             rowsPerPage={filters.perPage}
             disableSort={false}
             selected={selected}
-            totalCount={dataCity.totalItems}
+            totalCount={dataTag.totalItems}
             handleCheckBox={handleCheckBox}
             handleSelectAllClick={handleSelectAll}
             page={filters?.page || 0}
-            headCells={headCells({ handleEditId, handleDeleteCity,t })}
-            rows={dataCity?.items}
+            headCells={headCells({ handleEditId, handleDeleteTag,t })}
+            rows={dataTag?.items}
             handleChangePage={handleChangePage}
             handleChangeRowsPerPage={changeRowPerPage}
             handleRequestSort={handleRequestSort}
             labelNoData={t("labelNoData")}
           />}
       </CommonStyles.Box>
-      {shouldRender && <CommonDialog onClose={()=>setId(null)} open={open} toggle={toggle} body={<CreateEditCity id={Number(id)} handleClose={handleClose} />} />}
+      {shouldRender && <CommonDialog onClose={()=>setId(null)} open={open} toggle={toggle} body={<CreateEditTag id={Number(id)} handleClose={handleClose} />} />}
     </CommonStyles.Box>
   );
 }
 
-export default City;
+export default Tag;
