@@ -50,7 +50,10 @@ export type TypeTypographyClient =
   | "size36Weight900"
   | "size48Weight700"
   | "size48Weight900"
-  | "size64Weight700";
+  | "size64Weight700"
+  | "size15Weight800"
+  | "size16Weight800"
+  | "size36Weight800";
 
 interface Props extends TypographyProps {
   type?: TypeTypographyClient;
@@ -131,10 +134,6 @@ const Typography = (props: Props) => {
     styles.set("size16Weight500", {
       fontSize: "16px",
       fontWeight: 400,
-    });
-    styles.set("size14Weight600", {
-      fontSize: "14px", //0.875rem
-      fontWeight: 600,
     });
     styles.set("size18Weight500", {
       fontSize: "18px",
@@ -250,6 +249,18 @@ const Typography = (props: Props) => {
     });
     styles.set("size12Weight800", {
       fontSize: "12px",
+      fontWeight: 800,
+    });
+    styles.set("size15Weight800", {
+      fontSize: "15px",
+      fontWeight: 800,
+    });
+    styles.set("size16Weight800", {
+      fontSize: "16px",
+      fontWeight: 800,
+    });
+    styles.set("size36Weight800", {
+      fontSize: "36px",
       fontWeight: 800,
     });
 

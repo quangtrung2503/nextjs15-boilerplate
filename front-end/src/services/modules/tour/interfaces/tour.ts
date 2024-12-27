@@ -2,6 +2,7 @@ import { TransportOfTour } from "@/helpers/common";
 export interface Tour {
   id?: number;
   name: string;
+  slug?: string;
   price: number;
   transport: string;
   package: string;
@@ -9,15 +10,18 @@ export interface Tour {
   numberOfHours: number;
   startDate: string;
   endDate: string;
+  isFeature?: boolean;
+  isActive?: boolean;
   description: string;
   activity: string;
   included: string;
   notIncluded: string;
   safety: string;
   language: string;
+  guideMeetingAddress?: string;
   cityId: number;
   themeId: number;
-  destinationIds: number[];
+  destinationIds?: number[];
   createdAt?: string;
   updatedAt?: string;
   City?: City;
@@ -27,17 +31,17 @@ export interface Tour {
   averageRating?: number;
   images: string[];
   totalReviews?: number;
-  guideMeetingAddress: string;
-};
+}
 export interface City {
   id: number;
   name: string;
   image: string;
   description: string;
   isActive: boolean;
+  slug?: string;
   createdAt: string;
   updatedAt: string;
-};
+}
 
 export interface Theme {
   id: number;
@@ -46,7 +50,7 @@ export interface Theme {
   isActive: boolean;
   createdAt: string;
   updatedAt: string;
-};
+}
 
 export interface Destination {
   id: number;
@@ -54,7 +58,7 @@ export interface Destination {
   isActive: boolean;
   createdAt: string;
   updatedAt: string;
-};
+}
 
 export interface TourDestination {
   id: number;
@@ -63,7 +67,7 @@ export interface TourDestination {
   createdAt: string;
   updatedAt: string;
   Destination: Destination;
-};
+}
 
 export interface TourImage {
   id: number;
@@ -71,10 +75,13 @@ export interface TourImage {
   image: string;
   createdAt: string;
   updatedAt: string;
-};
+  Tour: {
+    slug: string;
+  };
+}
 
 export interface ApiResponse {
   tour: Tour;
   listTourInToday: Tour[];
   listTourSameCity: Tour[];
-};
+}

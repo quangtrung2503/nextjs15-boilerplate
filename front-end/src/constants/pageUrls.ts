@@ -9,6 +9,7 @@ const pageUrls = {
     Package: "/service-package",
     Payment: "/service-package/payment/",
   },
+  CityTour: "/citytour",
   Admin: {
     Home: '/admin',
     CityPage: '/admin/city',

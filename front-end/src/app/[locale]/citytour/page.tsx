@@ -29,17 +29,17 @@ interface Filter {
   filter: string,
 }
 const CityTourPage = () => {
-  const t = useTranslations("cityTourDetail");
+  const t = useTranslations("cityTour");
   const { showSuccess, showError } = useNotifications();
   const validateSchema = Yup.object().shape({
     startDate: Yup.date()
-      .required(t("validations.startDateRequire"))
-      .typeError(t("validations.startDateInvalid"))
-      .min(new Date(), t("validations.startDateMin")),
+      .required(t("cityTourDetail.validations.startDateRequire"))
+      .typeError(t("cityTourDetail.validations.startDateInvalid"))
+      .min(new Date(), t("cityTourDetail.validations.startDateMin")),
     endDate: Yup.date()
-      .required(t("validations.endDateRequire"))
-      .typeError(t("validations.endDateInvalid"))
-      .min(Yup.ref("startDate"), t("validations.endDateAfterStartDate")),
+      .required(t("cityTourDetail.validations.endDateRequire"))
+      .typeError(t("cityTourDetail.validations.endDateInvalid"))
+      .min(Yup.ref("startDate"), t("cityTourDetail.validations.endDateAfterStartDate")),
   });
   const { handleSubmit, control, setValue } = useForm<Availability>({
     defaultValues: {
@@ -62,7 +62,6 @@ const CityTourPage = () => {
       startDate: values?.startDate,
       endDate: values?.endDate,
     };
-    console.log(body)
     try {
       // const requestPayload = LoginModel.parseBodyToRequest(body);
       // const res = await auth?.signIn(requestPayload);
@@ -116,15 +115,15 @@ const CityTourPage = () => {
         <CommonStyles.Box className='tw-flex tw-justify-between tw-items-center'>
           <CommonStyles.Box>
             <CommonStyles.Typography type='size36Weight700' className='tw-text-accent_gray_dark'>
-              Things To Do In London
+              {t("title")}
             </CommonStyles.Typography>
             <CommonStyles.Typography type='size15Weight600' className='tw-text-accent_gray_500'>
-              49 Activities Found
+              {t("activitiesFound")}
             </CommonStyles.Typography>
           </CommonStyles.Box>
           <CommonStyles.Box className='tw-flex tw-gap-3'>
             <CommonStyles.Typography type='size15Weight700' className='tw-text-accent_gray_dark tw-text-nowrap tw-mt-2'>
-              Sort by:
+              {t("sortBy")}
             </CommonStyles.Typography>
 
             <RHFField
@@ -156,7 +155,7 @@ const CityTourPage = () => {
             >
               <CommonStyles.Box className="tw-flex tw-flex-col tw-items-start tw-gap-4 tw-mx-auto">
                 <CommonStyles.Typography type='size18Weight700' className='tw-text-accent_gray_dark tw-px-7'>
-                  Availability
+                  {t("availability")}
                 </CommonStyles.Typography>
                 <CommonStyles.Divider orientation='horizontal' flexItem />
                 <CommonStyles.Box className="tw-w-full tw-flex tw-flex-col tw-gap-5 tw-px-7 tw-box-border">
@@ -174,7 +173,7 @@ const CityTourPage = () => {
                     label={"To"}
                   />
                 </CommonStyles.Box>
-                <CommonStyles.Box className='tw-px-7 tw-pb-7 tw-w-full tw-box-border'>
+                <CommonStyles.Box className='tw-px-7 tw-pb-7 tw-pt-4 tw-w-full tw-box-border'>
                   <CommonButton
                     className="tw-w-full tw-bg-primary tw-text-accent_gray_800"
                     type="submit"
@@ -215,13 +214,14 @@ const CityTourPage = () => {
                       plan="Family Plan"
                       price={35}
                       feedback_quantity={500}
+                      feedback_average={4}
                     />
                   </CommonStyles.Box>
                 ))}
             </CommonStyles.Box>
             <CommonStyles.CommonButton className='tw-w-full tw-border-solid tw-rounded-full tw-mt-7 tw-mb-[80px]' variant='outlined'>
               <CommonStyles.Typography type='size16Weight700' className='tw-text-primary '>
-                Load more
+                {t("loadMoreBtn")}
               </CommonStyles.Typography>
             </CommonStyles.CommonButton>
           </CommonStyles.Box>
@@ -231,7 +231,7 @@ const CityTourPage = () => {
       <Container className='tw-flex tw-flex-col tw-gap-12'>
         <CommonStyles.Box className='tw-flex tw-flex-col tw-gap-4 tw-pt-14 '>
           <CommonStyles.Typography type='size22Weight700' className='tw-text-accent_gray_dark'>
-            Outside The City Specials
+            {t("titleOutSite")}
           </CommonStyles.Typography>
           <CommonStyles.Divider orientation='horizontal' flexItem />
 
@@ -241,7 +241,7 @@ const CityTourPage = () => {
               data={mocDataCard}
               title={
                 <CommonStyles.Typography type='size12Weight800' className="tw-text-center tw-px-6 tw-py-2 tw-rounded-full tw-bg-primary tw-text-white">
-                  Water Activities
+                  {t("titleWaterActivities")}
                 </CommonStyles.Typography>
               } />
           </CommonStyles.Box>
@@ -251,7 +251,7 @@ const CityTourPage = () => {
               data={mocDataCard}
               title={
                 <CommonStyles.Typography type='size12Weight800' className="tw-text-center tw-px-6 tw-py-2 tw-rounded-full tw-bg-accent_blue tw-text-white">
-                  Special Foods
+                  {t("titleSpecialFoods")}
                 </CommonStyles.Typography>
               } />
           </CommonStyles.Box>
@@ -261,7 +261,7 @@ const CityTourPage = () => {
               data={mocDataCard}
               title={
                 <CommonStyles.Typography type='size12Weight800' className="tw-text-center tw-px-6 tw-py-2 tw-rounded-full tw-bg-accent_red tw-text-white">
-                  River Activity
+                  {t("titleRiverActivity")}
                 </CommonStyles.Typography>
               } />
           </CommonStyles.Box>

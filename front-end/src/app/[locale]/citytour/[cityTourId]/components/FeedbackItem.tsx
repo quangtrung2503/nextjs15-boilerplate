@@ -24,7 +24,7 @@ const FeedbackItem: React.FC<FeedbackData> = ({
   isVerified,
   helpful,
 }) => {
-  const t = useTranslations("cityTourDetail");
+  const t = useTranslations("cityTour.cityTourDetail");
   return (
     <CommonStyles.Box className="tw-py-5 tw-border-b">
       <CommonStyles.Box className="tw-flex tw-gap-10 tw-items-start">
