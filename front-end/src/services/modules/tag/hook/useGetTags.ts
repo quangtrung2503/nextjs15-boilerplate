@@ -3,9 +3,9 @@ import cloneDeep from "lodash/cloneDeep";
 import { isEmpty, isObject } from "lodash";
 import { ResponseList } from "@/interfaces/common";
 import { useSave } from "@/stores/useStore";
-import themeServices, { FiltersGetThemes, RequestGetThemes, ResponseThemeList } from "../theme.services";
-import { Theme } from "../interfaces/theme";
 import { useNotifications } from "@/helpers/toast";
+import tagServices, { FiltersGetTags, RequestGetTags, ResponseTagList } from "../tag.services";
+import { Tag } from "../interfaces/tag";
 
 /********************************************************
  * SNIPPET GENERATED
@@ -21,7 +21,7 @@ import { useNotifications } from "@/helpers/toast";
  ********************************************************/
 
 //* Check parse body request
-const parseRequest = (filters: FiltersGetThemes): RequestGetThemes => {
+const parseRequest = (filters: FiltersGetTags): RequestGetTags => {
   return cloneDeep({
     page: filters.page,
     perPage: filters.perPage,
@@ -31,10 +31,10 @@ const parseRequest = (filters: FiltersGetThemes): RequestGetThemes => {
   });
 };
 
-const requestAPI = themeServices.getThemes;
+const requestAPI = tagServices.getTags;
 
-const useGetThemes = (
-  filters: FiltersGetThemes,
+const useGetTags = (
+  filters: FiltersGetTags,
   options: { isTrigger?: boolean; refetchKey?: string } = {
     isTrigger: true,
     refetchKey: "",
@@ -44,7 +44,7 @@ const useGetThemes = (
   const { isTrigger = true, refetchKey = "" } = options;
   const signal = useRef(new AbortController());
   const save = useSave();
-  const [data, setData] = useState<ResponseList<Theme[]>>();
+  const [data, setData] = useState<ResponseList<Tag[]>>();
   const [loading, setLoading] = useState(false);
   const [refetching, setRefetching] = useState(false);
   const [error, setError] = useState<unknown>(null);
@@ -52,7 +52,7 @@ const useGetThemes = (
   const {showError} = useNotifications();
 
   //! Function
-  const fetch: () => Promise<ResponseThemeList> | undefined = useCallback(() => {
+  const fetch: () => Promise<ResponseTagList> | undefined = useCallback(() => {
     if (!isTrigger) {
       return;
     }
@@ -73,7 +73,7 @@ const useGetThemes = (
     });
   }, [filters,isTrigger]);
 
-  const checkConditionPass = useCallback((response: ResponseThemeList) => {
+  const checkConditionPass = useCallback((response: ResponseTagList) => {
     //* Check condition of response here to set data
     if (isObject(response?.data)) {
       setData(response?.data.data);
@@ -162,4 +162,4 @@ const useGetThemes = (
   };
 };
 
-export default useGetThemes;
+export default useGetTags;

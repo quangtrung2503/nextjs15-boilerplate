@@ -17,6 +17,9 @@ import { useNotifications } from "@/helpers/toast"
 import CommonIcons from "@/components/CommonIcons"
 import { useTranslations } from "next-intl"
 import apiUrls from "@/constants/apiUrls"
+import SelectField from "@/components/customReactFormField/SelectField"
+import useGetTags from "@/services/modules/tag/hook/useGetTags"
+import useFiltersHandler from "@/hooks/useFiltersHandler"
 
 interface createEditCityProps {
   id?: number;
@@ -26,11 +29,14 @@ interface FormValues {
   name: string;
   image: string;
   description: string;
+  tagIds: number[]
 }
 const CreateEditCity: FC<createEditCityProps> = (props) => {
   const { id, handleClose } = props;
   const { uploadImage } = useImageUploader();
   const { data } = useGetCity(Number(id), { isTrigger: !!id });
+  const {filters} = useFiltersHandler({});
+  const {data: dataTag} = useGetTags(filters);
   const {showError,showSuccess} = useNotifications();
   const t = useTranslations("cityAdmin")
   const schema = yup
@@ -38,11 +44,19 @@ const CreateEditCity: FC<createEditCityProps> = (props) => {
     name: yup.string().required(t("nameRequire")),
     image: yup.string().required(t("imageRequire")),
     description: yup.string().required(t("descriptionRequire")),
+    tagIds: yup
+            .array()
+            .min(1, t("tagIdsRequire"))
+            .required(t("tagIdsRequire")),
     })
     .required();
     
   const initValue = useMemo(() => {
-    return { name:  data?.data.name ?? "", image: data?.data.image ?? "", description: data?.data.description ?? ""}
+    return { name:  data?.data.name ?? "", 
+      image: data?.data.image ?? "", 
+      description: data?.data.description ?? "",
+      tagIds: data?.data.Tag?.map((tag)=>tag.id) ?? []
+    }
   }, [data?.data]);
 
   const methods = useForm<FormValues>({
@@ -55,9 +69,10 @@ const CreateEditCity: FC<createEditCityProps> = (props) => {
     if (data?.data) {
       // Reset form values when data is loaded
       reset({
-        name: data.data.name || "",
-        image: data.data.image || "",
-        description: data.data.description || "",
+        name: data.data.name ?? "",
+        image: data.data.image ?? "",
+        description: data.data.description ?? "",
+        tagIds: data?.data.Tag?.map((tag)=>tag.id) ?? []
       });
     }
   }, [data?.data, reset]);
@@ -66,6 +81,9 @@ const CreateEditCity: FC<createEditCityProps> = (props) => {
   const onSubmit: SubmitHandler<FormValues> = async (data: City) => {
     try {
       id ? data = { ...data, id } : { data };
+      data = {...data,tagIds: data.tagIds.map((tag) =>
+        Number(tag),
+      ),}
       id ? await cityServices.updateCity(data) : await cityServices.createCity(data);
       await fetchCities();
       showSuccess(id ? t("editSuccess"): t("createSuccess"))
@@ -75,19 +93,20 @@ const CreateEditCity: FC<createEditCityProps> = (props) => {
       showError(error);
     }
   };
-  const handleUpload = async (e: ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      try {
-        const res = await uploadImage(file);;
-        methods.setValue("image", res.data.data.uri);
-      } catch (error) {
-        showError(error);
-      }
-    } else {
-    showError(t("noFileSelected"));
-    }
-  }
+  const tagOption= useMemo(()=>{
+    return dataTag?.items.map((tag) => {
+      return {
+        key: tag.id?.toString(),
+        label: <CommonStyles.Box sx={{color: `${tag.color}`}} className="tw-size-fit">
+              <CommonStyles.Box className="tw-flex tw-items-center tw-gap-3">
+                <img src={`${apiUrls.IMG_URL}/${tag.icon}`} className="tw-max-w-[40px] tw-rounded-full" />
+                <CommonStyles.Typography type="size14Weight700" className={`tw-text-[${tag.color}]`}>{tag.name}</CommonStyles.Typography>
+              </CommonStyles.Box>
+            </CommonStyles.Box>,
+        value: tag.id?.toString(),
+      };
+    });
+  },[dataTag?.items])
   const handleDeleteImage = () => {
     setValue("image","");
   };
@@ -114,7 +133,7 @@ const CreateEditCity: FC<createEditCityProps> = (props) => {
             label={t("image")}
             // defaultValue={initValue?.image}
             component={UploadField}
-            onChange={(e) => handleUpload(e)}
+            // onChange={(e) => handleUpload(e)}
           />
           
           {watch("image") != "" && <CommonStyles.Box className="tw-col-span-12 tw-flex tw-flex-wrap">
@@ -143,7 +162,16 @@ const CreateEditCity: FC<createEditCityProps> = (props) => {
             component={InputField}
             label={t("description")}
           />
-          <CommonStyles.Box className="tw-flex tw-justify-around">
+          <RHFField
+            name="tagIds"
+            placeholder={t("placeholderTag")}
+            control={methods.control}
+            component={SelectField}
+            options={tagOption}
+            multiple
+            label={t("tag")}
+          />
+          <CommonStyles.Box className="tw-flex tw-justify-around tw-mt-3">
             <CommonStyles.CommonButton type="submit">{t("submit")}</CommonStyles.CommonButton>
           </CommonStyles.Box>
           <CommonStyles.Box  className="tw-absolute tw-top-0 tw-right-0 tw-cursor-pointer" onClick={handleClose}><CommonIcons.Close /></CommonStyles.Box>

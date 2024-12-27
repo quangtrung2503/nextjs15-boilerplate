@@ -13,7 +13,6 @@ import { FieldError } from "react-hook-form";
 import { twMerge } from "tailwind-merge";
 import { default as CommonStyles } from "@/components/common";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
-
 interface CustomInputProps extends InputProps {
   field: {
     value: string;
@@ -31,9 +30,9 @@ interface CustomInputProps extends InputProps {
   rightIcon?: ReactNode;
   classNameContainer?: string;
   icon?: any;
+  startIcon?: any;
   regex?: RegExp;
 }
-
 const InputField: React.FC<CustomInputProps> = ({
   field,
   fieldState,
@@ -46,12 +45,12 @@ const InputField: React.FC<CustomInputProps> = ({
   classNameContainer,
   regex,
   icon,
+  startIcon
 }) => {
   const [showPassword, setShowPassword] = React.useState<boolean>(false);
   const handleToggleShowPassword = () => {
     setShowPassword((prev) => !prev);
   };
-
   const onChangeHandler = (
     event: React.ChangeEvent<HTMLInputElement>,
   ) => {
@@ -103,6 +102,7 @@ const InputField: React.FC<CustomInputProps> = ({
         disabled={type === "email"}
         slotProps={{
           input: {
+            startAdornment: <InputAdornment position="start">{startIcon}</InputAdornment>,
             endAdornment:
               type === "password" ? (
                 <InputAdornment position="end">
@@ -117,15 +117,15 @@ const InputField: React.FC<CustomInputProps> = ({
           },
         }}
         error={!!fieldState.error}
+        helperText={fieldState.error?.message || ""}
       />
-       {fieldState.error && (
-        <span className="tw-text-[#d32f2f] tw-font-mulish tw-text-sm">
+       {/* {fieldState.error && (
+        <span className="tw-text-[#D32F2F] tw-font-mulish tw-text-sm">
           {fieldState.error.message}
         </span>
-      )}
+      )} */}
       {/* </FormControl> */}
     </CommonStyles.Box>
   );
 };
-
 export default InputField;

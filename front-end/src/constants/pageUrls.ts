@@ -22,6 +22,7 @@ const pageUrls = {
     Tournaments: "/admin/tournament",
     Notification: "/admin/notification",
     User: "/admin/user",
+    Tag: "/admin/tag",
     Product: "/admin/product",
   },
   Invoices: "/sales/invoices",
