@@ -67,7 +67,7 @@ const CardCarousel: React.FC<Props> = ({
   }, []);
 
   return (
-    <CommonStyles.Box className="tw-flex tw-flex-col">
+    <CommonStyles.Box className="tw-flex tw-flex-col tw-w-full">
       <Container
         className={twMerge(
           "tw-flex tw-items-center tw-justify-between",
@@ -97,7 +97,7 @@ const CardCarousel: React.FC<Props> = ({
         </CommonStyles.Box>
       </Container>
       <CommonStyles.Box
-        className="tw-overflow-auto scrollbar-hide tw-w-full"
+        className="tw-overflow-auto scrollbar-hide tw-w-full "
         ref={scrollContainerRef}
       >
         <CommonStyles.Box className="tw-flex tw-gap-5 tw-w-fit tw-py-5">

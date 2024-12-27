@@ -4,6 +4,7 @@ import { Container } from "@mui/material";
 import CommonIcons from "@/components/CommonIcons";
 import { CommonButton } from "@/components/common/Button";
 import { commonImg } from "@/assets";
+import { useTranslations } from "next-intl";
 
 export interface IntroduceMobileAppProps {
   introduceMobileApp: {
@@ -18,6 +19,7 @@ export interface IntroduceMobileAppProps {
 }
 
 const IntroduceMobileApp = () => {
+  const t = useTranslations("homePage.introduceMobileApp")
   return (
     <CommonStyles.Box
       sx={{ backgroundImage: `url(${commonImg.introduceApp.src})` }}
@@ -41,32 +43,34 @@ const IntroduceMobileApp = () => {
             />
           </CommonStyles.Box>
         </CommonStyles.Box>
-        <CommonStyles.Box className="tw-col-span-6 tw-relative tw-z-40 tw-p-10 tw-flex tw-flex-col tw-gap-y-5 tw-text-white">
+        <CommonStyles.Box className="tw-col-span-6 tw-w-[530px] tw-relative tw-z-40  tw-flex tw-flex-col tw-gap-y-5 tw-text-white">
           <CommonStyles.Box>
-            <CommonStyles.Typography type="size36Weight700">
-              Smart City Tour Mobile App
+            <CommonStyles.Typography type="size36Weight800">
+              {t("title")}
             </CommonStyles.Typography>
-            <CommonStyles.Typography type="size16Weight600">
-              Available on IOS & Android
+            <CommonStyles.Typography type="size16Weight800">
+              {t("available")}
             </CommonStyles.Typography>
           </CommonStyles.Box>
-          <CommonStyles.Typography>
-            Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet
-            sint. Velit officia consequat duis enim velit mollit. Exercitation
-            veniam consequat sunt nostrud amet.
+          <CommonStyles.Typography type="size16Weight500">
+            {t("content")}
           </CommonStyles.Typography>
-          <CommonStyles.Box className="tw-flex tw-gap-5">
+          <CommonStyles.Box className="tw-flex tw-justify-between">
             <CommonButton
-              className="tw-rounded-full tw-px-5 tw-shadow-sm tw-shadow-secondary"
+              className="tw-rounded-full tw-px-8 tw-py-8 tw-shadow-sm tw-shadow-secondary"
               startIcon={<CommonIcons.Ios />}
             >
-              Download For IOS
+              <CommonStyles.Typography type="size16Weight800">
+                {t("iosBtn")}
+              </CommonStyles.Typography>
             </CommonButton>
             <CommonButton
-              className="tw-rounded-full tw-px-5 tw-shadow-sm tw-shadow-secondary tw-font-mulish"
+              className="tw-rounded-full tw-px-8 tw-py-8 tw-shadow-sm tw-shadow-secondary"
               startIcon={<CommonIcons.Android />}
             >
-              Download For Android
+              <CommonStyles.Typography type="size16Weight800">
+                {t("androidBtn")}
+              </CommonStyles.Typography>
             </CommonButton>
           </CommonStyles.Box>
         </CommonStyles.Box>
