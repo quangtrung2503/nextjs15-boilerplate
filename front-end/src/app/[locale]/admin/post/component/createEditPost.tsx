@@ -5,7 +5,6 @@ import * as yup from "yup";
 import { default as CommonStyles } from "@/components/common";
 import RHFField from "@/components/customReactFormField/ReactFormField";
 import { yupResolver } from "@hookform/resolvers/yup";
-import InputField from "@/components/customReactFormField/InputField";
 import useImageUploader from "@/hooks/useUpload";
 import { useGet } from "@/stores/useStore";
 import cachedKeys from "@/constants/cachedKeys";
@@ -13,16 +12,19 @@ import CheckboxField from "@/components/customReactFormField/CheckBoxField";
 import useGetPost from "@/services/modules/post/hook/useGetPost";
 import { Post } from "@/services/modules/post/interface/post";
 import postServices from "@/services/modules/post/post.services";
-import UploadField from "@/components/customReactFormField/UploadField";
 import TinyMCEEditor from "@/components/common/TinyMCEEditor";
 import TinyMCEEditorField from "@/components/customReactFormField/TinyNCEEditorField";
 import { useNotifications } from "@/helpers/toast";
 import CommonIcons from "@/components/CommonIcons";
 import { useTranslations } from "next-intl";
 import apiUrls from "@/constants/apiUrls";
+import CancelButton from "../../Component/buttonCancel";
+import InputField from "../../Component/customField/inputField";
+import { CommonButtonAdmin } from "../../Component/customField/commonButton";
+import uploadField from "../../Component/customField/uploadField";
 
 interface createEditPostProps {
-  toggle: () => void;
+  handleClose: () => void;
   id?: number;
 }
 interface FormValues {
@@ -31,7 +33,7 @@ interface FormValues {
   image: string;
 }
 const CreateEditPost: FC<createEditPostProps> = (props) => {
-  const { toggle, id } = props;
+  const { handleClose, id } = props;
   const { data } = useGetPost(Number(id), { isTrigger: !!id });
   const { showError,showSuccess } = useNotifications();
   const t = useTranslations("postAdmin");
@@ -75,7 +77,7 @@ const CreateEditPost: FC<createEditPostProps> = (props) => {
         : await postServices.createPost(data);
       await fetchPosts();
       showSuccess(id?t("editSuccess"):t("createSuccess"));
-      toggle();
+      handleClose();
     } catch (error) {
       showError(error);
     }
@@ -118,7 +120,7 @@ const CreateEditPost: FC<createEditPostProps> = (props) => {
             setValue={setValue}
             label={t("image")}
             // defaultValue={initValue?.image}
-            component={UploadField}
+            component={uploadField}
           />
 
           {watch("image") != "" && (
@@ -139,14 +141,19 @@ const CreateEditPost: FC<createEditPostProps> = (props) => {
               </CommonStyles.Box>
             </CommonStyles.Box>
           )}
-          <CommonStyles.Box className="tw-flex tw-justify-around">
-            <CommonStyles.CommonButton type="submit">
-              {t("submit")}
-            </CommonStyles.CommonButton>
+          <CommonStyles.Box className="tw-flex tw-justify-center tw-gap-8 tw-mt-8 tw-mb-4">
+          <CancelButton handleClose={handleClose} />
+            <CommonButtonAdmin
+              variant="outlined"
+              type="submit"
+              className="active tw-min-w-28"
+            >
+              {id? t("edit") : t("create")}
+            </CommonButtonAdmin>
           </CommonStyles.Box>
           <CommonStyles.Box
             className="tw-absolute tw-top-0 tw-right-0 tw-cursor-pointer"
-            onClick={toggle}
+            onClick={handleClose}
           >
             <CommonIcons.Close />
           </CommonStyles.Box>

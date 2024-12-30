@@ -1,10 +1,13 @@
 import { default as CommonStyles } from "@/components/common"
 import CommonIcons from "@/components/CommonIcons"
 import { useState } from "react"
-import { Popover } from "@mui/material"
+import { Popover, Tooltip } from "@mui/material"
 import { User } from "@/services/modules/user/interfaces/user.inteface";
 import moment from "moment";
 import { useNotifications } from "@/helpers/toast";
+import useToggleDialog from "@/hooks/useToggleDialog";
+import CommonDialog from "@/components/common/Dialog";
+import ConfirmDeleteDialog from "../../Component/confirmDeleteDialog";
 
 const ActionCell: React.FC<{ row: User; handleEditId: (id: number) => void; handleDeleteUser: (id: number) => void; t: any }> = ({
   row,
@@ -12,20 +15,12 @@ const ActionCell: React.FC<{ row: User; handleEditId: (id: number) => void; hand
   handleDeleteUser,
   t
 }) => {
-  const [anchorEl, setAnchorEl] = useState<HTMLDivElement | null>(null);
+  const {open, toggle, shouldRender} = useToggleDialog();
   const {showError,showSuccess} = useNotifications();
-  
-  const handleOpenPopover = (event: React.MouseEvent<HTMLDivElement>) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleClosePopover = () => {
-    setAnchorEl(null);
-  };
 
   const handleConfirmDelete = () => {
     try{
-      handleClosePopover();
+      toggle();
       handleDeleteUser(Number(row.id));
       showSuccess(t("deleteSuccess"))
     }
@@ -34,42 +29,33 @@ const ActionCell: React.FC<{ row: User; handleEditId: (id: number) => void; hand
     }
   };
 
-  const isPopoverOpen = Boolean(anchorEl);
-
   return (
     <CommonStyles.Box className="tw-flex tw-gap-2">
       {row.id && (
         <>
-          <CommonStyles.Box onClick={() => handleEditId(Number(row.id))} className="tw-cursor-pointer tw-rounded-full tw-border-solid tw-size-7 tw-border-[1px] tw-flex tw-justify-center tw-items-center tw-bg-blue-100 tw-border-blue-500">
-            <CommonIcons.EditOutlined className="tw-text-blue-500" />
-          </CommonStyles.Box>
-          <CommonStyles.Box onClick={handleOpenPopover} className="tw-rounded-full tw-cursor-pointer tw-border-solid tw-size-7 tw-border-[1px] tw-flex tw-justify-center tw-items-center tw-bg-red-100 tw-border-red-500">
-            <CommonIcons.DeleteOutline className="tw-text-red-500" />
-          </CommonStyles.Box>
-          <Popover
-          className="tw-mt-1"
-            open={isPopoverOpen}
-            anchorEl={anchorEl}
-            onClose={handleClosePopover}
-            anchorOrigin={{
-              vertical: "bottom",
-              horizontal: "left",
-            }}
-          >
-            <CommonStyles.Box className="tw-p-2 tw-flex tw-flex-col tw-items-center">
-              <CommonStyles.Typography className="tw-text-md tw-mb-1 tw-font-bold">
-                {t("userAdmin.confirmDelete")}
-              </CommonStyles.Typography>
-              <CommonStyles.Box className="tw-flex tw-gap-4">
-                <CommonStyles.Box className="tw-text-red-500 tw-cursor-pointer tw-border-solid tw-border-[1px] tw-bg-red-100 tw-rounded-md tw-px-2 tw-pb-1" onClick={handleConfirmDelete}>
-                  {t("delete")}
-                </CommonStyles.Box>
-                <CommonStyles.Box className="tw-text-gray-700 tw-cursor-pointer tw-border-solid tw-border-[1px] tw-rounded-md tw-px-2 tw-pb-1" onClick={handleClosePopover}>
-                  {t("cancel")}
-                </CommonStyles.Box>
-              </CommonStyles.Box>
+          <Tooltip title={t("edit")}>
+            <CommonStyles.Box
+              onClick={() => handleEditId(Number(row.id))}
+              className="tw-cursor-pointer tw-size-7"
+            >
+              <CommonIcons.EditOutlined className="tw-text-blue-500" />
             </CommonStyles.Box>
-          </Popover>
+          </Tooltip>
+          <Tooltip title={t("delete")}>
+            <CommonStyles.Box
+              onClick={toggle}
+              className="tw-cursor-pointer tw-size-7"
+            >
+              <CommonIcons.DeleteOutline className="tw-text-red-500" />
+            </CommonStyles.Box>
+          </Tooltip>
+          {shouldRender && (
+            <CommonDialog
+              open={open}
+              toggle={toggle}
+              body={<ConfirmDeleteDialog handleConfirmDelete={handleConfirmDelete} toggle={toggle} />}
+            />
+          )}
         </>
       )}
     </CommonStyles.Box>
@@ -79,10 +65,14 @@ const ActionCell: React.FC<{ row: User; handleEditId: (id: number) => void; hand
 export const headCells = ({
   handleEditId,
   handleDeleteUser,
+  page,
+  perPage,
   t
 }: {
   handleEditId: (id: number) => void;
   handleDeleteUser: (id: number) => void;
+  page: number,
+  perPage: number,
   t: any
 }) => {
   return [
@@ -91,7 +81,7 @@ export const headCells = ({
       label: "STT",
       numeric: true,
       Cell(row: User, _index: number) {
-        return <span>{_index+1}</span>;
+        return <span>{(page-1) * perPage +_index+1}</span>;
       },
     },
     {

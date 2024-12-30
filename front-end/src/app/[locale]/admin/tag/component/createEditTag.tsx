@@ -4,7 +4,6 @@ import * as yup from "yup";
 import { default as CommonStyles } from "@/components/common";
 import RHFField from "@/components/customReactFormField/ReactFormField";
 import { yupResolver } from "@hookform/resolvers/yup";
-import InputField from "@/components/customReactFormField/InputField";
 import { useGet } from "@/stores/useStore";
 import cachedKeys from "@/constants/cachedKeys";
 import CommonIcons from "@/components/CommonIcons";
@@ -17,6 +16,9 @@ import { Tag } from "@/services/modules/tag/interfaces/tag";
 import apiUrls from "@/constants/apiUrls";
 import InputFieldColor from "@/components/customReactFormField/InputFieldColor";
 import { commonImg } from "@/assets";
+import CancelButton from "../../Component/buttonCancel";
+import InputField from "../../Component/customField/inputField";
+import { CommonButtonAdmin } from "../../Component/customField/commonButton";
 
 interface createEditTagProps {
   id?: number;
@@ -90,19 +92,7 @@ const CreateEditTag: FC<createEditTagProps> = (props) => {
       <FormProvider {...methods}>
         <form onSubmit={methods.handleSubmit(onSubmit)}>
           <CommonStyles.Box className="tw-mb-3">
-            <CommonStyles.Box className="tw-flex tw-justify-between tw-w-full">
-              <label className="tw-font-mulish tw-font-bold tw-text-accent_gray_800">
-                {t("color")}
-              </label>
-              <RHFField
-                name="color"
-                control={methods.control}
-                component={InputFieldColor}
-                type="color"
-                placeholder={t("placeholderName")}
-              />
-            </CommonStyles.Box>
-            <CommonStyles.Box className="tw-flex tw-w-full tw-justify-between tw-mt-4">
+            <CommonStyles.Box className="tw-flex tw-w-full tw-justify-between tw-mb-4">
               <label className="tw-font-mulish tw-font-bold tw-text-accent_gray_800">
                 {t("icon")}
               </label>
@@ -148,19 +138,23 @@ const CreateEditTag: FC<createEditTagProps> = (props) => {
                 }
               />
             </CommonStyles.Box>
+            <CommonStyles.Box className="tw-flex tw-justify-between tw-w-full">
+              <label className="tw-font-mulish tw-font-bold tw-text-accent_gray_800">
+                {t("color")}
+              </label>
+              <RHFField
+                name="color"
+                control={methods.control}
+                component={InputFieldColor}
+                type="color"
+                placeholder={t("placeholderName")}
+              />
+            </CommonStyles.Box>
             <CommonStyles.Box className="tw-flex tw-w-full tw-justify-between tw-mt-4">
               <label className="tw-min-w-fit tw-font-mulish tw-font-bold tw-text-accent_gray_800 tw-mr-[20%]">
                 {t("name")}
               </label>
               <RHFField
-                sx={{
-                  height: 40,
-                  input: {
-                    padding: 0,
-                    margin: 0,
-                    height: 40,
-                  },
-                }}
                 name="name"
                 control={methods.control}
                 component={InputField}
@@ -169,32 +163,14 @@ const CreateEditTag: FC<createEditTagProps> = (props) => {
             </CommonStyles.Box>
           </CommonStyles.Box>
           <CommonStyles.Box className="tw-flex tw-justify-center tw-gap-8 tw-mt-8 tw-mb-4">
-            <CommonStyles.CommonButton variant="outlined"
-              sx={{
-                "&.MuiButtonBase-root": {
-                  height: 30,
-                  fontSize: 13,
-                  paddingRight: 4,
-                  paddingLeft: 4,
-                },
-              }}
-              onClick={handleClose}
-              >{t("cancel")}</CommonStyles.CommonButton>
-            <CommonStyles.CommonButton
+          <CancelButton handleClose={handleClose} />
+            <CommonButtonAdmin
               variant="outlined"
-              sx={{
-                "&.MuiButtonBase-root": {
-                  height: 30,
-                  fontSize: 13,
-                  paddingRight: 4,
-                  paddingLeft: 4,
-                },
-              }}
               type="submit"
-              className="active"
+              className="active tw-min-w-28"
             >
               {id? t("edit") : t("create")}
-            </CommonStyles.CommonButton>
+            </CommonButtonAdmin>
           </CommonStyles.Box>
           <CommonStyles.Box
             className="tw-absolute tw-top-0 tw-right-0 tw-cursor-pointer"

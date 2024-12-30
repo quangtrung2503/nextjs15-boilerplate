@@ -3,21 +3,17 @@ import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import * as yup from "yup";
 import { default as CommonStyles } from "@/components/common";
 import RHFField from "@/components/customReactFormField/ReactFormField";
-import InputField from "@/components/customReactFormField/InputField";
 import { useNotifications } from "@/helpers/toast";
 import CommonIcons from "@/components/CommonIcons";
 import { useTranslations } from "next-intl";
 import useGetTour from "@/services/modules/tour/hooks/useGetTour";
-import { CommonDatePicker } from "@/components/common/DatePicker";
 import CheckboxField from "@/components/customReactFormField/CheckBoxField";
 import useGetThemes from "@/services/modules/theme/hook/useGetAllTheme";
 import useFiltersHandler from "@/hooks/useFiltersHandler";
-import SelectField from "@/components/customReactFormField/SelectField";
 import useGetCities from "@/services/modules/city/hook/useGetAllCity";
 import useGetDestinations from "@/services/modules/destination/hook/useGetAllDestination";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { getOptionEnum, Package, Transport } from "@/helpers/common";
-import UploadField from "@/components/customReactFormField/UploadField";
 import { isArray } from "lodash";
 import apiUrls from "@/constants/apiUrls";
 import tourServices from "@/services/modules/tour/tour.services";
@@ -25,6 +21,12 @@ import { useGet } from "@/stores/useStore";
 import cachedKeys from "@/constants/cachedKeys";
 import Loading from "@/components/common/Loading";
 import TinyMCEEditorField from "@/components/customReactFormField/TinyNCEEditorField";
+import CancelButton from "../../Component/buttonCancel";
+import { CommonButtonAdmin } from "../../Component/customField/commonButton";
+import InputField from "../../Component/customField/inputField";
+import uploadField from "../../Component/customField/uploadField";
+import { CommonDatePicker } from "../../Component/customField/datePickerField";
+import SelectField from "../../Component/customField/selectField";
 
 interface createEditTourProps {
   handleClose: () => void;
@@ -243,7 +245,7 @@ const CreateEditTour: FC<createEditTourProps> = (props) => {
 
   return (
     <CommonStyles.Box className="tw-w-[800px] tw-relative">
-      <CommonStyles.Box className="tw-flex tw-justify-center">
+      <CommonStyles.Box className="tw-flex tw-justify-center tw-mb-8">
         <CommonStyles.Typography type="size20Weight600">
           {id ? t("editTour") : t("createNewTour")}
         </CommonStyles.Typography>
@@ -441,7 +443,7 @@ const CreateEditTour: FC<createEditTourProps> = (props) => {
                 setValue={setValue}
                 name="images"
                 control={methods.control}
-                component={UploadField}
+                component={uploadField}
                 label={t("image")}
               />
             </CommonStyles.Box>
@@ -468,10 +470,15 @@ const CreateEditTour: FC<createEditTourProps> = (props) => {
               })}
             </CommonStyles.Box>
           </CommonStyles.Box>
-          <CommonStyles.Box className="tw-flex tw-justify-around tw-mt-3">
-            <CommonStyles.CommonButton loading={loadingPost} type="submit">
-              {t("submit")}
-            </CommonStyles.CommonButton>
+          <CommonStyles.Box className="tw-flex tw-justify-center tw-gap-8 tw-mt-8 tw-mb-4">
+          <CancelButton handleClose={handleClose} />
+            <CommonButtonAdmin
+              variant="outlined"
+              type="submit"
+              className="active tw-min-w-28"
+            >
+              {id? t("edit") : t("create")}
+            </CommonButtonAdmin>
           </CommonStyles.Box>
           <CommonStyles.Box
             className="tw-absolute tw-top-0 tw-right-0 tw-cursor-pointer"

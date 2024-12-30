@@ -239,6 +239,7 @@
     "action": "Action",
     "confirmDelete": "Are you sure you want to delete this city?",
     "delete": "Delete",
+    "deleteTitle": "Delete city",
     "deleteSuccess": "Delete success",
     "cancel": "Cancel",
     "labelNoData": "The Nonexistent City",
@@ -247,8 +248,12 @@
     "tagIdsRequire": "Tag is a require field",
     "tagIdsMin": "There must be at least 3 tags.",
     "placeholderTag": "Choose tag of city",
-    "tag": "Tag"
+    "tag": "Tag",
+    "create": "Create",
+    "edit": "Edit"
   },
+  "confirmDelete": "Are you sure you want to delete this item?",
+  "confirmDeleteTitle": "Confirm delete",
   "destinationAdmin": {
     "placeholderSearch": "Search destination",
     "search": "Search",
@@ -269,7 +274,9 @@
     "editSuccess": "Edit success",
     "deleteSuccess": "Delete success",
     "createSuccess": "Create success",
-    "feature": "Feature"
+    "feature": "Feature",
+    "create": "Create",
+    "edit": "Edit"
   },
   "postAdmin": {
     "placeholderSearch": "Search post",
@@ -292,7 +299,9 @@
     "createSuccess": "Create success",
     "confirmDelete": "Are you sure you want to delete this post?",
     "delete": "Delete",
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "create": "Create",
+    "edit": "Edit"
   },
   "themeAdmin": {
     "placeholderSearch": "Search theme",
@@ -356,6 +365,8 @@
     "dateOfBirthRequired": "Date of birth is a required field",
     "confirmDelete": "Are you sure you want to delete this user?"
   },
+  "create": "Create",
+  "edit": "Edit",
   "tourAdmin": {
     "placeholderSearch": "Search tour",
     "createNewTour": "Create new tour",
@@ -429,7 +440,10 @@
     "confirmDelete": "Are you sure you want to delete this tour?",
     "guideMeetingAddressRequired": "Guide meeting address is a require field",
     "guideMeetingAddress": "Guide meeting address",
-    "placeholderGuideMeetingAddress": "Guide meeting address of tour"
+    "placeholderGuideMeetingAddress": "Guide meeting address of tour",
+    "cancel": "Cancel",
+    "edit": "Edit",
+    "create": "Create"
   },
   "videoAdmin": {
     "placeholderSearch": "Search video",
@@ -456,7 +470,9 @@
     "notEnableVideo": "Your browser does not support the video tag.",
     "thumbnailFormat": "Please upload a valid image format: .jpg, .jpeg, .png.",
     "videoFormat": "Please upload a valid video format: .mp4, .avi, .mov.",
-    "submit": "Submit"
+    "submit": "Submit",
+    "edit": "Edit",
+    "create": "Create"
   },
   "tagAdmin": {
     "placeholderSearch": "Search tag",
@@ -522,7 +538,8 @@
     }
   },
   "uploadField": {
-    "upload": "Upload"
+    "upload": "Upload",
+    "inValidFile": "Invalid file"
   },
   "validation": {
     "usernameRequired": "Username is required",
