@@ -91,9 +91,9 @@ const InputField: React.FC<CustomInputProps> = ({
             margin: 0
           },
           "div.MuiInputBase-root":{
-            paddingTop: "10px",
+            paddingTop: "8px",
             paddingLeft: "10px",
-            paddingBottom: "10px",
+            paddingBottom: "8px",
           },
           "input": {
             paddingTop: "0px",

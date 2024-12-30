@@ -103,7 +103,9 @@ const SelectField: React.FC<SelectFieldProps> = ({
         onBlur={field.onBlur}
         sx={{
           ".MuiSelect-select": {
-            padding: "10px"
+            paddingTop: "8px",
+            paddingBottom: "8px",
+            paddingLeft: "10px"
           },
           ...sx
         }}
