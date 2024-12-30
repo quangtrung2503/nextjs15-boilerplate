@@ -39,7 +39,7 @@ const Header = () => {
     { name: t("navbar.aboutUs"), path: pageUrls.Homepage },
     { name: t("navbar.popularDestinations"), path: pageUrls.Homepage },
     { name: t("navbar.ourPackages"), path: pageUrls.Homepage },
-    { name: t("navbar.ourPackages"), path: pageUrls.Homepage },
+    { name: t("navbar.help"), path: pageUrls.Homepage },
   ];
   const accountMenu: AccountMenu = {
     name: user?.name,
@@ -48,11 +48,10 @@ const Header = () => {
   };
   return (
     <CommonStyles.Box
-      className={`tw-px-10 tw-flex tw-justify-between tw-transition-all tw-duration-500 tw-items-center tw-h-header tw-fixed tw-top-0 tw-left-0 tw-right-0 tw-z-[1000] transition-all ${
-        isScrolled || !(pathname === `${pageUrls.Homepage}en`)
-          ? "tw-bg-white tw-shadow-lg"
-          : "tw-bg-transparent"
-      }`}
+      className={`tw-px-10 tw-flex tw-justify-between tw-transition-all tw-duration-500 tw-items-center tw-h-header tw-fixed tw-top-0 tw-left-0 tw-right-0 tw-z-[1000] transition-all ${isScrolled || !(pathname === `${pageUrls.Homepage}en`)
+        ? "tw-bg-white tw-shadow-lg"
+        : "tw-bg-transparent"
+        }`}
     >
       <CommonStyles.Link href={pageUrls.Homepage}>
         <CommonIcons.Logo
@@ -68,11 +67,10 @@ const Header = () => {
           return (
             <CommonStyles.Typography key={index} type="size15Weight600">
               <Link
-                className={`tw-no-underline ${
-                  isScrolled || !(pathname === `${pageUrls.Homepage}en`)
-                    ? "tw-text-black"
-                    : "tw-text-white"
-                }`}
+                className={`tw-no-underline ${isScrolled || !(pathname === `${pageUrls.Homepage}en`)
+                  ? "tw-text-black"
+                  : "tw-text-white"
+                  }`}
                 href={item.path}
               >
                 {item.name}
@@ -96,7 +94,7 @@ const Header = () => {
               zIndex={1300}
               onClick={() => console.log("Popover clicked!")}
             >
-              <CommonStyles.Avatar src={user?.avatar? user?.avatar : undefined} className="tw-cursor-pointer" />
+              <CommonStyles.Avatar src={user?.avatar ? user?.avatar : undefined} className="tw-cursor-pointer" />
             </CommonStyles.PopoverMui>
           </CommonStyles.Box>
         )}

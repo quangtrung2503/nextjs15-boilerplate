@@ -131,8 +131,9 @@
     }
   },
   "homePage": {
+    "seeMore": "See more",
     "reviews": "reviews",
-    "trendingNow": "Trending now",
+    "trendingNow": "TRENDING NOW",
     "bookNowBtn": "Book now",
     "title": "We Find The Best Tours For You",
     "subtitleAboutTour": "Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint. Velit officia consequat duis enim velit mollit. Exercitation veniam consequat sunt nostrud amet.",
@@ -153,44 +154,63 @@
     "allImageButton": "View All Images",
     "storyTitle": "Latest Stories",
     "subStoryTitle": "Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint. Velit officia consequat duis enim velit mollit",
-    "allPostButton": "View All Posts"
+    "allPostButton": "View All Posts",
+    "viewLessButton": "View Less Button",
+    "introduceMobileApp": {
+      "title": "Smart City Tour Mobile App",
+      "available": "Available on IOS & Android",
+      "content": "Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint. Velit officia consequat duis enim velit mollit. Exercitation veniam consequat sunt nostrud amet.",
+      "iosBtn": "Download For IOS",
+      "androidBtn": "Download For Android"
+    }
   },
-  "cityTourDetail": {
-    "booking": "Booking",
-    "noOfGuest": "No. Of Guest",
-    "adults": "Adults",
-    "children": "Children",
-    "adult": "Adult",
-    "child": "Child",
-    "doneBtn": "Done",
-    "currency": "$",
-    "relatedToursInToday": "Related Tours In Today",
-    "relatedToursIn": "Related Tours In",
-    "formBooking": {
-      "confirmBooking": "Confirm Booking",
-      "saveToWishlist": "Save to Wishlist",
-      "shareTheActivity": "Share The Activity"
-    },
-    "reviews": "reviews",
-    "feedback": {
-      "helpful": "Helpful"
-    },
-    "subtotal": "Subtotal",
-    "validations": {
-      "startDateRequire": "Please select a start date.",
-      "startDateInvalid": "The start date is invalid.",
-      "startDateMin": "The start date cannot be in the past.",
-      "endDateRequire": "Please select an end date.",
-      "endDateInvalid": "The end date is invalid.",
-      "endDateAfterStartDate": "The end date must be after the start date.",
-      "noOfGuestRequire": "Please specify the number of guests.",
-      "adultQuantityRequire": "Please enter the number of adults.",
-      "adultQuantityInvalid": "The number of adults must be a valid number.",
-      "adultQuantityMin": "There must be at least 1 adult.",
-      "adultQuantityMax": "The number of adults cannot exceed 10.",
-      "childQuantityInvalid": "The number of children must be a valid number.",
-      "childQuantityMin": "The number of children cannot be less than 0.",
-      "childQuantityMax": "The number of children cannot exceed 10."
+  "cityTour": {
+    "title": "Things To Do In London",
+    "activitiesFound": "49 Activities Found",
+    "sortBy": "Sort by:",
+    "availability": "Availability",
+    "loadMoreBtn": "Load more",
+    "titleOutSite": "Outside The City Specials",
+    "titleWaterActivities": "Water Activities",
+    "titleSpecialFoods": "Special Foods",
+    "titleRiverActivity": "River Activity",
+    "cityTourDetail": {
+      "booking": "Booking",
+      "noOfGuest": "No. Of Guest",
+      "adults": "Adults",
+      "children": "Children",
+      "adult": "Adult",
+      "child": "Child",
+      "doneBtn": "Done",
+      "currency": "$",
+      "relatedToursInToday": "Related tours in Today",
+      "relatedToursIn": "Related tours in",
+      "formBooking": {
+        "confirmBooking": "Confirm Booking",
+        "saveToWishlist": "Save to Wishlist",
+        "shareTheActivity": "Share The Activity"
+      },
+      "reviews": "reviews",
+      "feedback": {
+        "helpful": "Helpful"
+      },
+      "subtotal": "Subtotal",
+      "validations": {
+        "startDateRequire": "Please select a start date.",
+        "startDateInvalid": "The start date is invalid.",
+        "startDateMin": "The start date cannot be in the past.",
+        "endDateRequire": "Please select an end date.",
+        "endDateInvalid": "The end date is invalid.",
+        "endDateAfterStartDate": "The end date must be after the start date.",
+        "noOfGuestRequire": "Please specify the number of guests.",
+        "adultQuantityRequire": "Please enter the number of adults.",
+        "adultQuantityInvalid": "The number of adults must be a valid number.",
+        "adultQuantityMin": "There must be at least 1 adult.",
+        "adultQuantityMax": "The number of adults cannot exceed 10.",
+        "childQuantityInvalid": "The number of children must be a valid number.",
+        "childQuantityMin": "The number of children cannot be less than 0.",
+        "childQuantityMax": "The number of children cannot exceed 10."
+      }
     }
   },
   "landingPage": {
@@ -438,12 +458,12 @@
     "videoFormat": "Please upload a valid video format: .mp4, .avi, .mov.",
     "submit": "Submit"
   },
-  "tagAdmin":{
+  "tagAdmin": {
     "placeholderSearch": "Search tag",
     "createNewTag": "Create new tag",
-    "labelNoData":"The Nonexistent Tag",
-    "deleteSuccess":"Delete success",
-    "confirmDelete":"Are you sure you want to delete this tag?",
+    "labelNoData": "The Nonexistent Tag",
+    "deleteSuccess": "Delete success",
+    "confirmDelete": "Are you sure you want to delete this tag?",
     "delete": "Delete",
     "cancel": "Cancel",
     "name": "Name tag",
@@ -452,8 +472,8 @@
     "action": "Action",
     "nameRequire": "Name is a require field",
     "colorRequire": "Color is a require field",
-    "editSuccess":"Edit success",
-    "createSuccess":"Create success",
+    "editSuccess": "Edit success",
+    "createSuccess": "Create success",
     "editTag": "Edit tag",
     "placeholderName":"Enter name of tag",
     "submit": "Submit",
