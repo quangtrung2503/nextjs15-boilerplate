@@ -6,6 +6,7 @@ import Box from "../common/Box";
 import useImageUploader from "@/hooks/useUpload";
 import { useNotifications } from "@/helpers/toast";
 import { useTranslations } from "next-intl";
+import CommonIcons from "../CommonIcons";
 
 interface UploadFieldProps {
   field: {
@@ -23,6 +24,7 @@ interface UploadFieldProps {
   onChange?: (e: any) => Promise<void>;
   renderButton?: React.ReactNode;
   setValue: UseFormSetValue<any>;
+  showDelete?: boolean;
 }
 const UploadField = (props: UploadFieldProps) => {
   const {
@@ -96,7 +98,7 @@ const UploadField = (props: UploadFieldProps) => {
   };
 
   return (
-    <CommonStyles.Box className={className}>
+    <CommonStyles.Box className={`tw-relative ${className}`}>
       <label className="tw-font-mulish tw-text-[15px] tw-font-bold tw-text-accent_gray_800">
         {label}
       </label>

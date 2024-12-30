@@ -46,7 +46,7 @@ const CreateEditCity: FC<createEditCityProps> = (props) => {
     description: yup.string().required(t("descriptionRequire")),
     tagIds: yup
             .array()
-            .min(1, t("tagIdsRequire"))
+            .min(3, t("tagIdsMin"))
             .required(t("tagIdsRequire")),
     })
     .required();
@@ -99,7 +99,7 @@ const CreateEditCity: FC<createEditCityProps> = (props) => {
         key: tag.id?.toString(),
         label: <CommonStyles.Box sx={{color: `${tag.color}`}} className="tw-size-fit">
               <CommonStyles.Box className="tw-flex tw-items-center tw-gap-3">
-                <img src={`${apiUrls.IMG_URL}/${tag.icon}`} className="tw-max-w-[40px] tw-rounded-full" />
+                <img src={`${apiUrls.IMG_URL}/${tag.icon}`} className="tw-max-w-[40px] tw-max-h-[30px] tw-rounded-full" />
                 <CommonStyles.Typography type="size14Weight700" className={`tw-text-[${tag.color}]`}>{tag.name}</CommonStyles.Typography>
               </CommonStyles.Box>
             </CommonStyles.Box>,

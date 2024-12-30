@@ -59,6 +59,7 @@ const CreateEditTour: FC<createEditTourProps> = (props) => {
   const { showError,showSuccess } = useNotifications();
   const t = useTranslations("tourAdmin");
   const [loadingPost, setLoadingPost] = useState(false);
+
   const fetchTour = useGet(cachedKeys.fetchTours);
   const schema = yup
     .object({
@@ -224,14 +225,7 @@ const CreateEditTour: FC<createEditTourProps> = (props) => {
     }
   };
   const handleDeleteImage = (image: string) => {
-      setValue(
-        "images",
-        id ? data?.data.TourImage?.filter((img) => img.image !== image).map(
-          (img) => img.image,
-        ) || [] : watch("images").filter((img) => img !== image).map(
-          (img) => img,
-        ) || [],
-      );
+      setValue("images", watch("images").filter((img) => img !== image) || []);
   };
 
   const watchImages = useMemo(() => {
