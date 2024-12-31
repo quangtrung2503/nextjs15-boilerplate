@@ -9,14 +9,15 @@ import { useState } from "react";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import {default as CommonStyles} from "@/components/common";
 import RHFField from "@/components/customReactFormField/ReactFormField";
-import InputField from "@/components/customReactFormField/InputField";
-import { CommonButton } from "@/components/common/Button";
 import TableCommon from "@/components/common/Table";
 import { headCells } from "./component/headCells";
 import CommonDialog from "@/components/common/Dialog";
 import CreateEditTheme from "./component/createEditTheme";
 import { useNotifications } from "@/helpers/toast";
 import { useTranslations } from "next-intl";
+import CommonIcons from "@/components/CommonIcons";
+import InputField from "../Component/customField/inputField";
+import { CommonButtonAdmin } from "../Component/customField/commonButton";
 
 interface FormSearch {
   textSearch: string;
@@ -57,27 +58,30 @@ const Theme = () => {
       }
     })
   };
+  const handleClose = ()=>{
+    toggle();
+    setId(null);
+  }
   return (
     <CommonStyles.Box className="tw-px-10">
       <CommonStyles.Box className="tw-flex tw-justify-between tw-mb-5 tw-items-center">
         <CommonStyles.Box className="tw-w-full">
           <FormProvider {...methods} >
             <form onSubmit={methods.handleSubmit(handleSearch)} className="tw-flex tw-items-center">
-              <CommonStyles.Box  className="tw-w-[20%]">
+            <CommonStyles.Box className="tw-w-[100%] tw-mr-9">
               <RHFField
+                className="tw-bg-white"
                 name="textSearch"
                 placeholder={t("themeAdmin.placeholderSearch")}
                 control={methods.control}
                 component={InputField}
+                icon={<CommonIcons.Search className="tw-cursor-pointer tw-mr-3 tw-text-[28px] tw-text-primary" onClick={() => methods.handleSubmit(handleSearch)()} />}
               />
-              </CommonStyles.Box>
-              <CommonStyles.Box className="tw-w-[20%]">
-                <CommonStyles.CommonButton variant="outlined" className="outlined rounded tw-ml-5 tw-w-full" type="submit">{t("search")}</CommonStyles.CommonButton>
-              </CommonStyles.Box>
+            </CommonStyles.Box>
             </form>
           </FormProvider>
         </CommonStyles.Box>
-        <CommonButton className="tw-text-nowrap tw-px-7" onClick={toggle} label={t("themeAdmin.createNewTheme")} />
+        <CommonButtonAdmin variant="outlined" className="active tw-text-nowrap tw-px-7" onClick={toggle} label={t("themeAdmin.createNewTheme")} />
       </CommonStyles.Box>
       <CommonStyles.Box>
         {dataTheme &&
@@ -98,7 +102,7 @@ const Theme = () => {
             handleRequestSort={handleRequestSort}
           />}
       </CommonStyles.Box>
-      {shouldRender && <CommonDialog onClose={() => setId(null)} open={open} toggle={toggle} body={<CreateEditTheme toggle={toggle} id={Number(id)} />} />}
+      {shouldRender && <CommonDialog onClose={()=>setId(null)} open={open} toggle={toggle} body={<CreateEditTheme handleClose={handleClose} id={Number(id)} />} />}
     </CommonStyles.Box>
   );
 }

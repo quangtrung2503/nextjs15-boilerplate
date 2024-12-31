@@ -30,7 +30,7 @@ class UserService {
     return httpService.post(`${apiUrls.USER_URL}/create-user`, payload, configs);
   }
 
-  updateUser(payload: Omit<User,'password | username'>,configs?: AxiosRequestConfig){
+  updateUser(payload: Omit<User,'password | username | email'>,configs?: AxiosRequestConfig){
     const {id,...data} = payload;
     return httpService.patch(`${apiUrls.USER_URL}/${id}`, data, configs);
   }

@@ -47,9 +47,16 @@ class HttpService {
       (config) => {
         const nextConfig = cloneDeep(config);
         const token = localStorageFunc?.getItem(KEY_TOKEN) || '';
+        const pathSegments = window.location.pathname.split('/');
+        const lang = pathSegments[1] || 'en'; // Giả sử ngôn ngữ nằm ở segment đầu tiên sau dấu `/`.
+
 
         if (!!token) {
           config.headers['Authorization'] = 'Bearer ' + parseToken(token);
+        }
+
+        if (!!lang) {
+          config.headers['x-lang'] = lang; // Gắn giá trị x-lang vào header.
         }
 
         const body = nextConfig?.data;
@@ -66,7 +73,6 @@ class HttpService {
     this.axios.interceptors.response.use(
       function (config) {
         const statusCode = config.data.statusCode;
-        console.log({statusCode});
         
         if (statusCode >= 400 && statusCode <= 499) {
           return Promise.reject(config?.data?.data?.message);

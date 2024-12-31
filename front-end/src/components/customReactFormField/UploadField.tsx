@@ -6,6 +6,7 @@ import Box from "../common/Box";
 import useImageUploader from "@/hooks/useUpload";
 import { useNotifications } from "@/helpers/toast";
 import { useTranslations } from "next-intl";
+import CommonIcons from "../CommonIcons";
 
 interface UploadFieldProps {
   field: {
@@ -23,6 +24,7 @@ interface UploadFieldProps {
   onChange?: (e: any) => Promise<void>;
   renderButton?: React.ReactNode;
   setValue: UseFormSetValue<any>;
+  showDelete?: boolean;
 }
 const UploadField = (props: UploadFieldProps) => {
   const {
@@ -69,7 +71,10 @@ const UploadField = (props: UploadFieldProps) => {
           showError(error)
         }
         finally{
-          setLoading(false)
+          setLoading(false);
+          if(uploadRef && uploadRef.current) {
+            uploadRef.current.value = ''
+          }
         }
         // setValue(field?.name || "", fileArray);
       } else {
@@ -83,6 +88,9 @@ const UploadField = (props: UploadFieldProps) => {
         }
         finally{
           setLoading(false);
+          if(uploadRef && uploadRef.current) {
+            uploadRef.current.value = ''
+          }
         }
       }
     }
@@ -90,7 +98,7 @@ const UploadField = (props: UploadFieldProps) => {
   };
 
   return (
-    <CommonStyles.Box className={className}>
+    <CommonStyles.Box className={`tw-relative ${className}`}>
       <label className="tw-font-mulish tw-text-[15px] tw-font-bold tw-text-accent_gray_800">
         {label}
       </label>
@@ -110,7 +118,8 @@ const UploadField = (props: UploadFieldProps) => {
         {renderButton ? (
           renderButton
         ) : (
-          <CommonStyles.CommonButton loading={loading} className={`tw-w-full tw-mt-2 tw-bg-gray-300 ${fieldState.error && "tw-border-solid tw-border-[1px] tw-border-[#d32f2f]"}`}>
+          field.value!="" ? <></>:
+          <CommonStyles.CommonButton loading={loading} className={`tw-w-full tw-mt-2 tw-bg-gray-100 ${fieldState.error && "tw-border-solid tw-border-[1px] tw-border-[#d32f2f]"}`}>
             {t("upload")}
           </CommonStyles.CommonButton>
         )}

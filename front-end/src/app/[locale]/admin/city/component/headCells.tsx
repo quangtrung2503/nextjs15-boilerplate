@@ -1,67 +1,60 @@
-import { City } from "@/services/modules/city/interfaces/city"
-import { default as CommonStyles } from "@/components/common"
-import CommonIcons from "@/components/CommonIcons"
-import { useState } from "react"
-import { Popover } from "@mui/material"
-import apiUrls from "@/constants/apiUrls"
+import { City } from "@/services/modules/city/interfaces/city";
+import { default as CommonStyles } from "@/components/common";
+import CommonIcons from "@/components/CommonIcons";
+import { useState } from "react";
+import { Popover, Tooltip } from "@mui/material";
+import apiUrls from "@/constants/apiUrls";
+import { useNotifications } from "@/helpers/toast";
+import useToggleDialog from "@/hooks/useToggleDialog";
+import CommonDialog from "@/components/common/Dialog";
+import ConfirmDeleteDialog from "../../Component/confirmDeleteDialog";
 
-const ActionCell: React.FC<{ row: City; handleEditId: (id: number) => void; handleDeleteCity: (id: number) => void ;t:any}> = ({
-  row,
-  handleEditId,
-  handleDeleteCity,
-  t
-}) => {
-  const [anchorEl, setAnchorEl] = useState<HTMLDivElement | null>(null);
-
-  const handleOpenPopover = (event: React.MouseEvent<HTMLDivElement>) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleClosePopover = () => {
-    setAnchorEl(null);
-  };
+const ActionCell: React.FC<{
+  row: City;
+  handleEditId: (id: number) => void;
+  handleDeleteCity: (id: number) => void;
+  t: any;
+}> = ({ row, handleEditId, handleDeleteCity, t }) => {
+  const { showError, showSuccess } = useNotifications();
+  const { open, shouldRender, toggle } = useToggleDialog();
 
   const handleConfirmDelete = () => {
-    handleClosePopover();
-    handleDeleteCity(Number(row.id));
+    try {
+      toggle();
+      handleDeleteCity(Number(row.id));
+      showSuccess(t("deleteSuccess"));
+    } catch (error) {
+      showError(error);
+    }
   };
-
-  const isPopoverOpen = Boolean(anchorEl);
 
   return (
     <CommonStyles.Box className="tw-flex tw-gap-2">
       {row.id && (
         <>
-          <CommonStyles.Box onClick={() => handleEditId(Number(row.id))} className="tw-cursor-pointer tw-rounded-full tw-border-solid tw-size-7 tw-border-[1px] tw-flex tw-justify-center tw-items-center tw-bg-blue-100 tw-border-blue-500">
-            <CommonIcons.EditOutlined className="tw-text-blue-500" />
-          </CommonStyles.Box>
-          <CommonStyles.Box onClick={handleOpenPopover} className="tw-rounded-full tw-cursor-pointer tw-border-solid tw-size-7 tw-border-[1px] tw-flex tw-justify-center tw-items-center tw-bg-red-100 tw-border-red-500">
-            <CommonIcons.DeleteOutline className="tw-text-red-500" />
-          </CommonStyles.Box>
-          <Popover
-          className="tw-mt-1"
-            open={isPopoverOpen}
-            anchorEl={anchorEl}
-            onClose={handleClosePopover}
-            anchorOrigin={{
-              vertical: "bottom",
-              horizontal: "left",
-            }}
-          >
-            <CommonStyles.Box className="tw-p-2 tw-flex tw-flex-col tw-items-center">
-              <CommonStyles.Typography className="tw-text-md tw-mb-1 tw-font-bold">
-                {t("confirmDelete")}
-              </CommonStyles.Typography>
-              <CommonStyles.Box className="tw-flex tw-gap-4">
-                <CommonStyles.Box className="tw-text-red-500 tw-cursor-pointer tw-border-solid tw-border-[1px] tw-bg-red-100 tw-rounded-md tw-px-2 tw-pb-1" onClick={handleConfirmDelete}>
-                  {t("delete")}
-                </CommonStyles.Box>
-                <CommonStyles.Box className="tw-text-gray-700 tw-cursor-pointer tw-border-solid tw-border-[1px] tw-rounded-md tw-px-2 tw-pb-1" onClick={handleClosePopover}>
-                  {t("cancel")}
-                </CommonStyles.Box>
-              </CommonStyles.Box>
+          <Tooltip title={t("edit")}>
+            <CommonStyles.Box
+              onClick={() => handleEditId(Number(row.id))}
+              className="tw-cursor-pointer tw-size-7"
+            >
+              <CommonIcons.EditOutlined className="tw-text-blue-500" />
             </CommonStyles.Box>
-          </Popover>
+          </Tooltip>
+          <Tooltip title={t("delete")}>
+            <CommonStyles.Box
+              onClick={toggle}
+              className="tw-cursor-pointer tw-size-7"
+            >
+              <CommonIcons.DeleteOutline className="tw-text-red-500" />
+            </CommonStyles.Box>
+          </Tooltip>
+          {shouldRender && (
+            <CommonDialog
+              open={open}
+              toggle={toggle}
+              body={<ConfirmDeleteDialog title={t("deleteTitle")} handleConfirmDelete={handleConfirmDelete} toggle={toggle} />}
+            />
+          )}
         </>
       )}
     </CommonStyles.Box>
@@ -71,11 +64,11 @@ const ActionCell: React.FC<{ row: City; handleEditId: (id: number) => void; hand
 export const headCells = ({
   handleEditId,
   handleDeleteCity,
-  t
+  t,
 }: {
   handleEditId: (id: number) => void;
   handleDeleteCity: (id: number) => void;
-  t: any
+  t: any;
 }) => {
   return [
     {
@@ -83,7 +76,7 @@ export const headCells = ({
       label: "STT",
       numeric: true,
       Cell(row: City, _index: number) {
-        return <span>{_index+1}</span>;
+        return <span>{_index + 1}</span>;
       },
     },
     {
@@ -99,7 +92,17 @@ export const headCells = ({
       label: t("image"),
       numeric: false,
       Cell(row: City, _index: number) {
-        return <span>{row.image && <img className="tw-w-[100px] tw-h-auto" src={`${apiUrls.IMG_URL}/${row.image}`} alt={`${row.name}-images`} />}</span>;
+        return (
+          <span>
+            {row.image && (
+              <img
+                className="tw-w-[100px] tw-h-auto"
+                src={`${apiUrls.IMG_URL}/${row.image}`}
+                alt={`${row.name}-images`}
+              />
+            )}
+          </span>
+        );
       },
     },
     {
@@ -107,7 +110,54 @@ export const headCells = ({
       label: t("description"),
       numeric: false,
       Cell(row: City, _index: number) {
-        return <span>{row.description}</span>;
+        const maxLength = 200;
+        const description =
+          row.description.length > maxLength
+            ? row.description.slice(0, maxLength) + "..."
+            : row.description;
+
+        return (
+          <Tooltip title={row.description}>
+            <span>{description}</span>
+          </Tooltip>
+        );
+      },
+    },
+    {
+      id: "tag",
+      label: t("tag"),
+      sxCell: { width: "50%" },
+      numeric: false,
+      Cell(row: City, _index: number) {
+        return (
+          <span>
+            <CommonStyles.Box className="tw-flex tw-items-center tw-flex-wrap">
+              {row.Tag?.map((tag, index) => {
+                return (
+                  <CommonStyles.Box
+                    key={index}
+                    boxShadow="0px 4px 10px 0px #00000014"
+                    sx={{ color: `${tag.color}` }}
+                    className="tw-px-6 tw-py-3 tw-size-fit tw-rounded-[3px]"
+                  >
+                    <CommonStyles.Box className="tw-flex tw-items-center tw-gap-3">
+                      <img
+                        src={`${apiUrls.IMG_URL}/${tag.icon}`}
+                        className="tw-max-w-[40px] tw-max-h-[20px] tw-rounded-full"
+                      />
+                      <CommonStyles.Typography
+                        type="size14Weight700"
+                        className={`tw-text-[${tag.color}]`}
+                      >
+                        {tag.name}
+                      </CommonStyles.Typography>
+                    </CommonStyles.Box>
+                  </CommonStyles.Box>
+                );
+              })}
+            </CommonStyles.Box>
+          </span>
+        );
       },
     },
     {
@@ -115,7 +165,14 @@ export const headCells = ({
       label: t("action"),
       numeric: false,
       Cell(row: City, _index: number) {
-        return <ActionCell row={row} handleEditId={handleEditId} handleDeleteCity={handleDeleteCity} t={t} />;
+        return (
+          <ActionCell
+            row={row}
+            handleEditId={handleEditId}
+            handleDeleteCity={handleDeleteCity}
+            t={t}
+          />
+        );
       },
     },
   ];

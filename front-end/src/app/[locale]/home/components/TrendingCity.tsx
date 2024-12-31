@@ -27,7 +27,7 @@ const TrendingCity: FC<TrendingCityProps> = ({ trendingCity }) => {
     reviews,
     content,
   } = trendingCity;
-const t = useTranslations("homePage")
+  const t = useTranslations("homePage")
   return (
     <CommonStyles.Box
       sx={{ backgroundImage: `url(${imageBanner})` }}
@@ -90,7 +90,7 @@ const t = useTranslations("homePage")
         <CommonStyles.Box className="tw-col-span-6 tw-flex tw-flex-col tw-gap-y-10">
           {/* Heading Section */}
           <CommonStyles.Box className="tw-flex tw-flex-col tw-gap-y-4">
-            <CommonStyles.Typography className="tw-bg-primary_light tw-py-1 tw-px-5 tw-rounded-full tw-size-fit">
+            <CommonStyles.Typography type="size12Weight800" className="tw-bg-primary_light tw-py-1 tw-px-5 tw-rounded-full tw-size-fit">
               {t("trendingNow")}
             </CommonStyles.Typography>
 
@@ -102,10 +102,16 @@ const t = useTranslations("homePage")
                 {title}
               </CommonStyles.Typography>
               <CommonStyles.Box className="tw-flex tw-items-center tw-gap-3 tw-text-white">
-                <CommonStyles.Typography className="tw-flex tw-items-center">
+                <CommonStyles.Typography type="size14Weight600" className="tw-flex tw-items-center">
                   <CommonIcons.LocationOn className="tw-w-4" />
                   {place}
                 </CommonStyles.Typography>
+                <CommonStyles.Divider
+                  orientation="vertical"
+                  flexItem
+                  variant="middle"
+                  className="tw-bg-white tw-h-[14px] "
+                />
                 <CommonStyles.Box className="tw-flex tw-items-center">
                   <CommonStyles.Rating
                     haveFeedback={false}
@@ -122,21 +128,23 @@ const t = useTranslations("homePage")
               </CommonStyles.Box>
             </CommonStyles.Box>
 
-            <CommonStyles.Typography className="tw-text-white">
+            <CommonStyles.Typography type="size14Weight600" className="tw-text-white tw-w-[505px]">
               {content}
             </CommonStyles.Typography>
           </CommonStyles.Box>
 
           {/* Action Buttons */}
           <CommonStyles.Box className="tw-flex tw-items-center tw-gap-5">
-            <CommonButton className="tw-rounded-full tw-px-10 tw-font-semibold">
-              {t("bookNowBtn")}
+            <CommonButton className="tw-rounded-full tw-px-10">
+              <CommonStyles.Typography type="size16Weight800">
+                {t("bookNowBtn")}
+              </CommonStyles.Typography>
             </CommonButton>
             <CommonStyles.Divider
               orientation="vertical"
               flexItem
               variant="middle"
-              className="tw-bg-white"
+              className="tw-bg-white tw-h-4 tw-mt-4"
             />
 
             {/* Social Actions */}
@@ -159,8 +167,8 @@ const t = useTranslations("homePage")
             </CommonStyles.Box>
           </CommonStyles.Box>
         </CommonStyles.Box>
-      </Container>
-    </CommonStyles.Box>
+      </Container >
+    </CommonStyles.Box >
   );
 };
 

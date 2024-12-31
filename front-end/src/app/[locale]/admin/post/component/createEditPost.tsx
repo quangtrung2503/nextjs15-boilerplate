@@ -1,27 +1,30 @@
-"use client"
-import { ChangeEvent, FC, useEffect, useMemo, useState } from "react"
-import { FormProvider, SubmitHandler, useForm } from "react-hook-form"
-import * as yup from "yup"
-import { default as CommonStyles } from "@/components/common"
-import RHFField from "@/components/customReactFormField/ReactFormField"
-import { yupResolver } from "@hookform/resolvers/yup"
-import InputField from "@/components/customReactFormField/InputField"
-import useImageUploader from "@/hooks/useUpload"
-import { useGet } from "@/stores/useStore"
-import cachedKeys from "@/constants/cachedKeys"
-import CheckboxField from "@/components/customReactFormField/CheckBoxField"
-import useGetPost from "@/services/modules/post/hook/useGetPost"
-import { Post } from "@/services/modules/post/interface/post"
-import postServices from "@/services/modules/post/post.services"
-import UploadField from "@/components/customReactFormField/UploadField"
-import TinyMCEEditor from "@/components/common/TinyMCEEditor"
-import TinyMCEEditorField from "@/components/customReactFormField/TinyNCEEditorField"
-import { useNotifications } from "@/helpers/toast"
-import CommonIcons from "@/components/CommonIcons"
-import { useTranslations } from "next-intl"
+"use client";
+import { ChangeEvent, FC, useEffect, useMemo, useState } from "react";
+import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
+import * as yup from "yup";
+import { default as CommonStyles } from "@/components/common";
+import RHFField from "@/components/customReactFormField/ReactFormField";
+import { yupResolver } from "@hookform/resolvers/yup";
+import useImageUploader from "@/hooks/useUpload";
+import { useGet } from "@/stores/useStore";
+import cachedKeys from "@/constants/cachedKeys";
+import CheckboxField from "@/components/customReactFormField/CheckBoxField";
+import useGetPost from "@/services/modules/post/hook/useGetPost";
+import { Post } from "@/services/modules/post/interface/post";
+import postServices from "@/services/modules/post/post.services";
+import TinyMCEEditor from "@/components/common/TinyMCEEditor";
+import TinyMCEEditorField from "@/components/customReactFormField/TinyNCEEditorField";
+import { useNotifications } from "@/helpers/toast";
+import CommonIcons from "@/components/CommonIcons";
+import { useTranslations } from "next-intl";
+import apiUrls from "@/constants/apiUrls";
+import CancelButton from "../../Component/buttonCancel";
+import InputField from "../../Component/customField/inputField";
+import { CommonButtonAdmin } from "../../Component/customField/commonButton";
+import uploadField from "../../Component/customField/uploadField";
 
 interface createEditPostProps {
-  toggle: () => void;
+  handleClose: () => void;
   id?: number;
 }
 interface FormValues {
@@ -30,10 +33,9 @@ interface FormValues {
   image: string;
 }
 const CreateEditPost: FC<createEditPostProps> = (props) => {
-  const { toggle, id } = props;
-  const { uploadImage,uploadImages } = useImageUploader();
+  const { handleClose, id } = props;
   const { data } = useGetPost(Number(id), { isTrigger: !!id });
-  const {showError} = useNotifications();
+  const { showError,showSuccess } = useNotifications();
   const t = useTranslations("postAdmin");
 
   const schema = yup
@@ -44,17 +46,17 @@ const CreateEditPost: FC<createEditPostProps> = (props) => {
     })
     .required();
   const initValue = useMemo(() => {
-      return {
-        title: data?.data.title ?? "",
-        content: data?.data.content ?? "",
-        image: data?.data.image ?? ""
-    }
+    return {
+      title: data?.data.title ?? "",
+      content: data?.data.content ?? "",
+      image: data?.data.image ?? "",
+    };
   }, [data?.data]);
   const methods = useForm<FormValues>({
     defaultValues: initValue,
-    resolver: yupResolver(schema)
+    resolver: yupResolver(schema),
   });
-  const { reset } = methods;
+  const { reset, setValue, watch } = methods;
 
   useEffect(() => {
     if (data?.data) {
@@ -62,43 +64,37 @@ const CreateEditPost: FC<createEditPostProps> = (props) => {
       reset({
         title: data?.data.title || "",
         content: data.data.content || "",
-        image: data.data.image || ""
+        image: data.data.image || "",
       });
     }
   }, [data?.data, reset]);
   const fetchPosts = useGet(cachedKeys.fetchPosts);
   const onSubmit: SubmitHandler<FormValues> = async (data: Post) => {
     try {
-      id ? data = { ...data, id } : { data };
-      id ? await postServices.updatePost(data) : await postServices.createPost(data);
+      id ? (data = { ...data, id }) : { data };
+      id
+        ? await postServices.updatePost(data)
+        : await postServices.createPost(data);
       await fetchPosts();
-      toggle();
-    }
-    catch (error) {
+      showSuccess(id?t("editSuccess"):t("createSuccess"));
+      handleClose();
+    } catch (error) {
       showError(error);
     }
   };
 
-  const handleUpload = async (e: ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      try {
-        const res = await uploadImage(file);;
-        methods.setValue("image", res.data.data.uri);
-      } catch (error) {
-        showError(error);
-      }
-    } else {
-      showError(t("noFileSelected"));
-    }
-  }  
+  const handleDeleteImage = () => {
+    setValue("image", "");
+  };
 
   return (
     <CommonStyles.Box className="tw-w-[500px] tw-relative">
       <CommonStyles.Box className="tw-flex tw-justify-center">
-        <CommonStyles.Typography type="size20Weight600">{id ? t("editPost") : t("createNewPost")}</CommonStyles.Typography>
-        </CommonStyles.Box>
-      <FormProvider {...methods} >
+        <CommonStyles.Typography type="size20Weight600">
+          {id ? t("editPost") : t("createNewPost")}
+        </CommonStyles.Typography>
+      </CommonStyles.Box>
+      <FormProvider {...methods}>
         <form onSubmit={methods.handleSubmit(onSubmit)}>
           <RHFField
             className="tw-mb-3"
@@ -121,20 +117,50 @@ const CreateEditPost: FC<createEditPostProps> = (props) => {
             className="tw-mb-3"
             name="image"
             control={methods.control}
-            multiple
+            setValue={setValue}
             label={t("image")}
             // defaultValue={initValue?.image}
-            component={UploadField}
-            onChange={(e) => handleUpload(e)}
+            component={uploadField}
           />
-          <CommonStyles.Box className="tw-flex tw-justify-around">
-            <CommonStyles.CommonButton type="submit">{t("submit")}</CommonStyles.CommonButton>
+
+          {watch("image") != "" && (
+            <CommonStyles.Box className="tw-col-span-12 tw-flex tw-flex-wrap">
+              <CommonStyles.Box className="tw-relative tw-w-fit">
+                {" "}
+                <img
+                  className="tw-max-w-[100px] tw-h-auto tw-p-5"
+                  src={`${apiUrls.IMG_URL}/${watch("image")}`}
+                  alt="Uploaded Image"
+                />
+                <CommonStyles.Box
+                  className="tw-absolute tw-top-0 tw-right-0 tw-cursor-pointer"
+                  onClick={() => handleDeleteImage()}
+                >
+                  <CommonIcons.CancelOutlined className="tw-text-accent_gray_500" />
+                </CommonStyles.Box>
+              </CommonStyles.Box>
+            </CommonStyles.Box>
+          )}
+          <CommonStyles.Box className="tw-flex tw-justify-center tw-gap-8 tw-mt-8 tw-mb-4">
+          <CancelButton handleClose={handleClose} />
+            <CommonButtonAdmin
+              variant="outlined"
+              type="submit"
+              className="active tw-min-w-28"
+            >
+              {id? t("edit") : t("create")}
+            </CommonButtonAdmin>
           </CommonStyles.Box>
-          <CommonStyles.Box  className="tw-absolute tw-top-0 tw-right-0 tw-cursor-pointer" onClick={toggle}><CommonIcons.Close /></CommonStyles.Box>
+          <CommonStyles.Box
+            className="tw-absolute tw-top-0 tw-right-0 tw-cursor-pointer"
+            onClick={handleClose}
+          >
+            <CommonIcons.Close />
+          </CommonStyles.Box>
         </form>
       </FormProvider>
     </CommonStyles.Box>
-  )
-}
+  );
+};
 
-export default CreateEditPost
+export default CreateEditPost;

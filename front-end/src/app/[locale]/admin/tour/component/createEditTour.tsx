@@ -3,21 +3,17 @@ import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import * as yup from "yup";
 import { default as CommonStyles } from "@/components/common";
 import RHFField from "@/components/customReactFormField/ReactFormField";
-import InputField from "@/components/customReactFormField/InputField";
 import { useNotifications } from "@/helpers/toast";
 import CommonIcons from "@/components/CommonIcons";
 import { useTranslations } from "next-intl";
 import useGetTour from "@/services/modules/tour/hooks/useGetTour";
-import { CommonDatePicker } from "@/components/common/DatePicker";
 import CheckboxField from "@/components/customReactFormField/CheckBoxField";
 import useGetThemes from "@/services/modules/theme/hook/useGetAllTheme";
 import useFiltersHandler from "@/hooks/useFiltersHandler";
-import SelectField from "@/components/customReactFormField/SelectField";
 import useGetCities from "@/services/modules/city/hook/useGetAllCity";
 import useGetDestinations from "@/services/modules/destination/hook/useGetAllDestination";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { getOptionEnum, Package, Transport } from "@/helpers/common";
-import UploadField from "@/components/customReactFormField/UploadField";
 import { isArray } from "lodash";
 import apiUrls from "@/constants/apiUrls";
 import tourServices from "@/services/modules/tour/tour.services";
@@ -25,9 +21,15 @@ import { useGet } from "@/stores/useStore";
 import cachedKeys from "@/constants/cachedKeys";
 import Loading from "@/components/common/Loading";
 import TinyMCEEditorField from "@/components/customReactFormField/TinyNCEEditorField";
+import CancelButton from "../../Component/buttonCancel";
+import { CommonButtonAdmin } from "../../Component/customField/commonButton";
+import InputField from "../../Component/customField/inputField";
+import uploadField from "../../Component/customField/uploadField";
+import { CommonDatePicker } from "../../Component/customField/datePickerField";
+import SelectField from "../../Component/customField/selectField";
 
 interface createEditTourProps {
-  toggle: () => void;
+  handleClose: () => void;
   id?: number;
 }
 interface FormValues {
@@ -39,7 +41,6 @@ interface FormValues {
   numberOfHours: number;
   startDate: string;
   endDate: string;
-  isFeature?: boolean;
   description: string;
   activity: string;
   included: string;
@@ -50,15 +51,17 @@ interface FormValues {
   language: string;
   destinationIds: number[];
   images: string[];
+  guideMeetingAddress: string;
 }
 const transportOption = getOptionEnum(Transport);
 const packageOption = getOptionEnum(Package);
 const CreateEditTour: FC<createEditTourProps> = (props) => {
-  const { toggle, id } = props;
+  const { id, handleClose } = props;
   const { data, loading } = useGetTour(Number(id), { isTrigger: !!id });
   const { showError,showSuccess } = useNotifications();
   const t = useTranslations("tourAdmin");
   const [loadingPost, setLoadingPost] = useState(false);
+
   const fetchTour = useGet(cachedKeys.fetchTours);
   const schema = yup
     .object({
@@ -99,7 +102,6 @@ const CreateEditTour: FC<createEditTourProps> = (props) => {
         .array()
         .min(1, t("destinationRequire"))
         .required(t("destinationRequire")),
-      isFeature: yup.boolean().optional(),
       description: yup.string().required(t("descriptionRequire")),
       activity: yup.string().required(t("activityRequire")),
       included: yup.string().required(t("includedRequire")),
@@ -108,6 +110,7 @@ const CreateEditTour: FC<createEditTourProps> = (props) => {
       images: yup.array()
       .min(1, t("imagesRequire"))
       .required(t("imagesRequire")),
+      guideMeetingAddress: yup.string().required(t("guideMeetingAddressRequired"))
     })
     .required();
   const { filters } = useFiltersHandler({});
@@ -126,7 +129,6 @@ const CreateEditTour: FC<createEditTourProps> = (props) => {
       numberOfHours: data?.data.numberOfHours ?? 0,
       startDate: data?.data.startDate ?? "",
       endDate: data?.data.endDate ?? "",
-      isFeature: data?.data.isFeature ?? undefined,
       language: data?.data.language ?? "",
       cityId: data?.data.cityId ?? undefined,
       themeId: data?.data.themeId ?? undefined,
@@ -136,6 +138,7 @@ const CreateEditTour: FC<createEditTourProps> = (props) => {
       notIncluded: data?.data.notIncluded ?? "",
       safety: data?.data.safety ?? "",
       images: data?.data.images ?? [],
+      guideMeetingAddress: data?.data.guideMeetingAddress ?? ""
     };
   }, [data?.data]);
 
@@ -186,7 +189,6 @@ const CreateEditTour: FC<createEditTourProps> = (props) => {
       numberOfHours: data?.data.numberOfHours || 0,
       startDate: data?.data.startDate || "",
       endDate: data?.data.endDate || "",
-      isFeature: data?.data.isFeature ?? undefined,
       language: data?.data.language || "",
       cityId: data?.data.cityId || undefined,
       themeId: data?.data.themeId || undefined,
@@ -199,6 +201,7 @@ const CreateEditTour: FC<createEditTourProps> = (props) => {
       notIncluded: data?.data.notIncluded || "",
       safety: data?.data.safety || "",
       images: data?.data.TourImage?.map((image) => image.image) || [],
+      guideMeetingAddress: data?.data.guideMeetingAddress ?? ""
     });
   }, [data?.data, reset]);
 
@@ -214,24 +217,17 @@ const CreateEditTour: FC<createEditTourProps> = (props) => {
       id
         ? await tourServices.updateTour({ id, ...body })
         : await tourServices.createTour(body);
-      toggle();
       id? showSuccess(t("editSuccess")) : showSuccess(t("createSuccess"))
       await fetchTour();
     } catch (error) {
       showError(error);
     }finally{
       setLoadingPost(false);
+      handleClose();
     }
   };
   const handleDeleteImage = (image: string) => {
-      setValue(
-        "images",
-        id ? data?.data.TourImage?.filter((img) => img.image !== image).map(
-          (img) => img.image,
-        ) || [] : watch("images").filter((img) => img !== image).map(
-          (img) => img,
-        ) || [],
-      );
+      setValue("images", watch("images").filter((img) => img !== image) || []);
   };
 
   const watchImages = useMemo(() => {
@@ -249,7 +245,7 @@ const CreateEditTour: FC<createEditTourProps> = (props) => {
 
   return (
     <CommonStyles.Box className="tw-w-[800px] tw-relative">
-      <CommonStyles.Box className="tw-flex tw-justify-center">
+      <CommonStyles.Box className="tw-flex tw-justify-center tw-mb-8">
         <CommonStyles.Typography type="size20Weight600">
           {id ? t("editTour") : t("createNewTour")}
         </CommonStyles.Typography>
@@ -335,15 +331,6 @@ const CreateEditTour: FC<createEditTourProps> = (props) => {
                 component={CommonDatePicker}
                 label={t("endDate")}
                 placeholder={t("endDate")}
-              />
-            </CommonStyles.Box>
-
-            <CommonStyles.Box className="tw-col-span-12">
-              <RHFField
-                name="isFeature"
-                control={methods.control}
-                component={CheckboxField}
-                label={t("feature")}
               />
             </CommonStyles.Box>
 
@@ -443,11 +430,20 @@ const CreateEditTour: FC<createEditTourProps> = (props) => {
             </CommonStyles.Box>
             <CommonStyles.Box className="tw-col-span-12">
               <RHFField
+                name="guideMeetingAddress"
+                placeholder={t("placeholderGuideMeetingAddress")}
+                control={methods.control}
+                component={InputField}
+                label={t("guideMeetingAddress")}
+              />
+            </CommonStyles.Box>
+            <CommonStyles.Box className="tw-col-span-12">
+              <RHFField
                 multiple
                 setValue={setValue}
                 name="images"
                 control={methods.control}
-                component={UploadField}
+                component={uploadField}
                 label={t("image")}
               />
             </CommonStyles.Box>
@@ -474,14 +470,19 @@ const CreateEditTour: FC<createEditTourProps> = (props) => {
               })}
             </CommonStyles.Box>
           </CommonStyles.Box>
-          <CommonStyles.Box className="tw-flex tw-justify-around tw-mt-3">
-            <CommonStyles.CommonButton loading={loadingPost} type="submit">
-              {t("submit")}
-            </CommonStyles.CommonButton>
+          <CommonStyles.Box className="tw-flex tw-justify-center tw-gap-8 tw-mt-8 tw-mb-4">
+          <CancelButton handleClose={handleClose} />
+            <CommonButtonAdmin
+              variant="outlined"
+              type="submit"
+              className="active tw-min-w-28"
+            >
+              {id? t("edit") : t("create")}
+            </CommonButtonAdmin>
           </CommonStyles.Box>
           <CommonStyles.Box
             className="tw-absolute tw-top-0 tw-right-0 tw-cursor-pointer"
-            onClick={toggle}
+            onClick={handleClose}
           >
             <CommonIcons.Close />
           </CommonStyles.Box>

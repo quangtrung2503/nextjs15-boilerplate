@@ -26,7 +26,7 @@ const CityTourDetail = () => {
   const params = useParams();
   const { cityTourId } = params;
   const { showError } = useNotifications();
-  const t = useTranslations("cityTourDetail");
+  const t = useTranslations("cityTour.cityTourDetail");
 
   const { data, loading } = useGetTourCustomer(Number(cityTourId));
 
@@ -127,7 +127,7 @@ const CityTourDetail = () => {
             <CommonStyles.Box className="tw-flex tw-items-center tw-gap-3 tw-text-accent_gray_800">
               <CommonStyles.Typography className="tw-flex tw-items-center ">
                 <CommonIcons.LocationOn className="tw-w-4" />
-                {data?.tour.City.name}
+                {data?.tour.City?.name}
               </CommonStyles.Typography>
               <CommonStyles.Box className="tw-flex tw-items-center">
                 <CommonStyles.Rating
@@ -266,7 +266,7 @@ const CityTourDetail = () => {
         <CommonStyles.Box className="tw-flex tw-flex-col tw-gap-5">
           <CommonStyles.Box>
             <CardCarousel
-              classNameContainerHeading="tw-px-0"
+              classNameContainerHeading="tw-px-0 tw-font-volkhov"
               data={mocDataCard}
               title={
                 <CommonStyles.Typography type="size22Weight700">
@@ -282,7 +282,7 @@ const CityTourDetail = () => {
               data={mocDataCard}
               title={
                 <CommonStyles.Typography type="size22Weight700">
-                  {t("relatedToursIn")} {data?.tour.City.name}
+                  {t("relatedToursIn")} {data?.tour.City?.name}
                 </CommonStyles.Typography>
               }
             />

@@ -1,67 +1,60 @@
-import { default as CommonStyles } from "@/components/common"
-import CommonIcons from "@/components/CommonIcons"
-import { useState } from "react"
-import { Popover } from "@mui/material"
+import { default as CommonStyles } from "@/components/common";
+import CommonIcons from "@/components/CommonIcons";
+import { useState } from "react";
+import { Popover, Tooltip } from "@mui/material";
 import { Tour } from "@/services/modules/tour/interfaces/tour";
 import moment from "moment";
+import { useNotifications } from "@/helpers/toast";
+import CommonDialog from "@/components/common/Dialog";
+import ConfirmDeleteDialog from "../../Component/confirmDeleteDialog";
+import useToggleDialog from "@/hooks/useToggleDialog";
 
-const ActionCell: React.FC<{ row: Tour; handleEditId: (id: number) => void; handleDeleteTour: (id: number) => void;t: any }> = ({
-  row,
-  handleEditId,
-  handleDeleteTour,
-  t
-}) => {
-  const [anchorEl, setAnchorEl] = useState<HTMLDivElement | null>(null);
-
-  const handleOpenPopover = (event: React.MouseEvent<HTMLDivElement>) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleClosePopover = () => {
-    setAnchorEl(null);
-  };
+const ActionCell: React.FC<{
+  row: Tour;
+  handleEditId: (id: number) => void;
+  handleDeleteTour: (id: number) => void;
+  t: any;
+}> = ({ row, handleEditId, handleDeleteTour, t }) => {
+  const {showError,showSuccess} = useNotifications();
+  const {open, shouldRender, toggle} = useToggleDialog();
 
   const handleConfirmDelete = () => {
-    handleClosePopover();
-    handleDeleteTour(Number(row.id));
+    try {
+      toggle();
+      handleDeleteTour(Number(row.id));
+      showSuccess(t("deleteSuccess"));
+    } catch (error) {
+      showError(error);
+    }
   };
-
-  const isPopoverOpen = Boolean(anchorEl);
 
   return (
     <CommonStyles.Box className="tw-flex tw-gap-2">
       {row.id && (
         <>
-          <CommonStyles.Box onClick={() => handleEditId(Number(row.id))} className="tw-cursor-pointer tw-rounded-full tw-border-solid tw-size-7 tw-border-[1px] tw-flex tw-justify-center tw-items-center tw-bg-blue-100 tw-border-blue-500">
-            <CommonIcons.EditOutlined className="tw-text-blue-500" />
-          </CommonStyles.Box>
-          <CommonStyles.Box onClick={handleOpenPopover} className="tw-rounded-full tw-cursor-pointer tw-border-solid tw-size-7 tw-border-[1px] tw-flex tw-justify-center tw-items-center tw-bg-red-100 tw-border-red-500">
-            <CommonIcons.DeleteOutline className="tw-text-red-500" />
-          </CommonStyles.Box>
-          <Popover
-          className="tw-mt-1"
-            open={isPopoverOpen}
-            anchorEl={anchorEl}
-            onClose={handleClosePopover}
-            anchorOrigin={{
-              vertical: "bottom",
-              horizontal: "left",
-            }}
-          >
-            <CommonStyles.Box className="tw-p-2 tw-flex tw-flex-col tw-items-center">
-              <CommonStyles.Typography className="tw-text-md tw-mb-1 tw-font-bold">
-                {t("tourAdmin.confirmDelete")}
-              </CommonStyles.Typography>
-              <CommonStyles.Box className="tw-flex tw-gap-4">
-                <CommonStyles.Box className="tw-text-red-500 tw-cursor-pointer tw-border-solid tw-border-[1px] tw-bg-red-100 tw-rounded-md tw-px-2 tw-pb-1" onClick={handleConfirmDelete}>
-                  {t("delete")}
-                </CommonStyles.Box>
-                <CommonStyles.Box className="tw-text-gray-700 tw-cursor-pointer tw-border-solid tw-border-[1px] tw-rounded-md tw-px-2 tw-pb-1" onClick={handleClosePopover}>
-                  {t("cancel")}
-                </CommonStyles.Box>
-              </CommonStyles.Box>
+          <Tooltip title={t("edit")}>
+            <CommonStyles.Box
+              onClick={() => handleEditId(Number(row.id))}
+              className="tw-cursor-pointer tw-size-7"
+            >
+              <CommonIcons.EditOutlined className="tw-text-blue-500" />
             </CommonStyles.Box>
-          </Popover>
+          </Tooltip>
+          <Tooltip title={t("delete")}>
+            <CommonStyles.Box
+              onClick={toggle}
+              className="tw-cursor-pointer tw-size-7"
+            >
+              <CommonIcons.DeleteOutline className="tw-text-red-500" />
+            </CommonStyles.Box>
+          </Tooltip>
+          {shouldRender && (
+            <CommonDialog
+              open={open}
+              toggle={toggle}
+              body={<ConfirmDeleteDialog handleConfirmDelete={handleConfirmDelete} toggle={toggle} />}
+            />
+          )}
         </>
       )}
     </CommonStyles.Box>
@@ -71,11 +64,11 @@ const ActionCell: React.FC<{ row: Tour; handleEditId: (id: number) => void; hand
 export const headCells = ({
   handleEditId,
   handleDeleteTour,
-  t
+  t,
 }: {
   handleEditId: (id: number) => void;
   handleDeleteTour: (id: number) => void;
-  t: any
+  t: any;
 }) => {
   return [
     {
@@ -83,7 +76,7 @@ export const headCells = ({
       label: "STT",
       numeric: true,
       Cell(row: Tour, _index: number) {
-        return <span>{_index+1}</span>;
+        return <span>{_index + 1}</span>;
       },
     },
     {
@@ -139,7 +132,12 @@ export const headCells = ({
       label: t("tourAdmin.startDate"),
       numeric: false,
       Cell(row: Tour, _index: number) {
-        return <span>{row.startDate && moment(row.startDate).format("DD/MM/YYYY").toLowerCase()}</span>;
+        return (
+          <span>
+            {row.startDate &&
+              moment(row.startDate).format("DD/MM/YYYY").toLowerCase()}
+          </span>
+        );
       },
     },
     {
@@ -147,7 +145,12 @@ export const headCells = ({
       label: t("tourAdmin.endDate"),
       numeric: false,
       Cell(row: Tour, _index: number) {
-        return <span>{row.endDate && moment(row.endDate).format("DD/MM/YYYY").toLowerCase()}</span>;
+        return (
+          <span>
+            {row.endDate &&
+              moment(row.endDate).format("DD/MM/YYYY").toLowerCase()}
+          </span>
+        );
       },
     },
     {
@@ -155,7 +158,14 @@ export const headCells = ({
       label: "Action",
       numeric: false,
       Cell(row: Tour, _index: number) {
-        return <ActionCell row={row} handleEditId={handleEditId} handleDeleteTour={handleDeleteTour} t={t} />;
+        return (
+          <ActionCell
+            row={row}
+            handleEditId={handleEditId}
+            handleDeleteTour={handleDeleteTour}
+            t={t}
+          />
+        );
       },
     },
   ];

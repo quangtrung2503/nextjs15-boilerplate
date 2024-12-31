@@ -1,45 +1,52 @@
-import Form from "next/form"
-import { ChangeEvent, FC, useEffect, useMemo } from "react"
-import { FormProvider, SubmitHandler, useForm } from "react-hook-form"
-import * as yup from "yup"
-import { default as CommonStyles } from "@/components/common"
-import RHFField from "@/components/customReactFormField/ReactFormField"
-import { yupResolver } from "@hookform/resolvers/yup"
-import InputField from "@/components/customReactFormField/InputField"
-import useImageUploader from "@/hooks/useUpload"
-import { useGet } from "@/stores/useStore"
-import cachedKeys from "@/constants/cachedKeys"
-import useGetTheme from "@/services/modules/theme/hook/useGetTheme"
-import themeServices from "@/services/modules/theme/theme.services"
-import CheckboxField from "@/components/customReactFormField/CheckBoxField"
-import { Theme } from "@/services/modules/theme/intefaces/theme"
-import CommonIcons from "@/components/CommonIcons"
-import { useTranslations } from "next-intl"
+import Form from "next/form";
+import { ChangeEvent, FC, useEffect, useMemo } from "react";
+import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
+import * as yup from "yup";
+import { default as CommonStyles } from "@/components/common";
+import RHFField from "@/components/customReactFormField/ReactFormField";
+import { yupResolver } from "@hookform/resolvers/yup";
+import useImageUploader from "@/hooks/useUpload";
+import { useGet } from "@/stores/useStore";
+import cachedKeys from "@/constants/cachedKeys";
+import useGetTheme from "@/services/modules/theme/hook/useGetTheme";
+import themeServices from "@/services/modules/theme/theme.services";
+import CheckboxField from "@/components/customReactFormField/CheckBoxField";
+import { Theme } from "@/services/modules/theme/interfaces/theme";
+import CommonIcons from "@/components/CommonIcons";
+import { useTranslations } from "next-intl";
+import { useNotifications } from "@/helpers/toast";
+import CancelButton from "../../Component/buttonCancel";
+import InputField from "../../Component/customField/inputField";
+import { CommonButtonAdmin } from "../../Component/customField/commonButton";
 
 interface createEditThemeProps {
-  toggle: () => void;
   id?: number;
+  handleClose: () => void;
 }
 interface FormValues {
   name: string;
   isDisplay?: boolean;
 }
 const CreateEditTheme: FC<createEditThemeProps> = (props) => {
-  const { toggle, id } = props;
+  const { id, handleClose } = props;
   const { data } = useGetTheme(Number(id), { isTrigger: !!id });
   const t = useTranslations();
+  const { showError, showSuccess } = useNotifications();
 
   const schema = yup
     .object({
-      name: yup.string().required("Name is a required field"),
+      name: yup.string().required(t("themeAdmin.nameRequire")),
     })
     .required();
   const initValue = useMemo(() => {
-        return { name: data?.data.name ?? "",isDisplay: data?.data.isDisplay ?? false}
+    return {
+      name: data?.data.name ?? "",
+      isDisplay: data?.data.isDisplay ?? false,
+    };
   }, [data?.data]);
   const methods = useForm<FormValues>({
     defaultValues: initValue,
-    resolver: yupResolver(schema)
+    resolver: yupResolver(schema),
   });
   const { reset } = methods;
 
@@ -48,26 +55,33 @@ const CreateEditTheme: FC<createEditThemeProps> = (props) => {
       // Reset form values when data is loaded
       reset({
         name: data.data.name || "",
-        isDisplay: data.data.isDisplay || false
+        isDisplay: data.data.isDisplay || false,
       });
     }
   }, [data?.data, reset]);
   const fetchThemes = useGet(cachedKeys.fetchThemes);
   const onSubmit: SubmitHandler<FormValues> = async (data: Theme) => {
     try {
-      id ? data = { ...data, id } : { data };
-      id? await themeServices.updateTheme(data): await themeServices.createTheme(data);
+      id ? (data = { ...data, id }) : { data };
+      id
+        ? await themeServices.updateTheme(data)
+        : await themeServices.createTheme(data);
       await fetchThemes();
-      toggle();
-    }
-    catch (error) {
-      console.log(error);
+      showSuccess(id ? t("editSuccess") : t("createSuccess"));
+      handleClose();
+    } catch (error) {
+      showError(error);
     }
   };
+
   return (
     <CommonStyles.Box className="tw-w-[500px] tw-relative">
-      <CommonStyles.Box className="tw-flex tw-justify-center"><CommonStyles.Typography type="size20Weight600">{id?t("themeAdmin.editTheme"):t("themeAdmin.createNewTheme")}</CommonStyles.Typography></CommonStyles.Box>
-      <FormProvider {...methods} >
+      <CommonStyles.Box className="tw-flex tw-justify-center tw-mb-8">
+        <CommonStyles.Typography type="size20Weight600">
+          {id ? t("themeAdmin.editTheme") : t("themeAdmin.createNewTheme")}
+        </CommonStyles.Typography>
+      </CommonStyles.Box>
+      <FormProvider {...methods}>
         <form onSubmit={methods.handleSubmit(onSubmit)}>
           <RHFField
             className="tw-mb-3"
@@ -76,6 +90,7 @@ const CreateEditTheme: FC<createEditThemeProps> = (props) => {
             component={InputField}
             defaultValue={initValue?.name}
             label={t("themeAdmin.name")}
+            placeholder={t("themeAdmin.placeholderName")}
           />
           <RHFField
             name="isDisplay"
@@ -84,14 +99,26 @@ const CreateEditTheme: FC<createEditThemeProps> = (props) => {
             component={CheckboxField}
             label={t("themeAdmin.isDisplay")}
           />
-          <CommonStyles.Box className="tw-flex tw-justify-around">
-            <CommonStyles.CommonButton type="submit">{t("submit")}</CommonStyles.CommonButton>
+          <CommonStyles.Box className="tw-flex tw-justify-center tw-gap-8 tw-mt-8 tw-mb-4">
+            <CancelButton handleClose={handleClose} />
+            <CommonButtonAdmin
+              variant="outlined"
+              type="submit"
+              className="active tw-min-w-28"
+            >
+              {id ? t("edit") : t("create")}
+            </CommonButtonAdmin>
           </CommonStyles.Box>
-          <CommonStyles.Box  className="tw-absolute tw-top-0 tw-right-0 tw-cursor-pointer" onClick={toggle}><CommonIcons.Close /></CommonStyles.Box>
+          <CommonStyles.Box
+            className="tw-absolute tw-top-0 tw-right-0 tw-cursor-pointer"
+            onClick={handleClose}
+          >
+            <CommonIcons.Close />
+          </CommonStyles.Box>
         </form>
       </FormProvider>
     </CommonStyles.Box>
-  )
-}
+  );
+};
 
-export default CreateEditTheme
+export default CreateEditTheme;

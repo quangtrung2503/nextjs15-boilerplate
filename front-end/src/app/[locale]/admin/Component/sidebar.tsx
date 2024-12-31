@@ -47,6 +47,16 @@ const SideBar = () => {
       path: pageUrls.Admin.Tour,
       icon: <CommonIcons.TourOutlined />,
     },
+    {
+      name: "Video",
+      path: pageUrls.Admin.Video,
+      icon: <CommonIcons.PlayCircleOutline />,
+    },
+    {
+      name: "Tag",
+      path: pageUrls.Admin.Tag,
+      icon: <CommonIcons.Style />
+    }
   ];
   const pathName = usePathname();
   const param = useParams();

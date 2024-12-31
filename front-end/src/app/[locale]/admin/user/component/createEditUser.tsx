@@ -4,25 +4,27 @@ import * as yup from "yup";
 import { default as CommonStyles } from "@/components/common";
 import RHFField from "@/components/customReactFormField/ReactFormField";
 import { yupResolver } from "@hookform/resolvers/yup";
-import InputField from "@/components/customReactFormField/InputField";
-import UploadField from "@/components/customReactFormField/UploadField";
 import useImageUploader from "@/hooks/useUpload";
 import { useGet } from "@/stores/useStore";
 import cachedKeys from "@/constants/cachedKeys";
 import useGetUser from "@/services/modules/user/hook/useGetUser";
 import userServices from "@/services/modules/user/user.services";
-import { CommonDatePicker } from "@/components/common/DatePicker";
 import { User } from "@/services/modules/user/interfaces/user.inteface";
 import { Gender, getOptionEnum, Role, UserStatus } from "@/helpers/common";
-import SelectField from "@/components/customReactFormField/SelectField";
-import moment, { Moment } from "moment";
 import { useNotifications } from "@/helpers/toast";
 import CommonIcons from "@/components/CommonIcons";
 import { useTranslations } from "next-intl";
+import apiUrls from "@/constants/apiUrls";
+import CancelButton from "../../Component/buttonCancel";
+import { CommonButtonAdmin } from "../../Component/customField/commonButton";
+import InputField from "../../Component/customField/inputField";
+import uploadField from "../../Component/customField/uploadField";
+import SelectField from "../../Component/customField/selectField";
+import { CommonDatePicker } from "../../Component/customField/datePickerField";
 
 interface createEditUserProps {
-  toggle: () => void;
   id?: number;
+  handleClose: () => void;
 }
 interface FormValues {
   name: string;
@@ -32,7 +34,7 @@ interface FormValues {
   dateOfBirth: string;
   sex: Gender;
   status: UserStatus;
-  email: string;
+  email?: string;
   address: string;
   avatar?: string;
   role: Role;
@@ -42,25 +44,40 @@ const StatusOption = getOptionEnum(UserStatus);
 const RoleOption = getOptionEnum(Role);
 
 const CreateEditUser: FC<createEditUserProps> = (props) => {
-  const { toggle, id } = props;
+  const { id, handleClose } = props;
   const { uploadImage } = useImageUploader();
   const { data } = useGetUser(Number(id), { isTrigger: !!id });
-  const {showError} = useNotifications();
+  const { showError, showSuccess } = useNotifications();
   const t = useTranslations();
 
   const schema = yup.object({
     name: yup.string().required(t("userAdmin.nameRequire")),
-    username: id ? yup.string().optional() : yup.string().required(t("userAdmin.usernameRequire")),
-    password: id ? yup.string().optional() : yup.string().required(t("userAdmin.passwordRequire")),
+    username: id
+      ? yup.string().optional()
+      : yup
+          .string()
+          .required(t("userAdmin.usernameRequire"))
+          .matches(/^[a-zA-Z0-9_]{8,}$/, t("userAdmin.invalidUsername")),
+    password: id
+      ? yup.string().optional()
+      : yup
+          .string()
+          .required(t("userAdmin.passwordRequire"))
+          .matches(
+            /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+            t("userAdmin.invalidPassword"),
+          ),
     phone: yup
       .string()
       .matches(/^\d{10}$/, t("userAdmin.phoneValid"))
       .required(t("userAdmin.phoneRequired")),
     dateOfBirth: yup.string().required(t("userAdmin.dateOfBirthRequired")),
-    email: yup
-      .string()
-      .email(t("userAdmin.emailValid"))
-      .required(t("userAdmin.emailRequire")),
+    email: id
+      ? yup.string().optional()
+      : yup
+          .string()
+          .email(t("userAdmin.emailValid"))
+          .required(t("userAdmin.emailRequire")),
     address: yup.string().required(t("userAdmin.addressRequire")),
     sex: yup
       .mixed<Gender>()
@@ -96,7 +113,7 @@ const CreateEditUser: FC<createEditUserProps> = (props) => {
     defaultValues: initValue,
     resolver: yupResolver(schema),
   });
-  const { reset, setValue } = methods;
+  const { reset, setValue, watch } = methods;
 
   useEffect(() => {
     if (data?.data) {
@@ -122,7 +139,6 @@ const CreateEditUser: FC<createEditUserProps> = (props) => {
     try {
       const body = {
         id: Number(id),
-        email: data.email,
         name: data.name,
         phone: data.phone,
         nickName: data.nickName,
@@ -133,9 +149,12 @@ const CreateEditUser: FC<createEditUserProps> = (props) => {
         dateOfBirth: data.dateOfBirth,
         address: data.address,
       };
-      id ? await userServices.updateUser(body) : await userServices.createUser(data);
+      id
+        ? await userServices.updateUser(body)
+        : await userServices.createUser(data);
       await fetchUsers();
-      toggle();
+      showSuccess(id ? t("editSuccess") : t("createSuccess"));
+      handleClose();
     } catch (error) {
       showError(error);
     }
@@ -144,19 +163,23 @@ const CreateEditUser: FC<createEditUserProps> = (props) => {
     const file = e.target.files?.[0];
     if (file) {
       try {
-        const res = await uploadImage(file);;
+        const res = await uploadImage(file);
         methods.setValue("avatar", res.data.data.uri);
       } catch (error) {
         showError(error);
       }
     } else {
-    showError(t("noFileSelected"));
+      showError(t("noFileSelected"));
     }
   };
 
+  const handleDeleteImage = () => {
+    setValue("avatar", "");
+  };
+
   return (
-    <CommonStyles.Box className="tw-w-[500px] tw-relative">
-      <CommonStyles.Box className="tw-flex tw-justify-center">
+    <CommonStyles.Box className="tw-w-[800px] tw-relative">
+      <CommonStyles.Box className="tw-flex tw-justify-center tw-mb-8">
         <CommonStyles.Typography type="size20Weight600">
           {id ? t("userAdmin.editUser") : t("userAdmin.createNewUser")}
         </CommonStyles.Typography>
@@ -164,48 +187,48 @@ const CreateEditUser: FC<createEditUserProps> = (props) => {
       <FormProvider {...methods}>
         <form onSubmit={methods.handleSubmit(onSubmit)}>
           <CommonStyles.Box className="tw-grid tw-grid-cols-12 tw-gap-3">
-            <CommonStyles.Box className="tw-col-span-12">
+            <CommonStyles.Box className="tw-col-span-6">
               <RHFField
-                className=""
                 name="name"
                 control={methods.control}
                 component={InputField}
                 label={t("userAdmin.name")}
+                placeholder={t("userAdmin.placeholderName")}
               />
             </CommonStyles.Box>
-            {!id && <><CommonStyles.Box className="tw-col-span-12">
-              <RHFField
-                className=""
-                name="username"
-                control={methods.control}
-                component={InputField}
-                label={t("userAdmin.username")}
-              />
-            </CommonStyles.Box>
-              <CommonStyles.Box className="tw-col-span-12">
-                <RHFField
-                  name="password"
-                  type="password"
-                  control={methods.control}
-                  component={InputField}
-                  label={t("userAdmin.password")}
-                />
-              </CommonStyles.Box></>}
-            <CommonStyles.Box className="tw-col-span-12">
+            <CommonStyles.Box className="tw-col-span-6">
               <RHFField
                 name="phone"
                 control={methods.control}
                 component={InputField}
                 label={t("userAdmin.phone")}
+                placeholder={t("userAdmin.placeholderPhone")}
               />
             </CommonStyles.Box>
+
+            {!id && (
+              <>
+                <CommonStyles.Box className="tw-col-span-12">
+                  <RHFField
+                    name="password"
+                    type="password"
+                    control={methods.control}
+                    component={InputField}
+                    placeholder={t("userAdmin.placeholderPassword")}
+                    label={t("userAdmin.password")}
+                  />
+                </CommonStyles.Box>
+              </>
+            )}
 
             <CommonStyles.Box className="tw-col-span-12">
               <RHFField
                 name="email"
                 control={methods.control}
                 component={InputField}
+                placeholder={t("userAdmin.placeholderEmail")}
                 label={t("userAdmin.email")}
+                readOnly
               />
             </CommonStyles.Box>
             <CommonStyles.Box className="tw-col-span-12">
@@ -213,6 +236,7 @@ const CreateEditUser: FC<createEditUserProps> = (props) => {
                 name="address"
                 control={methods.control}
                 component={InputField}
+                placeholder={t("userAdmin.placeholderAddress")}
                 label={t("userAdmin.address")}
               />
             </CommonStyles.Box>
@@ -234,6 +258,7 @@ const CreateEditUser: FC<createEditUserProps> = (props) => {
                 control={methods.control}
                 component={SelectField}
                 options={RoleOption}
+                placeholder={t("userAdmin.placeholderRole")}
                 label={t("userAdmin.role")}
               />
             </CommonStyles.Box>
@@ -243,6 +268,7 @@ const CreateEditUser: FC<createEditUserProps> = (props) => {
                 control={methods.control}
                 component={SelectField}
                 options={GenderOption}
+                placeholder={t("userAdmin.placeholderSex")}
                 label={t("userAdmin.sex")}
               />
             </CommonStyles.Box>
@@ -250,6 +276,7 @@ const CreateEditUser: FC<createEditUserProps> = (props) => {
               <RHFField
                 name="status"
                 control={methods.control}
+                placeholder={t("userAdmin.placeholderStatus")}
                 component={SelectField}
                 options={StatusOption}
                 label={t("userAdmin.status")}
@@ -257,23 +284,50 @@ const CreateEditUser: FC<createEditUserProps> = (props) => {
             </CommonStyles.Box>
             <CommonStyles.Box className="tw-col-span-12">
               <RHFField
-              setValue={setValue}
+                setValue={setValue}
                 className="tw-mb-3"
                 name="avatar"
                 control={methods.control}
                 label={t("userAdmin.avatar")}
-                component={UploadField}
+                component={uploadField}
                 onChange={(e) => handleUpload(e)}
               />
             </CommonStyles.Box>
+            {watch("avatar") != "" && (
+              <CommonStyles.Box className="tw-col-span-12 tw-flex tw-flex-wrap">
+                <CommonStyles.Box className="tw-relative tw-w-fit">
+                  {" "}
+                  <img
+                    className="tw-max-w-[100px] tw-h-auto tw-p-5"
+                    src={`${apiUrls.IMG_URL}/${watch("avatar")}`}
+                    alt="Uploaded Image"
+                  />
+                  <CommonStyles.Box
+                    className="tw-absolute tw-top-0 tw-right-0 tw-cursor-pointer"
+                    onClick={() => handleDeleteImage()}
+                  >
+                    <CommonIcons.CancelOutlined className="tw-text-accent_gray_500" />
+                  </CommonStyles.Box>
+                </CommonStyles.Box>
+              </CommonStyles.Box>
+            )}
           </CommonStyles.Box>
-          <CommonStyles.Box className="tw-flex tw-justify-around">
-            <CommonStyles.CommonButton type="submit">
-              {t("submit")}
-            </CommonStyles.CommonButton>
+          <CommonStyles.Box className="tw-flex tw-justify-center tw-gap-8 tw-mt-8 tw-mb-4">
+            <CancelButton handleClose={handleClose} />
+            <CommonButtonAdmin
+              variant="outlined"
+              type="submit"
+              className="active tw-min-w-28"
+            >
+              {id ? t("edit") : t("create")}
+            </CommonButtonAdmin>
           </CommonStyles.Box>
-          <CommonStyles.Box  className="tw-absolute tw-top-0 tw-right-0 tw-cursor-pointer" onClick={toggle}><CommonIcons.Close /></CommonStyles.Box>
-
+          <CommonStyles.Box
+            className="tw-absolute tw-top-0 tw-right-0 tw-cursor-pointer"
+            onClick={handleClose}
+          >
+            <CommonIcons.Close />
+          </CommonStyles.Box>
         </form>
       </FormProvider>
     </CommonStyles.Box>

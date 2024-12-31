@@ -19,11 +19,14 @@ export default function CommonDialog(props: DialogProps) {
   const { open, title, body, toggle, onClose, maxWidth } = props;
   return (
     <Dialog
+    sx={{".css-17jr764-MuiPaper-root-MuiDialog-paper": {
+      borderRadius: "12px"
+    }}}
       open={open}
       onClose={() => {
-        onClose && onClose(), toggle();
+        onClose && onClose();toggle();
       }}
-      maxWidth={maxWidth}
+      maxWidth={maxWidth || "xl"}
     >
       {title && (
         <>
@@ -44,7 +47,7 @@ export default function CommonDialog(props: DialogProps) {
           </IconButton>
         </>
       )}
-      <DialogContent dividers>{body}</DialogContent>
+      <DialogContent className="tw-rounded-xl" dividers>{body}</DialogContent>
     </Dialog>
   );
 }

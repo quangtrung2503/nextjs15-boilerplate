@@ -21,6 +21,15 @@ import LatestStories from "./components/LatestStories";
 import CommonIcons from "@/components/CommonIcons";
 import { useTranslations } from "next-intl";
 import Heading from "./components/Heading";
+import Link from "@/components/common/Link";
+import pageUrls from "@/constants/pageUrls";
+import useGetCityCustomer from "@/services/modules/city/hook/useGetCityCustomer";
+import useGetDetailCityCustomer from "@/services/modules/city/hook/useGetDetailCityCustomer";
+import { useParams } from "next/navigation";
+import { useEffect, useState } from "react";
+import apiUrls from "@/constants/apiUrls";
+import { CityDetail } from "@/services/modules/city/interfaces/city";
+import City from "../admin/city/city";
 
 interface FormValues {
   location: string;
@@ -39,37 +48,10 @@ const listCity = [
   "Delhi",
 ];
 const popularCity: PopularCityProps = {
-  listService: [
-    {
-      title: "Public Transportations",
-      icon: <CommonIcons.BusIcon />,
-      color: "#D176E0",
-    },
-    {
-      title: "Nature & Adventure",
-      icon: <CommonIcons.TravelIcon />,
-      color: "#7BBCB0",
-    },
-    {
-      title: "Private Transportations",
-      icon: <CommonIcons.TaxiIcon />,
-      color: "#E4B613",
-    },
-    {
-      title: "Business Tours",
-      icon: <CommonIcons.WalletIcon />,
-      color: "#FC3131",
-    },
-    {
-      title: "Local Visit",
-      icon: <CommonIcons.LocalIcon />,
-      color: "#5C9BDE",
-    },
-  ],
   imageBanner: commonImg.alaska.src,
   name: "Alaska",
   title:
-    "Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint. Velit officia consequat duis enim velit mollit. Exercitation veniam consequat sunt nostrud amet.0",
+    "Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint. Velit officia consequat duis enim velit mollit. Exercitation veniam consequat sunt nostrud amet.",
 };
 
 const trendingCity = {
@@ -163,6 +145,25 @@ export const mocDataCard = [
 ];
 export default function HomePage() {
   const t = useTranslations("homePage");
+  const { data: dataCity, refetch: refetchCity } = useGetCityCustomer();
+  const [slug, setSlug] = useState<string | null>(null);
+  console.log({ sss: !!slug })
+  const { data: CityDetail, refetch } = useGetDetailCityCustomer(String(slug), { isTrigger: !!slug });
+
+  useEffect(() => {
+    if (dataCity?.items && dataCity?.items?.length > 0 && !slug) {
+      const initialCity = dataCity?.items[0];
+      if (initialCity?.slug) {
+        setSlug(initialCity.slug);
+      }
+    }
+  }, [dataCity, slug]);
+
+  const handleChangeSlug = async (slug: string) => {
+    setSlug(slug);
+    await refetch();
+  }
+
   const { control, handleSubmit } = useForm<FormValues>({
     defaultValues: initValue,
   });
@@ -223,7 +224,7 @@ export default function HomePage() {
                 <LocationOn className="tw-text-primary" />
                 <div className="tw-ml-[10px]">
                   <CommonStyles.Typography
-                    type="size14Weight500"
+                    type="size15Weight800"
                     className="tw-text-primary"
                   >
                     {t("locationLabel")}
@@ -253,10 +254,10 @@ export default function HomePage() {
                   className="tw-h-5 tw-items-center tw-mr-2"
                   flexItem
                 />
-                <PeopleOutlinedIcon className="tw-text-primary" />
+                <CommonIcons.PeopleOutlined className="tw-text-primary" />
                 <div className="tw-ml-[10px]">
                   <CommonStyles.Typography
-                    type="size14Weight500"
+                    type="size15Weight800"
                     className="tw-text-primary"
                   >
                     {t("guestsLabel")}
@@ -291,10 +292,10 @@ export default function HomePage() {
                   className="tw-h-5 tw-items-center tw-mr-2"
                   flexItem
                 />
-                <CalendarMonthOutlinedIcon className="tw-text-primary" />
+                <CommonIcons.CalendarMonthOutlined className="tw-text-primary" />
                 <div className="tw-ml-[10px]">
                   <CommonStyles.Typography
-                    type="size14Weight500"
+                    type="size15Weight800"
                     className="tw-text-primary"
                   >
                     {t("dateLabel")}
@@ -320,11 +321,12 @@ export default function HomePage() {
               </CommonStyles.Box>
               <CommonStyles.Box className="tw-flex tw-justify-end tw-col-span-2">
                 <CommonButton
-                  label="Search"
                   className="outlined tw-w-[150px]"
                   type="submit"
                   variant="outlined"
-                />
+                >
+                  <CommonStyles.Typography type='size16Weight800' className=''>{"Search"}</CommonStyles.Typography>
+                </CommonButton>
               </CommonStyles.Box>
             </CommonStyles.Box>
           </form>
@@ -351,15 +353,16 @@ export default function HomePage() {
         </Container>
         {/* 2. Section Suggest Tour */}
         <Container className="tw-flex tw-w-full tw-justify-center tw-gap-3">
-          {listCity.map((city, index) => {
+          {dataCity?.items.map((city, index) => {
             return (
               <CommonStyles.CommonButton
                 variant="outlined"
-                className={`tw-w-32 rounded ${city === "Alaska" && "active"}`}
+                className={`tw-w-32 rounded ${slug === city?.slug ? "active" : ""} `}
                 key={index}
+                onClick={() => handleChangeSlug(city.slug ?? "")}
               >
                 <CommonStyles.Typography type="size14Weight700">
-                  {city}
+                  {city?.name}
                 </CommonStyles.Typography>
               </CommonStyles.CommonButton>
             );
@@ -368,32 +371,45 @@ export default function HomePage() {
         <CommonStyles.Box className="tw-flex tw-w-full tw-justify-center">
           <Container>
             <PopularCity
-              imageBanner={popularCity.imageBanner}
-              name={popularCity.name}
-              title={popularCity.title}
-              listService={popularCity.listService}
+              imageBanner={`${apiUrls.IMG_URL}/${CityDetail?.data?.image}`}
+              name={CityDetail?.data?.name || ""}
+              title={CityDetail?.data?.description || ""}
+              listService={CityDetail?.data?.Tag.map((tag) => ({
+                name: tag?.name,
+                icon: tag?.icon,
+                color: tag?.color,
+              })) || []}
             />
           </Container>
         </CommonStyles.Box>
-        <Container className="tw-grid tw-grid-cols-12 tw-gap-x-5">
-          {Array(4)
-            .fill(null)
-            .map((item, index) => {
+        <Container>
+          <CommonStyles.Typography
+            type="size18Weight700"
+            className="tw-cursor-pointer tw-text-right tw-mr-6"
+            color="#7BBCB0">
+            <Link href={pageUrls.CityTour}>
+              {t("seeMore")}
+            </Link>
+          </CommonStyles.Typography>
+          <Container className="tw-grid tw-grid-cols-12 tw-gap-x-5">
+            {CityDetail?.data?.Tour.map((item, index) => {
               return (
                 <CommonStyles.Box key={index} className="tw-col-span-3">
                   <CardGridItem
                     link=""
-                    src="https://vietnam.travel/sites/default/files/inline-images/Ha%20Giang%20Loop-9.jpg"
-                    title="Alaska: Westminster to Greenwich River Thames"
-                    duration={2}
-                    transport="Transport Facility"
-                    plan="Family Plan"
-                    price={35}
-                    feedback_quantity={500}
+                    src={`${apiUrls.IMG_URL}/${item?.TourImage?.[0]?.image}`}
+                    title={item?.name}
+                    duration={item?.numberOfHours}
+                    transport={item?.transport}
+                    plan={item?.package}
+                    price={item?.price}
+                    feedback_quantity={item?.totalReviews}
+                    feedback_average={item?.averageRating}
                   />
                 </CommonStyles.Box>
               );
             })}
+          </Container>
         </Container>
       </CommonStyles.Box>
       {/* III. Section Suggest Tour */}
@@ -401,7 +417,7 @@ export default function HomePage() {
         <TrendingCity trendingCity={trendingCity} />
       </CommonStyles.Box>
       {/* IV. Featured Destinations */}
-      <CommonStyles.Box>
+      <CommonStyles.Box className="tw-flex tw-flex-col tw-w-full tw-justify-between tw-items-center">
         <CardCarousel
           data={mocDataCard}
           title={
@@ -426,6 +442,6 @@ export default function HomePage() {
           <LatestStories />
         </CommonStyles.Box>
       </Container>
-    </CommonStyles.Box>
+    </CommonStyles.Box >
   );
 }

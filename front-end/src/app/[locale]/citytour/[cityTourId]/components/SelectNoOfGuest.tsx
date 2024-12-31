@@ -30,7 +30,7 @@ const SelectNoOfGuest: React.FC<CustomInputProps> = ({
   const [adultQuantity, setAdultQuantity] = useState(0);
   const [childQuantity, setChildQuantity] = useState(0);
 
-  const t = useTranslations("cityTourDetail");
+  const t = useTranslations("cityTour.cityTourDetail");
 
   const handleToggleDropdown = () => setOpen((prev) => !prev);
 
@@ -83,9 +83,8 @@ const SelectNoOfGuest: React.FC<CustomInputProps> = ({
           variant="outlined"
           value={
             adultQuantity || childQuantity
-              ? `${adultQuantity ? `${adultQuantity} ${adultQuantity > 1 ? t("adults") : t("adult")}` : ""}${
-                  adultQuantity && childQuantity ? ", " : ""
-                }${childQuantity ? `${childQuantity} ${childQuantity > 1 ? t("children") : t("child")}` : ""}`
+              ? `${adultQuantity ? `${adultQuantity} ${adultQuantity > 1 ? t("adults") : t("adult")}` : ""}${adultQuantity && childQuantity ? ", " : ""
+              }${childQuantity ? `${childQuantity} ${childQuantity > 1 ? t("children") : t("child")}` : ""}`
               : ""
           }
           sx={{
