@@ -53,6 +53,7 @@ import { default as detail3 } from './images/detail_city_tour/detail3.jpg';
 import { default as detail4 } from './images/detail_city_tour/detail4.jpg';
 import { default as detail5 } from './images/detail_city_tour/detail5.jpg';
 import { default as detail6 } from './images/detail_city_tour/detail6.jpg';
+import { default as upload } from './images/upload-6699084_1280.webp';
 
 export const commonImg = {
     banner,
@@ -91,5 +92,5 @@ export const commonImg = {
     detail4,
     detail5,
     detail6,
-
+    upload
 };

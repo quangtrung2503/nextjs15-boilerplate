@@ -87,7 +87,22 @@ const InputField: React.FC<CustomInputProps> = ({
         placeholder={placeholder}
         variant="outlined"
         sx={{
-          ...sx,
+          "div.MuiInputAdornment-root":{
+            margin: 0
+          },
+          "div.MuiInputBase-root":{
+            paddingTop: "8px",
+            paddingLeft: "10px",
+            paddingBottom: "8px",
+          },
+          "input": {
+            paddingTop: "0px",
+            paddingLeft: "0px",
+            paddingBottom: "0px",
+          },
+          "fieldset":{
+            padding: "0px"
+          },
           "&:-webkit-autofill": {
             WebkitBoxShadow: "0 0 0 100px white inset",  
             WebkitTextFillColor: "#000", 
@@ -100,6 +115,7 @@ const InputField: React.FC<CustomInputProps> = ({
               borderRadius: "4px",
             },
           },
+          ...sx,
         }}
         fullWidth
         disabled={type === "email"}
@@ -109,8 +125,8 @@ const InputField: React.FC<CustomInputProps> = ({
             endAdornment:
               type === "password" ? (
                 <InputAdornment position="end">
-                  <IconButton onClick={handleToggleShowPassword} edge="end">
-                    {showPassword ? <VisibilityOff /> : <Visibility />}
+                  <IconButton className="tw-size-3 tw-mr-1 " onClick={handleToggleShowPassword} edge="end">
+                    {showPassword ? <VisibilityOff className="tw-text-[15px]" /> : <Visibility className="tw-text-[15px]" />}
                   </IconButton>
                   {icon}
                 </InputAdornment>
@@ -122,12 +138,6 @@ const InputField: React.FC<CustomInputProps> = ({
         error={!!fieldState.error}
         helperText={fieldState.error?.message || ""}
       />
-       {/* {fieldState.error && (
-        <span className="tw-text-[#D32F2F] tw-font-mulish tw-text-sm">
-          {fieldState.error.message}
-        </span>
-      )} */}
-      {/* </FormControl> */}
     </CommonStyles.Box>
   );
 };

@@ -16,6 +16,9 @@ import CommonDialog from "@/components/common/Dialog";
 import CreateEditUser from "./component/createEditUser";
 import { useNotifications } from "@/helpers/toast";
 import { useTranslations } from "next-intl";
+import CommonIcons from "@/components/CommonIcons";
+import InputAdminField from "../Component/customField/inputField";
+import { CommonButtonAdmin } from "../Component/customField/commonButton";
 
 interface FormSearch {
   textSearch: string;
@@ -67,21 +70,20 @@ const User = () => {
         <CommonStyles.Box className="tw-w-full">
           <FormProvider {...methods} >
             <form onSubmit={methods.handleSubmit(handleSearch)} className="tw-flex tw-items-center">
-              <CommonStyles.Box className="tw-w-[20%]">
-                <RHFField
-                  name="textSearch"
-                  placeholder={t("userAdmin.placeholderSearch")}
-                  control={methods.control}
-                  component={InputField}
-                />
-              </CommonStyles.Box>
-              <CommonStyles.Box className="tw-w-[20%]">
-                <CommonStyles.CommonButton variant="outlined" className="outlined rounded tw-ml-5 tw-w-full" type="submit">{t("search")}</CommonStyles.CommonButton>
-              </CommonStyles.Box>
+            <CommonStyles.Box className="tw-w-[100%] tw-mr-9">
+              <RHFField
+                className="tw-bg-white"
+                name="textSearch"
+                placeholder={t("userAdmin.placeholderSearch")}
+                control={methods.control}
+                component={InputAdminField}
+                icon={<CommonIcons.Search className="tw-cursor-pointer tw-mr-3 tw-text-[28px] tw-text-primary" onClick={() => methods.handleSubmit(handleSearch)()} />}
+              />
+            </CommonStyles.Box>
             </form>
           </FormProvider>
         </CommonStyles.Box>
-        <CommonStyles.CommonButton className="tw-text-nowrap tw-px-7" onClick={toggle} label={t("userAdmin.createNewUser")} />
+        <CommonButtonAdmin  variant="outlined" className="active tw-text-nowrap tw-px-7" onClick={toggle} label={t("userAdmin.createNewUser")} />
       </CommonStyles.Box>
       <CommonStyles.Box>
         {dataUser &&
@@ -95,7 +97,7 @@ const User = () => {
             handleCheckBox={handleCheckBox}
             handleSelectAllClick={handleSelectAll}
             page={filters?.page || 0}
-            headCells={headCells({ handleEditId, handleDeleteUser,t })}
+            headCells={headCells({ handleEditId, handleDeleteUser,t,page: filters.page || 0,perPage: filters.perPage})}
             rows={dataUser?.items}
             handleChangePage={handleChangePage}
             handleChangeRowsPerPage={changeRowPerPage}

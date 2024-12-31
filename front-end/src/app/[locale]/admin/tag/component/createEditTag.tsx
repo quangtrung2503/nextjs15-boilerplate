@@ -4,7 +4,6 @@ import * as yup from "yup";
 import { default as CommonStyles } from "@/components/common";
 import RHFField from "@/components/customReactFormField/ReactFormField";
 import { yupResolver } from "@hookform/resolvers/yup";
-import InputField from "@/components/customReactFormField/InputField";
 import { useGet } from "@/stores/useStore";
 import cachedKeys from "@/constants/cachedKeys";
 import CommonIcons from "@/components/CommonIcons";
@@ -14,8 +13,12 @@ import UploadField from "@/components/customReactFormField/UploadField";
 import useGetTag from "@/services/modules/tag/hook/useGetTag";
 import tagServices from "@/services/modules/tag/tag.services";
 import { Tag } from "@/services/modules/tag/interfaces/tag";
-import { CloudUploadOutlined } from "@mui/icons-material";
 import apiUrls from "@/constants/apiUrls";
+import InputFieldColor from "@/components/customReactFormField/InputFieldColor";
+import { commonImg } from "@/assets";
+import CancelButton from "../../Component/buttonCancel";
+import InputField from "../../Component/customField/inputField";
+import { CommonButtonAdmin } from "../../Component/customField/commonButton";
 
 interface createEditTagProps {
   id?: number;
@@ -81,62 +84,93 @@ const CreateEditTag: FC<createEditTagProps> = (props) => {
   };
   return (
     <CommonStyles.Box className="tw-w-[500px] tw-relative">
-      <CommonStyles.Box className="tw-flex tw-justify-center">
+      <CommonStyles.Box className="tw-flex tw-justify-center tw-mb-8">
         <CommonStyles.Typography type="size20Weight600">
           {id ? t("editTag") : t("createNewTag")}
         </CommonStyles.Typography>
       </CommonStyles.Box>
       <FormProvider {...methods}>
         <form onSubmit={methods.handleSubmit(onSubmit)}>
-            <CommonStyles.Box className="tw-mb-3">
+          <CommonStyles.Box className="tw-mb-3">
+            <CommonStyles.Box className="tw-flex tw-w-full tw-justify-between tw-mb-4">
+              <label className="tw-font-mulish tw-font-bold tw-text-accent_gray_800">
+                {t("icon")}
+              </label>
               <RHFField
-                label={t("name")}
-                name="name"
+                name="icon"
+                setValue={setValue}
                 control={methods.control}
-                component={InputField}
-                startIcon={
-                  <RHFField
-                    name="icon"
-                    setValue={setValue}
-                    control={methods.control}
-                    component={UploadField}
-                    renderButton={
-                      <CommonStyles.Box className="tw-relative">
-                        {watch("icon") ? (
-                        <CommonStyles.Box><img
-                        className="tw-w-[40px]"
-                        src={`${apiUrls.IMG_URL}/${watch("icon")}`}
-                      />
-                          <CommonStyles.Box
-                            className="tw-cursor-pointer tw-z-10 tw-absolute tw-top-0 -tw-right-2"
-                            onClick={() => handleDeleteIcon()}
-                          >
-                            <CommonIcons.CancelOutlined className="tw-text-accent_gray_500 tw-size-4" />
-                          </CommonStyles.Box>
-                          </CommonStyles.Box>
-                        ) : (
-                          <CloudUploadOutlined className="tw-size-10 tw-cursor-pointer tw-text-primary" />
-                        )}
+                component={UploadField}
+                showDelete
+                renderButton={
+                  <CommonStyles.Box className="tw-relative">
+                    {watch("icon") ? (
+                      <CommonStyles.Box className="tw-border-solid tw-border-[1.5px] tw-border-gray-100 tw-flex tw-rounded-md tw-items-center">
+                        <img
+                          className="tw-w-[64px] tw-h-[64px] tw-border-primary tw-rounded-md tw-object-scale-down"
+                          src={`${apiUrls.IMG_URL}/${watch("icon")}`}
+                        />
                       </CommonStyles.Box>
-                    }
-                  />
+                    ) : (
+                      <CommonStyles.Box className="tw-flex tw-items-center tw-px-3 tw-h-[40px] tw-border-primary tw-rounded-md tw-bg-gray-100">
+                        <CommonStyles.Typography
+                          className="tw-text-accent_gray_300 tw-mr-2"
+                          type="size16Weight400"
+                        >
+                          Choose image
+                        </CommonStyles.Typography>
+                        <img
+                          className="tw-w-7 tw-h-auto"
+                          src={commonImg.upload.src}
+                        />
+                        {/* <CloudUploadOutlined className="tw-size-7 tw-cursor-pointer tw-text-primary" /> */}
+                      </CommonStyles.Box>
+                    )}
+                    {watch("icon") && (
+                      <CommonStyles.Box
+                        className="tw-cursor-pointer"
+                        onClick={() => handleDeleteIcon()}
+                      >
+                        <CommonIcons.Close className="tw-text-accent_gray_500 tw-size-5 tw-bg-gray-100 tw-rounded-tr-md tw-absolute tw-top-0 tw-right-0" />
+                      </CommonStyles.Box>
+                    )}
+                  </CommonStyles.Box>
                 }
-                icon={
-                <RHFField
-                sx={{fieldset: {border: "none"},input:{width: 30,height: 30}}}
-                  name="color"
-                  control={methods.control}
-                  component={InputField}
-                  type="color"
-                  placeholder={t("placeholderName")}
-                />}
+              />
+            </CommonStyles.Box>
+            <CommonStyles.Box className="tw-flex tw-justify-between tw-w-full">
+              <label className="tw-font-mulish tw-font-bold tw-text-accent_gray_800">
+                {t("color")}
+              </label>
+              <RHFField
+                name="color"
+                control={methods.control}
+                component={InputFieldColor}
+                type="color"
                 placeholder={t("placeholderName")}
               />
             </CommonStyles.Box>
-          <CommonStyles.Box className="tw-flex tw-justify-around">
-            <CommonStyles.CommonButton type="submit">
-              {t("submit")}
-            </CommonStyles.CommonButton>
+            <CommonStyles.Box className="tw-flex tw-w-full tw-justify-between tw-mt-4">
+              <label className="tw-min-w-fit tw-font-mulish tw-font-bold tw-text-accent_gray_800 tw-mr-[20%]">
+                {t("name")}
+              </label>
+              <RHFField
+                name="name"
+                control={methods.control}
+                component={InputField}
+                placeholder={t("placeholderName")}
+              />
+            </CommonStyles.Box>
+          </CommonStyles.Box>
+          <CommonStyles.Box className="tw-flex tw-justify-center tw-gap-8 tw-mt-8 tw-mb-4">
+          <CancelButton handleClose={handleClose} />
+            <CommonButtonAdmin
+              variant="outlined"
+              type="submit"
+              className="active tw-min-w-28"
+            >
+              {id? t("edit") : t("create")}
+            </CommonButtonAdmin>
           </CommonStyles.Box>
           <CommonStyles.Box
             className="tw-absolute tw-top-0 tw-right-0 tw-cursor-pointer"

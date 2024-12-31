@@ -1,8 +1,8 @@
+import Loading from "@/components/common/Loading";
 import { Button } from "@mui/material";
 import { ButtonProps } from "@mui/material/Button";
 import { SxProps } from "@mui/material/styles";
 import { ReactNode, useMemo } from "react";
-import Loading from "./Loading";
 
 export type ColorButton =
   | "primary"
@@ -22,9 +22,9 @@ interface IButtonProps {
   children?: ReactNode;
 }
 
-type CommonButtonProps = IButtonProps & ButtonProps;
+type CommonButtonAdminProps = IButtonProps & ButtonProps;
 
-export const CommonButton = (props: CommonButtonProps) => {
+export const CommonButtonAdmin = (props: CommonButtonAdminProps) => {
   const {
     startIcon,
     label,
@@ -79,7 +79,7 @@ export const CommonButton = (props: CommonButtonProps) => {
       fontSize: "16px",
       textTransform: "capitalize",
       boxShadow: "none",
-      height: "50px",
+      height: "43px",
       padding: "16.5px 14px",
       borderRadius: "3px",
       ":disabled": {
@@ -101,7 +101,7 @@ export const CommonButton = (props: CommonButtonProps) => {
       {...rest}
     >
       {loading ? (
-        <Loading />
+        <Loading className="!tw-w-5 !tw-h-5"/>
       ) : (
         <>
           {label}

@@ -1,12 +1,12 @@
 import React, { useRef, useState } from "react";
 import { FieldError, UseFormSetValue } from "react-hook-form";
-import {  SxProps } from "@mui/material";
+import { SxProps } from "@mui/material";
 import { default as CommonStyles } from "@/components/common";
-import Box from "../common/Box";
 import useImageUploader from "@/hooks/useUpload";
 import { useNotifications } from "@/helpers/toast";
 import { useTranslations } from "next-intl";
-import CommonIcons from "../CommonIcons";
+import { CommonButtonAdmin } from "./commonButton";
+import Box from "@/components/common/Box";
 
 interface UploadFieldProps {
   field: {
@@ -25,6 +25,8 @@ interface UploadFieldProps {
   renderButton?: React.ReactNode;
   setValue: UseFormSetValue<any>;
   showDelete?: boolean;
+  accept?: string;
+  isVideo?: boolean;
 }
 const UploadField = (props: UploadFieldProps) => {
   const {
@@ -35,14 +37,16 @@ const UploadField = (props: UploadFieldProps) => {
     multiple,
     renderButton,
     setValue,
+    accept,
+    isVideo,
   } = props;
   const uploadRef = useRef<HTMLInputElement>(null);
-  const { uploadImage,uploadImages } = useImageUploader();
+  const { uploadImage, uploadImages } = useImageUploader();
   const { showError } = useNotifications();
   //! State
-  const [loading,setLoading] = useState(false);
-  
-  const t = useTranslations('uploadField');
+  const [loading, setLoading] = useState(false);
+
+  const t = useTranslations("uploadField");
   //! State
 
   // const handleUpload = async (e: ChangeEvent<HTMLInputElement>) => {
@@ -58,22 +62,53 @@ const UploadField = (props: UploadFieldProps) => {
   //     showError("No file selected");
   //     }
   //   }
+  const fileAcceptType = isVideo
+    ? ".mp4, .mov, .avi, .mkv"
+    : ".jpg, .jpeg, .png"; // You can add other image/video formats here.
+
   const handleChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
     if (files) {
+      const allowedExtensions = isVideo
+        ? [".mp4", ".mov", ".avi", ".mkv"] // Các định dạng video hợp lệ
+        : [".jpg", ".jpeg", ".png"]; // Các định dạng hình ảnh hợp lệ
+
+      let invalidFile = false;
+      const invalidFiles: File[] = [];
+
+      // Kiểm tra xem tệp nào không phù hợp với các định dạng cho phép
+      Array.from(files).forEach((file) => {
+        const fileExtension = file.name.split(".").pop()?.toLowerCase();
+        if (
+          !fileExtension ||
+          !allowedExtensions.includes(`.${fileExtension}`)
+        ) {
+          invalidFile = true;
+          invalidFiles.push(file);
+        }
+      });
+
+      // Nếu có tệp không hợp lệ, đặt lỗi và dừng quá trình tải lên
+      if (invalidFile) {
+        showError(`${t("inValidFile")}: ${invalidFiles.map((f) => f.name).join(", ")}`,);
+        // Đặt lỗi cho trường
+        setValue(field?.name || "", field.value); // Đặt lại giá trị trường
+        return; // Thoát khỏi hàm để ngừng tải lên tệp không hợp lệ
+      }
       if (multiple) {
-        try{
+        try {
           setLoading(true);
           const res = await uploadImages(files);
-          setValue(field?.name || "",res.data.data.data.map((file)=>file.uri).concat(field.value))
-        }
-        catch(error){
-          showError(error)
-        }
-        finally{
+          setValue(
+            field?.name || "",
+            res.data.data.data.map((file) => file.uri).concat(field.value),
+          );
+        } catch (error) {
+          showError(error);
+        } finally {
           setLoading(false);
-          if(uploadRef && uploadRef.current) {
-            uploadRef.current.value = ''
+          if (uploadRef && uploadRef.current) {
+            uploadRef.current.value = "";
           }
         }
         // setValue(field?.name || "", fileArray);
@@ -85,11 +120,10 @@ const UploadField = (props: UploadFieldProps) => {
           setValue(field?.name || "", res.data.data.uri);
         } catch (error) {
           showError(error);
-        }
-        finally{
+        } finally {
           setLoading(false);
-          if(uploadRef && uploadRef.current) {
-            uploadRef.current.value = ''
+          if (uploadRef && uploadRef.current) {
+            uploadRef.current.value = "";
           }
         }
       }
@@ -105,6 +139,7 @@ const UploadField = (props: UploadFieldProps) => {
       <input
         multiple={multiple}
         type="file"
+        accept={fileAcceptType}
         ref={uploadRef}
         name={`${props.field.name}-upload-input`}
         style={{ display: "none" }}
@@ -112,16 +147,20 @@ const UploadField = (props: UploadFieldProps) => {
       />
       <Box
         onClick={() => {
-          uploadRef && uploadRef?.current?.click();
+          (uploadRef && !loading) && uploadRef?.current?.click();
         }}
       >
         {renderButton ? (
           renderButton
+        ) : field.value != "" ? (
+          <></>
         ) : (
-          field.value!="" ? <></>:
-          <CommonStyles.CommonButton loading={loading} className={`tw-w-full tw-mt-2 tw-bg-gray-100 ${fieldState.error && "tw-border-solid tw-border-[1px] tw-border-[#d32f2f]"}`}>
+          <CommonButtonAdmin
+            loading={loading}
+            className={`tw-w-full tw-mt-2 tw-bg-gray-100 ${fieldState.error && "tw-border-solid tw-border-[1px] tw-border-[#d32f2f]"}`}
+          >
             {t("upload")}
-          </CommonStyles.CommonButton>
+          </CommonButtonAdmin>
         )}
       </Box>
       {fieldState.error && (

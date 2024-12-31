@@ -13,12 +13,12 @@ import { useState } from "react";
 import cityServices from "@/services/modules/city/city.services";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import RHFField from "@/components/customReactFormField/ReactFormField";
-import InputField from "@/components/customReactFormField/InputField";
-import SelectField from "@/components/customReactFormField/SelectField";
 import { useNotifications } from "@/helpers/toast";
 import { useTranslations } from "next-intl";
 import CommonIcons from "@/components/CommonIcons";
 import Loading from "@/components/common/Loading";
+import InputField from "../Component/customField/inputField";
+import { CommonButtonAdmin } from "../Component/customField/commonButton";
 
 interface FormSearch {
   textSearch: string;
@@ -74,13 +74,9 @@ const City = () => {
         <CommonStyles.Box className="tw-w-full">
           <FormProvider {...methods} >
             <form onSubmit={methods.handleSubmit(handleSearch)} className="tw-flex tw-items-center">
-            <CommonStyles.Box className="tw-w-[50%]">
+            <CommonStyles.Box className="tw-w-[100%] tw-mr-9">
               <RHFField
-                sx={{
-                  fieldset:{
-                  borderRadius: 30,
-                },}}
-                className="tw-rounded-[30px] tw-bg-white"
+                className="tw-bg-white"
                 name="textSearch"
                 placeholder={t("placeholderSearch")}
                 control={methods.control}
@@ -91,7 +87,7 @@ const City = () => {
             </form>
           </FormProvider>
         </CommonStyles.Box>
-        <CommonButton variant="outlined" className="active tw-text-nowrap tw-px-7" onClick={toggle} label={t("createNewCity")} />
+        <CommonButtonAdmin variant="outlined" className="active tw-text-nowrap tw-px-7" onClick={toggle} label={t("createNewCity")} />
       </CommonStyles.Box>
       <CommonStyles.Box>
         {dataCity &&
