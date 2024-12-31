@@ -4,7 +4,7 @@ import { UserStatus } from 'src/helpers/constants/enum.constant';
 import { CreateUserDto } from './create-user.dto';
 
 export const UpdateUserDtoKeys: (keyof UpdateUserDto)[] = ['avatar', 'name', 'nickName', 'phone', 'role', 'status', 'sex', 'dateOfBirth', 'address'];
-export class UpdateUserDto extends PartialType(OmitType(CreateUserDto, ['password', 'username', 'email'])) {}
+export class UpdateUserDto extends PartialType(OmitType(CreateUserDto, ['password', 'email'])) {}
 
 export class UpdateUserBannedDto {
   @ApiProperty({

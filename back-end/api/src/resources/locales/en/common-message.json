@@ -2,7 +2,7 @@
   "auth": {
     "signUp": {
       "wrong_parameter": "{keyNotInDto} is not defined in parameters",
-      "invalid_phone": "Phone number need Minimum nine characters",
+      "invalid_phone": "The phone number need Minimum nine characters",
       "invalid_email": "Email is not valid",
       "invalid_password": "Password need Minimum eight characters, at least one letter, one number and one special character",
       "wrong_confirm_password": "Password do not match"
@@ -26,10 +26,7 @@
     },
     "createUser": {
       "wrong_parameter": "{keyNotInDto} is not defined in parameters",
-      "username_required": "Username is required",
-      "username_no_spaces": "Username cannot contain space",
-      "username_invalid_format": "Username must be at least eight characters long and cannot contain special characters",
-      "invalid_phone": "Phone number need Minimum nine characters",
+      "invalid_phone": "The phone number need Minimum nine characters",
       "invalid_email": "Email is not valid",
       "invalid_password": "Password need Minimum eight characters, at least one letter, one number and one special character",
       "invalid_status": "User status must be ACTIVE or BANNED"
@@ -48,20 +45,44 @@
   },
   "city": {
     "create": {
-      "wrong_parameter": "{keyNotInDto} is not defined in parameters"
+      "wrong_parameter": "{keyNotInDto} is not defined in parameters",
+      "min_tags_required": "Each city must have at least 3 tags",
+      "max_tags_required": "Each city must have at most 5 tags",
+      "tag_not_found": "The tag not found or not active"
     },
     "findOne": {
-      "not_found": "City"
+      "not_found": "The city"
     },
     "update": {
       "wrong_parameter": "{keyNotInDto} is not defined in parameters",
-      "not_found": "City"
+      "not_found": "The city",
+      "min_tags_required": "Each city must have at least 3 tags",
+      "max_tags_required": "Each city must have at most 5 tags",
+      "tag_not_found": "The tag not found or not active"
     },
     "setActive": {
-      "not_found": "City"
+      "not_found": "The city"
     },
     "remove": {
-      "not_found": "City"
+      "not_found": "The city"
+    }
+  },
+  "tag": {
+    "create": {
+      "wrong_parameter": "{keyNotInDto} is not defined in parameters"
+    },
+    "findOne": {
+      "not_found": "The tag"
+    },
+    "update": {
+      "wrong_parameter": "{keyNotInDto} is not defined in parameters",
+      "not_found": "The tag"
+    },
+    "setActive": {
+      "not_found": "The tag"
+    },
+    "remove": {
+      "not_found": "The tag"
     }
   },
   "destination": {
@@ -69,17 +90,20 @@
       "wrong_parameter": "{keyNotInDto} is not defined in parameters"
     },
     "findOne": {
-      "not_found": "Destination"
+      "not_found": "The destination"
     },
     "update": {
       "wrong_parameter": "{keyNotInDto} is not defined in parameters",
-      "not_found": "Destination"
+      "not_found": "The destination"
     },
     "setActive": {
-      "not_found": "Destination"
+      "not_found": "The destination"
+    },
+    "setFeature": {
+      "not_found": "The destination"
     },
     "remove": {
-      "not_found": "Destination"
+      "not_found": "The destination"
     }
   },
   "theme": {
@@ -87,17 +111,17 @@
       "wrong_parameter": "{keyNotInDto} is not defined in parameters"
     },
     "findOne": {
-      "not_found": "Theme"
+      "not_found": "The theme"
     },
     "update": {
       "wrong_parameter": "{keyNotInDto} is not defined in parameters",
-      "not_found": "Theme"
+      "not_found": "The theme"
     },
     "setActive": {
-      "not_found": "Theme"
+      "not_found": "The theme"
     },
     "remove": {
-      "not_found": "Theme"
+      "not_found": "The theme"
     }
   },
   "post": {
@@ -105,95 +129,101 @@
       "wrong_parameter": "{keyNotInDto} is not defined in parameters"
     },
     "findOne": {
-      "not_found": "Post"
+      "not_found": "The post"
     },
     "update": {
       "wrong_parameter": "{keyNotInDto} is not defined in parameters",
-      "not_found": "Post"
+      "not_found": "The post"
     },
     "setActive": {
-      "not_found": "Post"
+      "not_found": "The post"
     },
     "remove": {
-      "not_found": "Post"
+      "not_found": "The post"
     }
   },
   "tour": {
     "create": {
       "wrong_parameter": "{keyNotInDto} is not defined in parameters",
       "images_required": "Images are required for the tour",
-      "invalid_start_date": "Start date must be after current date",
-      "invalid_end_date": "End date must be equal to or after start date",
-      "city_not_found": "City not found",
-      "theme_not_found": "Theme not found",
-      "destinations_required": "Destinations are required for the tour",
-      "destination_not_found": "Destination not found"
+      "city_not_found": "The city not found or not active",
+      "theme_not_found": "The theme not found or not active",
+      "destinations_required": "The destinations are required for the tour",
+      "destination_not_found": "The destination not found or not active"
     },
     "update": {
       "wrong_parameter": "{keyNotInDto} is not defined in parameters",
-      "not_found": "Tour",
-      "invalid_start_date": "Start date must be after current date",
-      "invalid_end_date": "End date must be equal to or after start date",
-      "city_not_found": "City not found",
-      "theme_not_found": "Theme not found",
-      "destination_not_found": "Destination not found"
+      "not_found": "The tour",
+      "city_not_found": "The city not found or not active",
+      "theme_not_found": "The theme not found or not active",
+      "destination_not_found": "The destination not found or not active"
     },
     "findOne": {
-      "not_found": "Tour"
+      "not_found": "The tour"
     },
     "setActive": {
-      "not_found": "Tour",
+      "not_found": "The tour",
       "city_inactive": "The city {city} containing this tour is not active",
       "theme_inactive": "The theme {theme} containing this tour is not active",
       "no_active_destination": "There are no destinations on the tour active"
     },
-    "setFeature": {
-      "not_found": "Tour"
+    "getReviewTour": {
+      "not_found": "The tour"
     },
     "remove": {
-      "not_found": "Tour"
+      "not_found": "The tour"
     }
   },
   "wishlist": {
     "addToWishlist": {
       "wrong_parameter": "{keyNotInDto} is not defined in parameters",
-      "not_found": "Tour",
-      "already_in_wishlist": "Tour already exists in wishlist"
+      "tour_not_found": "The tour not found or not active",
+      "already_in_wishlist": "The tour already exists in wishlist"
     },
     "removeFromWishlist": {
-      "not_found": "Tour"
+      "not_found": "The tour"
     }
   },
   "booking": {
     "create": {
       "wrong_parameter": "{keyNotInDto} is not defined in parameters",
-      "tour_not_found": "Tour",
-      "invalid_start_date_before_tour": "Booking start date cannot be before tour start date",
-      "invalid_end_date_after_tour": "Booking end date cannot be after tour end date",
+      "tour_not_found": "The tour not found or not active",
+      "already_booked": "You have already booked this tour",
       "invalid_start_date": "Booking start date cannot be in the past",
-      "invalid_end_date": "Booking end date must be after booking start date"
+      "invalid_end_date": "Booking end date must be after booking start date",
+      "invalid_number_of_guests": "The number of guests must be greater than 0"
     },
-    "cancel": {
+    "uploadPaymentProof": {
+      "not_found": "Booking",
+      "invalid_status_for_payment": "Booking status must be pending payment",
+      "wrong_parameter": "{keyNotInDto} is not defined in the parameters"
+    },
+    "cancelBooking": {
       "not_found": "Booking",
       "already_cancelled": "Booking has been cancelled previously",
-      "too_late_to_cancel": "You can only cancel booking at least 1 day before the tour starts"
+      "wrong_parameter": "{keyNotInDto} is not defined in the parameters",
+      "cannot_cancel": "Booking cannot be canceled"
     },
-    "updateStatus": {
+    "updateBooking": {
       "wrong_parameter": "{keyNotInDto} is not defined in parameters",
-      "not_found": "Booking"
+      "not_found": "Booking",
+      "invalid_start_date": "Booking start date cannot be in the past",
+      "invalid_end_date": "Booking end date must be after booking start date",
+      "invalid_number_of_guests": "The number of guests must be greater than 0"
     }
   },
   "review": {
     "create": {
       "wrong_parameter": "{keyNotInDto} is not defined in parameters",
-      "tour_not_found": "Tour"
+      "no_booking_found": "You have never booked this tour",
+      "tour_not_found": "The tour not found or not active"
     },
     "update": {
       "wrong_parameter": "{keyNotInDto} is not defined in parameters",
-      "not_found": "Review"
+      "not_found": "The review"
     },
     "setActive": {
-      "not_found": "Review"
+      "not_found": "The review"
     }
   },
   "video": {
@@ -201,14 +231,29 @@
       "wrong_parameter": "{keyNotInDto} is not defined in parameters"
     },
     "findOne": {
-      "not_found": "Video"
+      "not_found": "The video"
     },
     "update": {
       "wrong_parameter": "{keyNotInDto} is not defined in parameters",
-      "not_found": "Video"
+      "not_found": "The video"
     },
     "remove": {
-      "not_found": "Video"
+      "not_found": "The video"
+    }
+  },
+  "bank_account": {
+    "create": {
+      "wrong_parameter": "{keyNotInDto} is not defined in parameters"
+    },
+    "findOne": {
+      "not_found": "The bank account"
+    },
+    "update": {
+      "wrong_parameter": "{keyNotInDto} is not defined in parameters",
+      "not_found": "The bank account"
+    },
+    "remove": {
+      "not_found": "The bank account"
     }
   },
 

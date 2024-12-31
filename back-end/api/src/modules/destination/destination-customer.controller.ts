@@ -20,11 +20,11 @@ export class DestinationCustomerController {
 
   @Get()
   async findAll(@Query() options: FilterDestinationDto) {
+    let where: Prisma.DestinationWhereInput = { AND: [] };
 
     // @ts-ignore
     where.AND.push({ isActive: true });
 
-    const where: Prisma.DestinationWhereInput = { AND: [] };
     if (options.textSearch) {
       // @ts-ignore
       where.AND.push({
@@ -32,6 +32,13 @@ export class DestinationCustomerController {
           { name: { contains: options.textSearch } }
         ]
       });
+    }
+
+    if (typeof options?.isFeature === 'boolean') {
+      where = {
+        ...where,
+        isFeature: options.isFeature
+      }
     }
 
     if (options?.from || options?.to) {

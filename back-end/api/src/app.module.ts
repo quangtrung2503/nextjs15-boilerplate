@@ -25,6 +25,8 @@ import { WishlistModule } from './modules/wishlist/wishlist.module';
 import { BookingModule } from './modules/booking/booking.module';
 import { ReviewModule } from './modules/review/review.module';
 import { VideoModule } from './modules/video/video.module';
+import { TagModule } from './modules/tag/tag.module';
+import { BankAccountModule } from './modules/bank-account/bank-account.module';
 
 @Module({
   imports: [
@@ -51,12 +53,14 @@ import { VideoModule } from './modules/video/video.module';
     UserModule,
     VideoModule,
     CityModule,
+    TagModule,
     ThemeModule,
     DestinationModule,
     PostModule,
     TourModule,
     WishlistModule,
     BookingModule,
+    BankAccountModule,
     ReviewModule
   ],
   controllers: [AppController],

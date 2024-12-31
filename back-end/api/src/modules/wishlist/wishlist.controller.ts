@@ -36,10 +36,11 @@ export class WishlistController {
 
     const tourExists = await this.tourService.findOne({
       where: {
-        id: body.tourId
+        id: body.tourId,
+        isActive: true,
       }
     });
-    if (!tourExists) throw new BaseException(Errors.ITEM_NOT_FOUND(this.i18n.t('common-message.wishlist.addToWishlist.not_found')));
+    if (!tourExists) throw new BaseException(Errors.BAD_REQUEST(this.i18n.t('common-message.wishlist.addToWishlist.tour_not_found')));
 
     const existingWishlistItem = await this.wishlistService.findOne({
       where: {

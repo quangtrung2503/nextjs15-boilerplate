@@ -48,7 +48,7 @@ export class ThemeController {
   }
 
   @ApiBearerAuth()
-  @Roles(UserRole.ADMIN, UserRole.STAFF, UserRole.CUSTOMER)
+  @Roles(UserRole.ADMIN, UserRole.STAFF)
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Get()
   async findAll(@Query() options: FilterThemeDto) {
@@ -86,7 +86,7 @@ export class ThemeController {
   }
 
   @ApiBearerAuth()
-  @Roles(UserRole.ADMIN, UserRole.STAFF, UserRole.CUSTOMER)
+  @Roles(UserRole.ADMIN, UserRole.STAFF)
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Get(':id')
   async findOne(@Param('id', ParseIdPipe) id: number) {

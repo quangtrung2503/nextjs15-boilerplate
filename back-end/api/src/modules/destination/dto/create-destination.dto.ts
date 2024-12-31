@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsBoolean, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
-export const CreateDestinationDtoKeys: (keyof CreateDestinationDto)[] = ['name'];
+export const CreateDestinationDtoKeys: (keyof CreateDestinationDto)[] = ['name', 'isFeature'];
 
 export class CreateDestinationDto {
   @ApiProperty({
@@ -12,4 +12,13 @@ export class CreateDestinationDto {
   @IsNotEmpty()
   @IsString()
   readonly name: string;
+
+  @ApiProperty({
+    example: true,
+    description: 'Is feature destination',
+    required: false,
+  })
+  @IsBoolean()
+  @IsOptional()
+  readonly isFeature: boolean;
 }
