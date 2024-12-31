@@ -5,6 +5,7 @@ import { PrismaModule } from 'prisma/prisma.module';
 import { I18nCustomModule } from 'src/resources/i18n/i18n.module';
 import { CityCustomerController } from './city-customer.controller';
 import { TourModule } from '../tour/tour.module';
+import { TagModule } from '../tag/tag.module';
 
 @Module({
   controllers: [CityController, CityCustomerController],
@@ -13,7 +14,8 @@ import { TourModule } from '../tour/tour.module';
   imports: [
     PrismaModule,
     I18nCustomModule,
-    forwardRef(() => TourModule)
+    forwardRef(() => TourModule),
+    forwardRef(() => TagModule)
   ],
 })
 export class CityModule {}

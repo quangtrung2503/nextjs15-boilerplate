@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
+import { IsEnum, IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
+import { Rating } from 'src/helpers/constants/enum.constant';
 
 export const CreateReviewDtoKeys: (keyof CreateReviewDto)[] = ['tourId', 'ratingGuide', 'ratingTransportation', 'ratingValueOfMoney', 'ratingSafety', 'title', 'content']
 
@@ -14,40 +15,44 @@ export class CreateReviewDto {
   readonly tourId: number;
 
   @ApiProperty({
-    example: 4,
+    example: Rating.FIVE,
     description: 'Rating Guide',
     required: true,
+    enum: Rating
   })
   @IsNotEmpty()
-  @IsNumber()
-  readonly ratingGuide: number;
+  @IsEnum(Rating)
+  readonly ratingGuide: Rating;
 
   @ApiProperty({
-    example: 5,
+    example: Rating.FIVE,
     description: 'Rating Transportation',
     required: true,
+    enum: Rating
   })
   @IsNotEmpty()
-  @IsNumber()
-  readonly ratingTransportation: number;
+  @IsEnum(Rating)
+  readonly ratingTransportation: Rating;
 
   @ApiProperty({
-    example: 5,
+    example: Rating.FIVE,
     description: 'Rating value of money',
     required: true,
+    enum: Rating
   })
   @IsNotEmpty()
-  @IsNumber()
-  readonly ratingValueOfMoney: number;
+  @IsEnum(Rating)
+  readonly ratingValueOfMoney: Rating;
 
   @ApiProperty({
-    example: 3,
+    example: Rating.FIVE,
     description: 'Rating Safety',
     required: true,
+    enum: Rating
   })
   @IsNotEmpty()
-  @IsNumber()
-  readonly ratingSafety: number;
+  @IsEnum(Rating)
+  readonly ratingSafety: Rating;
 
   @ApiProperty({
     example: 'Good tour, really well organised',

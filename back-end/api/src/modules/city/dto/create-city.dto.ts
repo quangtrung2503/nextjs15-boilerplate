@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
 
-export const CreateCityDtoKeys: (keyof CreateCityDto)[] = ['name', 'image', 'description'];
+export const CreateCityDtoKeys: (keyof CreateCityDto)[] = ['name', 'image', 'description', 'tagIds'];
 
 export class CreateCityDto {
   @ApiProperty({
@@ -30,4 +30,15 @@ export class CreateCityDto {
   @IsNotEmpty()
   @IsString()
   readonly description: string;
+
+  @ApiProperty({
+    example: [1, 2, 3],
+    description: 'The id of the tag',
+    required: true,
+    isArray: true,
+    type: Number,
+  })
+  @IsNotEmpty({ each: true })
+  @IsNumber({}, { each: true })
+  readonly tagIds: number[];
 }

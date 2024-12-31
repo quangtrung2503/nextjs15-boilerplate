@@ -1,14 +1,13 @@
 import { Controller, Get, Param, Query } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { Prisma } from '@prisma/client';
-import moment from 'moment';
 import { PrismaService } from 'prisma/prisma.service';
 import { funcListPaging } from 'src/helpers/common/list-paging';
+import { SortOrder } from 'src/helpers/constants/enum.constant';
 import { BaseException, Errors } from 'src/helpers/constants/error.constant';
 import { I18nCustomService } from 'src/resources/i18n/i18n.service';
 import { CityService } from './city.service';
 import { FilterCityCustomerDto } from './dto/filter-city.dto';
-import { SortOrder } from 'src/helpers/constants/enum.constant';
 
 @ApiTags('City (Customer)')
 @Controller('city-customer')
@@ -33,6 +32,13 @@ export class CityCustomerController {
           some: {}
         }
       },
+      include: {
+        CityTag: {
+          include: {
+            Tag: true
+          }
+        }
+      },
       orderBy: {
         Tour: {
           _count: SortOrder.DESC
@@ -40,12 +46,26 @@ export class CityCustomerController {
       },
     };
 
-    return await funcListPaging(
+    const raw = await funcListPaging(
       this.cityService,
       whereInput,
       options?.page,
       options?.perPage,
     );
+
+    const modifiedResults = {
+      ...raw,
+      items: raw?.items.map(city => {
+        const Tag = city.CityTag.map(cityTag => cityTag.Tag);
+        delete city.CityTag;
+        return {
+          ...city,
+          Tag
+        };
+      })
+    }
+
+    return modifiedResults;
   }
 
   @Get(':slug')
@@ -53,12 +73,15 @@ export class CityCustomerController {
     const city = await this.prismaService.city.findFirst({
       where: { slug, isActive: true },
       include: {
+        CityTag: {
+          include: {
+            Tag: true
+          }
+        },
         Tour: {
           where: {
             isActive: true,
-            startDate: { gte: moment().startOf('day').toDate() }
           },
-          take: 4,
           include: {
             TourImage: true,
             Review: {
@@ -74,14 +97,17 @@ export class CityCustomerController {
                 }
               }
             }
-          }
+          },
+          orderBy: {
+            Booking: {
+              _count: SortOrder.DESC
+            }
+          },
+          take: 4
         }
       }
     });
     if (!city) throw new BaseException(Errors.ITEM_NOT_FOUND(this.i18n.t('common-message.city.findOne.not_found')));
-
-    const transportTags = Array.from(new Set(city.Tour.map(t => t.transport))).slice(0, 3);
-    const packageTags = Array.from(new Set(city.Tour.map(t => t.package))).slice(0, 3)
 
     city.Tour = city.Tour.map(tour => {
       const totalReviews = tour.Review.length;
@@ -99,11 +125,15 @@ export class CityCustomerController {
       };
     });
 
+    const Tag = city.CityTag.map(cityTag => cityTag.Tag);
+
+    delete city.CityTag;
+
     return {
       ...city,
-      transportTags,
-      packageTags
+      Tag
     };
+
   }
 
 }

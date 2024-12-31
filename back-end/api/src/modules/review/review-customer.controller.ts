@@ -15,6 +15,7 @@ import { TourService } from '../tour/tour.service';
 import { UpdateReviewDto } from './dto/update-review.dto';
 import { ParseIdPipe } from 'src/core/pipes/parse-id.pipe';
 import { calculateRating } from './functions';
+import { BookingStatus } from 'src/helpers/constants/enum.constant';
 
 @ApiTags('Review (Customer)')
 @Controller('review-customer')
@@ -35,9 +36,25 @@ export class ReviewCustomerController {
     if (keyNotInDto) throw new BaseException(Errors.BAD_REQUEST(this.i18n.t('common-message.review.create.wrong_parameter', { keyNotInDto })));
 
     const tourExists = await this.tourService.findOne({
-      where: { id: body.tourId }
+      where: { id: body.tourId, isActive: true },
+      include: {
+        Booking: {
+          where: {
+            userId: user.data.id,
+            status: {
+              not: BookingStatus.CANCELLED
+            }
+          }
+        }
+      }
     });
-    if (!tourExists) throw new BaseException(Errors.ITEM_NOT_FOUND(this.i18n.t('common-message.review.create.tour_not_found')));
+    if (!tourExists) throw new BaseException(Errors.BAD_REQUEST(this.i18n.t('common-message.review.create.tour_not_found')));
+
+    if (!tourExists.Booking || tourExists.Booking.length === 0) {
+      throw new BaseException(Errors.BAD_REQUEST(
+        this.i18n.t('common-message.review.create.no_booking_found')
+      ));
+    }
 
     const rating = calculateRating(body);
 

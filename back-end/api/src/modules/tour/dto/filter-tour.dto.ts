@@ -25,7 +25,7 @@ export class FilterTourDto extends FilterOptions {
   })
   @IsBoolean()
   @IsOptional()
-    isFeature?: boolean;
+    isFeatureDestination?: boolean;
 
   @ApiProperty({
     example: 5,

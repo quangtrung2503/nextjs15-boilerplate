@@ -12,10 +12,9 @@ import { FilterTourDto } from './dto/filter-tour.dto';
 import { TourImageService } from './tour-image.service';
 import { TourService } from './tour.service';
 import { processTourList } from './functions/tour.utils';
-import { FilterReviewDto } from './dto/filter-review.dto';
+import { FilterReviewCustomerDto } from './dto/filter-review-customer.dto';
 import { ReviewService } from '../review/review.service';
-import { Duration, TourSortField } from 'src/helpers/constants/enum.constant';
-import { ParseIdPipe } from 'src/core/pipes/parse-id.pipe';
+import { Duration, SortOrder, TourSortField } from 'src/helpers/constants/enum.constant';
 
 @ApiTags('Tour (Customer)')
 @Controller('tour-customer')
@@ -35,7 +34,6 @@ export class TourCustomerController {
       AND: [
         {
           isActive: true,
-          startDate: { gte: moment().startOf('day').toDate() }
         }
       ]
     };
@@ -55,13 +53,6 @@ export class TourCustomerController {
           { price: !isNaN(searchNumber) ? { gte: searchNumber * 0.9, lte: searchNumber * 1.1 } : undefined } // ±10% giá
         ]
       });
-    }
-
-    if (options?.isFeature !== undefined) {
-      where = {
-        ...where,
-        isFeature: options.isFeature
-      }
     }
 
     if (options?.cityId) {
@@ -89,6 +80,20 @@ export class TourCustomerController {
       }
     }
 
+    if (typeof options?.isFeatureDestination === 'boolean') {
+      where = {
+        ...where,
+        TourDestination: {
+          some: {
+            ...where.TourDestination?.some,
+            Destination: {
+              isFeature: true
+            }
+          }
+        }
+      };
+    }
+
     if (options?.durations && options.durations.length > 0) {
       const durationFilters = options.durations.map(duration => {
         switch (duration) {
@@ -112,23 +117,22 @@ export class TourCustomerController {
     }
 
     if (options?.from || options?.to) {
-      const dateFilters: Prisma.TourWhereInput[] = [];
+      const fromDate = options?.from ? moment(options.from) : null;
+      const toDate = options?.to ? moment(options.to) : null;
 
-      if (options?.from) {
-        dateFilters.push({ startDate: { gte: moment(options.from).startOf('day').toDate() } });
-      }
+      if (fromDate && toDate) {
+        const hoursDiff = toDate.diff(fromDate, 'hours');
 
-      if (options?.to) {
-        dateFilters.push({ startDate: { lte: moment(options.to).endOf('day').toDate() } });
-      }
-
-      if (dateFilters.length > 0) {
         // @ts-ignore
-        where.AND.push(...dateFilters);
+        where.AND.push({
+          numberOfHours: {
+            lte: hoursDiff
+          }
+        });
       }
     }
 
-    let orderBy: any = {};
+    let orderBy: Prisma.TourOrderByWithRelationInput = {};
 
     if (options?.sortField === TourSortField.POPULARITY) {
       orderBy = {
@@ -206,7 +210,6 @@ export class TourCustomerController {
       where: {
         slug,
         isActive: true,
-        startDate: { gte: moment().startOf('day').toDate() }
       },
       include: {
         City: true,
@@ -247,7 +250,6 @@ export class TourCustomerController {
         where: {
           AND: [
             { isActive: true },
-            { startDate: moment().startOf('day').toDate() },
             { id: { not: tour.id } }
           ]
         },
@@ -277,7 +279,6 @@ export class TourCustomerController {
             { isActive: true },
             { cityId: tour.cityId },
             { id: { not: tour.id } },
-            { startDate: { gte: moment().startOf('day').toDate() } }
           ]
         },
         include: {
@@ -312,8 +313,19 @@ export class TourCustomerController {
     };
   }
 
-  @Get('get-review/:tourId')
-  async getReviewTour(@Param('tourId', ParseIdPipe) tourId: number, @Query() options: FilterReviewDto) {
+  @Get('get-review/:slug')
+  async getReviewTour(@Param('slug') slug: string, @Query() options: FilterReviewCustomerDto) {
+    const tour = await this.tourService.findOne({
+      where: { slug: slug },
+      select: { id: true }
+    });
+
+    if (!tour) {
+      throw new BaseException(Errors.ITEM_NOT_FOUND(this.i18n.t('common-message.tour.getReviewTour.not_found')))
+    }
+
+    const tourId = tour.id;
+
     let where: Prisma.ReviewWhereInput = {
       tourId: tourId,
       isActive: true
@@ -395,19 +407,16 @@ export class TourCustomerController {
     const trendingTour = await this.tourService.findOne({
       where: {
         isActive: true,
-        startDate: {
-          gte: moment().startOf('day').toDate()
-        }
       },
       orderBy: [
         {
           Booking: {
-            _count: 'desc'
+            _count: SortOrder.DESC
           }
         },
         {
           Review: {
-            _count: 'desc'
+            _count: SortOrder.DESC
           }
         }
       ],
@@ -474,7 +483,6 @@ export class TourCustomerController {
       where: {
         Tour: {
           isActive: true,
-          startDate: { gte: moment().startOf('day').toDate() }
         }
       },
       orderBy: {
@@ -505,19 +513,17 @@ export class TourCustomerController {
         Tour: {
           some: {
             isActive: true,
-            startDate: { gte: moment().startOf('day').toDate() }
           }
         }
       },
-      orderBy: { updatedAt: 'desc' },
+      orderBy: { updatedAt: SortOrder.DESC },
       take: 3,
       include: {
         Tour: {
           where: {
             isActive: true,
-            startDate: { gte: moment().startOf('day').toDate() }
           },
-          orderBy: { updatedAt: 'desc' },
+          orderBy: { updatedAt: SortOrder.DESC },
           take: 10,
           include: {
             City: true,
