@@ -28,7 +28,7 @@ export interface Tour {
   images: string[];
   totalReviews?: number;
   guideMeetingAddress: string;
-};
+}
 export interface City {
   id: number;
   name: string;
@@ -37,7 +37,7 @@ export interface City {
   isActive: boolean;
   createdAt: string;
   updatedAt: string;
-};
+}
 
 export interface Theme {
   id: number;
@@ -46,7 +46,7 @@ export interface Theme {
   isActive: boolean;
   createdAt: string;
   updatedAt: string;
-};
+}
 
 export interface Destination {
   id: number;
@@ -54,7 +54,7 @@ export interface Destination {
   isActive: boolean;
   createdAt: string;
   updatedAt: string;
-};
+}
 
 export interface TourDestination {
   id: number;
@@ -63,7 +63,7 @@ export interface TourDestination {
   createdAt: string;
   updatedAt: string;
   Destination: Destination;
-};
+}
 
 export interface TourImage {
   id: number;
@@ -71,10 +71,52 @@ export interface TourImage {
   image: string;
   createdAt: string;
   updatedAt: string;
-};
+}
 
 export interface ApiResponse {
   tour: Tour;
   listTourInToday: Tour[];
   listTourSameCity: Tour[];
-};
+}
+
+interface User {
+  id: number;
+  name: string;
+  email: string;
+  avatar: string;
+}
+
+export interface CustomerReview {
+  id: number;
+  userId: number;
+  tourId: number;
+  ratingGuide: number;
+  ratingTransportation: number;
+  ratingValueOfMoney: number;
+  ratingSafety: number;
+  rating: number;
+  title: string;
+  content: string;
+  isActive: boolean;
+  createdAt: string; 
+  updatedAt: string; 
+  User: User;
+}
+
+export interface Stats {
+  avgRatingGuide: number;
+  avgRatingTransportation: number;
+  avgRatingValueOfMoney: number;
+  avgRatingSafety: number;
+  avgRating: number;
+  totalReviews: number;
+}
+
+export interface ReviewData {
+  items: CustomerReview[],
+  totalItems: number;
+  currentPage: number;
+  totalPage: number;
+  perPage: number;
+  stats: Stats;
+}

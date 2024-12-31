@@ -1,10 +1,17 @@
 import { useEffect, useState, useCallback, useRef } from "react";
-import { isEmpty, isObject } from "lodash";
-import tourCustomerServices, { ResponseTourCustomer } from "../tourCustomer.services";
+import cloneDeep from "lodash/cloneDeep";
+import { isObject } from "lodash";
 import { useSave } from "@/stores/useStore";
-import { AxiosResponse } from "axios";
 import { useNotifications } from "@/helpers/toast";
-import { ApiResponse } from "../interfaces/tour";
+import { CustomerReview, ReviewData, Stats } from "../interfaces/tour";
+import tourCustomerServices, {
+  ExtraReview,
+  FiltersGetReviewCustomer,
+  RequestGetReviewCustomer,
+  ResponseReviewCustomer,
+  ResponseTourCustomerReview,
+} from "../tourCustomer.services";
+import { AxiosResponse } from "axios";
 
 /********************************************************
  * SNIPPET GENERATED
@@ -20,33 +27,54 @@ import { ApiResponse } from "../interfaces/tour";
  ********************************************************/
 
 //* Check parse body request
-const requestAPI = tourCustomerServices.getTour;
+const parseRequest = (
+  filters: FiltersGetReviewCustomer,
+): RequestGetReviewCustomer => {
+  return cloneDeep({
+    page: filters.page,
+    perPage: filters.perPage,
+    textSearch: filters.textSearch,
+    sortField: filters.sortField,
+    sortOrder: filters.sortOrder,
+  });
+};
+
+const requestAPI = tourCustomerServices.getTourCustomerReview;
 
 const useGetTourCustomer = (
+  filters: FiltersGetReviewCustomer,
   slug: string,
   options: { isTrigger?: boolean; refetchKey?: string } = {
     isTrigger: true,
     refetchKey: "",
-  }
+  },
 ) => {
   //! State
   const { isTrigger = true, refetchKey = "" } = options;
   const signal = useRef(new AbortController());
   const save = useSave();
-  const [data, setData] = useState<ApiResponse>();
+  const [dataCustomerReview, setDataCustomerReview] =
+    useState<CustomerReview[]>();
+  const [stats, setStats] = useState<Stats>();
   const [loading, setLoading] = useState(false);
   const [refetching, setRefetching] = useState(false);
+  const [hasMore, setHasMore] = useState(false);
   const [error, setError] = useState<unknown>(null);
-  const {showError} = useNotifications();
+  const { showError } = useNotifications();
+
   //! Function
-  const fetch: () => Promise<AxiosResponse<ResponseTourCustomer>> | undefined = useCallback(() => {
+  const fetch: () =>
+    | Promise<AxiosResponse<ExtraReview<CustomerReview[]>>>
+    | undefined = useCallback(() => {
     if (!isTrigger) {
       return;
     }
+
     return new Promise((resolve, reject) => {
       (async () => {
         try {
-          const response = await requestAPI(slug,{
+          const nextFilters = parseRequest(filters);
+          const response = await requestAPI(nextFilters, slug, {
             signal: signal.current.signal,
           });
           resolve(response);
@@ -56,16 +84,35 @@ const useGetTourCustomer = (
         }
       })();
     });
-  }, [slug, isTrigger]);
+  }, [filters, isTrigger]);
 
-  const checkConditionPass = useCallback((response: AxiosResponse<ResponseTourCustomer>) => {
-    //* Check condition of response here to set data
-    if (isObject(response?.data)) {
-      setData(response.data.data);
-    }
-  }, []);
+  const checkConditionPass = useCallback(
+    (response: AxiosResponse<ExtraReview<CustomerReview[]>>) => {
+      //* Check condition of response here to set data
+      if (isObject(response?.data)) {
+        if ((response.data.data.currentPage || 1) > 1) {
+          setDataCustomerReview((prev) => [
+            ...(prev || []),
+            ...(response.data.data.items || []),
+          ]);
+          setStats(response.data.data.stats);
+          setHasMore(
+            response.data.data.totalPage > response.data.data.currentPage,
+          );
+          return;
+        }
 
-  //* Refetch implicity (without changing loading state)
+        setHasMore(
+          response.data.data.totalPage > response.data.data.currentPage,
+        );
+        setStats(response.data.data.stats);
+        setDataCustomerReview(response.data.data.items);
+      }
+    },
+    [],
+  );
+
+  //* Refetch impliTour (without changing loading state)
   const refetch = useCallback(async () => {
     try {
       if (signal.current) {
@@ -98,7 +145,6 @@ const useGetTourCustomer = (
       const response = await fetch();
       console.log("Response: ", response);
       if (response) {
-        
         checkConditionPass(response);
       }
       setLoading(false);
@@ -121,9 +167,8 @@ const useGetTourCustomer = (
         }
       } catch (error) {
         // showError(error);
-        
-        console.log({error});
-        
+
+        console.log({ error });
       } finally {
         setLoading(false);
       }
@@ -137,13 +182,15 @@ const useGetTourCustomer = (
   }, [fetch, checkConditionPass]);
 
   return {
-    data,
+    dataCustomerReview,
     loading,
     error,
+    stats,
+    hasMore,
     refetch,
     refetchWithLoading,
     refetching,
-    setData,
+    setDataCustomerReview,
   };
 };
 

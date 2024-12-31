@@ -1,10 +1,13 @@
 import { useEffect, useState, useCallback, useRef } from "react";
+import cloneDeep from "lodash/cloneDeep";
 import { isEmpty, isObject } from "lodash";
-import tourCustomerServices, { ResponseTourCustomer } from "../tourCustomer.services";
+import { ResponseList } from "@/interfaces/common";
 import { useSave } from "@/stores/useStore";
-import { AxiosResponse } from "axios";
 import { useNotifications } from "@/helpers/toast";
-import { ApiResponse } from "../interfaces/tour";
+import { RequestGetTours, ResponseTourList } from "../tour.services";
+import { ReviewData, Tour } from "../interfaces/tour";
+import tourCustomerServices, { FiltersGetReviewCustomer, RequestGetReviewCustomer, ResponseTourCustomerReview } from "../tourCustomer.services";
+import { AxiosResponse } from "axios";
 
 /********************************************************
  * SNIPPET GENERATED
@@ -20,9 +23,20 @@ import { ApiResponse } from "../interfaces/tour";
  ********************************************************/
 
 //* Check parse body request
-const requestAPI = tourCustomerServices.getTour;
+const parseRequest = (filters: FiltersGetReviewCustomer): RequestGetReviewCustomer => {
+  return cloneDeep({
+    page: filters.page,
+    perPage: filters.perPage,
+    textSearch: filters.textSearch,
+    sortField: filters.sortField,
+    sortOrder: filters.sortOrder,
+  });
+};
+
+const requestAPI = tourCustomerServices.getTourCustomerReview;
 
 const useGetTourCustomer = (
+  filters: FiltersGetReviewCustomer,
   slug: string,
   options: { isTrigger?: boolean; refetchKey?: string } = {
     isTrigger: true,
@@ -33,20 +47,24 @@ const useGetTourCustomer = (
   const { isTrigger = true, refetchKey = "" } = options;
   const signal = useRef(new AbortController());
   const save = useSave();
-  const [data, setData] = useState<ApiResponse>();
+  const [ dataCustomerReview, setDataCustomerReview ] = useState<ReviewData>();
   const [loading, setLoading] = useState(false);
   const [refetching, setRefetching] = useState(false);
   const [error, setError] = useState<unknown>(null);
+  const [hasMore, setHasMore] = useState(false);
   const {showError} = useNotifications();
+
   //! Function
-  const fetch: () => Promise<AxiosResponse<ResponseTourCustomer>> | undefined = useCallback(() => {
+  const fetch: () => Promise<AxiosResponse<ResponseTourCustomerReview>> | undefined = useCallback(() => {
     if (!isTrigger) {
       return;
     }
+
     return new Promise((resolve, reject) => {
       (async () => {
         try {
-          const response = await requestAPI(slug,{
+          const nextFilters = parseRequest(filters);
+          const response = await requestAPI(nextFilters, slug, {
             signal: signal.current.signal,
           });
           resolve(response);
@@ -56,16 +74,16 @@ const useGetTourCustomer = (
         }
       })();
     });
-  }, [slug, isTrigger]);
+  }, [filters, isTrigger]);
 
-  const checkConditionPass = useCallback((response: AxiosResponse<ResponseTourCustomer>) => {
+  const checkConditionPass = useCallback((response: AxiosResponse<ResponseTourCustomerReview>) => {    
     //* Check condition of response here to set data
     if (isObject(response?.data)) {
-      setData(response.data.data);
+      setDataCustomerReview(response.data.data);
     }
   }, []);
 
-  //* Refetch implicity (without changing loading state)
+  //* Refetch impliTour (without changing loading state)
   const refetch = useCallback(async () => {
     try {
       if (signal.current) {
@@ -135,15 +153,15 @@ const useGetTourCustomer = (
       }
     };
   }, [fetch, checkConditionPass]);
-
+  
   return {
-    data,
+    dataCustomerReview,
     loading,
     error,
     refetch,
     refetchWithLoading,
     refetching,
-    setData,
+    setDataCustomerReview,
   };
 };
 

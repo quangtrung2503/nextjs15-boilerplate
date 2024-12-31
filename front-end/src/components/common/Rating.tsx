@@ -23,7 +23,6 @@ const RatingMui = (props: Props) => {
   //! State
   const { field, form, readOnly, disabled, haveFeedback, valueTable, sxRating, setValue, classNameIcon } = props;
   const { name, value, onChange } = field || {};
-  const { errors, touched } = form || {};
   const [hover, setHover] = React.useState(-1);
   const valueRating = valueTable ? valueTable : value;
   //! Function

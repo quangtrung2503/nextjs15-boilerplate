@@ -66,6 +66,9 @@ const CardCarousel: React.FC<Props> = ({
     };
   }, []);
 
+  // Check if there are more than 4 slides
+  const showArrows = data.length > 3;
+
   return (
     <CommonStyles.Box className="tw-flex tw-flex-col">
       <Container
@@ -75,26 +78,28 @@ const CardCarousel: React.FC<Props> = ({
         )}
       >
         <CommonStyles.Box>{title}</CommonStyles.Box>
-        <CommonStyles.Box className="tw-flex tw-items-center tw-gap-5">
-          <CommonStyles.Box
-            className={`tw-rounded-full tw-w-[50px] tw-aspect-square tw-flex tw-items-center tw-justify-center ${isAtStart
-              ? "tw-border-secondary tw-shadow-direction_carousel tw-cursor-not-allowed tw-border-[1px] tw-border-solid"
-              : "tw-cursor-pointer tw-shadow-direction_carousel tw-bg-secondary"
-              }`}
-            onClick={!isAtStart ? handleScrollLeft : undefined}
-          >
-            <CommonIcons.LeftDirection />
+        {showArrows && ( // Only show arrows if there are more than 4 slides
+          <CommonStyles.Box className="tw-flex tw-items-center tw-gap-5">
+            <CommonStyles.Box
+              className={`tw-rounded-full tw-w-[50px] tw-aspect-square tw-flex tw-items-center tw-justify-center ${isAtStart
+                ? "tw-border-secondary tw-shadow-direction_carousel tw-cursor-not-allowed tw-border-[1px] tw-border-solid"
+                : "tw-cursor-pointer tw-shadow-direction_carousel tw-bg-secondary"
+                }`}
+              onClick={!isAtStart ? handleScrollLeft : undefined}
+            >
+              <CommonIcons.LeftDirection />
+            </CommonStyles.Box>
+            <CommonStyles.Box
+              className={`tw-rounded-full tw-w-[50px] tw-aspect-square tw-flex tw-items-center tw-justify-center ${isAtEnd
+                ? "tw-border-secondary tw-shadow-direction_carousel tw-cursor-not-allowed tw-border-[1px] tw-border-solid"
+                : "tw-cursor-pointer tw-shadow-direction_carousel tw-bg-secondary"
+                }`}
+              onClick={!isAtEnd ? handleScrollRight : undefined}
+            >
+              <CommonIcons.RightDirection />
+            </CommonStyles.Box>
           </CommonStyles.Box>
-          <CommonStyles.Box
-            className={`tw-rounded-full tw-w-[50px] tw-aspect-square tw-flex tw-items-center tw-justify-center ${isAtEnd
-              ? "tw-border-secondary tw-shadow-direction_carousel tw-cursor-not-allowed tw-border-[1px] tw-border-solid"
-              : "tw-cursor-pointer tw-shadow-direction_carousel tw-bg-secondary"
-              }`}
-            onClick={!isAtEnd ? handleScrollRight : undefined}
-          >
-            <CommonIcons.RightDirection />
-          </CommonStyles.Box>
-        </CommonStyles.Box>
+        )}
       </Container>
       <CommonStyles.Box
         className="tw-overflow-auto scrollbar-hide tw-w-full"
