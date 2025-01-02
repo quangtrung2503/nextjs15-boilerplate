@@ -94,10 +94,12 @@ const Footer = () => {
                   fieldSet: {
                     border: "1px solid var(--accent-gray-light)",
                   },
+                  color: {
+                    color: "white"
+                  }
                 }}
                 // defaultValue={"en"}
                 options={languageOptions}
-                className="tw-text-[#FFFFFF99]"
                 classNameContainer="tw-bg-transparent"
                 component={SelectField}
               />
@@ -113,10 +115,12 @@ const Footer = () => {
                   fieldSet: {
                     border: "1px solid var(--accent-gray-light)",
                   },
+                  color: {
+                    color: "white"
+                  }
                 }}
                 // defaultValue={"USD"}
                 options={currencyOptions}
-                className="tw-text-[#FFFFFF99]"
                 classNameContainer="tw-bg-transparent"
                 component={SelectField}
               />

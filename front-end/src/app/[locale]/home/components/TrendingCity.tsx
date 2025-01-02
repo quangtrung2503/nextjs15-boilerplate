@@ -7,27 +7,28 @@ import { commonImg } from "@/assets";
 import { useTranslations } from "next-intl";
 
 export interface TrendingCityProps {
-  trendingCity: {
-    imageBanner?: string;
-    image?: string;
-    title: string;
-    place: string;
-    rate?: number;
-    reviews: number;
-    content: string;
-  };
+  imageBanner?: string;
+  image?: string;
+  title?: string;
+  place?: string;
+  rate?: number;
+  reviews?: number;
+  content?: string;
 }
 
-const TrendingCity: FC<TrendingCityProps> = ({ trendingCity }) => {
+const TrendingCity: FC<TrendingCityProps> = (props) => {
+  // props
   const {
     imageBanner,
+    image,
     place,
     title,
     rate = 0,
     reviews,
     content,
-  } = trendingCity;
-  const t = useTranslations("homePage")
+  } = props;
+  const t = useTranslations("homePage");
+  // Render
   return (
     <CommonStyles.Box
       sx={{ backgroundImage: `url(${imageBanner})` }}
@@ -44,7 +45,7 @@ const TrendingCity: FC<TrendingCityProps> = ({ trendingCity }) => {
               style={{
                 width: "300px",
                 height: "300px",
-                background: "#FFF1B5",
+                backgroundColor: "#FFF1B5",
                 maskImage: `url(${commonImg.mask.src})`,
                 WebkitMaskImage: `url(${commonImg.mask.src})`,
                 maskSize: "100% 100%",
@@ -58,7 +59,7 @@ const TrendingCity: FC<TrendingCityProps> = ({ trendingCity }) => {
               style={{
                 width: "300px",
                 height: "300px",
-                background: "#D0FFF6",
+                backgroundColor: "#D0FFF6",
                 maskImage: `url(${commonImg.mask.src})`,
                 WebkitMaskImage: `url(${commonImg.mask.src})`,
                 maskSize: "100% 100%",
@@ -71,7 +72,7 @@ const TrendingCity: FC<TrendingCityProps> = ({ trendingCity }) => {
               style={{
                 width: "300px",
                 height: "300px",
-                background: `url(${commonImg.bgMask.src})`,
+                backgroundImage: `url(${image})`,
                 backgroundPosition: "center",
                 backgroundSize: "cover",
                 maskImage: `url(${commonImg.mask.src})`,
@@ -96,7 +97,7 @@ const TrendingCity: FC<TrendingCityProps> = ({ trendingCity }) => {
 
             <CommonStyles.Box>
               <CommonStyles.Typography
-                className="tw-text-white"
+                className="tw-text-white tw-line-clamp-3 tw-overflow-hidden tw-whitespace-normal tw-text-ellipsis"
                 type="size36Weight700"
               >
                 {title}
@@ -113,22 +114,21 @@ const TrendingCity: FC<TrendingCityProps> = ({ trendingCity }) => {
                   className="tw-bg-white tw-h-[14px] "
                 />
                 <CommonStyles.Box className="tw-flex tw-items-center">
-                  <CommonStyles.Rating
-                    haveFeedback={false}
+                  <CommonStyles.RatingView
                     readOnly
-                    valueTable={rate}
+                    value={rate}
                   />
                   <CommonStyles.Typography
                     className="tw-ml-[2px]"
-                    color="white"
+                  // color="white"
                   >
-                    {rate.toFixed(1)} ({reviews} {t("reviews")})
+                    {rate} ({reviews} {t("reviews")})
                   </CommonStyles.Typography>
                 </CommonStyles.Box>
               </CommonStyles.Box>
             </CommonStyles.Box>
 
-            <CommonStyles.Typography type="size14Weight600" className="tw-text-white tw-w-[505px]">
+            <CommonStyles.Typography type="size14Weight600" className="tw-text-white tw-line-clamp-3 tw-overflow-hidden tw-whitespace-normal tw-text-ellipsis tw-w-[505px]">
               {content}
             </CommonStyles.Typography>
           </CommonStyles.Box>

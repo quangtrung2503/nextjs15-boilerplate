@@ -24,6 +24,17 @@ export type ResponseTourGalleryList = AxiosResponse<
   ResponseCommon<ResponseList<TourImage[]>>
 >;
 
+export interface FiltersGetTourDestination extends CommonFilters {}
+export interface RequestGetTourDestination extends CommonFilters {}
+
+export type ResponseTourDestinationList = AxiosResponse<
+  ResponseCommon<ResponseList<Tour[]>>
+>;
+export interface FiltersGetTourBestTrending extends CommonFilters {}
+export interface RequestGetTourBestTrending extends CommonFilters {}
+
+export type ResponseTourBestTrending = ResponseCommon<Tour>;
+
 class TourService {
   getTours(filters: RequestGetTours, configs?: AxiosRequestConfig) {
     return httpService.get(
@@ -37,6 +48,16 @@ class TourService {
   getGalleryCustomer(configs?: AxiosRequestConfig) {
     return httpService.get(
       `${apiUrls.TOUR_CUS_URL}/gallery/get-images`,
+      configs,
+    );
+  }
+  getTourDestination(configs?: AxiosRequestConfig) {
+    const queryString = "isFeatureDestination=true";
+    return httpService.get(`${apiUrls.TOUR_CUS_URL}?${queryString}`, configs);
+  }
+  getTourBestTrending(configs?: AxiosRequestConfig) {
+    return httpService.get(
+      `${apiUrls.TOUR_CUS_URL}/trending/get-best-trending`,
       configs,
     );
   }

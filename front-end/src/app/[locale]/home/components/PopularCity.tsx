@@ -3,7 +3,6 @@ import { default as CommonStyles } from "@/components/common";
 import CommonTag, { CommonTagProps } from "./TagService";
 
 export interface PopularCityProps {
-  slug?: string;
   imageBanner?: string;
   name?: string;
   title?: string;
@@ -11,10 +10,9 @@ export interface PopularCityProps {
 }
 
 const PopularCity: FC<PopularCityProps> = (props) => {
-  const { imageBanner, name, title, listService, slug } = props;
-  const maxLength = 170;
-  const description =
-    title && title.length > maxLength ? title.slice(0, maxLength) + "..." : title;
+  // props
+  const { imageBanner, name, title, listService } = props;
+  //Render
   return (
     <CommonStyles.Box className="tw-w-full tw-h-fit">
       {/* Banner */}
@@ -40,10 +38,10 @@ const PopularCity: FC<PopularCityProps> = (props) => {
                 {name}
               </CommonStyles.Typography>
               <CommonStyles.Typography
-                className="tw-text-accent_gray_500"
+                className='tw-line-clamp-3 tw-overflow-hidden tw-whitespace-normal tw-text-ellipsis'
                 type="size16Weight500"
               >
-                {description}
+                {title}
               </CommonStyles.Typography>
             </CommonStyles.Box>
             {/* Services */}
