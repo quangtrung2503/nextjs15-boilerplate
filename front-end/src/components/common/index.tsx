@@ -12,6 +12,7 @@ import Chip from "./Chip";
 import RatingBar from "./RatingBar";
 import PopoverMui from "./Popover";
 import AccordionMUI from "./Accordion";
+import RatingView from "./RatingView";
 
 export default {
   Typography,
@@ -21,6 +22,7 @@ export default {
   CommonButton,
   Divider,
   Rating,
+  RatingView,
   Avatar,
   HtmlContent,
   Chip,
