@@ -23,7 +23,7 @@ import { generateHtmlContent, mapTours } from "./functions";
 
 const CityTourDetail = () => {
   //! Hook
-  const t = useTranslations("cityTourDetail");
+  const t = useTranslations('cityTour.cityTourDetail');
   const { showError } = useNotifications();
   const { filters, handleChangePage } = useFiltersHandler({ page: 1, perPage: 1 });
   //! prop + state + const
@@ -120,7 +120,7 @@ const CityTourDetail = () => {
             <CommonStyles.Box className="tw-flex tw-items-center tw-gap-3 tw-text-accent_gray_800">
               <CommonStyles.Typography className="tw-flex tw-items-center ">
                 <CommonIcons.LocationOn className="tw-w-4" />
-                {tour?.City?.name}
+                {data?.tour.City?.name}
               </CommonStyles.Typography>
               <CommonStyles.Box className="tw-flex tw-items-center">
                 <RHFField

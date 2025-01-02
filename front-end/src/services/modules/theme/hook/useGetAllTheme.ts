@@ -4,7 +4,7 @@ import { isEmpty, isObject } from "lodash";
 import { ResponseList } from "@/interfaces/common";
 import { useSave } from "@/stores/useStore";
 import themeServices, { FiltersGetThemes, RequestGetThemes, ResponseThemeList } from "../theme.services";
-import { Theme } from "../intefaces/theme";
+import { Theme } from "../interfaces/theme";
 import { useNotifications } from "@/helpers/toast";
 
 /********************************************************

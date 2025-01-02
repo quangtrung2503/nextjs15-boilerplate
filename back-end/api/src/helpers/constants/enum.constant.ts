@@ -76,16 +76,16 @@ export enum TourSortField {
 }
 
 export enum BookingStatus {
-  PENDING = 'Pending',
-  CONFIRMED = 'Confirmed',
-  CANCELLED = 'Cancelled',
-  PAYMENT_CONFIRMED = 'Payment Confirmed',
+  PAYMENT_PENDING = 'PAYMENT_PENDING',
+  PAYMENT_UPLOADED = 'PAYMENT_UPLOADED',
+  PAYMENT_CONFIRMED = 'PAYMENT_CONFIRMED',
+  COMPLETED = 'COMPLETED',
+  CANCELLED = 'CANCELLED',
+  REFUNDED = 'REFUNDED'
 }
 
 export enum PaymentMethod {
-  CASH = 'Cash',
-  BANK_TRANSFER = 'Bank Transfer',
-  CREDIT_CARD = 'Credit Card'
+  QR_CODE = 'QR Code',
 }
 
 export enum BookingCancellationReason {

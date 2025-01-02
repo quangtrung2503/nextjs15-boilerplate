@@ -12,6 +12,7 @@ import { FilterVideoDto } from './dto/filter-video.dto';
 import { funcListPaging } from 'src/helpers/common/list-paging';
 import { ParseIdPipe } from 'src/core/pipes/parse-id.pipe';
 import { UpdateVideoDto } from './dto/update-video.dto';
+import { SortOrder } from 'src/helpers/constants/enum.constant';
 
 @ApiTags('Video (Administrator)')
 @Controller('video')
@@ -57,7 +58,7 @@ export class VideoController {
       });
     }
 
-    if (options.isDisplay !== undefined) {
+    if (typeof options.isDisplay === 'boolean') {
       where = {
         ...where,
         isDisplay: options.isDisplay,
@@ -109,7 +110,7 @@ export class VideoController {
           id: { not: id }
         },
         orderBy: {
-          createdAt: 'desc'
+          createdAt: SortOrder.DESC
         }
       });
 
@@ -149,7 +150,7 @@ export class VideoController {
           id: { not: id }
         },
         orderBy: {
-          createdAt: 'desc'
+          createdAt: SortOrder.DESC
         }
       });
 

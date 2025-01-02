@@ -10,13 +10,13 @@ const Heading = (props: Props) => {
     <CommonStyles.Box className="tw-flex tw-flex-col tw-gap-y-3">
       <CommonStyles.Typography
         className="tw-text-accent_gray_dark"
-        type="size36Weight700"
+        type="size36Weight800"
       >
         {title}
       </CommonStyles.Typography>
       <CommonStyles.Typography
         className="tw-text-accent_gray_800 tw-w-3/5"
-        type="size16Weight400"
+        type="size16Weight500"
       >
         {des}
       </CommonStyles.Typography>

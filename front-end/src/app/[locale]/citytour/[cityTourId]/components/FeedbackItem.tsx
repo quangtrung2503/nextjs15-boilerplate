@@ -11,7 +11,7 @@ interface FeedbackData {
 }
 
 const FeedbackItem: React.FC<FeedbackData> = (props: FeedbackData) => {
-  const t = useTranslations("cityTourDetail");
+  const t = useTranslations('cityTour.cityTourDetail');
   const { items } = props;
   const { User, rating, title, content, createdAt } = items ?? {};
 

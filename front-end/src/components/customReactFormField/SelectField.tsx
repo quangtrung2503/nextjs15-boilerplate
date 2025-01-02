@@ -124,6 +124,7 @@ const SelectField: React.FC<SelectFieldProps> = ({
               <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
                 {selected.map((value) => (
                   <Chip
+                    className="tw-shadow-md tw-py-5 tw-px-2 tw-bg-transparent"
                     key={value}
                     label={options.find((opt) => opt.value === value)?.label || value}
                   />

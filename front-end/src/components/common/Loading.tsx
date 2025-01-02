@@ -2,9 +2,9 @@ import { CircularProgressProps } from '@mui/material/CircularProgress';
 import CircularProgress from '@mui/material/CircularProgress';
 
 const Loading = (props: CircularProgressProps) => {
-  const {color} = props;
+  const {color,...rest} = props;
   return (
-    <CircularProgress color={color} />
+    <CircularProgress {...rest} color={color} />
   );
 };
 

@@ -32,6 +32,9 @@ const CardGridItem = (props: CardGridItemProps) => {
     ...rest
   } = props;
   const t = useTranslations("card")
+  const maxLength = 45;
+  const des =
+    title && title.length > maxLength ? title.slice(0, maxLength) + "..." : title;
   return (
     <Card className="tw-w-full tw-p-0 tw-shadow-card">
       <CommonStyles.Link href={link} className="tw-w-full">
@@ -43,9 +46,9 @@ const CardGridItem = (props: CardGridItemProps) => {
           />
         </CommonStyles.Box>
         <CardContent className="tw-p-0">
-          <CommonStyles.Box className="tw-flex tw-flex-col tw-gap-y-5 tw-px-5">
-            <CommonStyles.Typography type="size16Weight700">
-              {title}
+          <CommonStyles.Box className="tw-flex tw-flex-col tw-gap-y-5 tw-px-5 ">
+            <CommonStyles.Typography type="size16Weight700" className="tw-h-6 tw-mb-3">
+              {des}
             </CommonStyles.Typography>
             <CommonStyles.Box className="tw-flex tw-flex-col tw-gap-y-3 tw-text-accent_gray_800">
               <CommonStyles.Box className="tw-flex tw-items-center tw-gap-2">

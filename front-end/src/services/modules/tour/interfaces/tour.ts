@@ -2,6 +2,7 @@ import { TransportOfTour } from "@/helpers/common";
 export interface Tour {
   id?: number;
   name: string;
+  slug?: string;
   price: number;
   transport: string;
   package: string;
@@ -9,15 +10,18 @@ export interface Tour {
   numberOfHours: number;
   startDate: string;
   endDate: string;
+  isFeature?: boolean;
+  isActive?: boolean;
   description: string;
   activity: string;
   included: string;
   notIncluded: string;
   safety: string;
   language: string;
+  guideMeetingAddress?: string;
   cityId: number;
   themeId: number;
-  destinationIds: number[];
+  destinationIds?: number[];
   createdAt?: string;
   updatedAt?: string;
   City?: City;
@@ -27,7 +31,6 @@ export interface Tour {
   averageRating?: number;
   images: string[];
   totalReviews?: number;
-  guideMeetingAddress: string;
 }
 export interface City {
   id: number;
@@ -35,6 +38,7 @@ export interface City {
   image: string;
   description: string;
   isActive: boolean;
+  slug?: string;
   createdAt: string;
   updatedAt: string;
 }

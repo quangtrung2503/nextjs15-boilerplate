@@ -114,15 +114,6 @@ export class UserController {
     const keyNotInDto = Object.keys(body).find((key: keyof CreateUserDto) => !CreateUserDtoKeys.includes(key))
     if (keyNotInDto) throw new BaseException(Errors.BAD_REQUEST(this.i18n.t('common-message.user.createUser.wrong_parameter', { keyNotInDto })));
 
-    if (body.username.trim() === '')
-      throw new BaseException(Errors.BAD_REQUEST(this.i18n.t('common-message.user.createUser.username_required')));
-
-    if (body.username.includes(' '))
-      throw new BaseException(Errors.BAD_REQUEST(this.i18n.t('common-message.user.createUser.username_no_spaces')));
-
-    if (!RegexConstant.UsernameReg.test(body.username))
-      throw new BaseException(Errors.BAD_REQUEST(this.i18n.t('common-message.user.createUser.username_invalid_format')));
-
     if (!RegexConstant.PasswordReg.test(body.password))
       throw new BaseException(Errors.BAD_REQUEST(this.i18n.t('common-message.user.createUser.invalid_password')));
 

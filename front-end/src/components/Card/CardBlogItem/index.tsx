@@ -1,10 +1,7 @@
 import { Card, CardContent, CardMedia } from "@mui/material";
 import { default as CommonStyles } from "../../common";
 import React from "react";
-import CommonIcons from "../../CommonIcons";
-import AccessTimeIcon from "@mui/icons-material/AccessTime";
-import DriveEtaOutlinedIcon from "@mui/icons-material/DriveEtaOutlined";
-import PeopleAltOutlinedIcon from "@mui/icons-material/PeopleAltOutlined";
+
 type Author = {
   avatar: string;
   name: string;

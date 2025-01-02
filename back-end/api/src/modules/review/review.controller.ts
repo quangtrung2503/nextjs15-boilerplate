@@ -42,12 +42,30 @@ export class ReviewController {
       }
     }
 
+    if (options.textSearch) {
+      where = {
+        ...where,
+        Tour: {
+          name: {
+            contains: options.textSearch
+          }
+        }
+      }
+    }
+
     const whereInput: Prisma.ReviewFindManyArgs = {
       where: where,
       orderBy: {
         [options?.sortField]: options?.sortOrder,
       },
       include: {
+        Tour: {
+          select: {
+            id: true,
+            name: true,
+            slug: true
+          }
+        },
         User: {
           select: {
             id: true,

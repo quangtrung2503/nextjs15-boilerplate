@@ -52,7 +52,7 @@ export class DestinationController {
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Get()
   async findAll(@Query() options: FilterDestinationDto) {
-    const where: Prisma.DestinationWhereInput = { AND: [] };
+    let where: Prisma.DestinationWhereInput = { AND: [] };
     if (options.textSearch) {
       // @ts-ignore
       where.AND.push({
@@ -60,6 +60,13 @@ export class DestinationController {
           { name: { contains: options.textSearch } }
         ]
       });
+    }
+
+    if (typeof options?.isFeature === 'boolean') {
+      where = {
+        ...where,
+        isFeature: options.isFeature
+      }
     }
 
     if (options?.from || options?.to) {
@@ -175,6 +182,18 @@ export class DestinationController {
     }
 
     return updatedDestination;
+  }
+
+  @ApiBearerAuth()
+  @Roles(UserRole.ADMIN, UserRole.STAFF)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Patch('set-feature/:id')
+  async setFeature(@Param('id', ParseIdPipe) id: number) {
+    const existingDestination = await this.destinationService.findOne({ where: { id } });
+    if (!existingDestination) throw new BaseException(Errors.ITEM_NOT_FOUND(this.i18n.t('common-message.destination.setFeature.not_found')));
+
+    return await this.destinationService.update(existingDestination.id, { isFeature: !existingDestination.isFeature });
+
   }
 
   @ApiBearerAuth()
