@@ -1,6 +1,8 @@
 {
   "feedback": {
     "title": "Customer Review",
+    "guide": "Guide",
+    "safety": "Safety",
     "reviews": "reviews",
     "filter": "Filtering",
     "recommendPlaceholder": "Recommend",
@@ -185,6 +187,8 @@
     "titleSpecialFoods": "Special Foods",
     "titleRiverActivity": "River Activity",
     "cityTourDetail": {
+      "people": "People",
+      "hours": "hours",
       "booking": "Booking",
       "noOfGuest": "No. Of Guest",
       "adults": "Adults",

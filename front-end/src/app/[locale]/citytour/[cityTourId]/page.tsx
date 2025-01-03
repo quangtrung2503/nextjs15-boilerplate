@@ -59,8 +59,8 @@ const CityTourDetail = () => {
   const includes = [included, notIncluded];
   const details = [
     language,
-    generateHtmlContent(t("duration"), `${numberOfHours} hours`),
-    generateHtmlContent(t("numberOfPeople"), `${numberOfPeople} People`),
+    generateHtmlContent(t("duration"), `${numberOfHours} ${t('hours')}`),
+    generateHtmlContent(t("numberOfPeople"), `${numberOfPeople} ${t('people')}`),
   ];
 
   const meetingAddress = generateHtmlContent(
