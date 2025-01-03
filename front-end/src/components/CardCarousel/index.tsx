@@ -17,31 +17,26 @@ const CardCarousel: React.FC<Props> = ({
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [isAtStart, setIsAtStart] = useState(true);
   const [isAtEnd, setIsAtEnd] = useState(false);
-
   const handleScrollLeft = () => {
     scrollContainerRef.current?.scrollBy({
       left: -300,
       behavior: "smooth",
     });
   };
-
   const handleScrollRight = () => {
     scrollContainerRef.current?.scrollBy({
       left: 300,
       behavior: "smooth",
     });
   };
-
   const checkScrollPosition = () => {
     if (scrollContainerRef.current) {
       const { scrollLeft, scrollWidth, clientWidth } =
         scrollContainerRef.current;
-
       setIsAtStart(scrollLeft <= 0);
       setIsAtEnd(Math.abs(scrollLeft + clientWidth - scrollWidth) <= 1);
     }
   };
-
   const debounce = <T extends (...args: any[]) => void>(
     func: T,
     wait: number,
@@ -52,7 +47,6 @@ const CardCarousel: React.FC<Props> = ({
       timeout = setTimeout(() => func(...args), wait);
     }) as T;
   };
-
   useEffect(() => {
     const scrollContainer = scrollContainerRef.current;
     const debouncedCheckScrollPosition = debounce(checkScrollPosition, 50);
@@ -67,7 +61,7 @@ const CardCarousel: React.FC<Props> = ({
   }, []);
 
   // Check if there are more than 4 slides
-  const showArrows = data.length > 4;
+  const showArrows = data.length > 3;
 
   return (
     <CommonStyles.Box className="tw-flex tw-flex-col tw-w-full">
@@ -126,5 +120,4 @@ const CardCarousel: React.FC<Props> = ({
     </CommonStyles.Box>
   );
 };
-
 export default CardCarousel;
