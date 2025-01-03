@@ -464,3 +464,15 @@ export enum TourSortField {
   PRICE = 'price',
   POPULARITY = 'popularity'
 }
+
+export enum BookingStatus {
+  PENDING = 'PENDING',
+  CONFIRMED = 'CONFIRMED',
+  COMPLETED = 'COMPLETED',
+  CANCELLED = 'CANCELLED',
+  REFUNDED = 'REFUNDED'
+}
+
+export enum PaymentMethod {
+  QR_CODE = 'QR Code',
+}

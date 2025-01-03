@@ -5,7 +5,7 @@ import { ResponseList } from "@/interfaces/common";
 import { useSave } from "@/stores/useStore";
 import { useNotifications } from "@/helpers/toast";
 import tourServices, { FiltersGetTours, RequestGetTours, ResponseTourList } from "../tour.services";
-import { Tour } from "../interfaces/tour";
+import { Tour } from "../../tour/interfaces/tour";
 
 /********************************************************
  * SNIPPET GENERATED

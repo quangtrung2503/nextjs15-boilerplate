@@ -3,7 +3,7 @@ import { CommonButton } from "@/components/common/Button";
 import useToggleDialog from "@/hooks/useToggleDialog";
 import { Box, MenuItem, menuItemClasses, MenuList, Popover } from "@mui/material";
 import Avatar from "@mui/material/Avatar";
-import React from "react";
+import React, { useMemo } from "react";
 import { default as CommonStyles } from "@/components/common";
 import CommonIcons from "@/components/CommonIcons";
 import AssignmentIndOutlinedIcon from "@mui/icons-material/AssignmentIndOutlined";
@@ -11,6 +11,7 @@ import useAuth from "@/hooks/useAuth";
 import pageUrls from "@/constants/pageUrls";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
+import moment from "moment";
 
 const Header = () => {
   const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
@@ -25,18 +26,30 @@ const Header = () => {
     setAnchorEl(null);
   };
 
+  const day = useMemo(()=>{
+    return new Date();
+  },[])
+
   const open = Boolean(anchorEl);
   const id = open ? "simple-popover" : undefined;
   return (
     <Box className="tw-h-header_admin tw-w-content-admin tw-fixed tw-top-0 tw-right-0 tw-z-50 tw-flex tw-items-center tw-bg-white tw-shadow-sm">
       <Box className="tw-h-5 tw-flex tw-w-full tw-items-center tw-justify-between">
+        <CommonStyles.Box className="tw-ml-5">
         <CommonStyles.Typography
-          className="tw-text-primary tw-font-semibold"
-          sx={{ fontWeight: 600 }}
-          variant="h6"
-        >
-          Hello, {user?.name}<span className="tw-ml-1">👋</span>
+          className="tw-text-primary tw-font-bold"
+          type="size22Weight700"
+          >
+          {t("welcome")}<span className="tw-ml-1">👋</span>
         </CommonStyles.Typography>
+        
+        <CommonStyles.Typography
+          className="tw-text-primary"
+          type="size16Weight400"
+          >
+          {moment(day).format('dddd') +", "+ moment(day).format("DD.MM.YYYY").toLowerCase()}
+        </CommonStyles.Typography>
+          </CommonStyles.Box>
         <Box className="tw-mr-5 tw-flex tw-items-center">
           <CommonStyles.Box className="tw-mr-2 tw-border-secondary tw-bg-secondary_100 tw-flex tw-p-2 tw-rounded-xl tw-text-gray-700 hover:tw-opacity-50 tw-border-solid tw-border-[1px]">
             <CommonIcons.TranslateOutlined />

@@ -55,7 +55,17 @@ const SideBar = () => {
     {
       name: "Tag",
       path: pageUrls.Admin.Tag,
-      icon: <CommonIcons.Style />
+      icon: <CommonIcons.StyleOutlined />
+    },
+    {
+      name: "Booking",
+      path: pageUrls.Admin.Booking,
+      icon: <CommonIcons.PaidOutlined />
+    }, 
+    {
+      name: "Confirm booking",
+      path: pageUrls.Admin.confirmTour,
+      icon: <CommonIcons.ConfirmationNumberOutlined />
     }
   ];
   const pathName = usePathname();
