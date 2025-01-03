@@ -13,12 +13,17 @@ export default {
   CITY_CUS_URL: `${BASE_URL}/city-customer`,
   USER_URL: `${BASE_URL}/user`,
   THEME_URL: `${BASE_URL}/theme`,
+  THEME_CUS_URL: `${BASE_URL}/theme-customer`,
   TOUR_URL: `${BASE_URL}/tour`,
   TOUR_CUS_URL: `${BASE_URL}/tour-customer`,
   POST_URL: `${BASE_URL}/post`,
   POST_CUS_URL: `${BASE_URL}/post-customer`,
   UPLOAD_URL: `${BASE_URL}/upload`,
   DESTINATION_URL: `${BASE_URL}/destination`,
+  DESTINATION_CUS_URL: `${BASE_URL}/destination-customer`,
   PROFILE_URL: `${BASE_URL}/user/profile`,
   TAG_URL: `${BASE_URL}/tag`,
+  BOOKING_URL: `${BASE_URL}/booking`,
+  TRANSACTION_URL: `${BASE_URL}/transaction`,
+  STATS_URL: `${BASE_URL}/stats`
 };

@@ -32,7 +32,7 @@ import { CityDetail } from "@/services/modules/city/interfaces/city";
 import City from "../admin/city/city";
 import useGetTourTrendingCustomer from "@/services/modules/tour/hooks/useGetTourTrendingCustomer";
 import useGetVideoCustomer from "@/services/modules/video/hook/useGetVideoCustomer";
-import { Video } from "@/services/modules/video/interfaces/video";
+
 
 interface FormValues {
   location: string;
@@ -457,9 +457,8 @@ export default function HomePage() {
         />
       </CommonStyles.Box>
       {/* IV. Featured Destinations */}
-      <CommonStyles.Box className="tw-flex tw-flex-col tw-w-full tw-justify-between tw-items-center">
+      <CommonStyles.Box>
         <CardCarousel
-          maxItems={5}
           title={
             <Heading
               title={t("featuredDestinationsHeading")}

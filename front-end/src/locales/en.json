@@ -522,6 +522,54 @@
     "create": "Create",
     "edit": "Edit"
   },
+  "bookingAdmin": {
+    "placeholderSearch": "Search booking",
+    "name": "Tour Booker",
+    "tour": "Tour name",
+    "startDate": "Start date",
+    "endDate": "End date",
+    "totalPrice": "Total price",
+    "amountPaid": "Amount paid",
+    "status": "Status",
+    "bookingCode": "Booking code",
+    "action": "Action",
+    "confirm": "Confirm",
+    "editBooking": "Edit booking",
+    "numberOfAdults": "Number of adults",
+    "numberOfChildren": "Number of children",
+    "note": "Note",
+    "editSuccess": "Edit success"
+  },
+  "confirmTour":{
+    "code": "Code",
+    "confirmSuccess": "Confirm success",
+    "guestInformation": "Guest information",
+    "guestName": "Guest name",
+    "phoneNumber": "Phone number",
+    "email": "Email",
+    "address": "Address",
+    "numberOfAdults":"Number of adults",
+    "numberOfChildren":"Number of children",
+    "tourDestination": "Tour destination",
+    "paidInformation": "Paid information",
+    "amountPaid":"Amount paid",
+    "confirm": "Confirm",
+    "confirmTitle": "Are you sure confirm this booking?",
+    "cancel": "Cancel" 
+  },
+  "adminDashboard": {
+    "totalRevenue": "Total revenue",
+    "totalBookings": "Total bookings",
+    "reportOverview": "Report overview",
+    "ordersOverview": "Orders overview",
+    "more": "more",
+    "thisMonth": "this month",
+    "transactions": "Transactions",
+    "name": "Name",
+    "status": "Status",
+    "date": "Date",
+    "amount": "Amount"
+  },
   "action": "Action",
   "noFileSelected": "No file selected",
   "search": "Search",
@@ -577,5 +625,6 @@
     "newPasswordRequired": "New password is required",
     "confirmPasswordRequired": "Confirm password is required",
     "passwordsMustMatch": "Passwords must match"
-  }
+  },
+  "welcome": "Welcome"
 }

@@ -16,7 +16,6 @@ const CardCarousel: React.FC<Props> = ({
   title,
   // data,
   classNameContainerHeading,
-  maxItems = 4
 }) => {
   // props + state
   const scrollContainerRef = useRef<HTMLDivElement>(null);
@@ -31,6 +30,7 @@ const CardCarousel: React.FC<Props> = ({
         left: -300,
         behavior: "smooth",
       });
+      setTimeout(checkScrollPosition, 300);
     }
   };
 
@@ -40,6 +40,7 @@ const CardCarousel: React.FC<Props> = ({
         left: 300,
         behavior: "smooth",
       });
+      setTimeout(checkScrollPosition, 300);
     }
   };
 
@@ -68,20 +69,26 @@ const CardCarousel: React.FC<Props> = ({
   // Effect
   useEffect(() => {
     const scrollContainer = scrollContainerRef.current;
-    const debouncedCheckScrollPosition = debounce(checkScrollPosition, 50);
 
     if (scrollContainer) {
-      scrollContainer.addEventListener("scroll", debouncedCheckScrollPosition);
-      checkScrollPosition(); // Gọi ngay khi component render lần đầu
+      // Gọi checkScrollPosition khi component render
+      checkScrollPosition();
+
+      // Lắng nghe sự kiện scroll để kiểm tra vị trí
+      scrollContainer.addEventListener("scroll", checkScrollPosition);
     }
 
     return () => {
-      scrollContainer?.removeEventListener(
-        "scroll",
-        debouncedCheckScrollPosition,
-      );
+      // Xóa lắng nghe khi unmount
+      scrollContainer?.removeEventListener("scroll", checkScrollPosition);
     };
   }, []);
+
+  useEffect(() => {
+    // Kiểm tra vị trí khi dataDestination thay đổi
+    checkScrollPosition();
+  }, [dataDestination]);
+
 
   // Render
   return (
@@ -117,10 +124,16 @@ const CardCarousel: React.FC<Props> = ({
       <CommonStyles.Box
         className="tw-overflow-auto scrollbar-hide tw-w-full "
         ref={scrollContainerRef}
+        style={{
+          display: 'flex',
+          overflowX: 'auto',
+          scrollSnapType: 'x mandatory',
+          gap: '20px', // khoảng cách giữa các ảnh
+        }}
       >
-        <CommonStyles.Box className="tw-flex tw-gap-5 tw-w-full tw-py-5 tw-justify-center">
-          {dataDestination?.items?.slice(0, maxItems || 4).map((item, index) => (
-            <CommonStyles.Box key={index} className="tw-w-[270px]">
+        <CommonStyles.Box className="tw-flex tw-gap-5 tw-py-5 tw-justify-center tw-items-center">
+          {dataDestination?.items?.slice(0, dataDestination?.items?.length).map((item, index) => (
+            <CommonStyles.Box key={index} className="tw-w-[270px]" style={{ scrollSnapAlign: 'start' }}>
               <CardGridItem
                 link=""
                 src={`${apiUrls.IMG_URL}/${item.City?.image}` || ""}

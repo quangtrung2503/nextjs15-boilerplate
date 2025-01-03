@@ -5,8 +5,8 @@ import React, { ReactNode } from "react";
 
 export interface SelectOption {
   key?: string;
-  label: string | React.ReactNode;
-  value: any;
+  label?: string | React.ReactNode;
+  value?: any;
 }
 
 export enum Order {
@@ -22,7 +22,7 @@ export interface CommonFilters {
   perPage?: number;
   dateApplied?: string;
   createdAt?: string | null;
-  userId?: number | null ;
+  userId?: number | null;
   orderBy?: string | number | symbol;
   sortOrder?: string | number | symbol;
   sortField?: string | number | symbol;

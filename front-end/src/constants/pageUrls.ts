@@ -25,6 +25,7 @@ const pageUrls = {
     Notification: "/admin/notification",
     User: "/admin/user",
     Tag: "/admin/tag",
+    Booking: "/admin/booking",
     Product: "/admin/product",
   },
   Invoices: "/sales/invoices",
