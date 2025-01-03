@@ -45,19 +45,13 @@ export class TourController {
     if (!body.images || body.images.length === 0)
       throw new BaseException(Errors.BAD_REQUEST(this.i18n.t('common-message.tour.create.images_required')));
 
-    if (moment().startOf('day').isSameOrAfter(moment(body.startDate)))
-      throw new BaseException(Errors.BAD_REQUEST(this.i18n.t('common-message.tour.create.invalid_start_date')));
-
-    if (moment(body.endDate).isBefore(body.startDate))
-      throw new BaseException(Errors.BAD_REQUEST(this.i18n.t('common-message.tour.create.invalid_end_date')));
-
     const cityExists = await this.cityService.findOne({
-      where: { id: body.cityId }
+      where: { id: body.cityId, isActive: true }
     });
     if (!cityExists) throw new BaseException(Errors.BAD_REQUEST(this.i18n.t('common-message.tour.create.city_not_found')));
 
     const themeExists = await this.themeService.findOne({
-      where: { id: body.themeId }
+      where: { id: body.themeId, isActive: true }
     });
     if (!themeExists) throw new BaseException(Errors.BAD_REQUEST(this.i18n.t('common-message.tour.create.theme_not_found')));
 
@@ -70,7 +64,7 @@ export class TourController {
     await Promise.all(
       body.destinationIds.map(async (destinationId) => {
         const destinationExists = await this.destinationService.findOne({
-          where: { id: destinationId }
+          where: { id: destinationId, isActive: true }
         });
         if (!destinationExists) {
           throw new BaseException(Errors.BAD_REQUEST(this.i18n.t('common-message.tour.create.destination_not_found')));
@@ -87,9 +81,6 @@ export class TourController {
       package: body.package,
       numberOfPeople: body.numberOfPeople,
       numberOfHours: body.numberOfHours,
-      startDate: body.startDate,
-      endDate: body.endDate,
-      isFeature: body.isFeature,
 
       description: body.description,
       activity: body.activity,
@@ -97,6 +88,7 @@ export class TourController {
       notIncluded: body.notIncluded,
       safety: body.safety,
       language: body.language,
+      guideMeetingAddress: body.guideMeetingAddress,
 
       cityId: body.cityId,
       themeId: body.themeId,
@@ -122,7 +114,7 @@ export class TourController {
   }
 
   @ApiBearerAuth()
-  @Roles(UserRole.ADMIN, UserRole.STAFF, UserRole.CUSTOMER)
+  @Roles(UserRole.ADMIN, UserRole.STAFF)
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Get()
   async findAll(@Query() options: FilterTourDto) {
@@ -142,13 +134,6 @@ export class TourController {
           { price: !isNaN(searchNumber) ? { gte: searchNumber * 0.9, lte: searchNumber * 1.1 } : undefined } // ±10% giá
         ]
       });
-    }
-
-    if (options?.isFeature !== undefined) {
-      where = {
-        ...where,
-        isFeature: options.isFeature
-      }
     }
 
     if (options?.cityId) {
@@ -176,6 +161,20 @@ export class TourController {
       }
     }
 
+    if (typeof options?.isFeatureDestination === 'boolean') {
+      where = {
+        ...where,
+        TourDestination: {
+          some: {
+            ...where.TourDestination?.some,
+            Destination: {
+              isFeature: true
+            }
+          }
+        }
+      };
+    }
+
     if (options?.durations && options.durations.length > 0) {
       const durationFilters = options.durations.map(duration => {
         switch (duration) {
@@ -199,23 +198,22 @@ export class TourController {
     }
 
     if (options?.from || options?.to) {
-      const dateFilters: Prisma.TourWhereInput[] = [];
-
-      if (options?.from) {
-        dateFilters.push({ startDate: { gte: moment(options.from).startOf('day').toDate() } });
-      }
-
-      if (options?.to) {
-        dateFilters.push({ startDate: { lte: moment(options.to).endOf('day').toDate() } });
-      }
-
-      if (dateFilters.length > 0) {
+      const fromDate = options?.from ? moment(options.from) : null;
+      const toDate = options?.to ? moment(options.to) : null;
+      
+      if (fromDate && toDate) {
+        const hoursDiff = toDate.diff(fromDate, 'hours');
+        
         // @ts-ignore
-        where.AND.push(...dateFilters);
+        where.AND.push({
+          numberOfHours: {
+            lte: hoursDiff
+          }
+        });
       }
     }
 
-    let orderBy: any = {};
+    let orderBy: Prisma.TourOrderByWithRelationInput = {};
 
     if (options?.sortField === TourSortField.POPULARITY) {
       orderBy = {
@@ -241,11 +239,7 @@ export class TourController {
           }
         },
         TourImage: true,
-        Review: {
-          select: {
-            rating: true
-          }
-        },
+        Review: true,
         _count: {
           select: {
             Review: true
@@ -268,11 +262,13 @@ export class TourController {
         const totalRating = reviews.reduce((sum, review) => sum + review.rating, 0);
         const averageRating = reviews.length > 0 ? totalRating / reviews.length : 0;
 
+        const Review = tour.Review;
         delete tour.Review;
         const { _count, ...tourWithoutReview } = tour;
 
         return {
           ...tourWithoutReview,
+          Review,
           averageRating: Number(averageRating.toFixed(1)),
           totalReviews: _count.Review
         };
@@ -284,7 +280,7 @@ export class TourController {
   }
 
   @ApiBearerAuth()
-  @Roles(UserRole.ADMIN, UserRole.STAFF, UserRole.CUSTOMER)
+  @Roles(UserRole.ADMIN, UserRole.STAFF)
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Get(':id')
   async findOne(@Param('id', ParseIdPipe) id: number) {
@@ -339,27 +335,16 @@ export class TourController {
     const keyNotInDto = Object.keys(body).find((key: keyof UpdateTourDto) => !CreateTourDtoKeys.includes(key))
     if (keyNotInDto) throw new BaseException(Errors.BAD_REQUEST(this.i18n.t('common-message.tour.update.wrong_parameter', { keyNotInDto })));
 
-    if (body.startDate || body.endDate) {
-      const startDate = body.startDate || existingTour.startDate;
-      const endDate = body.endDate || existingTour.endDate;
-
-      if (moment().startOf('day').isSameOrAfter(moment(startDate)))
-        throw new BaseException(Errors.BAD_REQUEST(this.i18n.t('common-message.tour.update.invalid_start_date')));
-
-      if (moment(endDate).isBefore(startDate))
-        throw new BaseException(Errors.BAD_REQUEST(this.i18n.t('common-message.tour.update.invalid_end_date')));
-    }
-
     if (body.cityId) {
       const cityExists = await this.cityService.findOne({
-        where: { id: body.cityId }
+        where: { id: body.cityId, isActive: true }
       });
       if (!cityExists) throw new BaseException(Errors.BAD_REQUEST(this.i18n.t('common-message.tour.update.city_not_found')));
     }
 
     if (body.themeId) {
       const themeExists = await this.themeService.findOne({
-        where: { id: body.themeId }
+        where: { id: body.themeId, isActive: true }
       });
       if (!themeExists) throw new BaseException(Errors.BAD_REQUEST(this.i18n.t('common-message.tour.update.theme_not_found')));
     }
@@ -369,7 +354,7 @@ export class TourController {
       await Promise.all(
         body.destinationIds.map(async (destinationId) => {
           const destinationExists = await this.destinationService.findOne({
-            where: { id: destinationId }
+            where: { id: destinationId, isActive: true },
           });
           if (!destinationExists) {
             throw new BaseException(Errors.BAD_REQUEST(this.i18n.t('common-message.tour.update.destination_not_found')));
@@ -384,9 +369,6 @@ export class TourController {
       package: body.package,
       numberOfPeople: body.numberOfPeople,
       numberOfHours: body.numberOfHours,
-      startDate: body.startDate,
-      endDate: body.endDate,
-      isFeature: body.isFeature,
 
       description: body.description,
       activity: body.activity,
@@ -394,6 +376,7 @@ export class TourController {
       notIncluded: body.notIncluded,
       safety: body.safety,
       language: body.language,
+      guideMeetingAddress: body.guideMeetingAddress,
 
       ...(body.cityId && { City: { connect: { id: body.cityId } } }),
       ...(body.themeId && { Theme: { connect: { id: body.themeId } } }),
@@ -485,18 +468,6 @@ export class TourController {
     });
 
     return updatedTour;
-  }
-
-  @ApiBearerAuth()
-  @Roles(UserRole.ADMIN, UserRole.STAFF)
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Patch('set-feature/:id')
-  async setFeature(@Param('id', ParseIdPipe) id: number) {
-    const existingTour = await this.tourService.findOne({ where: { id } });
-    if (!existingTour) throw new BaseException(Errors.ITEM_NOT_FOUND(this.i18n.t('common-message.tour.setFeature.not_found')));
-
-    return await this.tourService.update(existingTour.id, { isFeature: !existingTour.isFeature });
-
   }
 
   @ApiBearerAuth()

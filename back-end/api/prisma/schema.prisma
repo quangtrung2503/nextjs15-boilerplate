@@ -24,30 +24,29 @@ enum UserRole {
 }
 
 model User {
-  id              Int             @id @default(autoincrement())
-  username        String?         @unique @db.VarChar(255)
+  id              Int        @id @default(autoincrement())
+  email           String     @unique @db.VarChar(255)
   password        String
-  phone           String?         @unique @db.VarChar(255)
-  email           String          @unique @db.VarChar(255)
-  name            String          @db.VarChar(255)
-  lastAccessToken String?         @db.Text
-  fcmToken        String?         @db.Text
-  nickName        String?         @db.VarChar(255)
-  avatar          String?         @db.VarChar(255)
-  role            UserRole        @default(CUSTOMER)
-  sex             String?         @db.VarChar(255)
+  phone           String?    @unique @db.VarChar(255)
+  name            String     @db.VarChar(255)
+  lastAccessToken String?    @db.Text
+  fcmToken        String?    @db.Text
+  nickName        String?    @db.VarChar(255)
+  avatar          String?    @db.VarChar(255)
+  role            UserRole   @default(CUSTOMER)
+  sex             String?    @db.VarChar(255)
   dateOfBirth     DateTime?
-  address         String?         @db.VarChar(255)
-  status          UserStatus      @default(ACTIVE)
-  createdAt       DateTime        @default(now()) @map("created_at")
-  updatedAt       DateTime        @default(now()) @updatedAt @map("updated_at")
+  address         String?    @db.VarChar(255)
+  status          UserStatus @default(ACTIVE)
+  createdAt       DateTime   @default(now()) @map("created_at")
+  updatedAt       DateTime   @default(now()) @updatedAt @map("updated_at")
   // relation
   Review          Review[]
   Post            Post[]
   Wishlist        Wishlist[]
   Booking         Booking[]
 
-  @@fulltext([username, email, phone, name, nickName])
+  @@fulltext([email, phone, name, nickName])
   @@map("user")
 }
 
@@ -76,9 +75,37 @@ model City {
   updatedAt   DateTime @default(now()) @updatedAt @map("updated_at")
 
   // relation
-  Tour Tour[]
+  Tour    Tour[]
+  CityTag CityTag[]
 
   @@map("city")
+}
+
+model Tag {
+  id        Int       @id @default(autoincrement())
+  name      String    @unique @db.VarChar(255)
+  icon      String?   @db.VarChar(255)
+  color     String    @db.VarChar(255)
+  isActive  Boolean   @default(true)
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @default(now()) @updatedAt @map("updated_at")
+  CityTag   CityTag[]
+
+  @@map("tag")
+}
+
+model CityTag {
+  id        Int      @id @default(autoincrement())
+  cityId    Int
+  tagId     Int
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+
+  City City @relation(fields: [cityId], references: [id], onDelete: Cascade)
+  Tag  Tag  @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@unique([cityId, tagId])
+  @@map("city_tag")
 }
 
 model Theme {
@@ -99,6 +126,7 @@ model Theme {
 model Destination {
   id        Int      @id @default(autoincrement())
   name      String   @unique @db.VarChar(255)
+  isFeature Boolean  @default(false)
   isActive  Boolean  @default(true)
   slug      String   @unique @db.VarChar(255)
   createdAt DateTime @default(now()) @map("created_at")
@@ -110,25 +138,23 @@ model Destination {
 }
 
 model Tour {
-  id             Int      @id @default(autoincrement())
-  name           String   @db.VarChar(255)
-  slug           String   @unique @db.VarChar(255)
+  id             Int     @id @default(autoincrement())
+  name           String  @db.VarChar(255)
+  slug           String  @unique @db.VarChar(255)
   price          Float
-  transport      String   @db.VarChar(255)
-  package        String   @db.VarChar(255)
+  transport      String  @db.VarChar(255)
+  package        String  @db.VarChar(255)
   numberOfHours  Int
   numberOfPeople Int
-  startDate      DateTime
-  endDate        DateTime
-  isFeature      Boolean  @default(false)
-  isActive       Boolean  @default(true)
+  isActive       Boolean @default(true)
 
-  description String @db.Text
-  activity    String @db.Text
-  included    String @db.Text
-  notIncluded String @db.Text
-  safety      String @db.Text
-  language    String @db.Text
+  description         String @db.Text
+  activity            String @db.Text
+  included            String @db.Text
+  notIncluded         String @db.Text
+  safety              String @db.Text
+  language            String @db.Text
+  guideMeetingAddress String @db.Text
 
   cityId  Int
   themeId Int
@@ -161,6 +187,7 @@ model TourDestination {
   Tour        Tour        @relation(fields: [tourId], references: [id], onDelete: Cascade)
   Destination Destination @relation(fields: [destinationId], references: [id])
 
+  @@unique([tourId, destinationId])
   @@map("tour_destination")
 }
 
@@ -193,8 +220,8 @@ model Review {
   updatedAt            DateTime @default(now()) @updatedAt @map("updated_at")
 
   // relation fields
-  User          User            @relation(fields: [userId], references: [id])
-  Tour          Tour            @relation(fields: [tourId], references: [id], onDelete: Cascade)
+  User User @relation(fields: [userId], references: [id])
+  Tour Tour @relation(fields: [tourId], references: [id], onDelete: Cascade)
 
   @@unique([userId, tourId])
   @@map("review")
@@ -230,11 +257,13 @@ model Wishlist {
   User User @relation(fields: [userId], references: [id])
   Tour Tour @relation(fields: [tourId], references: [id], onDelete: Cascade)
 
+  @@unique([userId, tourId])
   @@map("wishlist")
 }
 
 model Booking {
   id               Int      @id @default(autoincrement())
+  bookingCode      String   @unique @db.VarChar(255)
   userId           Int
   tourId           Int
   startDate        DateTime
@@ -242,10 +271,13 @@ model Booking {
   numberOfAdults   Int
   numberOfChildren Int
   totalPrice       Float
+  amountPaid       Float?   @default(0)
   status           String   @db.VarChar(255)
   paymentMethod    String   @db.VarChar(255)
+  paymentProof     String?  @db.VarChar(255)
   note             String?  @db.Text
   cancelReason     String?  @db.VarChar(255)
+  updatedBy        String?  @db.VarChar(255)
   createdAt        DateTime @default(now()) @map("created_at")
   updatedAt        DateTime @default(now()) @updatedAt @map("updated_at")
 
@@ -254,4 +286,17 @@ model Booking {
   Tour Tour @relation(fields: [tourId], references: [id])
 
   @@map("booking")
+}
+
+model BankAccount {
+  id                Int     @id @default(autoincrement())
+  accountHolderName String  @db.VarChar(255)
+  accountNumber     String  @db.VarChar(255)
+  imageQrCode       String  @db.VarChar(255)
+  isDisplay         Boolean @default(true)
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+
+  @@map("bank_account")
 }

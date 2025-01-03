@@ -1,10 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Transform } from 'class-transformer';
-import { IsBoolean, IsDate, IsEnum, IsNotEmpty, IsNumber, IsOptional, IsPositive, IsString } from 'class-validator';
-import moment from 'moment';
+import { IsEnum, IsNotEmpty, IsNumber, IsPositive, IsString } from 'class-validator';
 import { Package, Transport } from 'src/helpers/constants/enum.constant';
 
-export const CreateTourDtoKeys: (keyof CreateTourDto)[] = ['name', 'price', 'transport', 'package', 'numberOfPeople', 'numberOfHours', 'startDate', 'endDate', 'isFeature', 'description', 'activity', 'included', 'notIncluded', 'safety', 'language', 'cityId', 'themeId', 'destinationIds', 'images'];
+export const CreateTourDtoKeys: (keyof CreateTourDto)[] = ['name', 'price', 'transport', 'package', 'numberOfPeople', 'numberOfHours', 'description', 'activity', 'included', 'notIncluded', 'safety', 'language', 'guideMeetingAddress', 'cityId', 'themeId', 'destinationIds', 'images'];
 
 export class CreateTourDto {
   @ApiProperty({
@@ -69,41 +67,6 @@ export class CreateTourDto {
   readonly numberOfHours: number;
 
   @ApiProperty({
-    example: '2024-09-30',
-    description: 'The start date of tour',
-    required: true,
-  })
-  @IsNotEmpty()
-  @Transform(({ value }) => {
-    if (value)
-      return moment(value ?? null)?.isValid() ? moment(moment(value).format('YYYY-MM-DD')).toDate() : value
-  })
-  @IsDate()
-  readonly startDate: Date;
-
-  @ApiProperty({
-    example: '2024-10-05',
-    description: 'The end date of tour',
-    required: true,
-  })
-  @IsNotEmpty()
-  @Transform(({ value }) => {
-    if (value)
-      return moment(value ?? null)?.isValid() ? moment(moment(value).format('YYYY-MM-DD')).toDate() : value
-  })
-  @IsDate()
-  readonly endDate: Date;
-
-  @ApiProperty({
-    example: true,
-    description: 'Is feature tour',
-    required: false,
-  })
-  @IsBoolean()
-  @IsOptional()
-  readonly isFeature: boolean;
-
-  @ApiProperty({
     example: 'See the highlights of London via 2 ...',
     description: 'Description of tour',
     required: true,
@@ -156,6 +119,15 @@ export class CreateTourDto {
   @IsNotEmpty()
   @IsString()
   readonly language: string;
+
+  @ApiProperty({
+    example: 'Madrid, Spanin',
+    description: 'Guide meeting address of tour',
+    required: true,
+  })
+  @IsNotEmpty()
+  @IsString()
+  readonly guideMeetingAddress: string;
 
   @ApiProperty({
     example: 1,

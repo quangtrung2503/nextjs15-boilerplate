@@ -26,9 +26,6 @@
     },
     "createUser": {
       "wrong_parameter": "{keyNotInDto} không được định nghĩa trong các tham số",
-      "username_required": "Tên đăng nhập là bắt buộc",
-      "username_no_spaces": "Tên đăng nhập không được chứa khoảng trắng",
-      "username_invalid_format": "Tên đăng nhập phải có ít nhất 8 ký tự và không được chứa ký tự đặc biệt",
       "invalid_phone": "Số điện thoại cần ít nhất 9 ký tự",
       "invalid_email": "Email không hợp lệ",
       "invalid_password": "Mật khẩu cần ít nhất 8 ký tự, bao gồm ít nhất một chữ cái, một số và một ký tự đặc biệt",
@@ -48,20 +45,44 @@
   },
   "city": {
     "create": {
-      "wrong_parameter": "{keyNotInDto} không được định nghĩa trong các tham số"
+      "wrong_parameter": "{keyNotInDto} không được định nghĩa trong các tham số",
+      "min_tags_required": "Mỗi thành phố phải có tối thiểu 3 thẻ",
+      "max_tags_required": "Mỗi thành phố phải chỉ có tối đa 5 thẻ",
+      "tag_not_found": "Thẻ không tồn tại hoặc không hoạt động"
     },
     "findOne": {
       "not_found": "Thành phố"
     },
     "update": {
       "wrong_parameter": "{keyNotInDto} không được định nghĩa trong các tham số",
-      "not_found": "Thành phố"
+      "not_found": "Thành phố",
+      "min_tags_required": "Mỗi thành phố phải có tối thiểu 3 thẻ",
+      "max_tags_required": "Mỗi thành phố phải chỉ có tối đa 5 thẻ",
+      "tag_not_found": "Thẻ không tồn tại hoặc không hoạt động"
     },
     "setActive": {
       "not_found": "Thành phố"
     },
     "remove": {
       "not_found": "Thành phố"
+    }
+  },
+  "tag": {
+    "create": {
+      "wrong_parameter": "{keyNotInDto} không được định nghĩa trong các tham số"
+    },
+    "findOne": {
+      "not_found": "Thẻ"
+    },
+    "update": {
+      "wrong_parameter": "{keyNotInDto} không được định nghĩa trong các tham số",
+      "not_found": "Thẻ"
+    },
+    "setActive": {
+      "not_found": "Thẻ"
+    },
+    "remove": {
+      "not_found": "Thẻ"
     }
   },
   "destination": {
@@ -76,6 +97,9 @@
       "not_found": "Điểm đến"
     },
     "setActive": {
+      "not_found": "Điểm đến"
+    },
+    "setFeature": {
       "not_found": "Điểm đến"
     },
     "remove": {
@@ -122,21 +146,17 @@
     "create": {
       "wrong_parameter": "{keyNotInDto} không được định nghĩa trong các tham số",
       "images_required": "Vui lòng chọn ảnh",
-      "invalid_start_date": "Ngày bắt đầu phải sau ngày hiện tại",
-      "invalid_end_date": "Ngày kết thúc phải bằng hoặc sau ngày bắt đầu",
-      "city_not_found": "Thành phố không tồn tại",
-      "theme_not_found": "Chủ đề không tồn tại",
+      "city_not_found": "Thành phố không tồn tại hoặc không hoạt động",
+      "theme_not_found": "Chủ đề không tồn tại hoặc không hoạt động",
       "destinations_required": "Điểm đến là bắt buộc cho chuyến đi",
-      "destination_not_found": "Điểm đến không tồn tại"
+      "destination_not_found": "Điểm đến không tồn tại hoặc không hoạt động"
     },
     "update": {
       "wrong_parameter": "{keyNotInDto} không được định nghĩa trong các tham số",
       "not_found": "Chuyến đi",
-      "invalid_start_date": "Ngày bắt đầu phải sau ngày hiện tại",
-      "invalid_end_date": "Ngày kết thúc phải bằng hoặc sau ngày bắt đầu",
-      "city_not_found": "Thành phố không tồn tại",
-      "theme_not_found": "Chủ đề không tồn tại",
-      "destination_not_found": "Điểm đến không tồn tại"
+      "city_not_found": "Thành phố không tồn tại hoặc không hoạt động",
+      "theme_not_found": "Chủ đề không tồn tại hoặc không hoạt động",
+      "destination_not_found": "Điểm đến không tồn tại hoặc không hoạt động"
     },
     "findOne": {
       "not_found": "Chuyến đi"
@@ -147,7 +167,7 @@
       "theme_inactive": "Chủ đề {theme} chứa chuyến đi này không hoạt động",
       "no_active_destination": "Không có điểm đến nào thuộc tour này hoạt động"
     },
-    "setFeature": {
+    "getReviewTour": {
       "not_found": "Chuyến đi"
     },
     "remove": {
@@ -157,7 +177,7 @@
   "wishlist": {
     "addToWishlist": {
       "wrong_parameter": "{keyNotInDto} không được định nghĩa trong các tham số",
-      "not_found": "Chuyến đi",
+      "tour_not_found": "Chuyến đi không tồn tại hoặc không hoạt động",
       "already_in_wishlist": "Chuyến đi đã tồn tại trong danh sách yêu thích"
     },
     "removeFromWishlist": {
@@ -167,26 +187,36 @@
   "booking": {
     "create": {
       "wrong_parameter": "{keyNotInDto} không được định nghĩa trong các tham số",
-      "tour_not_found": "Không tìm thấy tour",
-      "invalid_start_date_before_tour": "Ngày bắt đầu đi không được trước ngày bắt đầu tour",
-      "invalid_end_date_after_tour": "Ngày kết thúc đi không được sau ngày kết thúc tour",
+      "tour_not_found": "Chuyến đi không tồn tại hoặc không hoạt động",
+      "already_booked": "Bạn đã đặt chuyến đi này rồi",
       "invalid_start_date": "Ngày bắt đầu đi không được là ngày quá khứ",
-      "invalid_end_date": "Ngày kết thúc đi phải sau ngày bắt đầu đi"
+      "invalid_end_date": "Ngày kết thúc đi phải sau ngày bắt đầu đi",
+      "invalid_number_of_guests": "Số lượng khách phải lớn hơn 0"
     },
-    "cancel": {
+    "uploadPaymentProof": {
+      "not_found": "Đơn đặt",
+      "invalid_status_for_payment": "Trạng thái đơn đặt phải là chờ thanh toán",
+      "wrong_parameter": "{keyNotInDto} không được định nghĩa trong các tham số"
+    },
+    "cancelBooking": {
       "not_found": "Đơn đặt",
       "already_cancelled": "Đơn đặt đã được hủy trước đó",
-      "too_late_to_cancel": "Bạn chỉ được hủy đơn đặt trước ngày tour bắt đầu ít nhất 1 ngày"
-    },
-    "updateStatus": {
       "wrong_parameter": "{keyNotInDto} không được định nghĩa trong các tham số",
-      "not_found": "Đơn đặt"
+      "cannot_cancel": "Không thể hủy đơn đặt"
+    },
+    "updateBooking": {
+      "wrong_parameter": "{keyNotInDto} không được định nghĩa trong các tham số",
+      "not_found": "Đơn đặt",
+      "invalid_start_date": "Ngày bắt đầu đi không được là ngày quá khứ",
+      "invalid_end_date": "Ngày kết thúc đi phải sau ngày bắt đầu đi",
+      "invalid_number_of_guests": "Số lượng khách phải lớn hơn 0"
     }
   },
   "review": {
     "create": {
       "wrong_parameter": "{keyNotInDto} không được định nghĩa trong các tham số",
-      "tour_not_found": "Chuyến đi"
+      "no_booking_found": "Bạn chưa từng đặt tour này",
+      "tour_not_found": "Chuyến đi không tồn tại hoặc không hoạt động"
     },
     "update": {
       "wrong_parameter": "{keyNotInDto} không được định nghĩa trong các tham số",
@@ -209,6 +239,21 @@
     },
     "remove": {
       "not_found": "Video"
+    }
+  },
+  "bank_account": {
+    "create": {
+      "wrong_parameter": "{keyNotInDto} không được định nghĩa trong các tham số"
+    },
+    "findOne": {
+      "not_found": "Tài khoản ngân hàng"
+    },
+    "update": {
+      "wrong_parameter": "{keyNotInDto} không được định nghĩa trong các tham số",
+      "not_found": "Tài khoản ngân hàng"
+    },
+    "remove": {
+      "not_found": "Tài khoản ngân hàng"
     }
   },
 

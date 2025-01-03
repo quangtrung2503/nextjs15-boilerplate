@@ -1,10 +1,9 @@
 -- CreateTable
 CREATE TABLE `user` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
-    `username` VARCHAR(255) NULL,
+    `email` VARCHAR(255) NOT NULL,
     `password` VARCHAR(191) NOT NULL,
     `phone` VARCHAR(255) NULL,
-    `email` VARCHAR(255) NOT NULL,
     `name` VARCHAR(255) NOT NULL,
     `lastAccessToken` TEXT NULL,
     `fcmToken` TEXT NULL,
@@ -18,10 +17,9 @@ CREATE TABLE `user` (
     `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updated_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
 
-    UNIQUE INDEX `user_username_key`(`username`),
-    UNIQUE INDEX `user_phone_key`(`phone`),
     UNIQUE INDEX `user_email_key`(`email`),
-    FULLTEXT INDEX `user_username_email_phone_name_nickName_idx`(`username`, `email`, `phone`, `name`, `nickName`),
+    UNIQUE INDEX `user_phone_key`(`phone`),
+    FULLTEXT INDEX `user_email_phone_name_nickName_idx`(`email`, `phone`, `name`, `nickName`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -56,6 +54,32 @@ CREATE TABLE `city` (
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
+CREATE TABLE `tag` (
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `name` VARCHAR(255) NOT NULL,
+    `icon` VARCHAR(255) NULL,
+    `color` VARCHAR(255) NOT NULL,
+    `isActive` BOOLEAN NOT NULL DEFAULT true,
+    `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updated_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+
+    UNIQUE INDEX `tag_name_key`(`name`),
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `city_tag` (
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `cityId` INTEGER NOT NULL,
+    `tagId` INTEGER NOT NULL,
+    `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updated_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+
+    UNIQUE INDEX `city_tag_cityId_tagId_key`(`cityId`, `tagId`),
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
 CREATE TABLE `theme` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `name` VARCHAR(255) NOT NULL,
@@ -74,6 +98,7 @@ CREATE TABLE `theme` (
 CREATE TABLE `destination` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `name` VARCHAR(255) NOT NULL,
+    `isFeature` BOOLEAN NOT NULL DEFAULT false,
     `isActive` BOOLEAN NOT NULL DEFAULT true,
     `slug` VARCHAR(255) NOT NULL,
     `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
@@ -94,9 +119,6 @@ CREATE TABLE `tour` (
     `package` VARCHAR(255) NOT NULL,
     `numberOfHours` INTEGER NOT NULL,
     `numberOfPeople` INTEGER NOT NULL,
-    `startDate` DATETIME(3) NOT NULL,
-    `endDate` DATETIME(3) NOT NULL,
-    `isFeature` BOOLEAN NOT NULL DEFAULT false,
     `isActive` BOOLEAN NOT NULL DEFAULT true,
     `description` TEXT NOT NULL,
     `activity` TEXT NOT NULL,
@@ -104,6 +126,7 @@ CREATE TABLE `tour` (
     `notIncluded` TEXT NOT NULL,
     `safety` TEXT NOT NULL,
     `language` TEXT NOT NULL,
+    `guideMeetingAddress` TEXT NOT NULL,
     `cityId` INTEGER NOT NULL,
     `themeId` INTEGER NOT NULL,
     `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
@@ -122,6 +145,7 @@ CREATE TABLE `tour_destination` (
     `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updated_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
 
+    UNIQUE INDEX `tour_destination_tourId_destinationId_key`(`tourId`, `destinationId`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -181,12 +205,14 @@ CREATE TABLE `wishlist` (
     `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updated_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
 
+    UNIQUE INDEX `wishlist_userId_tourId_key`(`userId`, `tourId`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
 CREATE TABLE `booking` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `bookingCode` VARCHAR(255) NOT NULL,
     `userId` INTEGER NOT NULL,
     `tourId` INTEGER NOT NULL,
     `startDate` DATETIME(3) NOT NULL,
@@ -194,15 +220,38 @@ CREATE TABLE `booking` (
     `numberOfAdults` INTEGER NOT NULL,
     `numberOfChildren` INTEGER NOT NULL,
     `totalPrice` DOUBLE NOT NULL,
+    `amountPaid` DOUBLE NULL DEFAULT 0,
     `status` VARCHAR(255) NOT NULL,
     `paymentMethod` VARCHAR(255) NOT NULL,
+    `paymentProof` VARCHAR(255) NULL,
     `note` TEXT NULL,
     `cancelReason` VARCHAR(255) NULL,
+    `updatedBy` VARCHAR(255) NULL,
+    `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updated_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+
+    UNIQUE INDEX `booking_bookingCode_key`(`bookingCode`),
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `bank_account` (
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `accountHolderName` VARCHAR(255) NOT NULL,
+    `accountNumber` VARCHAR(255) NOT NULL,
+    `imageQrCode` VARCHAR(255) NOT NULL,
+    `isDisplay` BOOLEAN NOT NULL DEFAULT true,
     `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updated_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
 
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- AddForeignKey
+ALTER TABLE `city_tag` ADD CONSTRAINT `city_tag_cityId_fkey` FOREIGN KEY (`cityId`) REFERENCES `city`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `city_tag` ADD CONSTRAINT `city_tag_tagId_fkey` FOREIGN KEY (`tagId`) REFERENCES `tag`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `tour` ADD CONSTRAINT `tour_cityId_fkey` FOREIGN KEY (`cityId`) REFERENCES `city`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;

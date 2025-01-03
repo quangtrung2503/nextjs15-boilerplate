@@ -8,6 +8,7 @@ export default {
     CHANGE_PASSWORD: `${BASE_URL}/auth/change-password`,
   },
   VIDEO_URL: `${BASE_URL}/video`,
+  VIDEO_CUS_URL: `${BASE_URL}/video-customer`,
   CITY_URL: `${BASE_URL}/city`,
   CITY_CUS_URL: `${BASE_URL}/city-customer`,
   USER_URL: `${BASE_URL}/user`,

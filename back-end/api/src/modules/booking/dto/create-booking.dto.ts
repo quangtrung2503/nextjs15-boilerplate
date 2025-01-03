@@ -1,10 +1,10 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
-import { IsDate, IsEnum, IsNotEmpty, IsNumber, IsOptional, IsPositive, IsString } from 'class-validator';
+import { IsDate, IsEnum, IsNotEmpty, IsNumber, IsPositive } from 'class-validator';
 import moment from 'moment';
 import { BookingStatus, PaymentMethod } from 'src/helpers/constants/enum.constant';
 
-export const CreateBookingDtoKeys: (keyof CreateBookingDto)[] = ['tourId', 'startDate', 'endDate', 'numberOfAdults', 'numberOfChildren', 'totalPrice', 'status', 'paymentMethod', 'note']
+export const CreateBookingDtoKeys: (keyof CreateBookingDto)[] = ['tourId', 'startDate', 'endDate', 'numberOfAdults', 'numberOfChildren', 'totalPrice', 'status', 'paymentMethod']
 
 export class CreateBookingDto {
   @ApiProperty({
@@ -73,10 +73,10 @@ export class CreateBookingDto {
   readonly totalPrice: number;
 
   @ApiProperty({
-    example: BookingStatus.PENDING,
+    example: BookingStatus.PAYMENT_PENDING,
     description: 'Booking status',
     enum: BookingStatus,
-    default: BookingStatus.PENDING,
+    default: BookingStatus.PAYMENT_PENDING,
     required: true,
   })
   @IsEnum(BookingStatus)
@@ -84,22 +84,13 @@ export class CreateBookingDto {
   readonly status: BookingStatus;
 
   @ApiProperty({
-    example: PaymentMethod.CASH,
+    example: PaymentMethod.QR_CODE,
     description: 'Payment Method',
     enum: PaymentMethod,
-    default: PaymentMethod.CASH,
+    default: PaymentMethod.QR_CODE,
     required: true,
   })
   @IsEnum(PaymentMethod)
   @IsNotEmpty()
   readonly paymentMethod: PaymentMethod;
-
-  @ApiProperty({
-    example: 'Note ........',
-    description: 'Note ........',
-    required: false,
-  })
-  @IsOptional()
-  @IsString()
-  readonly note?: string;
 }

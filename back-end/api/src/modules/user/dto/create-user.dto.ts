@@ -5,16 +5,17 @@ import { IsDate, IsEmail, IsEnum, IsNotEmpty, IsOptional, IsString } from 'class
 import moment from 'moment';
 import { Gender } from 'src/helpers/constants/enum.constant';
 
-export const CreateUserDtoKeys: (keyof CreateUserDto)[] = ['username', 'password', 'nickName', 'avatar', 'role', 'status', 'email', 'name', 'phone', 'sex', 'dateOfBirth', 'address']
+export const CreateUserDtoKeys: (keyof CreateUserDto)[] = ['email', 'password', 'nickName', 'avatar', 'role', 'status', 'name', 'phone', 'sex', 'dateOfBirth', 'address']
 
 export class CreateUserDto {
   @ApiProperty({
-    example: 'johndoe17',
+    example: 'johndoe17@example.com',
+    description: 'The email of the user',
     required: true,
   })
-  @IsString()
+  @IsEmail()
   @IsNotEmpty()
-  readonly username: string;
+  readonly email: string;
 
   @ApiProperty({
     example: 'Password123@',
@@ -24,15 +25,6 @@ export class CreateUserDto {
   @IsString()
   @IsNotEmpty()
   readonly password: string;
-
-  @ApiProperty({
-    example: 'johndoe17@example.com',
-    description: 'The email of the user',
-    required: true,
-  })
-  @IsEmail()
-  @IsNotEmpty()
-  readonly email: string;
 
   @ApiProperty({
     example: 'John Doe',

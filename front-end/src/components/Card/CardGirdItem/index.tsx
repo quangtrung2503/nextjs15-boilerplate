@@ -32,9 +32,6 @@ const CardGridItem = (props: CardGridItemProps) => {
     ...rest
   } = props;
   const t = useTranslations("card")
-  const maxLength = 45;
-  const des =
-    title && title.length > maxLength ? title.slice(0, maxLength) + "..." : title;
   return (
     <Card className="tw-w-full tw-p-0 tw-shadow-card">
       <CommonStyles.Link href={link} className="tw-w-full">
@@ -47,17 +44,15 @@ const CardGridItem = (props: CardGridItemProps) => {
         </CommonStyles.Box>
         <CardContent className="tw-p-0">
           <CommonStyles.Box className="tw-flex tw-flex-col tw-gap-y-5 tw-px-5 ">
-            <CommonStyles.Typography type="size16Weight700" className="tw-h-6 tw-mb-3">
-              {des}
+            <CommonStyles.Typography type="size16Weight700" className="tw-line-clamp-2 tw-overflow-hidden tw-whitespace-normal tw-text-ellipsis tw-h-[45px]">
+              {title}
             </CommonStyles.Typography>
             <CommonStyles.Box className="tw-flex tw-flex-col tw-gap-y-3 tw-text-accent_gray_800">
               <CommonStyles.Box className="tw-flex tw-items-center tw-gap-2">
                 <CommonIcons.AccessTime className="tw-size-[19px]" />
                 <CommonStyles.Typography type="size14Weight600">
                   {t("duration")}{" "}
-                  {duration <= 24 && duration
-                    ? `${duration} ${t("hours")}`
-                    : `${duration / 24} ${t("days")}`}
+                  {duration} {t("hours")}
                 </CommonStyles.Typography>
               </CommonStyles.Box>
               <CommonStyles.Box className="tw-flex tw-items-center tw-gap-2">
@@ -78,10 +73,12 @@ const CardGridItem = (props: CardGridItemProps) => {
         </CardContent>
         <CommonStyles.Box className="tw-px-5 tw-py-2 tw-flex tw-items-center tw-justify-between">
           <CommonStyles.Box>
-            <CommonStyles.Rating readOnly haveFeedback={false} valueTable={feedback_average} />
+            <CommonStyles.Box className="tw-mt-2">
+              <CommonStyles.RatingView readOnly value={feedback_average} />
+            </CommonStyles.Box>
             <CommonStyles.Typography
               type="size12Weight600"
-              className="tw-ml-[3px]"
+              className="tw-ml-[3px] tw-mt-[2px]"
               color="var(--accent-gray-500)"
             >
               {feedback_quantity} {t("reviews")}
@@ -89,7 +86,7 @@ const CardGridItem = (props: CardGridItemProps) => {
           </CommonStyles.Box>
           <CommonStyles.Box>
             <CommonStyles.Typography
-              type="size20Weight700"
+              type="size18Weight700"
               color="var(--primary)"
             >
               {t("currency")}

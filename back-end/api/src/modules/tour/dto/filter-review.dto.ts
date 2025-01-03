@@ -4,7 +4,7 @@ import { IsArray, IsEnum, IsOptional } from 'class-validator';
 import { FilterOptions } from 'src/helpers/common/filterOption.dto';
 import { Rating } from 'src/helpers/constants/enum.constant';
 
-export class FilterReviewDto extends OmitType(FilterOptions, ['textSearch', 'from', 'to']) {
+export class FilterReviewDto extends OmitType(FilterOptions, ['from', 'to']) {
   @ApiProperty({
     enum: Rating,
     isArray: true,

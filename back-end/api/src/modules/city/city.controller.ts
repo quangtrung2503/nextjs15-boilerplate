@@ -16,6 +16,7 @@ import { I18nCustomService } from 'src/resources/i18n/i18n.service';
 import { TourService } from '../tour/tour.service';
 import { convertToEn } from 'src/helpers/functions/common.utils';
 import { ParseIdPipe } from 'src/core/pipes/parse-id.pipe';
+import { TagService } from '../tag/tag.service';
 
 @ApiTags('City (Administrator)')
 @Controller('city')
@@ -24,7 +25,8 @@ export class CityController {
     private readonly prismaService: PrismaService,
     private readonly cityService: CityService,
     private readonly i18n: I18nCustomService,
-    private readonly tourService: TourService
+    private readonly tourService: TourService,
+    private readonly tagService: TagService
   ) { }
 
   @ApiBearerAuth()
@@ -35,11 +37,42 @@ export class CityController {
     const keyNotInDto = Object.keys(body).find((key: keyof CreateCityDto) => !CreateCityDtoKeys.includes(key))
     if (keyNotInDto) throw new BaseException(Errors.BAD_REQUEST(this.i18n.t('common-message.city.create.wrong_parameter', { keyNotInDto })));
 
+    // Validate tags
+    if (!body.tagIds || body.tagIds.length < 3) {
+      throw new BaseException(Errors.BAD_REQUEST(this.i18n.t('common-message.city.create.min_tags_required')));
+    }
+
+    if (body.tagIds.length > 5) {
+      throw new BaseException(Errors.BAD_REQUEST(this.i18n.t('common-message.city.create.max_tags_exceeded')));
+    }
+
+    // Check if all tags exist
+    await Promise.all(
+      body.tagIds.map(async (tagId) => {
+        const tagExists = await this.tagService.findOne({
+          where: { id: tagId, isActive: true }
+        });
+        if (!tagExists) {
+          throw new BaseException(Errors.BAD_REQUEST(this.i18n.t('common-message.city.create.tag_not_found')));
+        }
+        return tagExists;
+      })
+    );
+
+    const cityData: Prisma.CityUncheckedCreateInput = {
+      name: body.name,
+      image: body.image,
+      description: body.description,
+      CityTag: {
+        createMany: {
+          data: body.tagIds.map((tagId: number) => ({ tagId }))
+        }
+      },
+      slug: ''
+    }
+
     const newCity = await this.cityService.create({
-      data: {
-        ...body,
-        slug: ''
-      }
+      data: cityData
     });
 
     return await this.cityService.update(newCity.id, {
@@ -75,14 +108,35 @@ export class CityController {
       orderBy: {
         [options?.sortField]: options?.sortOrder,
       },
+      include: {
+        CityTag: {
+          include: {
+            Tag: true
+          }
+        }
+      }
     };
 
-    return await funcListPaging(
+    const raw = await funcListPaging(
       this.cityService,
       whereInput,
       options?.page,
       options?.perPage,
     );
+
+    const modifiedResults = {
+      ...raw,
+      items: raw?.items.map(city => {
+        const Tag = city.CityTag.map(cityTag => cityTag.Tag);
+        delete city.CityTag;
+        return {
+          ...city,
+          Tag
+        };
+      })
+    }
+
+    return modifiedResults;
   }
 
   @ApiBearerAuth()
@@ -90,12 +144,26 @@ export class CityController {
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Get(':id')
   async findOne(@Param('id', ParseIdPipe) id: number) {
-    const city = await this.cityService.findOne({
-      where: { id }
+    const city = await this.prismaService.city.findFirst({
+      where: { id },
+      include: {
+        CityTag: {
+          include: {
+            Tag: true
+          }
+        }
+      }
     });
     if (!city) throw new BaseException(Errors.ITEM_NOT_FOUND(this.i18n.t('common-message.city.findOne.not_found')));
 
-    return city;
+    const Tag = city.CityTag.map(cityTag => cityTag.Tag);
+
+    delete city.CityTag;
+
+    return {
+      ...city,
+      Tag
+    };
   }
 
   @ApiBearerAuth()
@@ -109,9 +177,45 @@ export class CityController {
     const keyNotInDto = Object.keys(body).find((key: keyof UpdateCityDto) => !CreateCityDtoKeys.includes(key))
     if (keyNotInDto) throw new BaseException(Errors.BAD_REQUEST(this.i18n.t('common-message.city.update.wrong_parameter', { keyNotInDto })));
 
-    const updatedData: Prisma.CityUpdateInput = { ...body };
+    if (body.tagIds) {
+      if (body.tagIds.length < 3) {
+        throw new BaseException(Errors.BAD_REQUEST(this.i18n.t('common-message.city.update.min_tags_required')));
+      }
+
+      if (body.tagIds.length > 5) {
+        throw new BaseException(Errors.BAD_REQUEST(this.i18n.t('common-message.city.update.max_tags_exceeded')));
+      }
+
+      await Promise.all(
+        body.tagIds.map(async (tagId) => {
+          const tagExists = await this.tagService.findOne({
+            where: { id: tagId, isActive: true }
+          });
+          if (!tagExists) {
+            throw new BaseException(Errors.BAD_REQUEST(this.i18n.t('common-message.city.update.tag_not_found')));
+          }
+          return tagExists;
+        })
+      )
+    }
+
+    const updatedData: Prisma.CityUpdateInput = {
+      image: body.image,
+      description: body.description
+    };
+
     if (body.name && body.name !== existingCity.name) {
+      updatedData.name = body.name;
       updatedData.slug = `${convertToEn(body.name.split(' ').join('-'))}-i.${id}`;
+    }
+
+    if (body.tagIds && body.tagIds.length > 0) {
+      updatedData.CityTag = {
+        deleteMany: { cityId: id },
+        createMany: {
+          data: body.tagIds.map((tagId: number) => ({ tagId }))
+        }
+      }
     }
 
     return this.cityService.update(id, updatedData);
