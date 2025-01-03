@@ -50,10 +50,8 @@ const CardListItem = (props: CardListItemProps) => {
                 {activity}
               </CommonStyles.Typography>
               <CommonStyles.Box className="tw-flex tw-items-center">
-                <CommonStyles.Rating
-                  haveFeedback={false}
-                  readOnly
-                  valueTable={feedback_average}
+                <CommonStyles.RatingView
+                  value={feedback_average}
                 />
                 <CommonStyles.Typography
                   className="tw-ml-[2px]"
@@ -63,16 +61,14 @@ const CardListItem = (props: CardListItemProps) => {
                 </CommonStyles.Typography>
               </CommonStyles.Box>
             </CommonStyles.Box>
-            <CommonStyles.Typography type="size20Weight800">
+            <CommonStyles.Typography type="size20Weight800" className="tw-line-clamp-2 tw-overflow-hidden tw-whitespace-normal tw-text-ellipsis tw-w-[560px]">
               {title}
             </CommonStyles.Typography>
             <CommonStyles.Box className="tw-flex tw-items-center tw-gap-x-2 tw-text-accent_gray_800">
               <CommonStyles.Box className="tw-flex tw-items-center tw-gap-1">
                 <CommonIcons.AccessTime className="tw-size-[16px]" />
                 <CommonStyles.Typography type="size14Weight400">
-                  {duration <= 24 && duration
-                    ? `${duration} ${t("hours")}`
-                    : `${duration / 24} ${t("days")}`}
+                  {duration} {t("hours")}
                 </CommonStyles.Typography>
               </CommonStyles.Box>
               <CommonStyles.Divider orientation="vertical" className="tw-h-4" />

@@ -36,11 +36,8 @@ export interface RequestGetTourBestTrending extends CommonFilters {}
 export type ResponseTourBestTrending = ResponseCommon<Tour>;
 
 class TourService {
-  getTours(filters: RequestGetTours, configs?: AxiosRequestConfig) {
-    return httpService.get(
-      `${apiUrls.TOUR_CUS_URL}?${queryString.stringify(filters)}`,
-      configs,
-    );
+  getTours(configs?: AxiosRequestConfig) {
+    return httpService.get(`${apiUrls.TOUR_CUS_URL}`, configs);
   }
   getTour(id: number, configs?: AxiosRequestConfig) {
     return httpService.get(`${apiUrls.TOUR_CUS_URL}/${id}`, configs);
