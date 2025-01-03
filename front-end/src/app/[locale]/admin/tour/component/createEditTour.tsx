@@ -80,7 +80,7 @@ const CreateEditTour: FC<createEditTourProps> = (props) => {
           const startDate = new Date(value);
           const today = new Date();
           today.setHours(0, 0, 0, 0); // Đặt thời gian về đầu ngày
-          return startDate > today; // `startDate` phải sau ngày hôm nay
+          return startDate >= today; // `startDate` phải sau ngày hôm nay
         }
       ),
       endDate: yup.string().required(t("endDateRequire"))

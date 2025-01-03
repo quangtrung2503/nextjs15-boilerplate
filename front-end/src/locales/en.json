@@ -7,7 +7,17 @@
     "travelerTypePlaceholder": "Traveler Type",
     "ratingPlaceholder": "Rating",
     "searchPlaceholder": "Search Here",
-    "viewMoreComment": "View More Comments"
+    "viewMoreComment": "View More Comments",
+    "transportation": "Transportation",
+    "valueForMoney": "Value for money",
+    "stars": {
+      "all": "All",
+      "5rate": "5 Rate",
+      "4rate": "4 Rate",
+      "3rate": "3 Rate",
+      "2rate": "2 Rate",
+      "1rate": "1 Rate"
+    }
   },
   "card": {
     "duration": "Duration",
@@ -185,6 +195,18 @@
       "currency": "$",
       "relatedToursInToday": "Related tours in Today",
       "relatedToursIn": "Related tours in",
+      "duration": "Duration",
+      "numberOfPeople": "Number of people",
+      "guideMeetingAddress": "Guide meeting address",
+      "description": "Description",
+      "activity": "Activity",
+      "includedRequire": "What is included / not  included",
+      "safety": "Safety",
+      "details": "Details",
+      "unknownDate": "Unknown Date",
+      "unknownCity": "Unknown City",
+      "unknownTransport": "Unknown Transport",
+      "unknownPlan": "Unknown Plan",
       "formBooking": {
         "confirmBooking": "Confirm Booking",
         "saveToWishlist": "Save to Wishlist",

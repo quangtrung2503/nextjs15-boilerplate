@@ -134,7 +134,7 @@ const SelectField: React.FC<SelectFieldProps> = ({
           }
 
           // Nếu single, hiển thị giá trị đã chọn
-          return options.find((opt) => opt.value === selected)?.label || selected;
+          return options.find((opt) => opt.value?.toString() === selected?.toString())?.label || selected;
         }}
       >
         {/* {placeholder && !multiple && (

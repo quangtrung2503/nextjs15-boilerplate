@@ -25,7 +25,7 @@ import Link from "@/components/common/Link";
 import pageUrls from "@/constants/pageUrls";
 import useGetCityCustomer from "@/services/modules/city/hook/useGetCityCustomer";
 import useGetDetailCityCustomer from "@/services/modules/city/hook/useGetDetailCityCustomer";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import apiUrls from "@/constants/apiUrls";
 import { CityDetail } from "@/services/modules/city/interfaces/city";
@@ -152,6 +152,7 @@ export default function HomePage() {
   const [playing, setPlaying] = useState(false);
 
   // hook 
+  const router = useRouter();
   const t = useTranslations("homePage");
   const { data: dataCity, refetch: refetchCity } = useGetCityCustomer();
   const { data: CityDetail, refetch } = useGetDetailCityCustomer(String(slug), { isTrigger: !!slug });
@@ -424,10 +425,10 @@ export default function HomePage() {
           </CommonStyles.Typography>
           <Container className="tw-grid tw-grid-cols-12 tw-gap-x-5">
             {CityDetail?.data?.Tour.map((item, index) => {
-              return (
+               return (
                 <CommonStyles.Box key={index} className="tw-col-span-3">
                   <CardGridItem
-                    link=""
+                    link={`/citytour/${item.slug}`}
                     src={`${apiUrls.IMG_URL}/${item?.TourImage?.[0]?.image}`}
                     title={item?.name}
                     duration={item?.numberOfHours}

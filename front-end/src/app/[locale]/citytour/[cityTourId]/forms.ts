@@ -1,20 +1,23 @@
 import { useTranslations } from "next-intl";
 import * as Yup from "yup";
-export const defaultValue = {
-    startDate: undefined,
-    endDate: undefined,
+
+export const defaultValue : InfoBooking = {
+    rating: 0,
+    startDate: '',
+    endDate: '',
     noOfGuest: {
-        adultQuantity: undefined,
-        childQuantity: undefined,
+        adultQuantity: '',
+        childQuantity: '',
     },
 }
 
 export interface NoOfGuest {
-    adultQuantity?: number | undefined;
-    childQuantity?: number | undefined;
+    adultQuantity: string | null;
+    childQuantity: string | null;
 }
 export interface InfoBooking {
-    startDate: Date;
-    endDate: Date;
-    noOfGuest: NoOfGuest;
+    rating: number;
+    startDate: string | null;
+    endDate: string | null;
+    noOfGuest: NoOfGuest ;
 }

@@ -11,7 +11,7 @@ import Divider from "@/components/common/Divider";
 import { menuProfile } from "./components/MenuProfile/menuProfileData";
 import useAuth from "@/hooks/useAuth";
 import { default as CommonStyles } from "@/components/common";
-import Loading from "@/app/loading";
+import Loading from "@/components/common/Loading";
 import withAuth from "@/HOCs/withAuth";
 import useGetProfile from "@/services/modules/profile/hook/useGetProfile";
 import CardBreadcrumbs from "./components/BreadCrump/breadcrumb";
