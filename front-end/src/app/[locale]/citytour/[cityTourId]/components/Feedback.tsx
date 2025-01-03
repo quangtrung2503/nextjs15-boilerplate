@@ -77,11 +77,11 @@ const Feedback: React.FC<Props> = (props: Props) => {
           <CommonStyles.Box className="tw-w-[380px] tw-flex tw-flex-col tw-gap-2">
             <RatingBar title="Guide" rating={stats?.avgRatingGuide || 0} />
             <RatingBar
-              title="Transportation"
+              title={t('transportation')}
               rating={stats?.avgRatingTransportation || 0}
             />
             <RatingBar
-              title="Value for money"
+              title={t('valueForMoney')}
               rating={stats?.avgRatingValueOfMoney || 0}
             />
             <RatingBar title="Safety" rating={stats?.avgRatingSafety || 0} />
@@ -110,7 +110,7 @@ const Feedback: React.FC<Props> = (props: Props) => {
                   border: "none",
                 },
               }}
-              options={rateData}
+              options={rateData(t)}
               placeholder={t("ratingPlaceholder")}
               component={SelectField}
               onChange={() => onSelectRatingValue()}

@@ -42,8 +42,8 @@ const CityTourDetail = () => {
 
   //! Define
   const { tour, listTourInToday, listTourSameCity } = data ?? {};
-  const tourInDays = mapTours(listTourInToday);
-  const tourSameCity = mapTours(listTourSameCity);
+  const tourInDays = mapTours(listTourInToday, t);
+  const tourSameCity = mapTours(listTourSameCity, t);
    
   //! Extract tour details
   const {
@@ -107,7 +107,7 @@ const CityTourDetail = () => {
     }
   };
   const handleSetValue = (value: NoOfGuest) => {
-    // setValue("noOfGuest", value);
+    setValue("noOfGuest", value);
   };
   const handleLoadMoreReview = () => {
     const _event: any = "";
@@ -119,7 +119,7 @@ const CityTourDetail = () => {
   //! Render
   return (
     <div className="tw-py-12">
-      {loading && <Loading />}
+      {loading && <Loading/>}
       <Container className="tw-flex tw-flex-col tw-gap-y-8">
         <CommonStyles.Box className="tw-grid tw-grid-cols-12">
           <CommonStyles.Box className="tw-col-span-8 tw-flex tw-flex-col tw-gap-4">

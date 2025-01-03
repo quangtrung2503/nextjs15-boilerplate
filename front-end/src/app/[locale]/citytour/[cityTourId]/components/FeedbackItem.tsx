@@ -5,6 +5,7 @@ import {
   CustomerReview,
 } from "@/services/modules/tour/interfaces/tour";
 import moment from "moment";
+import { DateTimeFormat } from "@/helpers/common";
 
 interface FeedbackData {
   items?: CustomerReview;
@@ -36,7 +37,7 @@ const FeedbackItem: React.FC<FeedbackData> = (props: FeedbackData) => {
               type="size13Weight600"
               className="tw-text-accent_gray_500"
             >
-              {createdAt ? moment(createdAt).format("D MMMM YYYY") : "Unknown Date"}
+              {createdAt ? moment(createdAt).format(DateTimeFormat.FullDate) : t('unknownDate')}
             </CommonStyles.Typography>
           </CommonStyles.Box>
         </CommonStyles.Box>

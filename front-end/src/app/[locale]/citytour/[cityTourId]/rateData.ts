@@ -1,26 +1,26 @@
-export const rateData = [
+export const rateData = (t: any) => [
   {
     value: "0",
-    label: "All"
+    label: t('stars.all')
   },
   {
     value: 5,
-    label: '5 Rate',
+    label: t('stars.5rate'),
   },
   {
     value: 4,
-    label: '4 Rate',
+    label: t('stars.4rate'),
   },
   {
     value: 3,
-    label: '3 Rate',
+    label: t('stars.3rate')
   },
   {
     value: 2,
-    label: '2 Rate',
+    label: t('stars.2rate'),
   },
   {
     value: 1,
-    label: '1 Rate',
+    label: t('stars.1rate'),
   }
 ]
