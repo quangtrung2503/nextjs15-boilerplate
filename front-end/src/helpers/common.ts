@@ -240,6 +240,7 @@ export enum DateTimeFormat {
   FullDateShortMonth = 'MMM DD, YYY',
   DateMonth = 'DD/MM',
   DateMonthDash = 'MM-YYYY',
+  DateYearMonthDash = 'YYYY-MM',
   MonthYear = 'MM, YYYY',
   Year = 'YYYY',
   Month = 'MM',

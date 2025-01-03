@@ -527,7 +527,22 @@
     "tourDestination": "Tour destination",
     "paidInformation": "Paid information",
     "amountPaid":"Amount paid",
-    "confirm": "Confirm"
+    "confirm": "Confirm",
+    "confirmTitle": "Are you sure confirm this booking?",
+    "cancel": "Cancel" 
+  },
+  "adminDashboard": {
+    "totalRevenue": "Total revenue",
+    "totalBookings": "Total bookings",
+    "reportOverview": "Report overview",
+    "ordersOverview": "Orders overview",
+    "more": "more",
+    "thisMonth": "this month",
+    "transactions": "Transactions",
+    "name": "Name",
+    "status": "Status",
+    "date": "Date",
+    "amount": "Amount"
   },
   "action": "Action",
   "noFileSelected": "No file selected",

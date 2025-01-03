@@ -67,7 +67,7 @@ const Booking = () => {
         <CommonStyles.Box className="tw-w-full">
           <FormProvider {...methods} >
             <form onSubmit={methods.handleSubmit(handleSearch)} className="tw-flex tw-items-center">
-            <CommonStyles.Box className="tw-w-[100%] tw-mr-9">
+            <CommonStyles.Box className="tw-w-[100%]">
               <RHFField
                 className="tw-bg-white"
                 name="textSearch"

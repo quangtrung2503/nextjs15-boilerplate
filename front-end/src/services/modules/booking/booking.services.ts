@@ -7,7 +7,7 @@ import { Booking, BookingUpdate } from "./interfaces/booking";
 import { BookingStatus } from "@/helpers/common";
 
 export interface FiltersGetBookings extends CommonFilters {
-  statuses?: BookingStatus
+  statuses?: BookingStatus[]
  }
 export interface RequestGetBookings extends CommonFilters { }
 export type ResponseBookingList = AxiosResponse<ResponseCommon<ResponseList<Booking[]>>>;
@@ -36,6 +36,11 @@ class BookingService {
   updateBooking(payload: BookingUpdate,configs?: AxiosRequestConfig){
     const {id,...data} = payload;
     return httpService.patch(`${apiUrls.BOOKING_URL}/update-booking/${id}`,data,configs);
+  }
+
+  confirmBooking(payload: BookingUpdate,configs?: AxiosRequestConfig){
+    const {id,...data} = payload;
+    return httpService.patch(`${apiUrls.BOOKING_URL}/confirm-booking/${id}`,data,configs);
   }
 
   deleteBooking(id: number, configs?: AxiosRequestConfig) {

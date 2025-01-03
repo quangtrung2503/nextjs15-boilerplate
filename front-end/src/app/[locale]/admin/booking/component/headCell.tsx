@@ -1,16 +1,9 @@
 import { Booking } from "@/services/modules/booking/interfaces/booking";
 import CommonStyles from "@/components/common";
-import { useNotifications } from "@/helpers/toast";
-import useToggleDialog from "@/hooks/useToggleDialog";
 import CommonIcons from "@/components/CommonIcons";
 import { Tooltip } from "@mui/material";
-import CommonDialog from "@/components/common/Dialog";
-import ConfirmDeleteDialog from "../../Component/confirmDeleteDialog";
-import { useState } from "react";
-import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
-import RHFField from "@/components/customReactFormField/ReactFormField";
-import InputField from "@/components/customReactFormField/InputField";
 import moment from "moment";
+import { DateTimeFormat } from "@/helpers/common";
 
 const ActionCell: React.FC<{
   row: Booking;
@@ -34,56 +27,25 @@ const ActionCell: React.FC<{
     </CommonStyles.Box>
   );
 };
-interface FormValues {
-  paid: number;
+
+const StatusCell = ({row,content}: {row: Booking,content: string})=>{
+    switch (row.status) {
+      case "CONFIRMED":
+        return <span className={`tw-flex tw-w-fit tw-items-center tw-rounded-full tw-py-1 tw-px-4 tw-text-sm tw-font-medium tw-capitalize tw-text-green-600 tw-bg-green-100`}>
+        {content}
+      </span>
+      case "COMPLETED": 
+      return <span className={`tw-flex tw-w-fit tw-items-center tw-rounded-full tw-py-1 tw-px-4 tw-text-sm tw-font-medium tw-capitalize tw-text-blue-600 tw-bg-blue-100`}>
+        {content}
+      </span>
+      case "REFUNDED":
+        return <span className={`tw-flex tw-w-fit tw-items-center tw-rounded-full tw-py-1 tw-px-4 tw-text-sm tw-font-medium tw-capitalize tw-text-red-600 tw-bg-red-100`}>
+        {content}
+      </span>
+      default:
+        break;
+    }
 }
-const PaidCell: React.FC<{ row: Booking }> = ({ row }) => {
-  //State
-  const [show, setShow] = useState(false);
-
-  //Hook
-  const methods = useForm<FormValues>({});
-
-  //Function
-  const onSubmit: SubmitHandler<FormValues> = async (data: FormValues) => {
-    try {
-      alert(data);
-    } catch (error) {}
-  };
-  return (
-    <>
-    {!show ? <Tooltip title="Update">
-       <span className={`tw-flex tw-w-fit tw-items-center tw-rounded-full tw-py-1 tw-px-4 tw-text-sm tw-font-medium tw-capitalize 
-          ${
-            row.status === "PENDING"
-              ? "tw-text-yellow-500 tw-bg-yellow-100"
-                : row.status === "CONFIRMED"
-                  ? "tw-text-green-600 tw-bg-green-100"
-                  : row.status === "COMPLETED"
-                    ? "tw-text-green-700 tw-bg-green-200"
-                    : row.status === "CANCELLED"
-                      ? "tw-text-red-600 tw-bg-red-100"
-                      : row.status === "REFUNDED"
-                        ? "tw-text-gray-600 tw-bg-gray-100"
-                        : "tw-text-red-500 tw-bg-red-100" // Default for unhandled statuses
-          }`} onClick={() => setShow(!show)}>{row.amountPaid}</span>
-    </Tooltip>
-      : (
-        <FormProvider {...methods}>
-          <form onSubmit={methods.handleSubmit(onSubmit)}>
-            <RHFField
-            onBlur={()=>setShow(!show)}
-              className="tw-mb-3"
-              name="paid"
-              control={methods.control}
-              component={InputField}
-            />
-          </form>
-        </FormProvider>
-      )}
-    </>
-  );
-};
 export const headCells = ({
   handleEditId,
   t,
@@ -131,7 +93,7 @@ export const headCells = ({
       label: t("startDate"),
       numeric: false,
       Cell(row: Booking, _index: number) {
-        return <span>{moment(row.startDate).format("hh:mm DD/MM/YYYY")}</span>;
+        return <span>{moment(row.startDate).format(DateTimeFormat.DateTime24hReverse)}</span>;
       },
     },
     
@@ -140,7 +102,7 @@ export const headCells = ({
       label: t("endDate"),
       numeric: false,
       Cell(row: Booking, _index: number) {
-        return <span>{moment(row.endDate).format("hh:mm DD/MM/YYYY")}</span>;
+        return <span>{moment(row.endDate).format(DateTimeFormat.DateTime24hReverse)}</span>;
       },
     },
     {
@@ -148,26 +110,7 @@ export const headCells = ({
       label: t("status"),
       numeric: false,
       Cell(row: Booking, _index: number) {
-        return (
-          <span
-            className={`tw-flex tw-w-fit tw-items-center tw-rounded-full tw-py-1 tw-px-4 tw-text-sm tw-font-medium tw-capitalize 
-          ${
-            row.status === "PENDING"
-              ? "tw-text-yellow-500 tw-bg-yellow-100"
-                : row.status === "CONFIRMED"
-                  ? "tw-text-green-600 tw-bg-green-100"
-                  : row.status === "COMPLETED"
-                    ? "tw-text-green-700 tw-bg-green-200"
-                    : row.status === "CANCELLED"
-                      ? "tw-text-red-600 tw-bg-red-100"
-                      : row.status === "REFUNDED"
-                        ? "tw-text-gray-600 tw-bg-gray-100"
-                        : "tw-text-red-500 tw-bg-red-100" // Default for unhandled statuses
-          }`}
-          >
-            {row.status}
-          </span>
-        );
+        return <StatusCell row={row} content={row.status}/>;
       },
     },
     {
@@ -183,16 +126,16 @@ export const headCells = ({
       label: t("amountPaid"),
       numeric: false,
       Cell(row: Booking, _index: number) {
-        return <PaidCell row={row} />;
+      return <StatusCell row={row} content={row.amountPaid.toString()} />
       },
     },
-    {
-      id: "actionBooking",
-      label: t("action"),
-      numeric: false,
-      Cell(row: Booking, _index: number) {
-        return <ActionCell row={row} handleEditId={handleEditId} t={t} />;
-      },
-    },
+    // {
+    //   id: "actionBooking",
+    //   label: t("action"),
+    //   numeric: false,
+    //   Cell(row: Booking, _index: number) {
+    //     return <ActionCell row={row} handleEditId={handleEditId} t={t} />;
+    //   },
+    // },
   ];
 };

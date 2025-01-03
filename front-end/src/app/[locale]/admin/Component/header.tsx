@@ -12,6 +12,7 @@ import pageUrls from "@/constants/pageUrls";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import moment from "moment";
+import { DateTimeFormat } from "@/helpers/common";
 
 const Header = () => {
   const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
@@ -25,10 +26,6 @@ const Header = () => {
   const handleClose = () => {
     setAnchorEl(null);
   };
-
-  const day = useMemo(()=>{
-    return new Date();
-  },[])
 
   const open = Boolean(anchorEl);
   const id = open ? "simple-popover" : undefined;
@@ -47,7 +44,7 @@ const Header = () => {
           className="tw-text-primary"
           type="size16Weight400"
           >
-          {moment(day).format('dddd') +", "+ moment(day).format("DD.MM.YYYY").toLowerCase()}
+          {moment().format(DateTimeFormat.FullDateDash)}
         </CommonStyles.Typography>
           </CommonStyles.Box>
         <Box className="tw-mr-5 tw-flex tw-items-center">

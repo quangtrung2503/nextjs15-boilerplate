@@ -1,5 +1,4 @@
 "use client";
-import { commonImg } from "@/assets";
 import { default as CommonStyles } from "@/components/common";
 import CommonIcons from "@/components/CommonIcons";
 import RHFField from "@/components/customReactFormField/ReactFormField";
@@ -12,7 +11,7 @@ import {
   Tooltip,
   CartesianGrid,
 } from "recharts";
-import { FormProvider, useForm } from "react-hook-form";
+import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import useFiltersHandler from "@/hooks/useFiltersHandler";
 
 import {
@@ -23,107 +22,50 @@ import {
   TableHead,
   TableRow,
 } from "@mui/material";
-import SelectField from "./Component/customField/selectField";
+import useGetStatTotalBookingRevenue from "@/services/modules/stats/hook/useGetStatTotalBookingRevenue";
+import useGetStatMonthly from "@/services/modules/stats/hook/useGetStatMonthly";
+import useGetStatNewBookings from "@/services/modules/stats/hook/useGetStatNewBookings";
+import { isNumber } from "lodash";
+import { CommonDatePicker } from "./Component/customField/datePickerField";
+import { DateTimeFormat } from "@/helpers/common";
+import { useTranslations } from "next-intl";
 
-interface UserData {
-  id: number;
-  name: string;
-  email: string;
-  role: string;
-}
 const Admin = () => {
-  const {
-    filters,
-    selected,
-    setFilters,
-    handleChangePage,
-    handleChangeRowsPerPage: changeRowPerPage,
-    handleRequestSort,
-    handleSelectAllClick: handleSelectAll,
-    handleCheckBox,
-  } = useFiltersHandler({
-    page: 1,
-    perPage: 10,
-  });
-  const data = [
-    { month: "Jan", value: 500, expenses: 200 },
-    { month: "Feb", value: 200, expenses: 20 },
-    { month: "Mar", value: 300, expenses: 30 },
-    { month: "Apr", value: 400, expenses: 40 },
-    { month: "Mar", value: 200, expenses: 100 },
-    { month: "Jun", value: 400, expenses: 50 },
-    { month: "Jul", value: 500, expenses: 80 },
-    { month: "Aug", value: 800, expenses: 200 },
-    { month: "Sep", value: 100, expenses: 230 },
-    { month: "Sep", value: 300, expenses: 300 },
-    { month: "Oct", value: 600, expenses: 150 },
-    { month: "Nov", value: 40, expenses: 60 },
-    { month: "Dec", value: 0, expenses: 20 },
-    // Add more data as needed
-  ];
-  const dataTrans = [
-    { order: "New order #242525", date: new Date() },
-    { order: "New order #242525", date: new Date() },
-    { order: "New order #242525", date: new Date() },
-    { order: "New order #242525", date: new Date() },
-    { order: "New order #242525", date: new Date() },
-    { order: "New order #242525", date: new Date() },
-    { order: "New order #242525", date: new Date() },
-  ];
-  const Transactions = {
-    items: [
-      {
-        name: "JodDoe",
-        status: "Pending",
-        date: "2024-12-30T10:37:38.144Z",
-        amount: 1523,
-      },
-      {
-        name: "JodDoe1",
-        status: "Done",
-        date: "2024-12-30T10:37:38.144Z",
-        amount: 1523,
-      },
-      {
-        name: "JodDoe2",
-        status: "Done",
-        date: "2024-12-30T10:37:38.144Z",
-        amount: 1523,
-      },
-      {
-        name: "JodDoe3",
-        status: "Done",
-        date: "2024-12-30T10:37:38.144Z",
-        amount: 1523,
-      },
-      {
-        name: "JodDoe4",
-        status: "Done",
-        date: "2024-12-30T10:37:38.144Z",
-        amount: 1523,
-      },
-    ],
-    totalItems: 5,
-  };
+  //State & props
   const initValue = {
-    month: "0",
+    month: undefined,
   };
   interface FormValues {
-    month: string
+    month: string;
   }
+
+  //Hook
+  const { filters,setFilters } = useFiltersHandler({
+    year: new Date().getFullYear(),
+  });
+  const { data: dataBookingRevenue } = useGetStatTotalBookingRevenue();
+  const { data: dataStatMonthly } = useGetStatMonthly(filters);
+  const { data: dataStatNewBookings } = useGetStatNewBookings(filters);
   const methods = useForm<FormValues>({
     defaultValues: initValue,
   });
-  const onSubmit = ()=>{
-
+  const t = useTranslations("adminDashboard")
+  
+  
+  //Function
+  const onSubmit: SubmitHandler<FormValues> = async (data: FormValues) => {
+    setFilters((prev) => {
+      return {
+        ...prev,
+        dateApplied: moment(data.month).format(DateTimeFormat.DateYearMonthDash)
+      }
+    })
+  };
+  const handleChange = async ()=>{
+    await methods.handleSubmit(onSubmit)();
   }
-  const searchOption = [
-    {label: "AllData",value: "0"},
-    {label: "Jan",value: "1"},
-    {label: "Feb",value: "2"},
-    {label: "Mar",value: "3"},
-    {label: "Apr",value: "4"},
-  ]
+
+  //Render
   return (
     <CommonStyles.Box className="tw-p-5 tw-text-black">
       <CommonStyles.Box className="tw-grid tw-grid-cols-11 tw-gap-5">
@@ -140,24 +82,32 @@ const Admin = () => {
                 type="size16Weight400"
                 className="tw-text-gray-400 tw-font-bold"
               >
-                Total revenue
+                {t("totalRevenue")}
               </CommonStyles.Typography>
               <CommonStyles.Typography
                 type="size48Weight700"
                 className="tw-leading-[48px] tw-break-words"
               >
-                {Number(1200000).toLocaleString('en-US')}
+                {dataBookingRevenue?.data.revenue.current.toLocaleString(
+                  "en-US",
+                )}
               </CommonStyles.Typography>
             </CommonStyles.Box>
           </CommonStyles.Box>
           <CommonStyles.Box className="tw-flex tw-items-center">
             <CommonStyles.Box className="tw-flex tw-flex-col tw-items-center">
-              <CommonIcons.TrendingUp className="tw-text-[40px] tw-text-green-600" />
+            {isNumber(dataBookingRevenue?.data.revenue.growthRate) && (
+              dataBookingRevenue?.data.revenue.growthRate > 0 ? (
+                <CommonIcons.TrendingUp className="tw-text-[40px] tw-text-green-600" />
+              ) : dataBookingRevenue?.data.revenue.growthRate < 0 ? (
+                <CommonIcons.TrendingDown className="tw-text-[40px] tw-text-red-600" />
+              ) : null
+            )}
               <CommonStyles.Typography
                 type="size20Weight700"
-                className="tw-text-green-600 tw-leading-3"
+                className={`${dataBookingRevenue?.data.revenue.growthRate && dataBookingRevenue?.data.revenue.growthRate >= 0 ? "tw-text-green-600" : "tw-text-red-600"} tw-leading-3`}
               >
-                +16%
+                {dataBookingRevenue?.data.revenue.growthRate}%
               </CommonStyles.Typography>
             </CommonStyles.Box>
           </CommonStyles.Box>
@@ -176,92 +126,34 @@ const Admin = () => {
                 type="size16Weight400"
                 className="tw-text-gray-400 tw-font-bold"
               >
-                Total tours
+                {t("totalBookings")}
               </CommonStyles.Typography>
               <CommonStyles.Typography
                 type="size48Weight700"
                 className="tw-leading-[48px]"
               >
-                1236
+                {dataBookingRevenue?.data.bookings.current}
               </CommonStyles.Typography>
             </CommonStyles.Box>
           </CommonStyles.Box>
           <CommonStyles.Box className="tw-flex tw-items-center">
             <CommonStyles.Box className="tw-flex tw-flex-col tw-items-center">
-              <CommonIcons.TrendingUp className="tw-text-[40px] tw-text-green-600" />
+              {isNumber(dataBookingRevenue?.data.revenue.growthRate) && (
+                dataBookingRevenue?.data.revenue.growthRate > 0 ? (
+                  <CommonIcons.TrendingUp className="tw-text-[40px] tw-text-green-600" />
+                ) : dataBookingRevenue?.data.revenue.growthRate < 0 ? (
+                  <CommonIcons.TrendingDown className="tw-text-[40px] tw-text-red-600" />
+                ) : null
+              )}
               <CommonStyles.Typography
                 type="size20Weight700"
-                className="tw-text-green-600 tw-leading-3"
+                className={`${dataBookingRevenue?.data.bookings.growthRate && dataBookingRevenue?.data.bookings.growthRate >= 0 ? "tw-text-green-600" : "tw-text-red-600"} tw-leading-3`}
               >
-                +26%
+                {dataBookingRevenue?.data.bookings.growthRate}%
               </CommonStyles.Typography>
             </CommonStyles.Box>
           </CommonStyles.Box>
         </CommonStyles.Box>
-
-        {/* <CommonStyles.Box
-          className="tw-col-span-2 tw-flex tw-bg-white tw-rounded-xl tw-p-3 tw-justify-between"
-          boxShadow="0px 4px 10px 0px #00000014"
-        >
-          <CommonStyles.Box>
-            <CommonStyles.Box className="tw-size-10 tw-bg-primary tw-flex tw-items-center tw-justify-center tw-rounded-md">
-              <CommonIcons.GridView className="tw-text-white" />
-            </CommonStyles.Box>
-            <CommonStyles.Box className="tw-mt-3">
-              <CommonStyles.Typography
-                type="size16Weight400"
-                className="tw-text-gray-400 tw-font-bold"
-              >
-                Total offers
-              </CommonStyles.Typography>
-              <CommonStyles.Typography
-                type="size48Weight700"
-                className="tw-leading-[48px]"
-              >
-                5423
-              </CommonStyles.Typography>
-            </CommonStyles.Box>
-          </CommonStyles.Box>
-          <CommonStyles.Box className="tw-flex tw-items-center">
-            <CommonStyles.Box className="tw-flex tw-flex-col tw-items-center">
-              <CommonIcons.TrendingUp className="tw-text-[40px] tw-text-green-600" />
-              <CommonStyles.Typography
-                type="size20Weight700"
-                className="tw-text-green-600 tw-leading-3"
-              >
-                +8%
-              </CommonStyles.Typography>
-            </CommonStyles.Box>
-          </CommonStyles.Box>
-        </CommonStyles.Box>
-        <CommonStyles.Box
-          className="tw-col-span-4 tw-bg-cover tw-bg-top tw-rounded-xl tw-px-10 tw-flex tw-items-center tw-justify-between"
-          boxShadow="0px 4px 10px 0px #00000014"
-          sx={{ backgroundImage: `url(${commonImg.bannerTrendingCity.src})` }}
-        >
-          <CommonStyles.Box>
-            <CommonStyles.Typography
-              type="size16Weight400"
-              className="tw-text-gray-100"
-            >
-              Goal for this mont
-            </CommonStyles.Typography>
-            <CommonStyles.Typography
-              type="size48Weight700"
-              className="tw-text-white tw-leading-10"
-            >
-              120 Offers
-            </CommonStyles.Typography>
-          </CommonStyles.Box>
-          <CommonStyles.Box>
-            <CommonStyles.Typography
-              type="size64Weight700"
-              className="tw-text-white"
-            >
-              68%
-            </CommonStyles.Typography>
-          </CommonStyles.Box>
-        </CommonStyles.Box> */}
       </CommonStyles.Box>
       <CommonStyles.Box className="tw-grid tw-grid-cols-12 tw-gap-5 tw-mt-5">
         <CommonStyles.Box
@@ -273,17 +165,17 @@ const Admin = () => {
               type="size20Weight600"
               className="tw-font-bold"
             >
-              Report overview
+              {t("reportOverview")}
             </CommonStyles.Typography>
-            <CommonStyles.Typography>
+            {/* <CommonStyles.Typography>
               <span className="tw-text-blue-500">(+5) more</span> in 2024
-            </CommonStyles.Typography>
+            </CommonStyles.Typography> */}
           </CommonStyles.Box>
           <CommonStyles.Box className="tw-flex tw-justify-center tw-mt-3">
             <AreaChart
               width={1000}
               height={400}
-              data={data}
+              data={dataStatMonthly?.data.monthlyStats}
               margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
             >
               <defs>
@@ -305,20 +197,23 @@ const Admin = () => {
               <YAxis
                 tick={{ fontSize: 14, fill: "gray", fontWeight: "bold" }}
                 tickLine={false}
-                ticks={[0, 100, 200, 300, 400, 500, 600, 700, 800]}
+                // ticks={[
+                //   0, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, 1100,
+                //   1200, 1300, 1400, 1500, 1600,
+                // ]}
                 axisLine={{ stroke: "transparent" }}
               />
               <CartesianGrid strokeDasharray="3" />
-              <Tooltip />
+              <Tooltip/>
               <Area
                 type="monotone"
-                dataKey="value"
+                dataKey="revenue"
                 stroke="#8884d8"
                 fill="url(#colorValue)"
               />
               <Area
                 type="monotone"
-                dataKey="expenses"
+                dataKey="bookingCount"
                 stroke="#82ca9d"
                 fill="url(#colorExpenses)"
               />
@@ -331,15 +226,21 @@ const Admin = () => {
         >
           <CommonStyles.Box>
             <CommonStyles.Typography type="size18Weight500">
-              Orders overview
+              {t("ordersOverview")}
             </CommonStyles.Typography>
-            <CommonStyles.Typography className="tw-text-gray-400">
-              <span className="tw-text-blue-500">(+20) more</span> this month
-            </CommonStyles.Typography>
+            {isNumber(dataStatNewBookings?.totalItems) &&
+              dataStatNewBookings.totalItems > 7 && (
+                <CommonStyles.Typography className="tw-text-gray-400">
+                  <span className="tw-text-blue-500">
+                    (+{dataStatNewBookings.totalItems - 7}) {t("more")}
+                  </span>{" "}
+                  {t("thisMonth")}
+                </CommonStyles.Typography>
+              )}
           </CommonStyles.Box>
           <CommonStyles.Box className="tw-mt-5">
             <CommonStyles.Box className="tw-grid tw-gap-3">
-              {dataTrans.map((trans, index) => {
+              {dataStatNewBookings?.items.map((newBooking, index) => {
                 return (
                   <CommonStyles.Box key={index} className="tw-flex">
                     <CommonStyles.Box className="tw-relative">
@@ -348,10 +249,10 @@ const Admin = () => {
                     </CommonStyles.Box>
                     <CommonStyles.Box className="tw-ml-3">
                       <CommonStyles.Typography type="size16Weight400">
-                        {trans.order}
+                        {newBooking.bookingCode}
                       </CommonStyles.Typography>
                       <CommonStyles.Typography className="tw-uppercase tw-font-bold tw-text-gray-400">
-                        {moment(trans.date).format("DD MMM h:mm A")}
+                        {moment(newBooking.createdAt).format(DateTimeFormat.DateTime24h)}
                       </CommonStyles.Typography>
                     </CommonStyles.Box>
                   </CommonStyles.Box>
@@ -368,25 +269,27 @@ const Admin = () => {
         >
           <CommonStyles.Box className="tw-justify-between tw-flex">
             <CommonStyles.Box className="tw-flex-1">
-            <CommonStyles.Typography
-              type="size20Weight600"
-              className="tw-font-bold"
-            >
-              Transactions
-            </CommonStyles.Typography>
+              <CommonStyles.Typography
+                type="size20Weight600"
+                className="tw-font-bold"
+              >
+                {t("transactions")}
+              </CommonStyles.Typography>
             </CommonStyles.Box>
             <CommonStyles.Box className="tw-min-w-[150px]">
               <FormProvider {...methods}>
                 <form onSubmit={methods.handleSubmit(onSubmit)}>
                   <CommonStyles.Box className="">
-                  <RHFField
-                  sx={{fieldset: {borderRadius: 20}}}
-                    name="month"
-                    control={methods.control}
-                    component={SelectField}
-                    options={searchOption}
+                    <RHFField
+                      sx={{ fieldset: { borderRadius: 20 } }}
+                      name="month"
+                      control={methods.control}
+                      component={CommonDatePicker}
+                      onClose={handleChange}
+                      views={["month","year"]}
+                      format={DateTimeFormat.NameMonthYear}
                     />
-                    </CommonStyles.Box>
+                  </CommonStyles.Box>
                 </form>
               </FormProvider>
             </CommonStyles.Box>
@@ -396,32 +299,55 @@ const Admin = () => {
               <Table sx={{ minWidth: 650 }} aria-label="simple table">
                 <TableHead>
                   <TableRow>
-                    <TableCell className="tw-font-bold tw-text-[16px]">Name</TableCell>
-                    <TableCell className="tw-font-bold tw-text-[16px]">Status</TableCell>
-                    <TableCell className="tw-font-bold tw-text-[16px]">Date</TableCell>
-                    <TableCell className="tw-font-bold tw-text-[16px]">Amount</TableCell>
+                    <TableCell className="tw-font-bold tw-text-[16px]">
+                      {t("name")}
+                    </TableCell>
+                    <TableCell className="tw-font-bold tw-text-[16px]">
+                      {t("status")}
+                    </TableCell>
+                    <TableCell className="tw-font-bold tw-text-[16px]">
+                      {t("date")}
+                    </TableCell>
+                    <TableCell className="tw-font-bold tw-text-[16px]">
+                      {t("amount")}
+                    </TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {Transactions.items.map((row) => (
+                  {dataStatNewBookings?.items.map((row) => (
                     <TableRow
-                      key={row.name}
+                      key={row.bookingCode}
                       sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
                     >
-                      <TableCell className="tw-text-[15px] tw-font-bold tw-text-gray-500" component="th" scope="row">{row.name}</TableCell>
-                      <TableCell>
-                      <CommonStyles.Box className={`tw-flex tw-w-fit tw-items-center tw-rounded-full tw-py-1 tw-px-4 tw-text-sm tw-font-medium tw-capitalize 
-                        ${row.status === "Done"
-                          ? "tw-text-green-600 tw-bg-green-100"
-                          : row.status === "Pending"
-                          ? "tw-text-yellow-500 tw-bg-yellow-100"
-                          : "tw-text-red-500 tw-bg-red-100"
-                        }`}>
-                        {row.status}
-                      </CommonStyles.Box>
+                      <TableCell
+                        className="tw-text-[15px] tw-font-bold tw-text-gray-500"
+                        component="th"
+                        scope="row"
+                      >
+                        {row.User.name}
                       </TableCell>
-                      <TableCell className="tw-text-[15px] tw-font-bold tw-text-gray-500">{moment(row.date).format("hh:mm DD/MM/YYYY")}</TableCell>
-                      <TableCell className="tw-text-[15px] tw-font-bold tw-text-green-500">+ ${row.amount}</TableCell>
+                      <TableCell>
+                        <CommonStyles.Box
+                          className={`tw-flex tw-w-fit tw-items-center tw-rounded-full tw-py-1 tw-px-4 tw-text-sm tw-font-medium tw-capitalize 
+                        ${
+                          row.status === "COMPLETED"
+                            ? "tw-text-green-600 tw-bg-green-100"
+                            : row.status === "PENDING"
+                              ? "tw-text-yellow-500 tw-bg-yellow-100"
+                              : row.status === "CONFIRMED"
+                              ? "tw-text-blue-500 tw-bg-blue-100"
+                              : "tw-text-red-500 tw-bg-red-100"
+                        }`}
+                        >
+                          {row.status}
+                        </CommonStyles.Box>
+                      </TableCell>
+                      <TableCell className="tw-text-[15px] tw-font-bold tw-text-gray-500">
+                        {moment(row.createdAt).format(DateTimeFormat.DateTime24hReverse)}
+                      </TableCell>
+                      <TableCell className="tw-text-[15px] tw-font-bold tw-text-green-500">
+                        + {row.amountPaid}
+                      </TableCell>
                     </TableRow>
                   ))}
                 </TableBody>

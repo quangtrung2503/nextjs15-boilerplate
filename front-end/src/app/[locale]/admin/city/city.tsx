@@ -109,7 +109,7 @@ const City = () => {
             labelNoData={t("labelNoData")}
           />}
       </CommonStyles.Box>
-      {shouldRender && <CommonDialog onClose={() => {setTimeout(() => setId(null), 500);}} open={open} toggle={toggle} body={<CreateEditCity id={Number(id)} handleClose={handleClose} />} />}
+      {shouldRender && <CommonDialog onClose={() => setId(null)} open={open} toggle={toggle} body={<CreateEditCity id={Number(id)} handleClose={handleClose} />} />}
     </CommonStyles.Box>
   );
 }
