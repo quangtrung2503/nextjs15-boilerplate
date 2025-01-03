@@ -32,7 +32,7 @@ const PopularCity: FC<PopularCityProps> = (props) => {
             {/* City Name and Title */}
             <CommonStyles.Box className="tw-col-span-6">
               <CommonStyles.Typography
-                className="tw-text-accent_gray_dark tw-pb-3"
+                className="tw-text-accent_gray_dark tw-pb-3 tw-line-clamp-1 tw-overflow-hidden tw-whitespace-normal tw-text-ellipsis"
                 type="size64Weight700"
               >
                 {name}
