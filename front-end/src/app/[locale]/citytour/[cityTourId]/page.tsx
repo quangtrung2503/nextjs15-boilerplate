@@ -20,18 +20,24 @@ import { defaultValue, InfoBooking, NoOfGuest } from "./forms";
 import useGetTourCustomerReview from "@/services/modules/tour/hooks/useGetTourReviewCustomer";
 import useFiltersHandler from "@/hooks/useFiltersHandler";
 import { generateHtmlContent, mapTours } from "./functions";
+import { values } from "lodash";
+import { FiltersGetReviewCustomer } from "@/services/modules/tour/tourCustomer.services";
+import Loading from "@/components/common/Loading";
 
 const CityTourDetail = () => {
   //! Hook
-  const t = useTranslations('cityTour.cityTourDetail');
+  const t = useTranslations("cityTour.cityTourDetail");
   const { showError } = useNotifications();
-  const { filters, handleChangePage } = useFiltersHandler({ page: 1, perPage: 1 });
+  const intFilter: FiltersGetReviewCustomer = { page: 1, perPage: 10 };
+  const { filters, handleChangePage, setFilters } =
+    useFiltersHandler(intFilter);
   //! prop + state + const
 
   //! Fetch Data
-  const api ="vintage-double-decker-bus-tour-&-thames-river-cruise-i.3"
+  const api = "vintage-double-decker-bus-tour-&-thames-river-cruise-i.3";
   const { data } = useGetTourCustomer(api);
-  const { dataCustomerReview, stats, hasMore } = useGetTourCustomerReview(filters, api);
+  const { dataCustomerReview, stats, hasMore, loading } =
+    useGetTourCustomerReview(filters, api);
 
   //! Define
   const { tour, listTourInToday, listTourSameCity } = data ?? {};
@@ -52,23 +58,27 @@ const CityTourDetail = () => {
   const includes = [included, notIncluded];
   const details = [
     language,
-    generateHtmlContent('Duration', `${numberOfHours} hours`),
-    generateHtmlContent('Number Of People', `${numberOfPeople} People`),
+    generateHtmlContent(t("duration"), `${numberOfHours} hours`),
+    generateHtmlContent(t("numberOfPeople"), `${numberOfPeople} People`),
   ];
 
-  const meetingAddress = generateHtmlContent('Meeting Point Address', `${guideMeetingAddress}`)
+  const meetingAddress = generateHtmlContent(
+    t("guideMeetingAddress"),
+    `${guideMeetingAddress}`,
+  );
 
-  const validateSchema: Yup.ObjectSchema<InfoBooking>  = Yup.object().shape({
+  const validateSchema: Yup.ObjectSchema<InfoBooking> = Yup.object().shape({
     rating: Yup.number().defined(),
-    startDate: Yup.string().defined()
+    startDate: Yup.string()
+      .defined()
       .required(t("validations.startDateRequire"))
-      
+
       .typeError(t("validations.startDateInvalid")),
-      // .min(new Date(), t("validations.startDateMin")),
+    // .min(new Date(), t("validations.startDateMin")),
     endDate: Yup.string()
       .required(t("validations.endDateRequire"))
       .typeError(t("validations.endDateInvalid")),
-      // .min(Yup.ref("startDate"), t("validations.endDateAfterStartDate")),
+    // .min(Yup.ref("startDate"), t("validations.endDateAfterStartDate")),
     noOfGuest: Yup.object().shape({
       adultQuantity: Yup.string().nullable().defined(),
       childQuantity: Yup.string().nullable().defined(),
@@ -100,7 +110,7 @@ const CityTourDetail = () => {
   };
   const handleLoadMoreReview = () => {
     const _event: any = "";
-    handleChangePage(_event, filters.page + 1);
+    handleChangePage(_event, (filters?.page || 1) + 1);
   };
 
   //! Function render
@@ -108,6 +118,7 @@ const CityTourDetail = () => {
   //! Render
   return (
     <div className="tw-py-12">
+      {loading && <Loading />}
       <Container className="tw-flex tw-flex-col tw-gap-y-8">
         <CommonStyles.Box className="tw-grid tw-grid-cols-12">
           <CommonStyles.Box className="tw-col-span-8 tw-flex tw-flex-col tw-gap-4">
@@ -143,32 +154,32 @@ const CityTourDetail = () => {
             {/* Description */}
             <CommonStyles.Box>
               <DescriptionCityTour
-                title="Description"
+                title={t("description")}
                 content={tour?.description || ""}
               />
             </CommonStyles.Box>
             <CommonStyles.Box>
               <DescriptionCityTour
-                title="Activity"
+                title={t("activity")}
                 content={tour?.activity || ""}
               />
             </CommonStyles.Box>
             <CommonStyles.Box>
               <DescriptionCityTour
-                title="What is included / not  included"
+                title={t("includedRequire")}
                 content={""}
                 items={includes}
               />
             </CommonStyles.Box>
             <CommonStyles.Box>
               <DescriptionCityTour
-                title="Safety"
+                title={t("safety")}
                 content={tour?.safety || ""}
               />
             </CommonStyles.Box>
             <CommonStyles.Box>
               <DescriptionCityTour
-                title="Details"
+                title={t("details")}
                 content={meetingAddress}
                 items={details}
               />
@@ -286,9 +297,14 @@ const CityTourDetail = () => {
             stats={stats}
             onLoadMore={handleLoadMoreReview}
             hasMore={hasMore}
+            onChangeFilter={(value) => {
+              const newFilter = { ...filters, ratings: value.rating, page: 1 };
+              setFilters(newFilter);
+            }}
           />
         </CommonStyles.Box>
       </Container>
+
     </div>
   );
 };

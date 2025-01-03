@@ -1,10 +1,27 @@
-import { CircularProgressProps } from '@mui/material/CircularProgress';
-import CircularProgress from '@mui/material/CircularProgress';
+import React from 'react';
+import { CircularProgress, CircularProgressProps } from '@mui/material';
+import { styled } from '@mui/system';
 
-const Loading = (props: CircularProgressProps) => {
-  const {color,...rest} = props;
+const Overlay = styled('div')({
+  position: 'fixed',
+  top: 0,
+  left: 0,
+  width: '100%',
+  height: '100%',
+  backgroundColor: "var(--background)", // Màu nền mờ
+  opacity: 0.4,
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  zIndex: 9999, // Hiển thị trên cùng
+});
+
+const Loading: React.FC<CircularProgressProps> = (props) => {
+  const { color = 'primary', ...rest } = props;
   return (
-    <CircularProgress {...rest} color={color} />
+    <Overlay>
+      <CircularProgress {...rest} color={color} />
+    </Overlay>
   );
 };
 

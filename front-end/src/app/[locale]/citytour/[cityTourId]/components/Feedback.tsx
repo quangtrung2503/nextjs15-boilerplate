@@ -9,41 +9,41 @@ import SelectField from "@/components/customReactFormField/SelectField";
 import { useTranslations } from "next-intl";
 import Divider from "@/components/common/Divider";
 import { CustomerReview, Stats } from "@/services/modules/tour/interfaces/tour";
+import { SelectChangeEvent } from "@mui/material";
+import { rateData } from "../rateData";
 
 type Props = {
   feedbacks?: CustomerReview[];
   stats?: Stats;
   onLoadMore: () => void;
+  onChangeFilter: (value: FeedbackFilter) => void
   hasMore: boolean;
 };
 
 interface FeedbackFilter {
   recommend: string;
   travelType: string;
-  rating: number | string;
+  rating: number;
   textSearch: string;
 }
 const Feedback: React.FC<Props> = (props: Props) => {
-  const { feedbacks, stats, onLoadMore, hasMore } = props ?? {};
+  //!Props 
+  const { feedbacks, stats, onLoadMore, hasMore, onChangeFilter } = props ?? {};
+  //!Hook
   const t = useTranslations("feedback");
-  const { handleSubmit, control } = useForm<FeedbackFilter>({
+  const { handleSubmit, control, watch } = useForm<FeedbackFilter>({
     defaultValues: {
       recommend: "",
       travelType: "",
-      rating: "",
       textSearch: "",
     },
-    reValidateMode: "onSubmit",
-    criteriaMode: "all",
   });
-  const onSubmit: SubmitHandler<FeedbackFilter> = async (
-    values: FeedbackFilter,
-  ) => {
-    try {
-    } catch (error: any) {
-      const err: any = error?.response.data.messages[0];
-    }
-  };
+
+  //! Function
+  const onSelectRatingValue = () => {
+    const values = watch()
+    onChangeFilter(values)
+  }
   return (
     <CommonStyles.Box>
       {/* Heading Review */}
@@ -71,7 +71,7 @@ const Feedback: React.FC<Props> = (props: Props) => {
             <CommonStyles.Rating
               readOnly
               classNameIcon="tw-text-[50px]"
-              // valueTable={stats?.avgRating}
+              valueTable={stats?.avgRating}
             />
           </CommonStyles.Box>
           <CommonStyles.Box className="tw-w-[380px] tw-flex tw-flex-col tw-gap-2">
@@ -100,8 +100,7 @@ const Feedback: React.FC<Props> = (props: Props) => {
             {t("filter")}:
           </CommonStyles.Typography>
           <form
-            onSubmit={handleSubmit(onSubmit)}
-            className="tw-flex tw-gap-4 tw-flex-1"
+            className="tw-flex tw-gap-4 tw-flex-1 tw-bg-background tw-rounded tw-shadow-md"
           >
             <RHFField
               name="rating"
@@ -111,13 +110,15 @@ const Feedback: React.FC<Props> = (props: Props) => {
                   border: "none",
                 },
               }}
-              options={[]}
+              options={rateData}
               placeholder={t("ratingPlaceholder")}
-              className="tw-bg-white tw-rounded-sm tw-shadow-select"
               component={SelectField}
+              onChange={() => onSelectRatingValue()}
+              className="tw-flex-grow-0 tw-flex-shrink-0 tw-basis-1/2"
             />
             {/* <InputField/> */}
           </form>
+
         </CommonStyles.Box>
         {/* Feedback */}
         {feedbacks?.map((feedback, index) => (

@@ -12,8 +12,12 @@ import { ApiResponse, CustomerReview, ReviewData, Stats, Tour, TourImage } from 
 export interface FiltersGetTours extends CommonFilters {}
 export interface RequestGetTours extends CommonFilters {}
 
-export interface FiltersGetReviewCustomer extends CommonFilters { }
-export interface RequestGetReviewCustomer extends CommonFilters { }
+export interface FiltersGetReviewCustomer extends CommonFilters {
+  ratings?: number
+}
+export interface RequestGetReviewCustomer extends CommonFilters {
+  ratings?: number[]
+}
 
 export type ResponseTourCustomerList = AxiosResponse<ResponseCommon<ResponseList<Tour[]>>>;
 export type ResponseTourCustomer = ResponseCommon<ApiResponse>;

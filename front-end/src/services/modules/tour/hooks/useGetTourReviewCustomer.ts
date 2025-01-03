@@ -36,6 +36,7 @@ const parseRequest = (
     textSearch: filters.textSearch,
     sortField: filters.sortField,
     sortOrder: filters.sortOrder,
+    ratings: (filters?.ratings && + filters?.ratings !== 0 )?  [filters?.ratings] : undefined
   });
 };
 

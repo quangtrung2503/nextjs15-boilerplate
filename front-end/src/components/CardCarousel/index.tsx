@@ -67,7 +67,7 @@ const CardCarousel: React.FC<Props> = ({
   }, []);
 
   // Check if there are more than 4 slides
-  const showArrows = data.length > 3;
+  const showArrows = data.length > 4;
 
   return (
     <CommonStyles.Box className="tw-flex tw-flex-col tw-w-full">
