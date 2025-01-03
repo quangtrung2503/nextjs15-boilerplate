@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { default as CommonStyles } from "@/components/common";
-
+import apiUrls from "@/constants/apiUrls";
 interface SliderProps {
-  imgs: { src: string }[];
+  imgs: string[];
 }
 const Slider: React.FC<SliderProps> = ({ imgs }) => {
   const [indexActive, setIndexActive] = useState(0);
@@ -18,7 +18,7 @@ const Slider: React.FC<SliderProps> = ({ imgs }) => {
         }`}
       >
         <img
-          src={item.src}
+          src={`${apiUrls.IMG_URL}/${item}`}
           alt={`Thumbnail ${index + 1}`}
           className="tw-size-full"
         />
@@ -28,8 +28,8 @@ const Slider: React.FC<SliderProps> = ({ imgs }) => {
   return (
     <CommonStyles.Box className="tw-w-full">
       <img
-        src={imgs[indexActive].src}
-        alt={`Image ${indexActive + 1}`}
+          src={`${apiUrls.IMG_URL}/${imgs[indexActive] || ''}`}
+          alt={`Image ${indexActive + 1}`}
         className="tw-w-full tw-max-h-[460px]"
       />
       <CommonStyles.Box className="tw-overflow-x-auto tw-overflow-y-hidden scrollbar-hide tw-h-fit tw-mt-2">

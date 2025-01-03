@@ -11,10 +11,11 @@ export const routing = defineRouting({
       vi: "/pathnames",
     },
   },
+  localeDetection: false
 });
 
 export type Pathnames = keyof typeof routing.pathnames;
-export type Locale = (typeof routing.locales)[number];
+export type Locale = (typeof routing.locales)[number] | [string];
 
 export const { Link, getPathname, redirect, usePathname, useRouter } =
   createNavigation(routing);

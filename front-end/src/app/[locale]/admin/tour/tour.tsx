@@ -34,8 +34,6 @@ const Tour = () => {
   const [id, setId] = useState<number | null>(null);
   const {showError} = useNotifications();
   const t = useTranslations();
-
-
   const handleEditId = (id: number) => {
     setId(id);
     toggle();

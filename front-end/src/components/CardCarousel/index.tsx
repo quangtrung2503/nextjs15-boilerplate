@@ -23,7 +23,6 @@ const CardCarousel: React.FC<Props> = ({
   const [isAtEnd, setIsAtEnd] = useState(false);
   // hook
   const { data: dataDestination } = useGetTourDestinationCustomer()
-
   // Function
   const handleScrollLeft = () => {
     if (scrollContainerRef.current) {

@@ -23,9 +23,11 @@ const RatingMui = (props: Props) => {
   //! State
   const { field, form, readOnly, disabled, haveFeedback, valueTable, sxRating, setValue, classNameIcon } = props;
   const { name, value, onChange } = field || {};
-  const { errors, touched } = form || {};
   const [hover, setHover] = React.useState(-1);
-  const valueRating = valueTable ? valueTable : value;
+
+  //Giá trị truyền vào có thể là undefined sẽ báo lỗi nên với undefined thì cần gán valueTable là null
+  const valueRating = valueTable !== undefined ? valueTable : value || null;
+
   //! Function
   const getLabelText = (value: number) => {
     return `${value} Star${value !== 1 ? 's' : ''}, ${value}`;

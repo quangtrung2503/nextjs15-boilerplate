@@ -75,13 +75,52 @@ export interface TourImage {
   image: string;
   createdAt: string;
   updatedAt: string;
-  Tour: {
-    slug: string;
-  };
 }
 
 export interface ApiResponse {
   tour: Tour;
   listTourInToday: Tour[];
   listTourSameCity: Tour[];
+}
+
+interface User {
+  id: number;
+  name: string;
+  email: string;
+  avatar: string;
+}
+
+export interface CustomerReview {
+  id: number;
+  userId: number;
+  tourId: number;
+  ratingGuide: number;
+  ratingTransportation: number;
+  ratingValueOfMoney: number;
+  ratingSafety: number;
+  rating: number;
+  title: string;
+  content: string;
+  isActive: boolean;
+  createdAt: string; 
+  updatedAt: string; 
+  User: User;
+}
+
+export interface Stats {
+  avgRatingGuide: number;
+  avgRatingTransportation: number;
+  avgRatingValueOfMoney: number;
+  avgRatingSafety: number;
+  avgRating: number;
+  totalReviews: number;
+}
+
+export interface ReviewData {
+  items: CustomerReview[],
+  totalItems: number;
+  currentPage: number;
+  totalPage: number;
+  perPage: number;
+  stats: Stats;
 }
