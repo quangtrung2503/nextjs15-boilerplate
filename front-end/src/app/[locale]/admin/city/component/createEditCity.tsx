@@ -170,6 +170,7 @@ const CreateEditCity: FC<createEditCityProps> = (props) => {
               </CommonStyles.Box>
             </CommonStyles.Box>
           )}
+          
           <RHFField
             className="tw-mb-3"
             name="description"

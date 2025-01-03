@@ -23,4 +23,7 @@ export default {
   DESTINATION_CUS_URL: `${BASE_URL}/destination-customer`,
   PROFILE_URL: `${BASE_URL}/user/profile`,
   TAG_URL: `${BASE_URL}/tag`,
+  BOOKING_URL: `${BASE_URL}/booking`,
+  TRANSACTION_URL: `${BASE_URL}/transaction`,
+  STATS_URL: `${BASE_URL}/stats`
 };

@@ -1,11 +1,9 @@
 import { useEffect, useState, useCallback, useRef } from "react";
-import cloneDeep from "lodash/cloneDeep";
-import { isEmpty, isObject } from "lodash";
-import { ResponseList } from "@/interfaces/common";
+import { cloneDeep, isEmpty, isObject } from "lodash";
 import { useSave } from "@/stores/useStore";
+import { AxiosResponse } from "axios";
 import { useNotifications } from "@/helpers/toast";
-import tourServices, { FiltersGetTours, RequestGetTours, ResponseTourList } from "../tour.services";
-import { Tour } from "../interfaces/tour";
+import statsServices, { FiltersGetStats, RequestGetStats, ResponseGetStatMonthly } from "../stats.services";
 
 /********************************************************
  * SNIPPET GENERATED
@@ -21,20 +19,21 @@ import { Tour } from "../interfaces/tour";
  ********************************************************/
 
 //* Check parse body request
-const parseRequest = (filters: FiltersGetTours): RequestGetTours => {
+const parseRequest = (filters: FiltersGetStats): RequestGetStats => {
   return cloneDeep({
     page: filters.page,
     perPage: filters.perPage,
     textSearch: filters.textSearch,
     sortField: filters.sortField,
     sortOrder: filters.sortOrder,
+    year: filters.year
   });
 };
 
-const requestAPI = tourServices.getTours;
+const requestAPI = statsServices.getStatMonthly;
 
-const useGetTours = (
-  filters: FiltersGetTours,
+const useGetStatMonthly = (
+  filters: FiltersGetStats,
   options: { isTrigger?: boolean; refetchKey?: string } = {
     isTrigger: true,
     refetchKey: "",
@@ -44,15 +43,14 @@ const useGetTours = (
   const { isTrigger = true, refetchKey = "" } = options;
   const signal = useRef(new AbortController());
   const save = useSave();
-  const [data, setData] = useState<ResponseList<Tour[]>>();
+  const [data, setData] = useState<ResponseGetStatMonthly>();
   const [loading, setLoading] = useState(false);
   const [refetching, setRefetching] = useState(false);
   const [error, setError] = useState<unknown>(null);
-  const [hasMore, setHasMore] = useState(false);
   const {showError} = useNotifications();
 
   //! Function
-  const fetch: () => Promise<ResponseTourList> | undefined = useCallback(() => {
+  const fetch: () => Promise<AxiosResponse<ResponseGetStatMonthly>> | undefined = useCallback(() => {
     if (!isTrigger) {
       return;
     }
@@ -61,7 +59,7 @@ const useGetTours = (
       (async () => {
         try {
           const nextFilters = parseRequest(filters);
-          const response = await requestAPI(nextFilters, {
+          const response = await requestAPI(nextFilters,{
             signal: signal.current.signal,
           });
           resolve(response);
@@ -71,17 +69,16 @@ const useGetTours = (
         }
       })();
     });
-  }, [filters, isTrigger]);
+  }, [isTrigger]);
 
-  const checkConditionPass = useCallback((response: ResponseTourList) => {
+  const checkConditionPass = useCallback((response: AxiosResponse<ResponseGetStatMonthly>) => {
     //* Check condition of response here to set data
     if (isObject(response?.data)) {
-      setData(response?.data.data);
-      setHasMore(data?data.currentPage < data.totalPage : false);
+      setData(response.data);
     }
   }, []);
 
-  //* Refetch impliTour (without changing loading state)
+  //* Refetch impliUser (without changing loading state)
   const refetch = useCallback(async () => {
     try {
       if (signal.current) {
@@ -156,9 +153,8 @@ const useGetTours = (
     refetch,
     refetchWithLoading,
     refetching,
-    hasMore,
     setData,
   };
 };
 
-export default useGetTours;
+export default useGetStatMonthly;

@@ -23,6 +23,10 @@ interface IDatePickerProps {
     name: string;
   };
   fieldState: { error?: FieldError };
+  views?: ('day' | 'month' | 'year')[];
+  format?: string;
+  onChange?:()=>void;
+  onClose?: ()=>void;
 }
 export const CommonDatePicker: React.FC<IDatePickerProps> = ({
   required,
@@ -34,7 +38,11 @@ export const CommonDatePicker: React.FC<IDatePickerProps> = ({
   placeholder = "Pick a date",
   field,
   fieldState,
-  border
+  border,
+  views,
+  format,
+  onChange,
+  onClose
 }) => {
   const PickerComponent = isMobileDate ? MobileDatePicker : DatePicker;
   return (
@@ -51,9 +59,12 @@ export const CommonDatePicker: React.FC<IDatePickerProps> = ({
         </label>
       )}
       <PickerComponent
-        format="DD/MM/YYYY"
+        onClose={onClose}
+        format={format || "DD/MM/YYYY"}
+        views={views}
         value={field.value ? moment(field.value) : null} // Đảm bảo giá trị không undefined
         onChange={(newValue) => {
+          onChange &&  onChange()
           field.onChange(newValue); // Cập nhật giá trị
         }}
         slots={{ openPickerIcon: CalendarMonthIcon }}
