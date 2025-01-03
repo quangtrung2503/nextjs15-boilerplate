@@ -23,18 +23,19 @@ import { generateHtmlContent, mapTours } from "./functions";
 import { values } from "lodash";
 import { FiltersGetReviewCustomer } from "@/services/modules/tour/tourCustomer.services";
 import Loading from "@/components/common/Loading";
+import { useParams } from "next/navigation";
 
 const CityTourDetail = () => {
+  //! prop + state + const
+  const intFilter: FiltersGetReviewCustomer = { page: 1, perPage: 10 };
   //! Hook
+  const slug = useParams();
+  const api = slug.cityTourId as string;  
+  
   const t = useTranslations("cityTour.cityTourDetail");
   const { showError } = useNotifications();
-  const intFilter: FiltersGetReviewCustomer = { page: 1, perPage: 10 };
-  const { filters, handleChangePage, setFilters } =
-    useFiltersHandler(intFilter);
-  //! prop + state + const
-
+  const { filters, handleChangePage, setFilters } = useFiltersHandler(intFilter);
   //! Fetch Data
-  const api = "vintage-double-decker-bus-tour-&-thames-river-cruise-i.3";
   const { data } = useGetTourCustomer(api);
   const { dataCustomerReview, stats, hasMore, loading } =
     useGetTourCustomerReview(filters, api);
@@ -43,7 +44,7 @@ const CityTourDetail = () => {
   const { tour, listTourInToday, listTourSameCity } = data ?? {};
   const tourInDays = mapTours(listTourInToday);
   const tourSameCity = mapTours(listTourSameCity);
-
+   
   //! Extract tour details
   const {
     TourImage = [],

@@ -6,7 +6,7 @@ import { title } from "process";
 const mapTours = (tours: Tour[] | undefined): CardGridItemProps[] =>
   Array.isArray(tours)
     ? tours.map((item) => ({
-        link: `/citytour/${item.cityId}`,
+        link: `/citytour/${item.slug}`,
         src: `${apiUrls.IMG_URL}/${item.City?.image || ""}`,
         title: item.City?.name || "Unknown City",
         duration: item.numberOfHours || 0,
