@@ -17,6 +17,7 @@ import useGetProfile from "@/services/modules/profile/hook/useGetProfile";
 import CardBreadcrumbs from "./components/BreadCrump/breadcrumb";
 import { useNotifications } from "@/helpers/toast";
 import { useTranslations } from "next-intl";
+import BookingHistory from "./components/BookingHistory/bookingHistory";
 
 const FormProfileWithCustomComponent: React.FC = () => {
   const t = useTranslations("profile");
@@ -100,7 +101,7 @@ const FormProfileWithCustomComponent: React.FC = () => {
                 <SecurityInformation />
               </Box>
             ) : (
-              <React.Fragment />
+              <BookingHistory />
             )}
           </Grid>
         </Grid>
