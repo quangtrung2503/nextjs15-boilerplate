@@ -604,11 +604,19 @@
     "currentPassword": "Current Password",
     "newPassword": "New Password",
     "confirmPassword": "Confirm Password",
-    "menuProfile": {
+    "paySuccess": "Payment Success",
+    "payError": "Payment Error",
+     "menuProfile": {
       "information": "Profile Information",
       "booking": "Booking History",
       "newsletter": "Newsletter Subscription",
       "manager": "Manage Notifications"
+    },
+    "bookingHistory": {
+      "booking": "Booking History",
+      "peoples": "peoples",
+      "people": "people",
+      "cancellation": "Tour Cancellation"
     }
   },
   "uploadField": {

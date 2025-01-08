@@ -1,13 +1,8 @@
-import { default as CommonStyles } from "@/components/common";
 import { LocationOn } from "@mui/icons-material";
-import RHFField from "@/components/customReactFormField/ReactFormField";
-import InputField from "@/components/customReactFormField/InputField";
-import { CommonDatePicker } from "@/components/common/DatePicker";
 import CommonIcons from "@/components/CommonIcons";
-
 import { Box, Breadcrumbs, CardMedia, Typography, Tooltip } from "@mui/material";
 import { useTranslations } from "next-intl";
-import Divider from "@/components/common/Divider";
+import { CommonButton } from "@/components/common/Button";
 
 const statusColors: Record<"PENDING" | "CONFIRMED" | "COMPLETED" | "CANCELLED" | "REFUNDED", string> = {
   PENDING: "tw-bg-yellow-100 tw-text-yellow-600",
@@ -43,7 +38,7 @@ const tours: Tour[] = [
     endDate: "05/01/25",
     location: "Vịnh Hạ Long",
     people: 2,
-    pricePerTour: 500.0,
+    pricePerTour: 5000.0,
     totalPrice: 1000.0,
     image: "https://danangopentour.vn/uploads/09-2019/tour-tham-quan-thu-do-ha-noi-chua-mot-cot-m-(1).jpg",
   },
@@ -120,8 +115,16 @@ const truncateText = (text: string, maxLength: number) => {
   return text.length > maxLength ? `${text.slice(0, maxLength)}...` : text;
 };
 
+const handleCancelTour = (tourId: number) => {
+  console.log(`Hủy tour với ID: ${tourId}`);
+  // Gửi request đến backend hoặc cập nhật trạng thái tour tại đây
+};
+
 const BookingHistory = () => {
-  const t = useTranslations();
+  //!Hook + const
+  const t = useTranslations('profile.bookingHistory');
+  
+  //!Call function
   const groupedTours = groupToursByDate(tours);
 
   return (
@@ -130,7 +133,7 @@ const BookingHistory = () => {
         variant="h6"
         className="tw-mb-6 tw-text-left tw-text-xl tw-font-bold tw-text-gray-800"
       >
-        {t("profile.menuProfile.booking")}
+        {t("booking")}
       </Typography>
 
       <Box className="tw-max-h-[500px] tw-overflow-y-auto">
@@ -192,20 +195,30 @@ const BookingHistory = () => {
                         <Typography className="tw-mx-2 tw-text-sm tw-text-gray-500">|</Typography>
                         <CommonIcons.PeopleOutlined className="tw-text-gray-500" />
                         <Typography className="tw-ml-2 tw-text-sm tw-text-gray-600">
-                          {tour.people} {tour.people > 1 ? "peoples" : "people"}
+                          {tour.people} {tour.people > 1 ? t('peoples') : t('people')}
                         </Typography>
                       </Box>
                     </Box>
 
                     <Box className="tw-text-right">
                       <Box className="tw-flex tw-items-center tw-gap-2">
-                        <Typography className="tw-text-sm tw-font-semibold tw-text-gray-600 tw-border tw-border-gray-400 tw-bg-gray-200 tw-rounded-lg tw-py-1 tw-px-2">
-                          {tour.people} x ${tour.pricePerTour.toFixed(2)}
+                        <Typography className="tw-text-sm tw-font-semibold tw-text-gray-400 tw-border tw-border-gray-600 tw-bg-gray-200 tw-rounded-lg tw-py-1 tw-px-2">
+                          {tour.people} x ${tour.pricePerTour.toLocaleString('vi-VN')}
                         </Typography>
                         <Typography className="tw-text-lg tw-font-bold tw-text-gray-800">
-                          ${tour.totalPrice.toFixed(2)}
+                          ${tour.totalPrice.toLocaleString('vi-VN')}
                         </Typography>
                       </Box>
+                      {!(tour.status === "CANCELLED" || tour.status === "REFUNDED") && (
+                         <CommonButton
+                         variant="outlined"
+                         color="error"
+                         className="tw-mt-8 tw-scroll-py-px tw-text-xs tw-rounded-lg"
+                         onClick={() => handleCancelTour(tour.id)}
+                       >
+                         {t('cancellation')}
+                       </CommonButton>
+                      )}
                     </Box>
                   </Box>
                 </Box>

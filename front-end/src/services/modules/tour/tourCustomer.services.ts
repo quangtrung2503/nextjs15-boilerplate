@@ -8,6 +8,7 @@ import { AxiosRequestConfig, AxiosResponse } from "axios";
 import apiUrls from "@/constants/apiUrls";
 import queryString from "query-string";
 import { ApiResponse, CustomerReview, ReviewData, Stats, Tour, TourImage } from "./interfaces/tour";
+import { BookTour } from "@/app/[locale]/citytour/[cityTourId]/forms";
 
 export interface FiltersGetTours extends CommonFilters {}
 export interface RequestGetTours extends CommonFilters {}
@@ -75,6 +76,12 @@ class TourService {
       `${apiUrls.TOUR_CUS_URL}/trending/get-best-trending`,
       configs,
     );
+  }
+  bookTourCustomer(tour: BookTour, configs?: AxiosRequestConfig) {
+    return httpService.post(`${apiUrls.BOOKING_TOUR_URL}`, tour)
+  }
+  reloadPayByVnpay(url: string, configs?: AxiosRequestConfig) {
+    return httpService.get(`${apiUrls.VNPAY_RETURN_URL}${url}`)
   }
 }
 

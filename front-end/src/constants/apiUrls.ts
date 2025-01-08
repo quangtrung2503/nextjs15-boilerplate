@@ -25,5 +25,7 @@ export default {
   TAG_URL: `${BASE_URL}/tag`,
   BOOKING_URL: `${BASE_URL}/booking`,
   TRANSACTION_URL: `${BASE_URL}/transaction`,
-  STATS_URL: `${BASE_URL}/stats`
+  STATS_URL: `${BASE_URL}/stats`,
+  BOOKING_TOUR_URL: `${BASE_URL}/booking-customer`,
+  VNPAY_RETURN_URL: `${BASE_URL}/booking-customer/payment-return/vnpay-return`
 };
