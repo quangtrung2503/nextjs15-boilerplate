@@ -43,7 +43,7 @@ export class DestinationController {
     });
 
     return await this.destinationService.update(newDestination.id, {
-      slug: `${convertToEn(newDestination.name.split(' ').join('-'))}-i.${newDestination.id}`
+      slug: `${convertToEn(newDestination.name.split(' ').join('-'))}-i-${newDestination.id}`
     })
   }
 
@@ -118,7 +118,7 @@ export class DestinationController {
 
     const updatedData: Prisma.DestinationUpdateInput = { ...body };
     if (body.name && body.name !== existingDestination.name) {
-      updatedData.slug = `${convertToEn(body.name.split(' ').join('-'))}-i.${id}`;
+      updatedData.slug = `${convertToEn(body.name.split(' ').join('-'))}-i-${id}`;
     }
 
     return this.destinationService.update(id, updatedData);

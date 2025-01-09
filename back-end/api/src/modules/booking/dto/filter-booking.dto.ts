@@ -8,7 +8,7 @@ export class FilterMyBooking extends OmitType(FilterOptions, ['from', 'to']) { }
 
 export class FilterAllBooking extends OmitType(FilterOptions, ['from', 'to']) {
   @ApiProperty({
-    example: ['Pending', 'Confirmed'],
+    example: [BookingStatus.CONFIRMED],
     description: 'Array of booking statuses',
     required: false,
     enum: BookingStatus,

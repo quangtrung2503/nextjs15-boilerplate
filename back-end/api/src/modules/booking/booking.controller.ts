@@ -15,7 +15,6 @@ import { TourService } from '../tour/tour.service';
 import { BookingService } from './booking.service';
 import { FilterAllBooking } from './dto/filter-booking.dto';
 import { UpdateBookingDto, UpdateBookingDtoKeys } from './dto/update-booking.dto';
-import moment from 'moment';
 
 @ApiTags('Booking (Administrator)')
 @Controller('booking')
@@ -73,6 +72,12 @@ export class BookingController {
         [options?.sortField]: options?.sortOrder
       },
       include: {
+        Tour: {
+          select: {
+            id: true,
+            name: true
+          }
+        },
         User: {
           select: {
             id: true,
@@ -80,13 +85,6 @@ export class BookingController {
             email: true,
             phone: true,
             avatar: true,
-          }
-        },
-        Tour: {
-          include: {
-            City: true,
-            TourImage: true,
-            Review: true,
           }
         }
       }
@@ -103,6 +101,61 @@ export class BookingController {
   @ApiBearerAuth()
   @Roles(UserRole.ADMIN, UserRole.STAFF)
   @UseGuards(JwtAuthGuard, RolesGuard)
+  @Get(':id')
+  async findOne(@Param('id', ParseIdPipe) id: number) {
+    const booking = await this.prismaService.booking.findFirst({
+      where: {
+        id: id
+      },
+      include: {
+        Tour: {
+          include: {
+            TourImage: true,
+            TourDestination: {
+              include: {
+                Destination: true
+              }
+            }
+          }
+        },
+        User: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            phone: true,
+            avatar: true,
+          }
+        }
+      }
+    });
+
+    if (!booking)
+      throw new BaseException(Errors.ITEM_NOT_FOUND(this.i18n.t('common-message.booking.findOne.not_found')));
+
+    const tourId = booking.Tour.id;
+    const tourName = booking.Tour.name;
+    const TourImage = booking.Tour.TourImage;
+    const TourDestination = booking.Tour.TourDestination;
+    const User = booking.User;
+
+    delete booking.Tour;
+
+    return {
+      ...booking,
+      Tour: {
+        id: tourId,
+        name: tourName,
+        TourImage: TourImage,
+        TourDestination: TourDestination
+      },
+      User: User
+    };
+  }
+
+  @ApiBearerAuth()
+  @Roles(UserRole.ADMIN, UserRole.STAFF)
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Patch('update-booking/:id')
   async updateBooking(@UserDecorator() user: IUserJwt, @Param('id', ParseIdPipe) id: number, @Body() body: UpdateBookingDto) {
     const keyNotInDto = Object.keys(body).find((key: keyof UpdateBookingDto) => !UpdateBookingDtoKeys.includes(key))
@@ -111,44 +164,17 @@ export class BookingController {
     const booking = await this.bookingService.findOne({
       where: {
         id: id
-      },
-      include: {
-        Tour: true
       }
     });
 
     if (!booking)
       throw new BaseException(Errors.ITEM_NOT_FOUND(this.i18n.t('common-message.booking.updateBooking.not_found')));
 
-    if (body.startDate) {
-      if (moment().startOf('day').isAfter(moment(body.startDate)))
-        throw new BaseException(Errors.BAD_REQUEST(this.i18n.t('common-message.booking.updateBooking.invalid_start_date')));
-    }
-  
-    if (body.endDate) {
-      const startDate = body.startDate || booking.startDate;
-      if (moment(body.endDate).isBefore(startDate))
-        throw new BaseException(Errors.BAD_REQUEST(this.i18n.t('common-message.booking.updateBooking.invalid_end_date')));
-    }
-  
     const updateData: Prisma.BookingUpdateInput = {
       ...body,
       updatedBy: user.data.id + ' - ' + user.data.name,
     };
-  
-    if (body.numberOfAdults || body.numberOfChildren) {
-      const newNumberOfAdults = body.numberOfAdults ?? booking.numberOfAdults;
-      const newNumberOfChildren = body.numberOfChildren ?? booking.numberOfChildren;
-      const totalGuests = newNumberOfAdults + newNumberOfChildren;
-      
-      if (totalGuests <= 0) {
-        throw new BaseException(Errors.BAD_REQUEST(this.i18n.t('common-message.booking.updateBooking.invalid_number_of_guests')));
-      }
-  
-      const totalPrice = booking.Tour.price * totalGuests;
-      updateData.totalPrice = totalPrice;
-    }
-  
+
     return await this.bookingService.update(
       booking.id,
       updateData

@@ -1,24 +1,24 @@
-import { Body, Controller, Get, Param, Patch, Post, Query, UseGuards } from '@nestjs/common';
-import { BookingService } from './booking.service';
-import { PrismaService } from 'prisma/prisma.service';
-import { I18nCustomService } from 'src/resources/i18n/i18n.service';
+import { Body, Controller, Get, Ip, Param, Post, Query, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { Roles } from 'src/core/auth/decorators/roles.decorator';
 import { Prisma, UserRole } from '@prisma/client';
+import moment from 'moment';
+import { I18nContext } from 'nestjs-i18n';
+import { PrismaService } from 'prisma/prisma.service';
+import { Roles } from 'src/core/auth/decorators/roles.decorator';
+import { UserDecorator } from 'src/core/auth/decorators/user.decorator';
 import { JwtAuthGuard } from 'src/core/auth/guards/jwt-auth.guard';
 import { RolesGuard } from 'src/core/auth/guards/roles.guard';
-import { CreateBookingDto, CreateBookingDtoKeys } from './dto/create-booking.dto';
-import { BaseException, Errors } from 'src/helpers/constants/error.constant';
-import { UserDecorator } from 'src/core/auth/decorators/user.decorator';
 import { IUserJwt } from 'src/core/auth/strategies/jwt.strategy';
-import { TourService } from '../tour/tour.service';
-import moment from 'moment';
-import { FilterMyBooking } from './dto/filter-booking.dto';
-import { funcListPaging } from 'src/helpers/common/list-paging';
-import { BookingStatus } from 'src/helpers/constants/enum.constant';
-import { CancelBookingDto, CancelBookingDtoKeys } from './dto/cancel-booking.dto';
 import { ParseIdPipe } from 'src/core/pipes/parse-id.pipe';
-import { UploadPaymentProofDto, UploadPaymentProofDtoKeys } from './dto/update-booking.dto';
+import { funcListPaging } from 'src/helpers/common/list-paging';
+import { BookingStatus, PaymentMethod, PaymentStatus, SortOrder } from 'src/helpers/constants/enum.constant';
+import { BaseException, Errors } from 'src/helpers/constants/error.constant';
+import { I18nCustomService } from 'src/resources/i18n/i18n.service';
+import { TourService } from '../tour/tour.service';
+import { BookingService } from './booking.service';
+import { CreateBookingDto, CreateBookingDtoKeys } from './dto/create-booking.dto';
+import { FilterMyBooking } from './dto/filter-booking.dto';
+import { PaymentService } from './payment.service';
 
 @ApiTags('Booking (Customer)')
 @Controller('booking-customer')
@@ -27,14 +27,15 @@ export class BookingCustomerController {
     private readonly prismaService: PrismaService,
     private readonly bookingService: BookingService,
     private readonly i18n: I18nCustomService,
-    private readonly tourService: TourService
+    private readonly tourService: TourService,
+    private readonly paymentService: PaymentService
   ) { }
 
   @ApiBearerAuth()
   @Roles(UserRole.ADMIN, UserRole.STAFF, UserRole.CUSTOMER)
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Post()
-  async create(@UserDecorator() user: IUserJwt, @Body() body: CreateBookingDto) {
+  async create(@UserDecorator() user: IUserJwt, @Body() body: CreateBookingDto, @Ip() ipAddr: string) {
     const keyNotInDto = Object.keys(body).find((key: keyof CreateBookingDto) => !CreateBookingDtoKeys.includes(key))
     if (keyNotInDto) throw new BaseException(Errors.BAD_REQUEST(this.i18n.t('common-message.booking.create.wrong_parameter', { keyNotInDto })));
 
@@ -42,22 +43,6 @@ export class BookingCustomerController {
       where: { id: body.tourId, isActive: true }
     });
     if (!tourExists) throw new BaseException(Errors.BAD_REQUEST(this.i18n.t('common-message.booking.create.tour_not_found')));
-
-    const existingBookings = await this.bookingService.findAll({
-      where: {
-        userId: user.data.id,
-        tourId: body.tourId,
-        status: {
-          notIn: [BookingStatus.CANCELLED, BookingStatus.COMPLETED, BookingStatus.REFUNDED]
-        }
-      }
-    });
-
-    if (existingBookings.length > 0) {
-      throw new BaseException(Errors.BAD_REQUEST(
-        this.i18n.t('common-message.booking.create.already_booked')
-      ));
-    }
 
     if (moment().startOf('day').isAfter(moment(body.startDate)))
       throw new BaseException(Errors.BAD_REQUEST(this.i18n.t('common-message.booking.create.invalid_start_date')));
@@ -71,44 +56,105 @@ export class BookingCustomerController {
     }
 
     const timestamp = moment().format('YYMMDDHHmmss');
-    const randomDigits = Math.floor(Math.random() * 1000000).toString().padStart(6, '0');
+    const randomDigits = Math.floor(Math.random() * 1000).toString().padStart(3, '0');
     const bookingCode = `BK${timestamp}${randomDigits}${user.data.id}`;
 
-    return await this.bookingService.create({
+    const booking = await this.bookingService.create({
       data: {
         ...body,
         bookingCode: bookingCode,
-        status: BookingStatus.PAYMENT_PENDING,
+        status: BookingStatus.PENDING,
         userId: user.data.id
       }
     })
+
+    if (booking.paymentMethod === PaymentMethod.VNPAY) {
+      const paymentUrl = await this.paymentService.createPaymentUrl(ipAddr, booking.id, booking.bookingCode, booking.totalPrice, I18nContext.current().lang);
+      return { paymentUrl };
+    }
   }
 
   @ApiBearerAuth()
   @Roles(UserRole.ADMIN, UserRole.STAFF, UserRole.CUSTOMER)
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Patch('payment-proof/:id')
-  async uploadPaymentProof(@Param('id') id: number, @UserDecorator() user: IUserJwt, @Body() body: UploadPaymentProofDto) {
-    const booking = await this.bookingService.findOne({
-      where: { id, userId: user.data.id }
-    });
-
-    if (!booking)
-      throw new BaseException(Errors.ITEM_NOT_FOUND(this.i18n.t('common-message.booking.uploadPaymentProof.not_found')));
-
-    if (booking.status !== BookingStatus.PAYMENT_PENDING)
-      throw new BaseException(Errors.BAD_REQUEST(this.i18n.t('common-message.booking.uploadPaymentProof.invalid_status_for_payment')));
-
-    const keyNotInDto = Object.keys(body).find((key: keyof UploadPaymentProofDto) => !UploadPaymentProofDtoKeys.includes(key))
-    if (keyNotInDto) throw new BaseException(Errors.BAD_REQUEST(this.i18n.t('common-message.booking.uploadPaymentProof.wrong_parameter', { keyNotInDto })));
-
-    return await this.bookingService.update(
-      id,
-      {
-        paymentProof: body.paymentProof,
-        status: BookingStatus.PAYMENT_UPLOADED
+  @Get('get-payment-url/:bookingId')
+  async getPaymentUrl(@Param('bookingId', ParseIdPipe) bookingId: number, @UserDecorator() user: IUserJwt, @Ip() ipAddr: string) {
+    const booking = await this.prismaService.booking.findFirst({
+      where: {
+        id: bookingId,
+        userId: user.data.id
+      },
+      include: {
+        Payment: {
+          where: {
+            transactionStatus: {
+              in: [PaymentStatus.PENDING, PaymentStatus.SUCCESS]
+            }
+          },
+          orderBy: {
+            createdAt: SortOrder.DESC
+          },
+          take: 1
+        }
       }
-    );
+    });
+  
+    if (!booking) {
+      throw new BaseException(Errors.ITEM_NOT_FOUND(this.i18n.t('common-message.booking.getPaymentUrl.not_found')));
+    }
+  
+    // Kiểm tra trạng thái booking
+    switch (booking.status) {
+      case BookingStatus.CANCELLED:
+        throw new BaseException(Errors.BAD_REQUEST(this.i18n.t('common-message.booking.getPaymentUrl.cancelled')));
+      
+      case BookingStatus.CONFIRMED:
+        throw new BaseException(Errors.BAD_REQUEST(this.i18n.t('common-message.booking.getPaymentUrl.already_paid')));
+      
+      case BookingStatus.COMPLETED:
+        throw new BaseException(Errors.BAD_REQUEST(this.i18n.t('common-message.booking.getPaymentUrl.completed')));
+  
+      case BookingStatus.PENDING:
+        // Kiểm tra nếu có payment thành công
+        const latestPayment = booking.Payment[0];
+        if (latestPayment?.transactionStatus === PaymentStatus.SUCCESS) {
+          throw new BaseException(Errors.BAD_REQUEST(this.i18n.t('common-message.booking.getPaymentUrl.already_paid')));
+        }
+  
+        // Tạo payment URL mới
+        const paymentUrl = await this.paymentService.createPaymentUrl(
+          ipAddr,
+          booking.id,
+          booking.bookingCode,
+          booking.totalPrice,
+          I18nContext.current().lang
+        );
+  
+        return { paymentUrl };
+  
+      default:
+        throw new BaseException(Errors.BAD_REQUEST(this.i18n.t('common-message.booking.getPaymentUrl.invalid_status')));
+    }
+  }
+
+  @ApiBearerAuth()
+  @Roles(UserRole.ADMIN, UserRole.STAFF, UserRole.CUSTOMER)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Get('payment-return/vnpay-return')
+  async vnpayReturn(@Query() query: any) {
+    const result = await this.paymentService.handlePaymentReturn(query);
+
+    if (result.code === '00') {
+      return {
+        code: result.code,
+        message: this.i18n.t('common-message.booking.vnpayReturn.success'),
+      };
+    } else {
+      return {
+        code: result.code,
+        message: this.i18n.t('common-message.booking.vnpayReturn.fail'),
+      };
+    }
   }
 
   @ApiBearerAuth()
@@ -141,14 +187,15 @@ export class BookingCustomerController {
       },
       include: {
         Tour: {
-          include: {
+          select: {
+            id: true,
+            name: true,
+            price: true,
+            guideMeetingAddress: true,
+            numberOfHours: true,
+            numberOfPeople: true,
             City: true,
-            TourImage: true,
-            Review: {
-              where: {
-                userId: user.data.id
-              }
-            },
+            TourImage: true
           }
         }
       }
@@ -159,48 +206,6 @@ export class BookingCustomerController {
       whereInput,
       options?.page,
       options?.perPage,
-    )
-  }
-
-  @ApiBearerAuth()
-  @Roles(UserRole.ADMIN, UserRole.STAFF, UserRole.CUSTOMER)
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Patch('cancel/:id')
-  async cancelBooking(@UserDecorator() user: IUserJwt, @Param('id', ParseIdPipe) id: number, @Body() body: CancelBookingDto) {
-    const booking = await this.bookingService.findOne({
-      where: {
-        id: id,
-        userId: user.data.id
-      },
-      include: {
-        Tour: {
-          include: {
-            City: true,
-            TourImage: true,
-            Review: true,
-          }
-        }
-      }
-    });
-
-    if (!booking)
-      throw new BaseException(Errors.ITEM_NOT_FOUND(this.i18n.t('common-message.booking.cancelBooking.not_found')));
-
-    if (booking.status === BookingStatus.CANCELLED)
-      throw new BaseException(Errors.BAD_REQUEST(this.i18n.t('common-message.booking.cancelBooking.already_cancelled')));
-
-    const keyNotInDto = Object.keys(body).find((key: keyof CancelBookingDto) => !CancelBookingDtoKeys.includes(key))
-    if (keyNotInDto) throw new BaseException(Errors.BAD_REQUEST(this.i18n.t('common-message.booking.cancelBooking.wrong_parameter', { keyNotInDto })));
-
-    if (booking.status !== BookingStatus.PAYMENT_PENDING)
-      throw new BaseException(Errors.BAD_REQUEST(this.i18n.t('common-message.booking.cancelBooking.cannot_cancel')));
-
-    return await this.bookingService.update(
-      booking.id,
-      {
-        status: BookingStatus.CANCELLED,
-        cancelReason: body.cancelReason
-      }
     )
   }
 }

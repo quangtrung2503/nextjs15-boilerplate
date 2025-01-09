@@ -39,18 +39,20 @@ export class TourCustomerController {
     };
 
     if (options.textSearch) {
-      const searchNumber = Number(options.textSearch);
-
       // @ts-ignore
       where.AND.push({
         OR: [
           { name: { contains: options.textSearch } },
           {
-            numberOfPeople: !isNaN(searchNumber)
-              ? { gte: searchNumber - 5, lte: searchNumber + 5 }  // Xấp xỉ ±5
-              : undefined
+            TourDestination: {
+              some: {
+                Destination: {
+                  name: { contains: options.textSearch }
+                }
+              }
+            }
+
           },
-          { price: !isNaN(searchNumber) ? { gte: searchNumber * 0.9, lte: searchNumber * 1.1 } : undefined } // ±10% giá
         ]
       });
     }

@@ -188,28 +188,63 @@
     "create": {
       "wrong_parameter": "{keyNotInDto} is not defined in parameters",
       "tour_not_found": "The tour not found or not active",
-      "already_booked": "You have already booked this tour",
       "invalid_start_date": "Booking start date cannot be in the past",
       "invalid_end_date": "Booking end date must be after booking start date",
       "invalid_number_of_guests": "The number of guests must be greater than 0"
     },
-    "uploadPaymentProof": {
+    "getPaymentUrl": {
       "not_found": "Booking",
-      "invalid_status_for_payment": "Booking status must be pending payment",
-      "wrong_parameter": "{keyNotInDto} is not defined in the parameters"
+      "cancelled": "Booking has been canceled",
+      "already_paid": "Booking has been paid",
+      "completed": "Booking has been completed",
+      "invalid_status": "Booking status is invalid"
     },
-    "cancelBooking": {
+    "vnpayReturn": {
+      "success": "Payment successful",
+      "fail": "Payment failed",
+      "not_found": "The payment",
+      "invalid_booking_status": "Invalid booking status"
+    },
+    "requestCancel": {
       "not_found": "Booking",
       "already_cancelled": "Booking has been cancelled previously",
-      "wrong_parameter": "{keyNotInDto} is not defined in the parameters",
       "cannot_cancel": "Booking cannot be canceled"
+    },
+    "findOne": {
+      "not_found": "Booking"
     },
     "updateBooking": {
       "wrong_parameter": "{keyNotInDto} is not defined in parameters",
       "not_found": "Booking",
-      "invalid_start_date": "Booking start date cannot be in the past",
-      "invalid_end_date": "Booking end date must be after booking start date",
-      "invalid_number_of_guests": "The number of guests must be greater than 0"
+      "invalid_status_update": "Unable to update booking status to PENDING"
+    },
+    "confirmBooking": {
+      "wrong_parameter": "{keyNotInDto} is not defined in parameters",
+      "not_found": "Booking",
+      "invalid_amount_paid": "The amount paid by the customer is not enough"
+    }
+  },
+  "request-refund": {
+    "create": {
+      "booking_not_found": "The booking does not exist",
+      "wrong_parameter": "{keyNotInDto} is not defined in the parameters",
+      "expired_time": "Refunds can only be requested within 3 days of booking",
+      "pending": "The booking has not been paid",
+      "cancelled": "The booking has been canceled",
+      "completed": "The booking has been completed"
+    },
+    "findOne": {
+      "not_found": "Request refund"
+    },
+    "update": {
+      "not_found": "Request refund",
+      "wrong_parameter": "{keyNotInDto} is not defined in the parameters",
+      "approved": "Unable to update, refund request approved",
+      "rejected": "Unable to update, refund request rejected"
+    },
+    "updateStatus": {
+      "wrong_parameter": "{keyNotInDto} is not defined in the parameters",
+      "not_found": "Request refund"
     }
   },
   "review": {
@@ -239,21 +274,6 @@
     },
     "remove": {
       "not_found": "The video"
-    }
-  },
-  "bank_account": {
-    "create": {
-      "wrong_parameter": "{keyNotInDto} is not defined in parameters"
-    },
-    "findOne": {
-      "not_found": "The bank account"
-    },
-    "update": {
-      "wrong_parameter": "{keyNotInDto} is not defined in parameters",
-      "not_found": "The bank account"
-    },
-    "remove": {
-      "not_found": "The bank account"
     }
   },
 

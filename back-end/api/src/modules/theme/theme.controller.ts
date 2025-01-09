@@ -43,7 +43,7 @@ export class ThemeController {
     });
 
     return await this.themeService.update(newTheme.id, {
-      slug: `${convertToEn(newTheme.name.split(' ').join('-'))}-i.${newTheme.id}`
+      slug: `${convertToEn(newTheme.name.split(' ').join('-'))}-i-${newTheme.id}`
     })
   }
 
@@ -111,7 +111,7 @@ export class ThemeController {
 
     const updatedData: Prisma.ThemeUpdateInput = { ...body };
     if (body.name && body.name !== existingTheme.name) {
-      updatedData.slug = `${convertToEn(body.name.split(' ').join('-'))}-i.${id}`;
+      updatedData.slug = `${convertToEn(body.name.split(' ').join('-'))}-i-${id}`;
     }
 
     return this.themeService.update(id, updatedData);
