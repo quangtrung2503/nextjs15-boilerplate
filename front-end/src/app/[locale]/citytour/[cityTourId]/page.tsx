@@ -26,10 +26,13 @@ import Loading from "@/components/common/Loading";
 import { useParams } from "next/navigation";
 import { stat } from "fs";
 import { useEffect, useState } from "react";
+import { BookingStatus, PaymentMethod } from "@/helpers/common";
 
 const CityTourDetail = () => {
   //! prop + state + const
   const intFilter: FiltersGetReviewCustomer = { page: 1, perPage: 10 };
+  const VND = parseFloat(`${process.env.VND}`);
+
   //! Hook
   const slug = useParams();
   const api = slug.cityTourId as string;
@@ -112,9 +115,9 @@ const CityTourDetail = () => {
       endDate: values?.endDate,
       numberOfAdults: values.noOfGuest.adultQuantity,
       numberOfChildren: values.noOfGuest.childQuantity || 0,
-      totalPrice: priceTour * (values.noOfGuest.adultQuantity + values.noOfGuest.childQuantity) *23000,
-      status: "PENDING",
-      paymentMethod: "VNPAY"
+      totalPrice: priceTour * (values.noOfGuest.adultQuantity + values.noOfGuest.childQuantity) * VND,
+      status: BookingStatus.PENDING,
+      paymentMethod: PaymentMethod.VNPAY
     };
     try {
       const res = await tourCustomerServices.bookTourCustomer(body);

@@ -20,10 +20,6 @@ export interface RequestGetReviewCustomer extends CommonFilters {
   ratings?: number[]
 }
 
-export type ResponseTourCustomerList = AxiosResponse<ResponseCommon<ResponseList<Tour[]>>>;
-export type ResponseTourCustomer = ResponseCommon<ApiResponse>;
-export type ResponseTourCustomerReview = ResponseCommon<ReviewData>;
-
 export interface ExtraData<T> extends ResponseList<T>{
   stats: Stats,
 }
@@ -31,25 +27,26 @@ export interface ExtraReview<T>  {
   data: ExtraData<T>
 }
 
+export type ResponseTourCustomerList = AxiosResponse<ResponseCommon<ResponseList<Tour[]>>>;
+export type ResponseTourGalleryList = AxiosResponse<ResponseCommon<ResponseList<TourImage[]>>>;
+export type ResponseTourDestinationList = AxiosResponse<ResponseCommon<ResponseList<Tour[]>>>;
 export type ResponseReviewCustomer = AxiosResponse<ExtraReview<CustomerReview[]>>
+
+
+export type ResponseTourCustomer = ResponseCommon<ApiResponse>;
+export type ResponseTourCustomerReview = ResponseCommon<ReviewData>;
+export type ResponseTourBestTrending = ResponseCommon<Tour>;
 
 export interface FiltersGetGallery extends CommonFilters {}
 export interface RequestGetGallery extends CommonFilters {}
 
-export type ResponseTourGalleryList = AxiosResponse<
-  ResponseCommon<ResponseList<TourImage[]>>
->;
-
 export interface FiltersGetTourDestination extends CommonFilters {}
 export interface RequestGetTourDestination extends CommonFilters {}
 
-export type ResponseTourDestinationList = AxiosResponse<
-  ResponseCommon<ResponseList<Tour[]>>
->;
 export interface FiltersGetTourBestTrending extends CommonFilters {}
 export interface RequestGetTourBestTrending extends CommonFilters {}
 
-export type ResponseTourBestTrending = ResponseCommon<Tour>;
+
 
 class TourService {
   getTours(configs?: AxiosRequestConfig) {
@@ -80,8 +77,12 @@ class TourService {
   bookTourCustomer(tour: BookTour, configs?: AxiosRequestConfig) {
     return httpService.post(`${apiUrls.BOOKING_TOUR_URL}`, tour)
   }
+  
   reloadPayByVnpay(url: string, configs?: AxiosRequestConfig) {
     return httpService.get(`${apiUrls.VNPAY_RETURN_URL}${url}`)
+  }
+  getBookingHistory(configs?: AxiosRequestConfig) {
+    return httpService.get(`${apiUrls.BOOKING_TOUR_URL}`)
   }
 }
 

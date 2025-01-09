@@ -3,31 +3,10 @@ import CommonIcons from "@/components/CommonIcons";
 import { Box, Breadcrumbs, CardMedia, Typography, Tooltip } from "@mui/material";
 import { useTranslations } from "next-intl";
 import { CommonButton } from "@/components/common/Button";
+import { HistoryBookingTour } from "@/services/modules/tour/interfaces/tour";
+import { statusColors } from "@/utils/utils";
 
-const statusColors: Record<"PENDING" | "CONFIRMED" | "COMPLETED" | "CANCELLED" | "REFUNDED", string> = {
-  PENDING: "tw-bg-yellow-100 tw-text-yellow-600",
-  CONFIRMED: "tw-bg-blue-100 tw-text-blue-600",
-  COMPLETED: "tw-bg-green-100 tw-text-green-600",
-  CANCELLED: "tw-bg-red-100 tw-text-red-600",
-  REFUNDED: "tw-bg-purple-100 tw-text-purple-600",
-};
-
-type Tour = {
-  id: number;
-  orderId: string;
-  bookingDate: string;
-  status: keyof typeof statusColors;
-  name: string;
-  startDate: string;
-  endDate: string;
-  location: string;
-  people: number;
-  pricePerTour: number;
-  totalPrice: number;
-  image: string;
-};
-
-const tours: Tour[] = [
+const tours: HistoryBookingTour[] = [
   {
     id: 1,
     orderId: "55244324",
@@ -100,8 +79,8 @@ const tours: Tour[] = [
   },
 ];
 
-const groupToursByDate = (tours: Tour[]) => {
-  return tours.reduce((groups: Record<string, Tour[]>, tour) => {
+const groupToursByDate = (tours: HistoryBookingTour[]) => {
+  return tours.reduce((groups: Record<string, HistoryBookingTour[]>, tour) => {
     const date = tour.bookingDate;
     if (!groups[date]) {
       groups[date] = [];
