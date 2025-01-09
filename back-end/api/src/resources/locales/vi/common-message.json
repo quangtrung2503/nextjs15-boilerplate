@@ -188,28 +188,63 @@
     "create": {
       "wrong_parameter": "{keyNotInDto} không được định nghĩa trong các tham số",
       "tour_not_found": "Chuyến đi không tồn tại hoặc không hoạt động",
-      "already_booked": "Bạn đã đặt chuyến đi này rồi",
       "invalid_start_date": "Ngày bắt đầu đi không được là ngày quá khứ",
       "invalid_end_date": "Ngày kết thúc đi phải sau ngày bắt đầu đi",
       "invalid_number_of_guests": "Số lượng khách phải lớn hơn 0"
     },
-    "uploadPaymentProof": {
+    "getPaymentUrl": {
       "not_found": "Đơn đặt",
-      "invalid_status_for_payment": "Trạng thái đơn đặt phải là chờ thanh toán",
-      "wrong_parameter": "{keyNotInDto} không được định nghĩa trong các tham số"
+      "cancelled": "Đơn đặt đã bị hủy",
+      "already_paid": "Đơn đặt đã được thanh toán",
+      "completed": "Đơn đặt đã hoàn thành",
+      "invalid_status": "Trạng thái đơn đặt không hợp lệ"
     },
-    "cancelBooking": {
+    "vnpayReturn": {
+      "success": "Thanh toán thành công",
+      "fail": "Thanh toán thất bại",
+      "not_found": "Không tìm thấy thông tin thanh toán",
+      "invalid_booking_status": "Trạng thái đơn đặt không hợp lệ"
+    },
+    "requestCancel": {
       "not_found": "Đơn đặt",
       "already_cancelled": "Đơn đặt đã được hủy trước đó",
-      "wrong_parameter": "{keyNotInDto} không được định nghĩa trong các tham số",
       "cannot_cancel": "Không thể hủy đơn đặt"
+    },
+    "findOne": {
+      "not_found": "Đơn đặt"
     },
     "updateBooking": {
       "wrong_parameter": "{keyNotInDto} không được định nghĩa trong các tham số",
       "not_found": "Đơn đặt",
-      "invalid_start_date": "Ngày bắt đầu đi không được là ngày quá khứ",
-      "invalid_end_date": "Ngày kết thúc đi phải sau ngày bắt đầu đi",
-      "invalid_number_of_guests": "Số lượng khách phải lớn hơn 0"
+      "invalid_status_update": "Không thể cập nhật trạng thái đơn đặt thành Chờ xác nhận"
+    },
+    "confirmBooking": {
+      "wrong_parameter": "{keyNotInDto} không được định nghĩa trong các tham số",
+      "not_found": "Đơn đặt",
+      "invalid_amount_paid": "Số tiền khách trả chưa đủ"
+    }
+  },
+  "request-refund": {
+    "create": {
+      "booking_not_found": "Đơn đặt không tồn tại",
+      "wrong_parameter": "{keyNotInDto} không được định nghĩa trong các tham số",
+      "expired_time": "Chỉ được yêu cầu hoàn tiền trong khoảng 3 ngày kể từ khi đặt",
+      "pending": "Đơn đặt chưa được thanh toán",
+      "cancelled": "Đơn đặt đã bị hủy",
+      "completed": "Đơn đặt đã hoàn thành"
+    },
+    "findOne": {
+      "not_found": "Yêu cầu hoàn tiền"
+    },
+    "update": {
+      "not_found": "Yêu cầu hoàn tiền",
+      "wrong_parameter": "{keyNotInDto} không được định nghĩa trong các tham số",
+      "approved": "Không thể cập nhật, yêu cầu hoàn tiền đã được xác nhận",
+      "rejected": "Không thể cập nhật, yêu cầu hoàn tiền đã bị từ chối"
+    },
+    "updateStatus": {
+      "wrong_parameter": "{keyNotInDto} không được định nghĩa trong các tham số",
+      "not_found": "Yêu cầu hoàn tiền"
     }
   },
   "review": {
@@ -241,22 +276,7 @@
       "not_found": "Video"
     }
   },
-  "bank_account": {
-    "create": {
-      "wrong_parameter": "{keyNotInDto} không được định nghĩa trong các tham số"
-    },
-    "findOne": {
-      "not_found": "Tài khoản ngân hàng"
-    },
-    "update": {
-      "wrong_parameter": "{keyNotInDto} không được định nghĩa trong các tham số",
-      "not_found": "Tài khoản ngân hàng"
-    },
-    "remove": {
-      "not_found": "Tài khoản ngân hàng"
-    }
-  },
-
+  
   "validation": {
     "invalid_id": "ID phải là một số hợp lệ"
   },

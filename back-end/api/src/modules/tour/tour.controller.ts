@@ -109,7 +109,7 @@ export class TourController {
     });
 
     return await this.tourService.update(newTour.id, {
-      slug: `${convertToEn(newTour.name.split(' ').join('-'))}-i.${newTour.id}`
+      slug: `${convertToEn(newTour.name.split(' ').join('-'))}-i-${newTour.id}`
     })
   }
 
@@ -120,18 +120,20 @@ export class TourController {
   async findAll(@Query() options: FilterTourDto) {
     let where: Prisma.TourWhereInput = { AND: [] };
     if (options.textSearch) {
-      const searchNumber = Number(options.textSearch);
-
       // @ts-ignore
       where.AND.push({
         OR: [
           { name: { contains: options.textSearch } },
           {
-            numberOfPeople: !isNaN(searchNumber)
-              ? { gte: searchNumber - 5, lte: searchNumber + 5 }  // Xấp xỉ ±5
-              : undefined
+            TourDestination: {
+              some: {
+                Destination: {
+                  name: { contains: options.textSearch }
+                }
+              }
+            }
+
           },
-          { price: !isNaN(searchNumber) ? { gte: searchNumber * 0.9, lte: searchNumber * 1.1 } : undefined } // ±10% giá
         ]
       });
     }
@@ -404,7 +406,7 @@ export class TourController {
 
     if (body.name) {
       updateData.name = body.name;
-      updateData.slug = `${convertToEn(body.name.split(' ').join('-'))}-i.${id}`;
+      updateData.slug = `${convertToEn(body.name.split(' ').join('-'))}-i-${id}`;
     }
 
     return await this.tourService.update(id, updateData);

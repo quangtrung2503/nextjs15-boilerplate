@@ -26,7 +26,8 @@ import { BookingModule } from './modules/booking/booking.module';
 import { ReviewModule } from './modules/review/review.module';
 import { VideoModule } from './modules/video/video.module';
 import { TagModule } from './modules/tag/tag.module';
-import { BankAccountModule } from './modules/bank-account/bank-account.module';
+import { StatsModule } from './modules/stats/stats.module';
+import { RequestRefundModule } from './modules/request-refund/request-refund.module';
 
 @Module({
   imports: [
@@ -60,8 +61,9 @@ import { BankAccountModule } from './modules/bank-account/bank-account.module';
     TourModule,
     WishlistModule,
     BookingModule,
-    BankAccountModule,
-    ReviewModule
+    ReviewModule,
+    RequestRefundModule,
+    StatsModule
   ],
   controllers: [AppController],
   providers: [

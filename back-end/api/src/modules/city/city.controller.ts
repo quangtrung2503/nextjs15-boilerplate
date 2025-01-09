@@ -76,7 +76,7 @@ export class CityController {
     });
 
     return await this.cityService.update(newCity.id, {
-      slug: `${convertToEn(newCity.name.split(' ').join('-'))}-i.${newCity.id}`
+      slug: `${convertToEn(newCity.name.split(' ').join('-'))}-i-${newCity.id}`
     });
   }
 
@@ -206,7 +206,7 @@ export class CityController {
 
     if (body.name && body.name !== existingCity.name) {
       updatedData.name = body.name;
-      updatedData.slug = `${convertToEn(body.name.split(' ').join('-'))}-i.${id}`;
+      updatedData.slug = `${convertToEn(body.name.split(' ').join('-'))}-i-${id}`;
     }
 
     if (body.tagIds && body.tagIds.length > 0) {

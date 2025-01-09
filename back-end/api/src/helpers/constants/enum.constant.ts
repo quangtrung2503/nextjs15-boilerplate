@@ -76,16 +76,21 @@ export enum TourSortField {
 }
 
 export enum BookingStatus {
-  PAYMENT_PENDING = 'PAYMENT_PENDING',
-  PAYMENT_UPLOADED = 'PAYMENT_UPLOADED',
-  PAYMENT_CONFIRMED = 'PAYMENT_CONFIRMED',
+  PENDING = 'PENDING',
+  CONFIRMED = 'CONFIRMED',
   COMPLETED = 'COMPLETED',
   CANCELLED = 'CANCELLED',
-  REFUNDED = 'REFUNDED'
 }
 
 export enum PaymentMethod {
-  QR_CODE = 'QR Code',
+  VNPAY = 'VNPAY'
+}
+
+export enum PaymentStatus {
+  PENDING = 'PENDING',
+  SUCCESS = 'SUCCESS',
+  FAILED = 'FAILED',
+  EXPIRED = 'EXPIRED'
 }
 
 export enum BookingCancellationReason {
@@ -99,6 +104,12 @@ export enum BookingCancellationReason {
   FOUND_BETTER_OPTION = 'Found a Better Option', // Tìm được lựa chọn khác phù hợp hơn
   PERSONAL_REASONS = 'Personal Reasons', // Lý do cá nhân
   OTHER = 'Other', // Lý do khác không cụ thể
+}
+
+export enum RequestRefundStatus {
+  PENDING = 'PENDING',
+  APPROVED = 'APPROVED',
+  REJECTED ='REJECTED'
 }
 
 export enum Rating {
