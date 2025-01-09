@@ -6,7 +6,7 @@ import RHFField from "@/components/customReactFormField/ReactFormField";
 import { useNotifications } from "@/helpers/toast";
 import CommonIcons from "@/components/CommonIcons";
 import { useTranslations } from "next-intl";
-import useGetTour from "@/services/modules/tour/hooks/useGetTour";
+import useGetTour from "@/services/modules/tourAdmin/hooks/useGetTour";
 import CheckboxField from "@/components/customReactFormField/CheckBoxField";
 import useGetThemes from "@/services/modules/theme/hook/useGetAllTheme";
 import useFiltersHandler from "@/hooks/useFiltersHandler";
@@ -16,7 +16,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { getOptionEnum, Package, Transport } from "@/helpers/common";
 import { isArray } from "lodash";
 import apiUrls from "@/constants/apiUrls";
-import tourServices from "@/services/modules/tour/tour.services";
+import tourServices from "@/services/modules/tourAdmin/tour.services";
 import { useGet } from "@/stores/useStore";
 import cachedKeys from "@/constants/cachedKeys";
 import Loading from "@/components/common/Loading";
@@ -80,7 +80,7 @@ const CreateEditTour: FC<createEditTourProps> = (props) => {
           const startDate = new Date(value);
           const today = new Date();
           today.setHours(0, 0, 0, 0); // Đặt thời gian về đầu ngày
-          return startDate > today; // `startDate` phải sau ngày hôm nay
+          return startDate >= today; // `startDate` phải sau ngày hôm nay
         }
       ),
       endDate: yup.string().required(t("endDateRequire"))

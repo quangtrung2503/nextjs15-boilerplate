@@ -1,11 +1,13 @@
 import { useEffect, useState, useCallback, useRef } from "react";
-import cloneDeep from "lodash/cloneDeep";
-import { isEmpty, isObject } from "lodash";
-import { ResponseList } from "@/interfaces/common";
+import { cloneDeep, isEmpty, isObject } from "lodash";
+
 import { useSave } from "@/stores/useStore";
+import axios, { AxiosError, AxiosResponse } from "axios";
 import { useNotifications } from "@/helpers/toast";
-import tourServices, { FiltersGetTours, RequestGetTours, ResponseTourList } from "../tour.services";
-import { Tour } from "../interfaces/tour";
+import { ResponseList } from "@/interfaces/common";
+import destinationCustomerServices from "../destinationCustomer.services";
+import { Destination } from "../interface/destination";
+import { ResponseDestinationList } from "../destination.services";
 
 /********************************************************
  * SNIPPET GENERATED
@@ -21,74 +23,63 @@ import { Tour } from "../interfaces/tour";
  ********************************************************/
 
 //* Check parse body request
-const parseRequest = (filters: FiltersGetTours): RequestGetTours => {
-  return cloneDeep({
-    page: filters.page,
-    perPage: filters.perPage,
-    textSearch: filters.textSearch,
-    sortField: filters.sortField,
-    sortOrder: filters.sortOrder,
-  });
-};
+const requestAPI = destinationCustomerServices.getDestinations;
 
-const requestAPI = tourServices.getTours;
-
-const useGetTours = (
-  filters: FiltersGetTours,
+const useGetAllDestinationCustomer = (
   options: { isTrigger?: boolean; refetchKey?: string } = {
     isTrigger: true,
     refetchKey: "",
-  }
+  },
 ) => {
   //! State
   const { isTrigger = true, refetchKey = "" } = options;
   const signal = useRef(new AbortController());
   const save = useSave();
-  const [data, setData] = useState<ResponseList<Tour[]>>();
+  const [data, setData] = useState<ResponseList<Destination[]>>();
   const [loading, setLoading] = useState(false);
   const [refetching, setRefetching] = useState(false);
   const [error, setError] = useState<unknown>(null);
-  const [hasMore, setHasMore] = useState(false);
-  const {showError} = useNotifications();
-
+  const { showError } = useNotifications();
   //! Function
-  const fetch: () => Promise<ResponseTourList> | undefined = useCallback(() => {
-    if (!isTrigger) {
-      return;
-    }
+  const fetch: () => Promise<ResponseDestinationList> | undefined =
+    useCallback(() => {
+      if (!isTrigger) {
+        return;
+      }
+      return new Promise((resolve, reject) => {
+        (async () => {
+          try {
+            // const nextFilters = parseRequest(filters);
+            const response = await requestAPI({
+              signal: signal.current.signal,
+            });
+            resolve(response);
+          } catch (error) {
+            // setError(error);
+            reject(error);
+          }
+        })();
+      });
+    }, [isTrigger]);
 
-    return new Promise((resolve, reject) => {
-      (async () => {
-        try {
-          const nextFilters = parseRequest(filters);
-          const response = await requestAPI(nextFilters, {
-            signal: signal.current.signal,
-          });
-          resolve(response);
-        } catch (error) {
-          setError(error);
-          reject(error);
-        }
-      })();
-    });
-  }, [filters, isTrigger]);
+  const checkConditionPass = useCallback(
+    (response: ResponseDestinationList) => {
+      //* Check condition of response here to set data
+      if (isObject(response?.data)) {
+        setData(response?.data?.data);
+      }
+    },
+    [],
+  );
 
-  const checkConditionPass = useCallback((response: ResponseTourList) => {
-    //* Check condition of response here to set data
-    if (isObject(response?.data)) {
-      setData(response?.data.data);
-      setHasMore(data?data.currentPage < data.totalPage : false);
-    }
-  }, []);
-
-  //* Refetch impliTour (without changing loading state)
+  //* Refetch implicity (without changing loading state)
   const refetch = useCallback(async () => {
     try {
       if (signal.current) {
         signal.current.abort();
         signal.current = new AbortController();
       }
-
+      console.log("refetch");
       setRefetching(true);
       const response = await fetch();
       if (response) {
@@ -97,7 +88,7 @@ const useGetTours = (
 
       setRefetching(false);
     } catch (error: any) {
-      if (!error.isCanceled) {
+      if (!axios.isCancel(error)) {
         showError(error);
       }
     }
@@ -115,9 +106,11 @@ const useGetTours = (
       if (response) {
         checkConditionPass(response);
       }
-      setLoading(false);
-    } catch (error) {
-      showError(error);
+    } catch (error: any) {
+      if (!axios.isCancel(error)) {
+        showError(error);
+      }
+    } finally {
       setLoading(false);
     }
   }, [fetch, checkConditionPass]);
@@ -134,14 +127,14 @@ const useGetTours = (
           checkConditionPass(response);
         }
       } catch (error) {
-        showError(error);
+        if (!axios.isCancel(error)) {
+          showError(error);
+        }
       } finally {
         setLoading(false);
       }
     };
-
     fetchAPI();
-
     return () => {
       if (signal.current) {
         signal.current.abort();
@@ -156,9 +149,8 @@ const useGetTours = (
     refetch,
     refetchWithLoading,
     refetching,
-    hasMore,
     setData,
   };
 };
 
-export default useGetTours;
+export default useGetAllDestinationCustomer;

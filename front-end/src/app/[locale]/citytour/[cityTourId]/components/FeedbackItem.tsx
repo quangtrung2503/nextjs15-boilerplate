@@ -1,38 +1,29 @@
 import React from "react";
 import CommonStyles from "@/components/common";
-import CommonIcons from "@/components/CommonIcons";
 import { useTranslations } from "next-intl";
+import {
+  CustomerReview,
+} from "@/services/modules/tour/interfaces/tour";
+import moment from "moment";
+import { DateTimeFormat } from "@/helpers/common";
 
 interface FeedbackData {
-  avatar: string;
-  name: string;
-  rating: number;
-  date: string;
-  title: string;
-  content: string;
-  isVerified: boolean;
-  helpful: boolean;
+  items?: CustomerReview;
 }
 
-const FeedbackItem: React.FC<FeedbackData> = ({
-  avatar,
-  name,
-  rating,
-  date,
-  title,
-  content,
-  isVerified,
-  helpful,
-}) => {
-  const t = useTranslations("cityTour.cityTourDetail");
+const FeedbackItem: React.FC<FeedbackData> = (props: FeedbackData) => {
+  const t = useTranslations('cityTour.cityTourDetail');
+  const { items } = props;
+  const { User, rating, title, content, createdAt } = items ?? {};
+
   return (
     <CommonStyles.Box className="tw-py-5 tw-border-b">
       <CommonStyles.Box className="tw-flex tw-gap-10 tw-items-start">
         <CommonStyles.Box className="tw-flex tw-items-center tw-gap-5">
           <CommonStyles.Avatar
             className="tw-border-solid tw-border-[4px] tw-border-white tw-shadow-lg"
-            src={avatar}
-            alt={name}
+            src={User?.avatar}
+            alt={User?.name}
           />
           <CommonStyles.Box className="tw-flex tw-flex-col tw-gap-y-1">
             <CommonStyles.Rating valueTable={rating} readOnly />
@@ -40,13 +31,13 @@ const FeedbackItem: React.FC<FeedbackData> = ({
               type="size15Weight600"
               className="tw-flex tw-items-center tw-gap-2"
             >
-              {name}
+              {User?.name}
             </CommonStyles.Typography>
             <CommonStyles.Typography
               type="size13Weight600"
               className="tw-text-accent_gray_500"
             >
-              {date}
+              {createdAt ? moment(createdAt).format(DateTimeFormat.FullDate) : t('unknownDate')}
             </CommonStyles.Typography>
           </CommonStyles.Box>
         </CommonStyles.Box>

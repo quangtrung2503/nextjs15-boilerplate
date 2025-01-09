@@ -11,8 +11,8 @@ import { CommonButton } from "@/components/common/Button";
 import TableCommon from "@/components/common/Table";
 import CommonDialog from "@/components/common/Dialog";
 import { useNotifications } from "@/helpers/toast";
-import tourServices from "@/services/modules/tour/tour.services";
-import useGetTours from "@/services/modules/tour/hooks/useGetAllTour";
+import tourServices from "@/services/modules/tourAdmin/tour.services";
+import useGetTours from "@/services/modules/tourAdmin/hooks/useGetAllTour";
 import { useTranslations } from "next-intl";
 import { headCells } from "./component/headCells";
 import CreateEditTour from "./component/createEditTour";
@@ -34,8 +34,6 @@ const Tour = () => {
   const [id, setId] = useState<number | null>(null);
   const {showError} = useNotifications();
   const t = useTranslations();
-
-
   const handleEditId = (id: number) => {
     setId(id);
     toggle();

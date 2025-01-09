@@ -1,3 +1,9 @@
-export default function Loading() {
-    return <p>Loading...</p>
+"use client"
+import Loading from "@/components/common/Loading";
+
+export default function LoadingPage() {
+  return (
+    <Loading />
+  );
+
 }

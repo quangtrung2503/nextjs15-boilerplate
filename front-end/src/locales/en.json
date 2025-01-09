@@ -1,13 +1,25 @@
 {
   "feedback": {
     "title": "Customer Review",
+    "guide": "Guide",
+    "safety": "Safety",
     "reviews": "reviews",
     "filter": "Filtering",
     "recommendPlaceholder": "Recommend",
     "travelerTypePlaceholder": "Traveler Type",
     "ratingPlaceholder": "Rating",
     "searchPlaceholder": "Search Here",
-    "viewMoreComment": "View More Comments"
+    "viewMoreComment": "View More Comments",
+    "transportation": "Transportation",
+    "valueForMoney": "Value for money",
+    "stars": {
+      "all": "All",
+      "5rate": "5 Rate",
+      "4rate": "4 Rate",
+      "3rate": "3 Rate",
+      "2rate": "2 Rate",
+      "1rate": "1 Rate"
+    }
   },
   "card": {
     "duration": "Duration",
@@ -175,6 +187,8 @@
     "titleSpecialFoods": "Special Foods",
     "titleRiverActivity": "River Activity",
     "cityTourDetail": {
+      "people": "People",
+      "hours": "hours",
       "booking": "Booking",
       "noOfGuest": "No. Of Guest",
       "adults": "Adults",
@@ -185,6 +199,18 @@
       "currency": "$",
       "relatedToursInToday": "Related tours in Today",
       "relatedToursIn": "Related tours in",
+      "duration": "Duration",
+      "numberOfPeople": "Number of people",
+      "guideMeetingAddress": "Guide meeting address",
+      "description": "Description",
+      "activity": "Activity",
+      "includedRequire": "What is included / not  included",
+      "safety": "Safety",
+      "details": "Details",
+      "unknownDate": "Unknown Date",
+      "unknownCity": "Unknown City",
+      "unknownTransport": "Unknown Transport",
+      "unknownPlan": "Unknown Plan",
       "formBooking": {
         "confirmBooking": "Confirm Booking",
         "saveToWishlist": "Save to Wishlist",
@@ -496,6 +522,54 @@
     "create": "Create",
     "edit": "Edit"
   },
+  "bookingAdmin": {
+    "placeholderSearch": "Search booking",
+    "name": "Tour Booker",
+    "tour": "Tour name",
+    "startDate": "Start date",
+    "endDate": "End date",
+    "totalPrice": "Total price",
+    "amountPaid": "Amount paid",
+    "status": "Status",
+    "bookingCode": "Booking code",
+    "action": "Action",
+    "confirm": "Confirm",
+    "editBooking": "Edit booking",
+    "numberOfAdults": "Number of adults",
+    "numberOfChildren": "Number of children",
+    "note": "Note",
+    "editSuccess": "Edit success"
+  },
+  "confirmTour":{
+    "code": "Code",
+    "confirmSuccess": "Confirm success",
+    "guestInformation": "Guest information",
+    "guestName": "Guest name",
+    "phoneNumber": "Phone number",
+    "email": "Email",
+    "address": "Address",
+    "numberOfAdults":"Number of adults",
+    "numberOfChildren":"Number of children",
+    "tourDestination": "Tour destination",
+    "paidInformation": "Paid information",
+    "amountPaid":"Amount paid",
+    "confirm": "Confirm",
+    "confirmTitle": "Are you sure confirm this booking?",
+    "cancel": "Cancel" 
+  },
+  "adminDashboard": {
+    "totalRevenue": "Total revenue",
+    "totalBookings": "Total bookings",
+    "reportOverview": "Report overview",
+    "ordersOverview": "Orders overview",
+    "more": "more",
+    "thisMonth": "this month",
+    "transactions": "Transactions",
+    "name": "Name",
+    "status": "Status",
+    "date": "Date",
+    "amount": "Amount"
+  },
   "action": "Action",
   "noFileSelected": "No file selected",
   "search": "Search",
@@ -530,11 +604,19 @@
     "currentPassword": "Current Password",
     "newPassword": "New Password",
     "confirmPassword": "Confirm Password",
-    "menuProfile": {
+    "paySuccess": "Payment Success",
+    "payError": "Payment Error",
+     "menuProfile": {
       "information": "Profile Information",
       "booking": "Booking History",
       "newsletter": "Newsletter Subscription",
       "manager": "Manage Notifications"
+    },
+    "bookingHistory": {
+      "booking": "Booking History",
+      "peoples": "peoples",
+      "people": "people",
+      "cancellation": "Tour Cancellation"
     }
   },
   "uploadField": {
@@ -551,5 +633,6 @@
     "newPasswordRequired": "New password is required",
     "confirmPasswordRequired": "Confirm password is required",
     "passwordsMustMatch": "Passwords must match"
-  }
+  },
+  "welcome": "Welcome"
 }

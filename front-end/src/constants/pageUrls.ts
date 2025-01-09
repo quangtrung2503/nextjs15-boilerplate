@@ -10,6 +10,7 @@ const pageUrls = {
     Payment: "/service-package/payment/",
   },
   CityTour: "/citytour",
+  CityTourDetail: (slug: string) =>  `/citytour/${slug}`,
   Admin: {
     Home: '/admin',
     CityPage: '/admin/city',
@@ -24,6 +25,7 @@ const pageUrls = {
     Notification: "/admin/notification",
     User: "/admin/user",
     Tag: "/admin/tag",
+    Booking: "/admin/booking",
     Product: "/admin/product",
   },
   Invoices: "/sales/invoices",

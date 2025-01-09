@@ -19,6 +19,11 @@ import Gallery from '../home/components/Gallery'
 import LatestStories from '../home/components/LatestStories'
 import { mocDataCard } from '../home/HomePage'
 import { yupResolver } from '@hookform/resolvers/yup'
+import useGetAllTourCustomer from '@/services/modules/tour/hooks/useGetAllTourCustomers'
+import apiUrls from '@/constants/apiUrls'
+import useGetAllThemeCustomer from '@/services/modules/theme/hook/useGetAllThemeCustomer'
+import { Duration } from '@/helpers/common'
+import useGetAllDestinationCustomer from '@/services/modules/destination/hook/useGetAllDestinationCustomer'
 
 
 interface Availability {
@@ -29,8 +34,26 @@ interface Filter {
   filter: string,
 }
 const CityTourPage = () => {
+  // Hook
   const t = useTranslations("cityTour");
   const { showSuccess, showError } = useNotifications();
+  const { data } = useGetAllTourCustomer()
+  const { data: dataTheme } = useGetAllThemeCustomer();
+  const themeOptions = dataTheme?.items?.map(theme => ({
+    label: theme.name,
+    value: theme.id,
+  })) || [];
+  const durationOptions = Object.entries(Duration).map(([key, value]) => ({
+    label: value,
+    value: key,
+  }));
+  const { data: dataDuration } = useGetAllDestinationCustomer();
+  const destinationOptions = dataDuration?.items?.map(theme => ({
+    label: theme.name,
+    value: theme.id,
+  })) || [];
+
+  // Validate
   const validateSchema = Yup.object().shape({
     startDate: Yup.date()
       .required(t("cityTourDetail.validations.startDateRequire"))
@@ -50,6 +73,7 @@ const CityTourPage = () => {
     resolver: yupResolver(validateSchema),
   });
 
+  // Form hook
   const { control: ControlFilter, getValues } = useForm<Filter>({
     defaultValues: {
       filter: 'Popularity'
@@ -57,6 +81,7 @@ const CityTourPage = () => {
     reValidateMode: "onSubmit",
     criteriaMode: "all",
   });
+  // Function
   const onSubmit: SubmitHandler<Availability> = async (values: Availability) => {
     const body = {
       startDate: values?.startDate,
@@ -70,6 +95,7 @@ const CityTourPage = () => {
       showError(err);
     }
   };
+
   const sortbyOptions: SelectOption[] = [
     {
       value: 'Popularity',
@@ -80,34 +106,35 @@ const CityTourPage = () => {
       label: "No"
     },
   ]
-  const themeOptions = [
-    { label: "Water activities", value: "water_activities" },
-    { label: "Good for social distancing", value: "good_for_social_distancing" },
-    { label: "Adrenaline", value: "adrenaline" },
-    { label: "Nature", value: "nature" },
-    { label: "Hidden gems", value: "hidden_gems" },
-    { label: "Street art & grafitti", value: "street_art_&_grafitti" },
-    { label: "Food", value: "food" },
-    { label: "Fod", value: "fod" },
-  ];
-  const durationOptions = [
-    { label: "0-3 hours", value: "0-3 hours" },
-    { label: "3-5 hours", value: "3-5 hours" },
-    { label: "5-7 hours", value: "5-7 hours" },
-    { label: "Full day (7+ hours)", value: "full_day_(7+ hours)" },
-    { label: "Multi-day", value: "multi-day" },
-  ];
-  const destinationOptions = [
-    { label: "Biscayne Bay", value: "biscayne_bay" },
-    { label: "Downtown Miami", value: "downtown_miami" },
-    { label: "Wynwood Arts District", value: "wynwood_arts_district" },
-    { label: "Port of Miami", value: "port_of_miami" },
-    { label: "Everglades National Park", value: "everglades_national_park" },
-    { label: "Fisher Island", value: "fisher_island" },
-    { label: "Coconut Grove", value: "food" },
-    { label: "Fod", value: "fod" },
-  ];
+  // const themeOptions = [
+  //   { label: "Water activities", value: "water_activities" },
+  //   { label: "Good for social distancing", value: "good_for_social_distancing" },
+  //   { label: "Adrenaline", value: "adrenaline" },
+  //   { label: "Nature", value: "nature" },
+  //   { label: "Hidden gems", value: "hidden_gems" },
+  //   { label: "Street art & grafitti", value: "street_art_&_grafitti" },
+  //   { label: "Food", value: "food" },
+  //   { label: "Fod", value: "fod" },
+  // ];
+  // const durationOptions = [
+  //   { label: "0-3 hours", value: "0-3 hours" },
+  //   { label: "3-5 hours", value: "3-5 hours" },
+  //   { label: "5-7 hours", value: "5-7 hours" },
+  //   { label: "Full day (7+ hours)", value: "full_day_(7+ hours)" },
+  //   { label: "Multi-day", value: "multi-day" },
+  // ];
+  // const destinationOptions = [
+  //   { label: "Biscayne Bay", value: "biscayne_bay" },
+  //   { label: "Downtown Miami", value: "downtown_miami" },
+  //   { label: "Wynwood Arts District", value: "wynwood_arts_district" },
+  //   { label: "Port of Miami", value: "port_of_miami" },
+  //   { label: "Everglades National Park", value: "everglades_national_park" },
+  //   { label: "Fisher Island", value: "fisher_island" },
+  //   { label: "Coconut Grove", value: "food" },
+  //   { label: "Fod", value: "fod" },
+  // ];
 
+  // Render
   return (
     <CommonStyles.Box className='tw-flex tw-flex-col tw-pt-6 tw-mb-20'>
       {/* <div className='tw-flex tw-flex-col tw-mb-12 tw-py-6'> */}
@@ -201,23 +228,21 @@ const CityTourPage = () => {
           </CommonStyles.Box>
           <CommonStyles.Box className='tw-col-span-9'>
             <CommonStyles.Box className="tw-flex tw-flex-col tw-gap-3 tw-w-full">
-              {Array(10)
-                .fill(null)
-                .map((_, index) => (
-                  <CommonStyles.Box key={index}>
-                    <CardListItem
-                      link=''
-                      src="https://vietnam.travel/sites/default/files/inline-images/Ha%20Giang%20Loop-9.jpg"
-                      title="Alaska: Westminster to Greenwich River Thames"
-                      duration={2}
-                      transport="Transport Facility"
-                      plan="Family Plan"
-                      price={35}
-                      feedback_quantity={500}
-                      feedback_average={4}
-                    />
-                  </CommonStyles.Box>
-                ))}
+              {data?.items?.map((item, index) => (
+                <CommonStyles.Box key={index}>
+                  <CardListItem
+                    link={`/citytour/1`}
+                    src={`${apiUrls.IMG_URL}/${item?.City?.image}`}
+                    title={item?.name}
+                    duration={item?.numberOfHours}
+                    transport={item?.transport}
+                    plan={item?.package}
+                    price={item?.price}
+                    feedback_quantity={item?.totalReviews}
+                    feedback_average={item?.averageRating}
+                  />
+                </CommonStyles.Box>
+              ))}
             </CommonStyles.Box>
             <CommonStyles.CommonButton className='tw-w-full tw-border-solid tw-rounded-full tw-mt-7 tw-mb-[80px]' variant='outlined'>
               <CommonStyles.Typography type='size16Weight700' className='tw-text-primary '>
@@ -238,7 +263,7 @@ const CityTourPage = () => {
           <CommonStyles.Box>
             <CardCarousel
               classNameContainerHeading="tw-px-0"
-              data={mocDataCard}
+              // data={mocDataCard}
               title={
                 <CommonStyles.Typography type='size12Weight800' className="tw-text-center tw-px-6 tw-py-2 tw-rounded-full tw-bg-primary tw-text-white">
                   {t("titleWaterActivities")}
@@ -248,7 +273,7 @@ const CityTourPage = () => {
           <CommonStyles.Box>
             <CardCarousel
               classNameContainerHeading="tw-px-0"
-              data={mocDataCard}
+              // data={mocDataCard}
               title={
                 <CommonStyles.Typography type='size12Weight800' className="tw-text-center tw-px-6 tw-py-2 tw-rounded-full tw-bg-accent_blue tw-text-white">
                   {t("titleSpecialFoods")}
@@ -258,7 +283,7 @@ const CityTourPage = () => {
           <CommonStyles.Box >
             <CardCarousel
               classNameContainerHeading="tw-px-0"
-              data={mocDataCard}
+              // data={mocDataCard}
               title={
                 <CommonStyles.Typography type='size12Weight800' className="tw-text-center tw-px-6 tw-py-2 tw-rounded-full tw-bg-accent_red tw-text-white">
                   {t("titleRiverActivity")}

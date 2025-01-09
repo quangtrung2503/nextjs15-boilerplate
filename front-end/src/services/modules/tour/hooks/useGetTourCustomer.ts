@@ -23,7 +23,7 @@ import { ApiResponse } from "../interfaces/tour";
 const requestAPI = tourCustomerServices.getTour;
 
 const useGetTourCustomer = (
-  id: number,
+  slug: string,
   options: { isTrigger?: boolean; refetchKey?: string } = {
     isTrigger: true,
     refetchKey: "",
@@ -46,7 +46,7 @@ const useGetTourCustomer = (
     return new Promise((resolve, reject) => {
       (async () => {
         try {
-          const response = await requestAPI(id,{
+          const response = await requestAPI(slug,{
             signal: signal.current.signal,
           });
           resolve(response);
@@ -56,7 +56,7 @@ const useGetTourCustomer = (
         }
       })();
     });
-  }, [id, isTrigger]);
+  }, [slug, isTrigger]);
 
   const checkConditionPass = useCallback((response: AxiosResponse<ResponseTourCustomer>) => {
     //* Check condition of response here to set data

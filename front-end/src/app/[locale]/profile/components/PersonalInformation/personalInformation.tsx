@@ -55,8 +55,14 @@ const PersonalProfile: React.FC<IPersonalProfile> = (
   });
 
   useEffect(() => {
-    reset({ name, dateOfBirth, phone, address, email });
-  }, [data]);
+    reset({
+      name: name || "",
+      dateOfBirth: dateOfBirth || "",
+      phone: phone || "",
+      address: address || "",
+      email: email || "",
+    });
+  }, [data, reset]);
 
   const onSubmitSetPersonalInformation: SubmitHandler<FormData> = async (
     formData,

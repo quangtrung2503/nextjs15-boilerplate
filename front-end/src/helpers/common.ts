@@ -240,6 +240,7 @@ export enum DateTimeFormat {
   FullDateShortMonth = 'MMM DD, YYY',
   DateMonth = 'DD/MM',
   DateMonthDash = 'MM-YYYY',
+  DateYearMonthDash = 'YYYY-MM',
   MonthYear = 'MM, YYYY',
   Year = 'YYYY',
   Month = 'MM',
@@ -463,4 +464,17 @@ export enum TourSortField {
   CREATED_AT = 'createdAt',
   PRICE = 'price',
   POPULARITY = 'popularity'
+}
+
+export enum BookingStatus {
+  PENDING = 'PENDING',
+  CONFIRMED = 'CONFIRMED',
+  COMPLETED = 'COMPLETED',
+  CANCELLED = 'CANCELLED',
+  REFUNDED = 'REFUNDED'
+}
+
+export enum PaymentMethod {
+  QR_CODE = 'QR Code',
+  VNPAY = 'VNPAY'
 }

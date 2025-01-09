@@ -11,12 +11,14 @@ import Divider from "@/components/common/Divider";
 import { menuProfile } from "./components/MenuProfile/menuProfileData";
 import useAuth from "@/hooks/useAuth";
 import { default as CommonStyles } from "@/components/common";
-import Loading from "@/app/loading";
+import Loading from "@/components/common/Loading";
 import withAuth from "@/HOCs/withAuth";
 import useGetProfile from "@/services/modules/profile/hook/useGetProfile";
 import CardBreadcrumbs from "./components/BreadCrump/breadcrumb";
 import { useNotifications } from "@/helpers/toast";
 import { useTranslations } from "next-intl";
+import BookingHistory from "./components/BookingHistory/bookingHistory";
+import tourCustomerServices from "@/services/modules/tour/tourCustomer.services";
 
 const FormProfileWithCustomComponent: React.FC = () => {
   const t = useTranslations("profile");
@@ -26,8 +28,7 @@ const FormProfileWithCustomComponent: React.FC = () => {
   const [activeMenuProfile, setActiveMenuProfile] = useState<number>(
     menuProfile[0].value,
   );
-  const { showSuccess } = useNotifications();
-
+  const { showSuccess, showError } = useNotifications();
   const handleMenuProfileChange = (menuProfileValue: number) => {
     setActiveMenuProfile(menuProfileValue);
   };
@@ -39,11 +40,30 @@ const FormProfileWithCustomComponent: React.FC = () => {
   };
 
   useEffect(() => {
+    const search = window.location.search;
     if (data?.avatar) {
       setAvatar(data.avatar);
     }
+    if (search) {
+      const fetchPaymentData = async () => {
+        try {
+          const res = await tourCustomerServices.reloadPayByVnpay(search);
+          const status = res.data.statusCode;
+          if (status == 200) {
+            showSuccess(t('paySuccess'));
+          } else {
+            showError(t('payError'));
+          }
+        } catch (error) {
+          console.error("Error reloading payment data:", error);
+        }
+      };
+      fetchPaymentData();
+      const currentURL = window.location.href.split("?")[0];
+      window.history.replaceState({}, document.title, currentURL);
+    }
   }, [data]);
-
+  
   return (
     <Box className="FormProfileWithCustomComponent">
       {loading ? (
@@ -100,7 +120,7 @@ const FormProfileWithCustomComponent: React.FC = () => {
                 <SecurityInformation />
               </Box>
             ) : (
-              <React.Fragment />
+              <BookingHistory />
             )}
           </Grid>
         </Grid>

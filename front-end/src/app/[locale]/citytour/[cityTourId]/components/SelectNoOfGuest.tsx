@@ -42,10 +42,13 @@ const SelectNoOfGuest: React.FC<CustomInputProps> = ({
     });
   };
   const onDecreaseAdult = () => {
-    setAdultQuantity((prev) => (prev > 0 ? prev - 1 : 0));
-    handelSetValue({
-      adultQuantity: adultQuantity - 1,
-      childQuantity: childQuantity,
+    setAdultQuantity((prev) => {
+      const newAdultQuantity = prev > 0 ? prev - 1 : 0;
+      handelSetValue({
+        adultQuantity: newAdultQuantity,
+        childQuantity: childQuantity,
+      });
+      return newAdultQuantity;
     });
   };
 
@@ -57,10 +60,13 @@ const SelectNoOfGuest: React.FC<CustomInputProps> = ({
     });
   };
   const onDecreaseChild = () => {
-    setChildQuantity((prev) => (prev > 0 ? prev - 1 : 0));
-    handelSetValue({
-      adultQuantity: adultQuantity,
-      childQuantity: childQuantity - 1,
+    setChildQuantity((prev) => {
+      const newChildQuantity = prev > 0 ? prev - 1 : 0;
+      handelSetValue({
+        adultQuantity: adultQuantity,
+        childQuantity: newChildQuantity,
+      });
+      return newChildQuantity;
     });
   };
 

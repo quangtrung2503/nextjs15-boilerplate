@@ -25,11 +25,14 @@ import Link from "@/components/common/Link";
 import pageUrls from "@/constants/pageUrls";
 import useGetCityCustomer from "@/services/modules/city/hook/useGetCityCustomer";
 import useGetDetailCityCustomer from "@/services/modules/city/hook/useGetDetailCityCustomer";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import apiUrls from "@/constants/apiUrls";
 import { CityDetail } from "@/services/modules/city/interfaces/city";
 import City from "../admin/city/city";
+import useGetTourTrendingCustomer from "@/services/modules/tour/hooks/useGetTourTrendingCustomer";
+import useGetVideoCustomer from "@/services/modules/video/hook/useGetVideoCustomer";
+
 
 interface FormValues {
   location: string;
@@ -144,12 +147,21 @@ export const mocDataCard = [
   },
 ];
 export default function HomePage() {
+  // props + state
+  const [slug, setSlug] = useState<string | null>(null);
+  const [playing, setPlaying] = useState(false);
+
+  // hook 
+  const router = useRouter();
   const t = useTranslations("homePage");
   const { data: dataCity, refetch: refetchCity } = useGetCityCustomer();
-  const [slug, setSlug] = useState<string | null>(null);
-  console.log({ sss: !!slug })
   const { data: CityDetail, refetch } = useGetDetailCityCustomer(String(slug), { isTrigger: !!slug });
+  const { data: dataTrending } = useGetTourTrendingCustomer();
+  const { data: dataVideo } = useGetVideoCustomer()
 
+  // Function
+
+  // Effect
   useEffect(() => {
     if (dataCity?.items && dataCity?.items?.length > 0 && !slug) {
       const initialCity = dataCity?.items[0];
@@ -164,6 +176,7 @@ export default function HomePage() {
     await refetch();
   }
 
+  // Form hook
   const { control, handleSubmit } = useForm<FormValues>({
     defaultValues: initValue,
   });
@@ -171,6 +184,11 @@ export default function HomePage() {
   const onSubmit: SubmitHandler<FormValues> = (data) => {
     console.log("Form Data:", data);
   };
+
+  // Function Render
+
+
+  // Render
   return (
     <CommonStyles.Box className="tw-min-w-full tw-flex tw-flex-col tw-gap-y-12 tw-mb-20">
       {/* I. Section Landing and Search form */}
@@ -179,38 +197,52 @@ export default function HomePage() {
         <CommonStyles.Box
           className="tw-h-[740px] tw-flex tw-items-center tw-justify-center tw-bg-cover tw-bg-center"
           sx={{
-            backgroundImage: `url('${commonImg.banner.src}')`,
+            backgroundImage: !playing ? `url(${apiUrls.IMG_URL}/${dataVideo?.data?.thumbnail})` : "none",
           }}
         >
-          <CommonStyles.Box>
-            <CommonStyles.Box className="tw-flex tw-flex-col tw-items-center tw-text-accent_gray_dark">
-              <CommonStyles.Typography
-                className="tw-text-center"
-                type="size48Weight700"
-              >
-                {t("title")}
-              </CommonStyles.Typography>
-              <CommonStyles.Typography
-                className="tw-text-center tw-w-[569px] tw-mt-[22px] tw-leading-[25px]"
-                type="size16Weight600"
-              >
-                {t("subtitleAboutTour")}
-              </CommonStyles.Typography>
-              <CommonStyles.Box className="tw-flex tw-items-center tw-pt-[15px]">
-                <CommonStyles.Box className="tw-flex tw-items-center tw-justify-center tw-relative tw-w-[100px] tw-h-[100px]">
-                  <span className="tw-absolute tw-w-full tw-h-full tw-bg-gray-50 tw-rounded-full tw-opacity-30 tw-animate-ping"></span>
-                  <span className="tw-absolute tw-w-[70%] tw-h-[70%] tw-bg-gray-100 tw-rounded-full tw-opacity-70 tw-animate-ping"></span>
-                  <PlayArrow
-                    fontSize="large"
-                    className="tw-text-primary tw-bg-white tw-p-3 tw-rounded-full tw-size-7 tw-z-10"
-                  />
-                </CommonStyles.Box>
-                <CommonStyles.Typography className="" type="size20Weight700">
-                  {t("watchVideo")}
+          {!playing ? (
+            <CommonStyles.Box>
+              <CommonStyles.Box className="tw-flex tw-flex-col tw-items-center tw-text-accent_gray_dark">
+                <CommonStyles.Typography
+                  className="tw-text-center"
+                  type="size48Weight700"
+                >
+                  {dataVideo?.data?.title}
                 </CommonStyles.Typography>
+                <CommonStyles.Typography
+                  className="tw-text-center tw-w-[569px] tw-mt-[22px] tw-leading-[25px]"
+                  type="size16Weight600"
+                >
+                  {dataVideo?.data?.description}
+                </CommonStyles.Typography>
+                <CommonStyles.Box className="tw-flex tw-items-center tw-pt-[15px]">
+                  <CommonStyles.Box
+                    onClick={() => setPlaying(true)} // Khi nhấn, bật trạng thái phát video
+                    className="tw-flex tw-items-center tw-justify-center tw-relative tw-w-[100px] ">
+                    <span className="tw-absolute tw-w-full tw-h-full tw-bg-gray-50 tw-rounded-full tw-opacity-30 tw-animate-ping"></span>
+                    <span className="tw-absolute tw-w-[70%] tw-h-[70%] tw-bg-gray-100 tw-rounded-full tw-opacity-70 tw-animate-ping"></span>
+                    <PlayArrow
+                      fontSize="large"
+                      className="tw-text-primary tw-bg-white tw-p-3 tw-rounded-full tw-size-7 tw-z-10"
+                    />
+                  </CommonStyles.Box>
+                  <CommonStyles.Typography className="" type="size20Weight700">
+                    {t("watchVideo")}
+                  </CommonStyles.Typography>
+                </CommonStyles.Box>
               </CommonStyles.Box>
             </CommonStyles.Box>
-          </CommonStyles.Box>
+          ) : (
+            <CommonStyles.Box className="tw-w-full tw-h-[740px] tw-flex tw-items-center tw-justify-center tw-bg-white">
+              <video
+                onClick={() => setPlaying(false)}
+                src={`${apiUrls.IMG_URL}/${dataVideo?.data?.video}`}
+                // controls
+                autoPlay
+                className="tw-w-full tw-h-[740px]"
+              />
+            </CommonStyles.Box>
+          )}
         </CommonStyles.Box>
         {/* 2.Search form */}
         <CommonStyles.Box className="tw-flex tw-justify-center -tw-mt-[45px]">
@@ -393,10 +425,10 @@ export default function HomePage() {
           </CommonStyles.Typography>
           <Container className="tw-grid tw-grid-cols-12 tw-gap-x-5">
             {CityDetail?.data?.Tour.map((item, index) => {
-              return (
+               return (
                 <CommonStyles.Box key={index} className="tw-col-span-3">
                   <CardGridItem
-                    link=""
+                    link={`/citytour/${item.slug}`}
                     src={`${apiUrls.IMG_URL}/${item?.TourImage?.[0]?.image}`}
                     title={item?.name}
                     duration={item?.numberOfHours}
@@ -414,12 +446,19 @@ export default function HomePage() {
       </CommonStyles.Box>
       {/* III. Section Suggest Tour */}
       <CommonStyles.Box>
-        <TrendingCity trendingCity={trendingCity} />
+        <TrendingCity
+          imageBanner={`${apiUrls.IMG_URL}/${dataTrending?.data?.City?.image}`}
+          image={`${apiUrls.IMG_URL}/${dataTrending?.data?.City?.image}`}
+          title={dataTrending?.data?.name || ""}
+          place={dataTrending?.data?.City?.name || ""}
+          reviews={dataTrending?.data?.totalReviews}
+          content={dataTrending?.data?.description}
+          rate={dataTrending?.data?.averageRating}
+        />
       </CommonStyles.Box>
       {/* IV. Featured Destinations */}
-      <CommonStyles.Box className="tw-flex tw-flex-col tw-w-full tw-justify-between tw-items-center">
+      <CommonStyles.Box>
         <CardCarousel
-          data={mocDataCard}
           title={
             <Heading
               title={t("featuredDestinationsHeading")}

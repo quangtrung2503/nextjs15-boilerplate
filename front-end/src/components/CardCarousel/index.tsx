@@ -4,41 +4,54 @@ import { default as CommonStyles } from "@/components/common";
 import CommonIcons from "@/components/CommonIcons";
 import CardGridItem, { CardGridItemProps } from "@/components/Card/CardGirdItem";
 import { twMerge } from "tailwind-merge";
+import useGetTourDestinationCustomer from "@/services/modules/tour/hooks/useGetTourDestinationCustomer";
+import apiUrls from "@/constants/apiUrls";
 type Props = {
-  data: CardGridItemProps[];
+  data?: CardGridItemProps[];
   title?: React.ReactNode;
   classNameContainerHeading?: string;
+  maxItems?: number
 };
 const CardCarousel: React.FC<Props> = ({
   title,
-  data,
+  // data,
   classNameContainerHeading,
 }) => {
+  // props + state
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [isAtStart, setIsAtStart] = useState(true);
   const [isAtEnd, setIsAtEnd] = useState(false);
-
+  // hook
+  const { data: dataDestination } = useGetTourDestinationCustomer()
+  // Function
   const handleScrollLeft = () => {
-    scrollContainerRef.current?.scrollBy({
-      left: -300,
-      behavior: "smooth",
-    });
+    if (scrollContainerRef.current) {
+      scrollContainerRef.current.scrollBy({
+        left: -300,
+        behavior: "smooth",
+      });
+      setTimeout(checkScrollPosition, 300);
+    }
   };
 
   const handleScrollRight = () => {
-    scrollContainerRef.current?.scrollBy({
-      left: 300,
-      behavior: "smooth",
-    });
+    if (scrollContainerRef.current) {
+      scrollContainerRef.current.scrollBy({
+        left: 300,
+        behavior: "smooth",
+      });
+      setTimeout(checkScrollPosition, 300);
+    }
   };
 
+  // Kiểm tra vị trí cuộn
   const checkScrollPosition = () => {
     if (scrollContainerRef.current) {
       const { scrollLeft, scrollWidth, clientWidth } =
         scrollContainerRef.current;
 
       setIsAtStart(scrollLeft <= 0);
-      setIsAtEnd(Math.abs(scrollLeft + clientWidth - scrollWidth) <= 1);
+      setIsAtEnd(scrollLeft + clientWidth >= scrollWidth);
     }
   };
 
@@ -53,19 +66,31 @@ const CardCarousel: React.FC<Props> = ({
     }) as T;
   };
 
+  // Effect
   useEffect(() => {
     const scrollContainer = scrollContainerRef.current;
-    const debouncedCheckScrollPosition = debounce(checkScrollPosition, 50);
-    scrollContainer?.addEventListener("scroll", debouncedCheckScrollPosition);
-    checkScrollPosition();
+
+    if (scrollContainer) {
+      // Gọi checkScrollPosition khi component render
+      checkScrollPosition();
+
+      // Lắng nghe sự kiện scroll để kiểm tra vị trí
+      scrollContainer.addEventListener("scroll", checkScrollPosition);
+    }
+
     return () => {
-      scrollContainer?.removeEventListener(
-        "scroll",
-        debouncedCheckScrollPosition,
-      );
+      // Xóa lắng nghe khi unmount
+      scrollContainer?.removeEventListener("scroll", checkScrollPosition);
     };
   }, []);
 
+  useEffect(() => {
+    // Kiểm tra vị trí khi dataDestination thay đổi
+    checkScrollPosition();
+  }, [dataDestination]);
+
+
+  // Render
   return (
     <CommonStyles.Box className="tw-flex tw-flex-col tw-w-full">
       <Container
@@ -99,20 +124,26 @@ const CardCarousel: React.FC<Props> = ({
       <CommonStyles.Box
         className="tw-overflow-auto scrollbar-hide tw-w-full "
         ref={scrollContainerRef}
+        style={{
+          display: 'flex',
+          overflowX: 'auto',
+          scrollSnapType: 'x mandatory',
+          gap: '20px', // khoảng cách giữa các ảnh
+        }}
       >
-        <CommonStyles.Box className="tw-flex tw-gap-5 tw-w-fit tw-py-5">
-          {data.map((item, index) => (
-            <CommonStyles.Box key={index} className="tw-w-[270px]">
+        <CommonStyles.Box className="tw-flex tw-gap-5 tw-py-5 tw-justify-center tw-items-center">
+          {dataDestination?.items?.slice(0, dataDestination?.items?.length).map((item, index) => (
+            <CommonStyles.Box key={index} className="tw-w-[270px]" style={{ scrollSnapAlign: 'start' }}>
               <CardGridItem
-                link={item.link}
-                src={item.src}
-                title={item.title}
-                duration={2}
+                link=""
+                src={`${apiUrls.IMG_URL}/${item.City?.image}` || ""}
+                title={item?.City?.description || ""}
+                duration={item?.numberOfHours}
                 transport={item.transport}
-                plan={item.plan}
+                plan={item.package}
                 price={item.price}
-                feedback_quantity={item.feedback_quantity}
-                feedback_average={item.feedback_average}
+                feedback_quantity={item.price}
+                feedback_average={item.totalReviews}
               />
             </CommonStyles.Box>
           ))}

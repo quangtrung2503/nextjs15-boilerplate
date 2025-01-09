@@ -2,7 +2,6 @@
 import * as Yup from "yup";
 import CommonStyles from "@/components/common";
 import { Container } from "@mui/material";
-import { commonImg } from "@/assets";
 import CommonIcons from "@/components/CommonIcons";
 import RHFField from "@/components/customReactFormField/ReactFormField";
 import { CommonButton } from "@/components/common/Button";
@@ -14,107 +13,137 @@ import { CommonDatePicker } from "@/components/common/DatePicker";
 import SelectNoOfGuest from "./components/SelectNoOfGuest";
 import DescriptionCityTour from "./components/DescriptionCityTour";
 import CardCarousel from "@/components/CardCarousel";
-import ServiceItem from "./components/ServiceItem";
 import Slider from "./components/Slider";
 import Feedback from "./components/Feedback";
-import { useParams } from "next/navigation";
 import useGetTourCustomer from "@/services/modules/tour/hooks/useGetTourCustomer";
-import { defaultValue, InfoBooking, NoOfGuest } from "./forms";
-import { mocDataCard } from "../../home/HomePage";
+import { BookTour, defaultValue, InfoBooking, NoOfGuest } from "./forms";
+import useGetTourCustomerReview from "@/services/modules/tour/hooks/useGetTourReviewCustomer";
+import useFiltersHandler from "@/hooks/useFiltersHandler";
+import { generateHtmlContent, mapTours } from "./functions";
+import { values } from "lodash";
+import tourCustomerServices, { FiltersGetReviewCustomer } from "@/services/modules/tour/tourCustomer.services";
+import Loading from "@/components/common/Loading";
+import { useParams } from "next/navigation";
+import { stat } from "fs";
+import { useEffect, useState } from "react";
+import { BookingStatus, PaymentMethod } from "@/helpers/common";
 
 const CityTourDetail = () => {
-  const params = useParams();
-  const { cityTourId } = params;
-  const { showError } = useNotifications();
+  //! prop + state + const
+  const intFilter: FiltersGetReviewCustomer = { page: 1, perPage: 10 };
+  const VND = parseFloat(`${process.env.VND}`);
+
+  //! Hook
+  const slug = useParams();
+  const api = slug.cityTourId as string;
+
   const t = useTranslations("cityTour.cityTourDetail");
+  const { showError } = useNotifications();
+  const { filters, handleChangePage, setFilters } = useFiltersHandler(intFilter);
+  //! Fetch Data
+  const { data } = useGetTourCustomer(api);
+  const { dataCustomerReview, stats, hasMore, loading } =
+    useGetTourCustomerReview(filters, api);
 
-  const { data, loading } = useGetTourCustomer(Number(cityTourId));
+  //! Define
+  const { tour, listTourInToday, listTourSameCity } = data ?? {};
+  const tourInDays = mapTours(listTourInToday, t);
+  const tourSameCity = mapTours(listTourSameCity, t);
 
-  const imgs = [commonImg.detail1, commonImg.detail2, commonImg.detail3, commonImg.detail4, commonImg.detail5, commonImg.detail6];
-  const services = [
-    {
-      title: "Free cancellation",
-      description: "Cancel up to 24 hours in advance to receive a full refund",
-      icon: <CommonIcons.Cancelation color="var(--primary)" />,
-    },
-    {
-      title: "Health precautions",
-      description: "Special health and safety measures apply. Learn more",
-      icon: <CommonIcons.Health color="var(--primary)" />,
-    },
-    {
-      title: "Mobile ticketing",
-      description: "Use your phone or print your voucher",
-      icon: <CommonIcons.CacbonMobile color="var(--primary)" />,
-    },
-    {
-      title: "Duration 3.5 hours",
-      description: "Check availability to see starting times.",
-      icon: <CommonIcons.Duration color="var(--primary)" />,
-    },
-    {
-      title: "Instant confirmation",
-      description: "Don’t wait for the confirmation!",
-      icon: <CommonIcons.FluenFlash color="var(--primary)" />,
-    },
-    {
-      title: "Live tour guide in English",
-      description: "English",
-      icon: <CommonIcons.LiveTour color="var(--primary)" />,
-    },
+  //! Extract tour details
+  const {
+    TourImage = [],
+    included = "",
+    notIncluded = "",
+    language = "",
+    numberOfHours,
+    numberOfPeople,
+    guideMeetingAddress,
+  } = tour ?? {};
+
+
+  const [totalPrice, setTotalPrice] = useState(() => (
+    tour?.price ?? 0
+  ));
+  useEffect(() => {
+    if (tour?.price !== undefined) {
+      setTotalPrice(tour.price);
+    }
+  }, [tour]);
+  const includes = [included, notIncluded];
+  const details = [
+    language,
+    generateHtmlContent(t("duration"), `${numberOfHours} ${t('hours')}`),
+    generateHtmlContent(t("numberOfPeople"), `${numberOfPeople} ${t('people')}`),
   ];
-  const validateSchema = Yup.object().shape({
-    startDate: Yup.date()
+
+  const meetingAddress = generateHtmlContent(
+    t("guideMeetingAddress"),
+    `${guideMeetingAddress}`,
+  );
+
+  const validateSchema: Yup.ObjectSchema<InfoBooking> = Yup.object().shape({
+    rating: Yup.number().defined(),
+    startDate: Yup.string()
+      .defined()
       .required(t("validations.startDateRequire"))
-      .typeError(t("validations.startDateInvalid"))
-      .min(new Date(), t("validations.startDateMin")),
-    endDate: Yup.date()
+
+      .typeError(t("validations.startDateInvalid")),
+    // .min(new Date(), t("validations.startDateMin")),
+    endDate: Yup.string()
       .required(t("validations.endDateRequire"))
-      .typeError(t("validations.endDateInvalid"))
-      .min(Yup.ref("startDate"), t("validations.endDateAfterStartDate")),
+      .typeError(t("validations.endDateInvalid")),
+    // .min(Yup.ref("startDate"), t("validations.endDateAfterStartDate")),
     noOfGuest: Yup.object().shape({
-      adultQuantity: Yup.number(),
-      childQuantity: Yup.number(),
+      adultQuantity: Yup.number().defined(),
+      childQuantity: Yup.number().defined(),
     }),
   });
 
   const { handleSubmit, control, setValue } = useForm<InfoBooking>({
     defaultValues: defaultValue,
-    reValidateMode: "onSubmit",
     criteriaMode: "all",
     resolver: yupResolver(validateSchema),
   });
 
+  // Function
   const onSubmit: SubmitHandler<InfoBooking> = async (values: InfoBooking) => {
-    const body = {
+    const priceTour = tour?.price ? tour.price : 0;
+    const body: BookTour = {
+      tourId: tour?.id || 1,
       startDate: values?.startDate,
       endDate: values?.endDate,
-      noOfGuest: values?.noOfGuest,
+      numberOfAdults: values.noOfGuest.adultQuantity,
+      numberOfChildren: values.noOfGuest.childQuantity || 0,
+      totalPrice: priceTour * (values.noOfGuest.adultQuantity + values.noOfGuest.childQuantity) * VND,
+      status: BookingStatus.PENDING,
+      paymentMethod: PaymentMethod.VNPAY
     };
     try {
-      // const res = await auth?.signIn(requestPayload);
+      const res = await tourCustomerServices.bookTourCustomer(body);
+      window.location.href = res.data.data.paymentUrl;
     } catch (error: any) {
       const err: any = error?.response.data.messages[0];
       showError(err);
     }
-  };
-  const handleRenderServiceItem = () => {
-    return services.map((item) => {
-      return (
-        <ServiceItem
-          key={item.title}
-          icon={item.icon}
-          title={item.title}
-          description={item.description}
-        />
-      );
-    });
-  };
+  };  
   const handleSetValue = (value: NoOfGuest) => {
-    setValue("noOfGuest", value);
+    setValue("noOfGuest", value); // Update the form state
+    const priceTour = tour?.price || 0;
+    const newTotalPrice = priceTour * (value.adultQuantity + value.childQuantity);
+    setTotalPrice(newTotalPrice); // Update the total price
+};
+  const handleLoadMoreReview = () => {
+    const _event: any = "";
+    handleChangePage(_event, (filters?.page || 1) + 1);
   };
+
+  //! Function render
+
+  //! Render
   return (
     <div className="tw-py-12">
+      {loading && <Loading />}
       <Container className="tw-flex tw-flex-col tw-gap-y-8">
         <CommonStyles.Box className="tw-grid tw-grid-cols-12">
           <CommonStyles.Box className="tw-col-span-8 tw-flex tw-flex-col tw-gap-4">
@@ -122,7 +151,7 @@ const CityTourDetail = () => {
               type="size36Weight700"
               className="tw-text-accent_gray_dark tw-leading-tight"
             >
-              {data?.tour.name}
+              {tour?.name}
             </CommonStyles.Typography>
             <CommonStyles.Box className="tw-flex tw-items-center tw-gap-3 tw-text-accent_gray_800">
               <CommonStyles.Typography className="tw-flex tw-items-center ">
@@ -130,13 +159,14 @@ const CityTourDetail = () => {
                 {data?.tour.City?.name}
               </CommonStyles.Typography>
               <CommonStyles.Box className="tw-flex tw-items-center">
-                <CommonStyles.Rating
-                  haveFeedback={false}
-                  readOnly
-                  valueTable={data?.tour.averageRating}
+                <RHFField
+                  name="rating"
+                  control={control}
+                  component={CommonStyles.Rating}
+                  valueTable={tour?.averageRating}
                 />
                 <CommonStyles.Typography className="tw-ml-[2px]">
-                  ({data?.tour.totalReviews} {t("reviews")})
+                  ({tour?.totalReviews} {t("reviews")})
                 </CommonStyles.Typography>
               </CommonStyles.Box>
             </CommonStyles.Box>
@@ -145,40 +175,38 @@ const CityTourDetail = () => {
         <CommonStyles.Box className="tw-grid tw-grid-cols-12 tw-gap-10">
           <CommonStyles.Box className="tw-col-span-8 tw-flex tw-flex-col tw-gap-y-5">
             {/* Slide city tour */}
-            <Slider imgs={imgs} />
-            {/* Services */}
-            <CommonStyles.Box className="tw-grid tw-grid-cols-12 tw-gap-10 tw-bg-[#16527D14] tw-p-5 tw-rounded-sm">
-              {handleRenderServiceItem()}
-            </CommonStyles.Box>
+            <Slider imgs={TourImage.map((item) => item.image)} />
             {/* Description */}
             <CommonStyles.Box>
               <DescriptionCityTour
-                title="Description"
-                content="See the highlights of London via 2 classic modes of transport on this half-day adventure. First, you will enjoy great views of Westminster Abbey, the Houses of Parliament, and the London Eye, as you meander through the historic streets on board a vintage double decker bus."
+                title={t("description")}
+                content={tour?.description || ""}
               />
             </CommonStyles.Box>
             <CommonStyles.Box>
               <DescriptionCityTour
-                title="Activity"
-                content="See the highlights of London via 2 classic modes of transport on this half-day adventure. First, you will enjoy great views of Westminster Abbey, the Houses of Parliament, and the London Eye, as you meander through the historic streets on board a vintage double decker bus."
+                title={t("activity")}
+                content={tour?.activity || ""}
               />
             </CommonStyles.Box>
             <CommonStyles.Box>
               <DescriptionCityTour
-                title="What is included / not  included"
-                content="See the highlights of London via 2 classic modes of transport on this half-day adventure. First, you will enjoy great views of Westminster Abbey, the Houses of Parliament, and the London Eye, as you meander through the historic streets on board a vintage double decker bus."
+                title={t("includedRequire")}
+                content={""}
+                items={includes}
               />
             </CommonStyles.Box>
             <CommonStyles.Box>
               <DescriptionCityTour
-                title="Safety"
-                content="See the highlights of London via 2 classic modes of transport on this half-day adventure. First, you will enjoy great views of Westminster Abbey, the Houses of Parliament, and the London Eye, as you meander through the historic streets on board a vintage double decker bus."
+                title={t("safety")}
+                content={tour?.safety || ""}
               />
             </CommonStyles.Box>
             <CommonStyles.Box>
               <DescriptionCityTour
-                title="Details"
-                content="See the highlights of London via 2 classic modes of transport on this half-day adventure. First, you will enjoy great views of Westminster Abbey, the Houses of Parliament, and the London Eye, as you meander through the historic streets on board a vintage double decker bus."
+                title={t("details")}
+                content={meetingAddress}
+                items={details}
               />
             </CommonStyles.Box>
           </CommonStyles.Box>
@@ -229,7 +257,7 @@ const CityTourDetail = () => {
                     type="size36Weight900"
                   >
                     {t("currency")}
-                    {data?.tour.price}
+                    {totalPrice}
                   </CommonStyles.Typography>
                 </CommonStyles.Box>
                 <CommonButton
@@ -267,7 +295,7 @@ const CityTourDetail = () => {
           <CommonStyles.Box>
             <CardCarousel
               classNameContainerHeading="tw-px-0 tw-font-volkhov"
-              data={mocDataCard}
+              data={tourInDays}
               title={
                 <CommonStyles.Typography type="size22Weight700">
                   {t("relatedToursInToday")}
@@ -279,19 +307,29 @@ const CityTourDetail = () => {
           <CommonStyles.Box>
             <CardCarousel
               classNameContainerHeading="tw-px-0"
-              data={mocDataCard}
+              data={tourSameCity}
               title={
                 <CommonStyles.Typography type="size22Weight700">
-                  {t("relatedToursIn")} {data?.tour.City?.name}
+                  {t("relatedToursIn")} {tour?.name}
                 </CommonStyles.Typography>
               }
             />
             <CommonStyles.Divider />
           </CommonStyles.Box>
           {/* Feedback */}
-          <Feedback />
+          <Feedback
+            feedbacks={dataCustomerReview}
+            stats={stats}
+            onLoadMore={handleLoadMoreReview}
+            hasMore={hasMore}
+            onChangeFilter={(value) => {
+              const newFilter = { ...filters, ratings: value.rating, page: 1 };
+              setFilters(newFilter);
+            }}
+          />
         </CommonStyles.Box>
       </Container>
+
     </div>
   );
 };
