@@ -16,22 +16,27 @@ import CardCarousel from "@/components/CardCarousel";
 import Slider from "./components/Slider";
 import Feedback from "./components/Feedback";
 import useGetTourCustomer from "@/services/modules/tour/hooks/useGetTourCustomer";
-import { defaultValue, InfoBooking, NoOfGuest } from "./forms";
+import { BookTour, defaultValue, InfoBooking, NoOfGuest } from "./forms";
 import useGetTourCustomerReview from "@/services/modules/tour/hooks/useGetTourReviewCustomer";
 import useFiltersHandler from "@/hooks/useFiltersHandler";
 import { generateHtmlContent, mapTours } from "./functions";
 import { values } from "lodash";
-import { FiltersGetReviewCustomer } from "@/services/modules/tour/tourCustomer.services";
+import tourCustomerServices, { FiltersGetReviewCustomer } from "@/services/modules/tour/tourCustomer.services";
 import Loading from "@/components/common/Loading";
 import { useParams } from "next/navigation";
+import { stat } from "fs";
+import { useEffect, useState } from "react";
+import { BookingStatus, PaymentMethod } from "@/helpers/common";
 
 const CityTourDetail = () => {
   //! prop + state + const
   const intFilter: FiltersGetReviewCustomer = { page: 1, perPage: 10 };
+  const VND = parseFloat(`${process.env.VND}`);
+
   //! Hook
   const slug = useParams();
-  const api = slug.cityTourId as string;  
-  
+  const api = slug.cityTourId as string;
+
   const t = useTranslations("cityTour.cityTourDetail");
   const { showError } = useNotifications();
   const { filters, handleChangePage, setFilters } = useFiltersHandler(intFilter);
@@ -44,7 +49,7 @@ const CityTourDetail = () => {
   const { tour, listTourInToday, listTourSameCity } = data ?? {};
   const tourInDays = mapTours(listTourInToday, t);
   const tourSameCity = mapTours(listTourSameCity, t);
-   
+
   //! Extract tour details
   const {
     TourImage = [],
@@ -56,11 +61,20 @@ const CityTourDetail = () => {
     guideMeetingAddress,
   } = tour ?? {};
 
+
+  const [totalPrice, setTotalPrice] = useState(() => (
+    tour?.price ?? 0
+  ));
+  useEffect(() => {
+    if (tour?.price !== undefined) {
+      setTotalPrice(tour.price);
+    }
+  }, [tour]);
   const includes = [included, notIncluded];
   const details = [
     language,
-    generateHtmlContent(t("duration"), `${numberOfHours} hours`),
-    generateHtmlContent(t("numberOfPeople"), `${numberOfPeople} People`),
+    generateHtmlContent(t("duration"), `${numberOfHours} ${t('hours')}`),
+    generateHtmlContent(t("numberOfPeople"), `${numberOfPeople} ${t('people')}`),
   ];
 
   const meetingAddress = generateHtmlContent(
@@ -81,8 +95,8 @@ const CityTourDetail = () => {
       .typeError(t("validations.endDateInvalid")),
     // .min(Yup.ref("startDate"), t("validations.endDateAfterStartDate")),
     noOfGuest: Yup.object().shape({
-      adultQuantity: Yup.string().nullable().defined(),
-      childQuantity: Yup.string().nullable().defined(),
+      adultQuantity: Yup.number().defined(),
+      childQuantity: Yup.number().defined(),
     }),
   });
 
@@ -94,21 +108,31 @@ const CityTourDetail = () => {
 
   // Function
   const onSubmit: SubmitHandler<InfoBooking> = async (values: InfoBooking) => {
-    const body = {
+    const priceTour = tour?.price ? tour.price : 0;
+    const body: BookTour = {
+      tourId: tour?.id || 1,
       startDate: values?.startDate,
       endDate: values?.endDate,
-      noOfGuest: values?.noOfGuest,
+      numberOfAdults: values.noOfGuest.adultQuantity,
+      numberOfChildren: values.noOfGuest.childQuantity || 0,
+      totalPrice: priceTour * (values.noOfGuest.adultQuantity + values.noOfGuest.childQuantity) * VND,
+      status: BookingStatus.PENDING,
+      paymentMethod: PaymentMethod.VNPAY
     };
     try {
-      // const res = await auth?.signIn(requestPayload);
+      const res = await tourCustomerServices.bookTourCustomer(body);
+      window.location.href = res.data.data.paymentUrl;
     } catch (error: any) {
       const err: any = error?.response.data.messages[0];
       showError(err);
     }
-  };
+  };  
   const handleSetValue = (value: NoOfGuest) => {
-    setValue("noOfGuest", value);
-  };
+    setValue("noOfGuest", value); // Update the form state
+    const priceTour = tour?.price || 0;
+    const newTotalPrice = priceTour * (value.adultQuantity + value.childQuantity);
+    setTotalPrice(newTotalPrice); // Update the total price
+};
   const handleLoadMoreReview = () => {
     const _event: any = "";
     handleChangePage(_event, (filters?.page || 1) + 1);
@@ -119,7 +143,7 @@ const CityTourDetail = () => {
   //! Render
   return (
     <div className="tw-py-12">
-      {loading && <Loading/>}
+      {loading && <Loading />}
       <Container className="tw-flex tw-flex-col tw-gap-y-8">
         <CommonStyles.Box className="tw-grid tw-grid-cols-12">
           <CommonStyles.Box className="tw-col-span-8 tw-flex tw-flex-col tw-gap-4">
@@ -188,7 +212,7 @@ const CityTourDetail = () => {
           </CommonStyles.Box>
           <CommonStyles.Box className="tw-col-span-4 tw-h-fit">
             <form
-              // onSubmit={handleSubmit(onSubmit)}
+              onSubmit={handleSubmit(onSubmit)}
               className=" tw-bg-white tw-rounded-md tw-shadow-select tw-w-full"
             >
               <CommonStyles.Box className="tw-w-full">
@@ -233,7 +257,7 @@ const CityTourDetail = () => {
                     type="size36Weight900"
                   >
                     {t("currency")}
-                    {tour?.price}
+                    {totalPrice}
                   </CommonStyles.Typography>
                 </CommonStyles.Box>
                 <CommonButton

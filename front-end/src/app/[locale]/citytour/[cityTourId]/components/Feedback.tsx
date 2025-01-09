@@ -75,7 +75,7 @@ const Feedback: React.FC<Props> = (props: Props) => {
             />
           </CommonStyles.Box>
           <CommonStyles.Box className="tw-w-[380px] tw-flex tw-flex-col tw-gap-2">
-            <RatingBar title="Guide" rating={stats?.avgRatingGuide || 0} />
+            <RatingBar title={t('guide')} rating={stats?.avgRatingGuide || 0} />
             <RatingBar
               title={t('transportation')}
               rating={stats?.avgRatingTransportation || 0}
@@ -84,7 +84,7 @@ const Feedback: React.FC<Props> = (props: Props) => {
               title={t('valueForMoney')}
               rating={stats?.avgRatingValueOfMoney || 0}
             />
-            <RatingBar title="Safety" rating={stats?.avgRatingSafety || 0} />
+            <RatingBar title={t('safety')} rating={stats?.avgRatingSafety || 0} />
           </CommonStyles.Box>
         </CommonStyles.Box>
         {/* Feedback Filter */}

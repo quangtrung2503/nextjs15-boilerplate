@@ -476,4 +476,5 @@ export enum BookingStatus {
 
 export enum PaymentMethod {
   QR_CODE = 'QR Code',
+  VNPAY = 'VNPAY'
 }

@@ -1,4 +1,5 @@
-import { TransportOfTour } from "@/helpers/common";
+import { statusColors } from "@/utils/utils";
+
 export interface Tour {
   id?: number;
   name: string;
@@ -32,6 +33,22 @@ export interface Tour {
   images: string[];
   totalReviews?: number;
 }
+
+export interface HistoryBookingTour {
+  id: number;
+  orderId: string;
+  bookingDate: string;
+  status: keyof typeof statusColors;
+  name: string;
+  startDate: string;
+  endDate: string;
+  location: string;
+  people: number;
+  pricePerTour: number;
+  totalPrice: number;
+  image: string;
+};
+
 export interface City {
   id: number;
   name: string;

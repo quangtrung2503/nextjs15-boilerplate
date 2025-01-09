@@ -6,18 +6,29 @@ export const defaultValue : InfoBooking = {
     startDate: '',
     endDate: '',
     noOfGuest: {
-        adultQuantity: '',
-        childQuantity: '',
+        adultQuantity: 0,
+        childQuantity: 0,
     },
 }
 
 export interface NoOfGuest {
-    adultQuantity: string | null;
-    childQuantity: string | null;
+    adultQuantity: number;
+    childQuantity: number;
 }
 export interface InfoBooking {
     rating: number;
     startDate: string | null;
     endDate: string | null;
     noOfGuest: NoOfGuest ;
+}
+
+export interface BookTour {
+    tourId: number;
+    startDate: string | null;
+    endDate: string | null;
+    numberOfAdults: number;
+    numberOfChildren: number;
+    totalPrice: number;
+    status: string;
+    paymentMethod: string;
 }

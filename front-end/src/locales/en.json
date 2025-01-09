@@ -1,6 +1,8 @@
 {
   "feedback": {
     "title": "Customer Review",
+    "guide": "Guide",
+    "safety": "Safety",
     "reviews": "reviews",
     "filter": "Filtering",
     "recommendPlaceholder": "Recommend",
@@ -185,6 +187,8 @@
     "titleSpecialFoods": "Special Foods",
     "titleRiverActivity": "River Activity",
     "cityTourDetail": {
+      "people": "People",
+      "hours": "hours",
       "booking": "Booking",
       "noOfGuest": "No. Of Guest",
       "adults": "Adults",
@@ -600,11 +604,19 @@
     "currentPassword": "Current Password",
     "newPassword": "New Password",
     "confirmPassword": "Confirm Password",
-    "menuProfile": {
+    "paySuccess": "Payment Success",
+    "payError": "Payment Error",
+     "menuProfile": {
       "information": "Profile Information",
       "booking": "Booking History",
       "newsletter": "Newsletter Subscription",
       "manager": "Manage Notifications"
+    },
+    "bookingHistory": {
+      "booking": "Booking History",
+      "peoples": "peoples",
+      "people": "people",
+      "cancellation": "Tour Cancellation"
     }
   },
   "uploadField": {

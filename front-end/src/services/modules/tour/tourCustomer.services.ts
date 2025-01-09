@@ -8,6 +8,7 @@ import { AxiosRequestConfig, AxiosResponse } from "axios";
 import apiUrls from "@/constants/apiUrls";
 import queryString from "query-string";
 import { ApiResponse, CustomerReview, ReviewData, Stats, Tour, TourImage } from "./interfaces/tour";
+import { BookTour } from "@/app/[locale]/citytour/[cityTourId]/forms";
 
 export interface FiltersGetTours extends CommonFilters {}
 export interface RequestGetTours extends CommonFilters {}
@@ -19,10 +20,6 @@ export interface RequestGetReviewCustomer extends CommonFilters {
   ratings?: number[]
 }
 
-export type ResponseTourCustomerList = AxiosResponse<ResponseCommon<ResponseList<Tour[]>>>;
-export type ResponseTourCustomer = ResponseCommon<ApiResponse>;
-export type ResponseTourCustomerReview = ResponseCommon<ReviewData>;
-
 export interface ExtraData<T> extends ResponseList<T>{
   stats: Stats,
 }
@@ -30,25 +27,26 @@ export interface ExtraReview<T>  {
   data: ExtraData<T>
 }
 
+export type ResponseTourCustomerList = AxiosResponse<ResponseCommon<ResponseList<Tour[]>>>;
+export type ResponseTourGalleryList = AxiosResponse<ResponseCommon<ResponseList<TourImage[]>>>;
+export type ResponseTourDestinationList = AxiosResponse<ResponseCommon<ResponseList<Tour[]>>>;
 export type ResponseReviewCustomer = AxiosResponse<ExtraReview<CustomerReview[]>>
+
+
+export type ResponseTourCustomer = ResponseCommon<ApiResponse>;
+export type ResponseTourCustomerReview = ResponseCommon<ReviewData>;
+export type ResponseTourBestTrending = ResponseCommon<Tour>;
 
 export interface FiltersGetGallery extends CommonFilters {}
 export interface RequestGetGallery extends CommonFilters {}
 
-export type ResponseTourGalleryList = AxiosResponse<
-  ResponseCommon<ResponseList<TourImage[]>>
->;
-
 export interface FiltersGetTourDestination extends CommonFilters {}
 export interface RequestGetTourDestination extends CommonFilters {}
 
-export type ResponseTourDestinationList = AxiosResponse<
-  ResponseCommon<ResponseList<Tour[]>>
->;
 export interface FiltersGetTourBestTrending extends CommonFilters {}
 export interface RequestGetTourBestTrending extends CommonFilters {}
 
-export type ResponseTourBestTrending = ResponseCommon<Tour>;
+
 
 class TourService {
   getTours(configs?: AxiosRequestConfig) {
@@ -75,6 +73,16 @@ class TourService {
       `${apiUrls.TOUR_CUS_URL}/trending/get-best-trending`,
       configs,
     );
+  }
+  bookTourCustomer(tour: BookTour, configs?: AxiosRequestConfig) {
+    return httpService.post(`${apiUrls.BOOKING_TOUR_URL}`, tour)
+  }
+  
+  reloadPayByVnpay(url: string, configs?: AxiosRequestConfig) {
+    return httpService.get(`${apiUrls.VNPAY_RETURN_URL}${url}`)
+  }
+  getBookingHistory(configs?: AxiosRequestConfig) {
+    return httpService.get(`${apiUrls.BOOKING_TOUR_URL}`)
   }
 }
 
