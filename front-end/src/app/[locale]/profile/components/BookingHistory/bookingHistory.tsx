@@ -1,87 +1,22 @@
+"use client"
+
 import { LocationOn } from "@mui/icons-material";
 import CommonIcons from "@/components/CommonIcons";
-import { Box, Breadcrumbs, CardMedia, Typography, Tooltip } from "@mui/material";
+import { Box, CardMedia, Typography, Tooltip } from "@mui/material";
 import { useTranslations } from "next-intl";
 import { CommonButton } from "@/components/common/Button";
 import { HistoryBookingTour } from "@/services/modules/tour/interfaces/tour";
 import { statusColors } from "@/utils/utils";
-
-const tours: HistoryBookingTour[] = [
-  {
-    id: 1,
-    orderId: "55244324",
-    bookingDate: "02/01/2025",
-    status: "PENDING",
-    name: " Khám phá di sản văn hóa thế giới Vịnh Hạ Lon Khám phá di sản văn hóa thế giới Vịnh Hạ Long Khám phá di sản văn hóa thế giới Vịnh Hạ Long Khám phá di sản văn hóa thế giới Vịnh Hạ Longg",
-    startDate: "03/01/25",
-    endDate: "05/01/25",
-    location: "Vịnh Hạ Long",
-    people: 2,
-    pricePerTour: 5000.0,
-    totalPrice: 1000.0,
-    image: "https://danangopentour.vn/uploads/09-2019/tour-tham-quan-thu-do-ha-noi-chua-mot-cot-m-(1).jpg",
-  },
-  {
-    id: 2,
-    orderId: "55244325",
-    bookingDate: "02/01/2025",
-    status: "CONFIRMED",
-    name: "Trải nghiệm thiên nhiên và văn hóa Tây Bắc dài ngày",
-    startDate: "04/01/25",
-    endDate: "06/01/25",
-    location: "Tây Bắc",
-    people: 4,
-    pricePerTour: 700.0,
-    totalPrice: 2800.0,
-    image: "https://danangopentour.vn/uploads/09-2019/tour-tham-quan-thu-do-ha-noi-chua-mot-cot-m-(1).jpg",
-  },
-  {
-    id: 3,
-    orderId: "55244326",
-    bookingDate: "03/01/2025",
-    status: "COMPLETED",
-    name: "Tour khám phá đảo Phú Quốc và những điều thú vị",
-    startDate: "05/01/25",
-    endDate: "07/01/25",
-    location: "Phú Quốc",
-    people: 3,
-    pricePerTour: 600.0,
-    totalPrice: 1800.0,
-    image: "https://danangopentour.vn/uploads/09-2019/tour-tham-quan-thu-do-ha-noi-chua-mot-cot-m-(1).jpg",
-  },
-  {
-    id: 4,
-    orderId: "55244327",
-    bookingDate: "04/01/2025",
-    status: "CANCELLED",
-    name: "Khám phá nét đẹp văn hóa miền Trung Việt Nam",
-    startDate: "06/01/25",
-    endDate: "08/01/25",
-    location: "Miền Trung",
-    people: 5,
-    pricePerTour: 400.0,
-    totalPrice: 2000.0,
-    image: "https://danangopentour.vn/uploads/09-2019/tour-tham-quan-thu-do-ha-noi-chua-mot-cot-m-(1).jpg",
-  },
-  {
-    id: 5,
-    orderId: "55244328",
-    bookingDate: "03/01/2025",
-    status: "REFUNDED",
-    name: "Trải nghiệm văn hóa và ẩm thực Hà Nội với nhiều món ăn độc đáo",
-    startDate: "07/01/25",
-    endDate: "09/01/25",
-    location: "Hà Nội",
-    people: 3,
-    pricePerTour: 800.0,
-    totalPrice: 2400.0,
-    image: "https://danangopentour.vn/uploads/09-2019/tour-tham-quan-thu-do-ha-noi-chua-mot-cot-m-(1).jpg",
-  },
-];
+import useGetBookingHistory from "@/services/modules/tour/hooks/useGetBookingHistory";
+import apiUrls from "@/constants/apiUrls";
+import { BookingStatus, PaymentMethod } from "@/helpers/common";
+import moment from "moment";
+import { number } from "yup";
+import Loading from "@/components/common/Loading";
 
 const groupToursByDate = (tours: HistoryBookingTour[]) => {
   return tours.reduce((groups: Record<string, HistoryBookingTour[]>, tour) => {
-    const date = tour.bookingDate;
+    const date =  moment(tour.createdAt).format('YYYY/MM/DD');
     if (!groups[date]) {
       groups[date] = [];
     }
@@ -96,16 +31,40 @@ const truncateText = (text: string, maxLength: number) => {
 
 const handleCancelTour = (tourId: number) => {
   console.log(`Hủy tour với ID: ${tourId}`);
-  // Gửi request đến backend hoặc cập nhật trạng thái tour tại đây
 };
 
-const BookingHistory = () => {
-  //!Hook + const
-  const t = useTranslations('profile.bookingHistory');
-  
-  //!Call function
-  const groupedTours = groupToursByDate(tours);
+const handlePaymentTour = (tourId: number) => {
+  // console.log("Dat tour");
+}
 
+const BookingHistory = () => {
+  //! Hook + const
+  const t = useTranslations("profile.bookingHistory");
+  const { data: tours, loading, error, refetchWithLoading } = useGetBookingHistory();
+  const VND = Number(process.env.NEXT_PUBLIC_VND);
+  //! Call function
+  const groupedTours = groupToursByDate(tours || []);
+
+  //! Loading / Error state
+  if (loading) {
+    return (
+      <Loading />
+    );
+  }
+
+  if (error) {
+    return (
+      <Box className="tw-flex tw-justify-center tw-items-center tw-h-full">
+        <Typography variant="h6" color="error">
+          Error Fetching Data
+        </Typography>
+        <CommonButton variant="contained" onClick={refetchWithLoading} className="tw-ml-4">
+          Retry
+        </CommonButton>
+      </Box>
+    );
+  }
+  //! Render UI
   return (
     <Box className="tw-flex-grow tw-rounded-sm tw-bg-gray-50 tw-p-10">
       <Typography
@@ -125,84 +84,101 @@ const BookingHistory = () => {
               {date}
             </Typography>
 
-            {tours.map((tour) => (
-              <Box
-                key={tour.id}
-                className="tw-flex tw-mb-2 tw-bg-white tw-rounded-lg tw-shadow-lg tw-p-6 tw-border tw-border-gray-200"
-              >
-                <Box className="tw-flex-grow">
-                  <Box className="tw-mb-4 tw-flex tw-justify-between tw-items-center">
-                    <Typography
-                      variant="h6"
-                      className="tw-font-bold tw-text-gray-700"
-                    >
-                      Order item: {tour.orderId}
-                    </Typography>
-                    <Typography
-                      className={`tw-inline-block tw-py-1 tw-px-4 tw-rounded-full tw-text-xs tw-font-semibold ${statusColors[tour.status]}`}
-                    >
-                      {tour.status}
-                    </Typography>
-                  </Box>
-
-                  <Box className="tw-flex tw-items-start tw-gap-4">
-                    <CardMedia
-                      className="tw-w-24 tw-h-24 tw-rounded-lg tw-border tw-border-gray-200"
-                      image={tour.image}
-                    />
-                    <Box className="tw-flex-grow">
-                      <Tooltip title={tour.name} placement="top">
-                        <Typography
-                          className="tw-font-semibold tw-text-lg tw-text-gray-800 tw-line-clamp-1 tw-break-words"
-                        >
-                          {truncateText(tour.name, 70)}
-                        </Typography>
-                      </Tooltip>
-
-                      <Box className="tw-flex tw-items-center tw-mt-2">
-                        <CommonIcons.CalendarMonthOutlined className="tw-text-gray-500" />
-                        <Typography className="tw-ml-2 tw-text-sm tw-text-gray-600">
-                          {tour.startDate} - {tour.endDate}
-                        </Typography>
-                      </Box>
-
-                      <Box className="tw-flex tw-items-center tw-mt-2">
-                        <LocationOn className="tw-text-gray-500" />
-                        <Typography className="tw-ml-2 tw-text-sm tw-text-gray-600">
-                          {tour.location}
-                        </Typography>
-                        <Typography className="tw-mx-2 tw-text-sm tw-text-gray-500">|</Typography>
-                        <CommonIcons.PeopleOutlined className="tw-text-gray-500" />
-                        <Typography className="tw-ml-2 tw-text-sm tw-text-gray-600">
-                          {tour.people} {tour.people > 1 ? t('peoples') : t('people')}
-                        </Typography>
-                      </Box>
+            {tours.map((tour) => {
+              return (
+                <Box
+                  key={tour.id}
+                  className="tw-flex tw-mb-2 tw-bg-white tw-rounded-lg tw-shadow-lg tw-p-6 tw-border tw-border-gray-200"
+                >
+                  <Box className="tw-flex-grow">
+                    <Box className="tw-mb-4 tw-flex tw-justify-between tw-items-center">
+                      <Typography
+                        variant="h6"
+                        className="tw-font-bold tw-text-gray-700"
+                      >
+                        Order item: {tour.id}
+                      </Typography>
+                      <Typography
+                        className={`tw-inline-block tw-py-1 tw-px-4 tw-rounded-full tw-text-xs tw-font-semibold ${statusColors[tour.status]}`}
+                      >
+                        {tour.status}
+                      </Typography>
                     </Box>
 
-                    <Box className="tw-text-right">
-                      <Box className="tw-flex tw-items-center tw-gap-2">
-                        <Typography className="tw-text-sm tw-font-semibold tw-text-gray-400 tw-border tw-border-gray-600 tw-bg-gray-200 tw-rounded-lg tw-py-1 tw-px-2">
-                          {tour.people} x ${tour.pricePerTour.toLocaleString('vi-VN')}
-                        </Typography>
-                        <Typography className="tw-text-lg tw-font-bold tw-text-gray-800">
-                          ${tour.totalPrice.toLocaleString('vi-VN')}
-                        </Typography>
+                    <Box className="tw-flex tw-items-start tw-gap-4">
+                      <CardMedia
+                        className="tw-w-24 tw-h-24 tw-rounded-lg tw-border tw-border-gray-200"
+                        image={`${apiUrls.IMG_URL}/${tour.Tour.TourImage?.at(0)?.image}`} />
+                      <Box className="tw-flex-grow">
+                        <Tooltip title={tour.Tour.name} placement="top">
+                          <Typography
+                            className="tw-font-semibold tw-text-lg tw-text-gray-800 tw-line-clamp-1 tw-break-words"
+                          >
+                            {truncateText(tour.Tour.name, 70)}
+                          </Typography>
+                        </Tooltip>
+
+                        <Box className="tw-flex tw-items-center tw-mt-2">
+                          <CommonIcons.CalendarMonthOutlined className="tw-text-gray-500" />
+                          <Typography className="tw-ml-2 tw-text-sm tw-text-gray-600">
+                            {moment(tour.startDate).format('YYYY/MM/DD')} - {moment(tour.endDate).format('YYYY/MM/DD')}
+                          </Typography>
+                        </Box>
+
+                        <Box className="tw-flex tw-items-center tw-mt-2">
+                          {/* Location and City */}
+                          <LocationOn className="tw-text-gray-500" />
+                          <Typography className="tw-ml-2 tw-text-sm tw-text-gray-600">
+                            {tour.Tour.City?.name}
+                          </Typography>
+
+                          {/* Separator */}
+                          <Typography className="tw-mx-2 tw-text-sm tw-text-gray-500">|</Typography>
+
+                          {/* People Count */}
+                          <CommonIcons.PeopleOutlined className="tw-text-gray-500" />
+                          <Typography className="tw-ml-2 tw-text-sm tw-text-gray-600">
+                            {`${tour.numberOfAdults + tour.numberOfChildren} `}
+                            {t(tour.numberOfAdults + tour.numberOfChildren > 1 ? "peoples" : "people")}
+                          </Typography>
+                        </Box>
                       </Box>
-                      {!(tour.status === "CANCELLED" || tour.status === "REFUNDED") && (
-                         <CommonButton
-                         variant="outlined"
-                         color="error"
-                         className="tw-mt-8 tw-scroll-py-px tw-text-xs tw-rounded-lg"
-                         onClick={() => handleCancelTour(tour.id)}
-                       >
-                         {t('cancellation')}
-                       </CommonButton>
-                      )}
+
+                      {/* Payment and Cancellation Section */}
+                      <Box className="tw-text-right">
+                        <Box className="tw-flex tw-items-center tw-gap-2">
+                          {/* Payment Details */}
+                          <Typography className="tw-text-sm tw-font-semibold tw-text-gray-400 tw-border tw-border-gray-600 tw-bg-gray-200 tw-rounded-lg tw-py-1 tw-px-2">
+                            {`${tour.numberOfAdults + tour.numberOfChildren} x `}
+                            {tour.paymentMethod === PaymentMethod.VNPAY
+                              ? `${(tour.Tour.price * VND).toLocaleString("vi-VN")} VND`
+                              : `$ ${tour.Tour.price.toLocaleString()}`}
+                          </Typography>
+
+                          {/* Total Price */}
+                          <Typography className="tw-text-lg tw-font-bold tw-text-gray-800">
+                            {tour.paymentMethod === PaymentMethod.VNPAY ? "" : "$"} {tour.totalPrice.toLocaleString("vi-VN")}
+                          </Typography>
+                        </Box>
+
+                        {/* Cancel Button */}
+                        {!(tour.status === BookingStatus.CANCELLED || tour.status === BookingStatus.REFUNDED) && (
+                          <CommonButton
+                            variant="outlined"
+                            color="error"
+                            size="small"
+                            className="tw-mt-8 tw-scroll-py-px tw-text-xs tw-rounded-lg"
+                            onClick={() => handleCancelTour(tour.id)}
+                          >
+                            {t("cancellation")}
+                          </CommonButton>
+                        )}
+                      </Box>
                     </Box>
                   </Box>
                 </Box>
-              </Box>
-            ))}
+              );
+            })}
           </Box>
         ))}
       </Box>

@@ -1,122 +1,103 @@
 import { useEffect, useState, useCallback, useRef } from "react";
-import { cloneDeep, isEmpty, isObject } from "lodash";
+import axios from "axios";
+import { isObject } from "lodash";
 
 import { useSave } from "@/stores/useStore";
-import axios, { AxiosError, AxiosResponse } from "axios";
 import { useNotifications } from "@/helpers/toast";
 import { ResponseList } from "@/interfaces/common";
-import tourCustomerServices, {
-  ResponseTourCustomerList,
-} from "../tourCustomer.services";
-import { Tour } from "../interfaces/tour";
+import tourCustomerServices, { ResponseBookingHistory } from "../tourCustomer.services";
+import { HistoryBookingTour } from "../interfaces/tour";
 
-/********************************************************
- * SNIPPET GENERATED
- * GUIDE
- * Snippet for infinite scroll with page + rowsPerPage
- * Maybe you should check function:
- * - interface Request / Response
- * - parseRequest
- * - checkConditionPass
- * - fetch
- * - refetch
- * - requestAPI
- ********************************************************/
-
-//* Check parse body request
 const requestAPI = tourCustomerServices.getBookingHistory;
 
+interface UseGetBookingHistoryOptions {
+  isTrigger?: boolean;
+  refetchKey?: string;
+}
+
 const useGetBookingHistory = (
-  options: { isTrigger?: boolean; refetchKey?: string } = {
-    isTrigger: true,
-    refetchKey: "",
-  },
+  options: UseGetBookingHistoryOptions = { isTrigger: true, refetchKey: "" }
 ) => {
-  //! State
   const { isTrigger = true, refetchKey = "" } = options;
+
+  //! State and Refs
   const signal = useRef(new AbortController());
   const save = useSave();
-  const [data, setData] = useState<ResponseList<Tour[]>>();
+  const [data, setData] = useState<HistoryBookingTour[]>([]);
   const [loading, setLoading] = useState(false);
   const [refetching, setRefetching] = useState(false);
   const [error, setError] = useState<unknown>(null);
   const { showError } = useNotifications();
-  //! Function
-  const fetch: () => Promise<ResponseTourCustomerList> | undefined =
-    useCallback(() => {
-      if (!isTrigger) {
-        return;
-      }
-      return new Promise((resolve, reject) => {
-        (async () => {
-          try {
-            // const nextFilters = parseRequest(filters);
-            const response = await requestAPI({
-              signal: signal.current.signal,
-            });
-            resolve(response);
-          } catch (error) {
-            // setError(error);
-            reject(error);
-          }
-        })();
-      });
-    }, [isTrigger]);
 
-  const checkConditionPass = useCallback(
-    (response: ResponseTourCustomerList) => {
-      //* Check condition of response here to set data
-      if (isObject(response?.data)) {
-        setData(response.data.data);
-      }
-    },
-    [],
-  );
+  //! Fetch Function
+  const fetch: () => Promise<ResponseBookingHistory> | undefined =
+      useCallback(() => {
+        if (!isTrigger) {
+          return;
+        }
+        return new Promise((resolve, reject) => {
+          (async () => {
+            try {
+              // const nextFilters = parseRequest(filters);
+              const response = await requestAPI({
+                signal: signal.current.signal,
+              });
+              resolve(response);
+            } catch (error) {
+              // setError(error);
+              reject(error);
+            }
+          })();
+        });
+      }, [isTrigger]);
+   // Đảm bảo `showError` không bị thay đổi mỗi lần render.
+  
 
-  //* Refetch implicity (without changing loading state)
+  //! Parse and Set Data
+  const handleResponse = useCallback((response: ResponseBookingHistory) => {
+    if (response?.data?.data) {
+      setData(response.data.data.items || []);
+    } else {
+      setData([]);
+    }
+  }, []);
+
+  //! Refetch without Loading State
   const refetch = useCallback(async () => {
     try {
       if (signal.current) {
         signal.current.abort();
         signal.current = new AbortController();
       }
-      console.log("refetch");
       setRefetching(true);
       const response = await fetch();
       if (response) {
-        checkConditionPass(response);
+        handleResponse(response);
       }
-
+    } finally {
       setRefetching(false);
-    } catch (error: any) {
-      if (!axios.isCancel(error)) {
-        showError(error);
-      }
     }
-  }, [fetch, checkConditionPass]);
+  }, [fetch, handleResponse]);
 
-  useEffect(() => {
-    save(refetchKey, refetch);
-  }, [save, refetchKey, refetch]);
-
-  //* Refetch with changing loading state
+  //! Refetch with Loading State
   const refetchWithLoading = useCallback(async () => {
     try {
       setLoading(true);
       const response = await fetch();
       if (response) {
-        checkConditionPass(response);
-      }
-    } catch (error: any) {
-      if (!axios.isCancel(error)) {
-        showError(error);
+        handleResponse(response);
       }
     } finally {
       setLoading(false);
     }
-  }, [fetch, checkConditionPass]);
+  }, [fetch, handleResponse]);
 
-  //* Main handler
+  //! Save Refetch Method
+  useEffect(() => {
+    save(refetchKey, refetch);
+  }, [save, refetchKey, refetch]);
+
+  //! Initial Fetch
   useEffect(() => {
     //* Fetch initial API
     const fetchAPI = async () => {
@@ -125,7 +106,7 @@ const useGetBookingHistory = (
         setLoading(true);
         const response = await fetch();
         if (response) {
-          checkConditionPass(response);
+          handleResponse(response);
         }
       } catch (error) {
         if (!axios.isCancel(error)) {
@@ -141,7 +122,7 @@ const useGetBookingHistory = (
         signal.current.abort();
       }
     };
-  }, [fetch, checkConditionPass]);
+  }, [fetch, handleResponse]);
 
   return {
     data,

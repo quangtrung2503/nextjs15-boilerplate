@@ -7,7 +7,7 @@ import httpService from "@/services/httpService";
 import { AxiosRequestConfig, AxiosResponse } from "axios";
 import apiUrls from "@/constants/apiUrls";
 import queryString from "query-string";
-import { ApiResponse, CustomerReview, ReviewData, Stats, Tour, TourImage } from "./interfaces/tour";
+import { ApiResponse, CustomerReview, HistoryBookingTour, ReviewData, Stats, Tour, TourImage } from "./interfaces/tour";
 import { BookTour } from "@/app/[locale]/citytour/[cityTourId]/forms";
 
 export interface FiltersGetTours extends CommonFilters {}
@@ -31,7 +31,7 @@ export type ResponseTourCustomerList = AxiosResponse<ResponseCommon<ResponseList
 export type ResponseTourGalleryList = AxiosResponse<ResponseCommon<ResponseList<TourImage[]>>>;
 export type ResponseTourDestinationList = AxiosResponse<ResponseCommon<ResponseList<Tour[]>>>;
 export type ResponseReviewCustomer = AxiosResponse<ExtraReview<CustomerReview[]>>
-
+export type ResponseBookingHistory = AxiosResponse<ResponseCommon<ResponseList<HistoryBookingTour[]>>>;
 
 export type ResponseTourCustomer = ResponseCommon<ApiResponse>;
 export type ResponseTourCustomerReview = ResponseCommon<ReviewData>;
