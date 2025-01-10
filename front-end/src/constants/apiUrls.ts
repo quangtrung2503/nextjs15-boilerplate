@@ -1,5 +1,6 @@
 export const BASE_URL = `${process.env.NEXT_PUBLIC_ROOT_URL}`;
 export const PUBLIC_URL = `${process.env.NEXT_PUBLIC_URL}`;
+
 export default {
   IMG_URL: `${PUBLIC_URL}`,
   AUTH: {
