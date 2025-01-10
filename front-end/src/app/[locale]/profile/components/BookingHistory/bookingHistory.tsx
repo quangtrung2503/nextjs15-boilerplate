@@ -9,9 +9,10 @@ import { HistoryBookingTour } from "@/services/modules/tour/interfaces/tour";
 import { statusColors } from "@/utils/utils";
 import useGetBookingHistory from "@/services/modules/tour/hooks/useGetBookingHistory";
 import apiUrls from "@/constants/apiUrls";
-import { PaymentMethod } from "@/helpers/common";
+import { BookingStatus, PaymentMethod } from "@/helpers/common";
 import moment from "moment";
 import { number } from "yup";
+import Loading from "@/components/common/Loading";
 
 const groupToursByDate = (tours: HistoryBookingTour[]) => {
   return tours.reduce((groups: Record<string, HistoryBookingTour[]>, tour) => {
@@ -33,8 +34,7 @@ const handleCancelTour = (tourId: number) => {
 };
 
 const handlePaymentTour = (tourId: number) => {
-  console.log("Dat tour");
-  
+  // console.log("Dat tour");
 }
 
 const BookingHistory = () => {
@@ -42,17 +42,13 @@ const BookingHistory = () => {
   const t = useTranslations("profile.bookingHistory");
   const { data: tours, loading, error, refetchWithLoading } = useGetBookingHistory();
   const VND = Number(process.env.NEXT_PUBLIC_VND);
-  console.log("Error:", tours);
-
   //! Call function
   const groupedTours = groupToursByDate(tours || []);
 
   //! Loading / Error state
   if (loading) {
     return (
-      <Box className="tw-flex tw-justify-center tw-items-center tw-h-full">
-        <Typography variant="h6">Loading</Typography>
-      </Box>
+      <Loading />
     );
   }
 
@@ -68,7 +64,6 @@ const BookingHistory = () => {
       </Box>
     );
   }
-
   //! Render UI
   return (
     <Box className="tw-flex-grow tw-rounded-sm tw-bg-gray-50 tw-p-10">
@@ -167,7 +162,7 @@ const BookingHistory = () => {
                         </Box>
 
                         {/* Cancel Button */}
-                        {!(tour.status === "CANCELLED" || tour.status === "REFUNDED") && (
+                        {!(tour.status === BookingStatus.CANCELLED || tour.status === BookingStatus.REFUNDED) && (
                           <CommonButton
                             variant="outlined"
                             color="error"
