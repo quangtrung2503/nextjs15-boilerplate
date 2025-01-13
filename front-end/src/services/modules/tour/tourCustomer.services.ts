@@ -77,9 +77,11 @@ class TourService {
   bookTourCustomer(tour: BookTour, configs?: AxiosRequestConfig) {
     return httpService.post(`${apiUrls.BOOKING_TOUR_URL}`, tour)
   }
-  
   reloadPayByVnpay(url: string, configs?: AxiosRequestConfig) {
     return httpService.get(`${apiUrls.VNPAY_RETURN_URL}${url}`)
+  }
+  pendingBookingService(idTourBooking: number, configs?: AxiosRequestConfig) {
+    return httpService.get(`${apiUrls.PENDING_PAYMENT_URL}/${idTourBooking}`)
   }
   getBookingHistory(configs?: AxiosRequestConfig) {
     return httpService.get(`${apiUrls.BOOKING_TOUR_URL}`)

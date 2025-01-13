@@ -36,8 +36,8 @@ export interface Tour {
 
 export interface HistoryBookingTour {
   id: number;
-  orderId: string;
   createdAt: string;
+  bookingCode: string;
   status: keyof typeof statusColors;
   name: string;
   startDate: string;

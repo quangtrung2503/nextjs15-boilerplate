@@ -616,7 +616,8 @@
       "booking": "Booking History",
       "peoples": "peoples",
       "people": "people",
-      "cancellation": "Tour Cancellation"
+      "cancelTour": "Cancel Tour",
+      "pay_now": "Paynow"
     }
   },
   "uploadField": {

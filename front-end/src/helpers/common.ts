@@ -471,10 +471,33 @@ export enum BookingStatus {
   CONFIRMED = 'CONFIRMED',
   COMPLETED = 'COMPLETED',
   CANCELLED = 'CANCELLED',
-  REFUNDED = 'REFUNDED'
+}
+
+export enum PaymentStatus {
+  PENDING = 'PENDING',
+  SUCCESS = 'SUCCESS',
+  FAILED = 'FAILED',
+}
+
+export enum RequestRefundStatus {
+  PENDING = 'PENDING',
+  APPROVED = 'APPROVED',
+  REJECTED ='REJECTED'
 }
 
 export enum PaymentMethod {
-  QR_CODE = 'QR Code',
   VNPAY = 'VNPAY'
+}
+
+export enum BookingCancellationReason {
+  CHANGE_OF_PLANS = 'Change of Plans', // Khách thay đổi kế hoạch cá nhân
+  HEALTH_ISSUES = 'Health Issues', // Gặp vấn đề về sức khỏe
+  FAMILY_EMERGENCY = 'Family Emergency', // Khẩn cấp gia đình
+  FINANCIAL_ISSUES = 'Financial Issues', // Vấn đề tài chính
+  SCHEDULE_CONFLICT = 'Schedule Conflict', // Trùng lịch trình
+  TRAVEL_RESTRICTIONS = 'Travel Restrictions', // Hạn chế đi lại
+  WEATHER_CONCERNS = 'Weather Concerns', // Lo ngại về thời tiết
+  FOUND_BETTER_OPTION = 'Found a Better Option', // Tìm được lựa chọn khác phù hợp hơn
+  PERSONAL_REASONS = 'Personal Reasons', // Lý do cá nhân
+  OTHER = 'Other', // Lý do khác không cụ thể
 }

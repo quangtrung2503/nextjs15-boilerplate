@@ -13,10 +13,13 @@ import { BookingStatus, PaymentMethod } from "@/helpers/common";
 import moment from "moment";
 import { number } from "yup";
 import Loading from "@/components/common/Loading";
+import tourCustomerServices from "@/services/modules/tour/tourCustomer.services";
+import { SubmitHandler } from "react-hook-form";
+import { useNotifications } from "@/helpers/toast";
 
 const groupToursByDate = (tours: HistoryBookingTour[]) => {
   return tours.reduce((groups: Record<string, HistoryBookingTour[]>, tour) => {
-    const date =  moment(tour.createdAt).format('YYYY/MM/DD');
+    const date = moment(tour.createdAt).format('YYYY/MM/DD');
     if (!groups[date]) {
       groups[date] = [];
     }
@@ -30,21 +33,29 @@ const truncateText = (text: string, maxLength: number) => {
 };
 
 const handleCancelTour = (tourId: number) => {
-  console.log(`Hủy tour với ID: ${tourId}`);
+  // console.log(`Hủy tour với ID: ${tourId}`);
 };
-
-const handlePaymentTour = (tourId: number) => {
-  // console.log("Dat tour");
-}
 
 const BookingHistory = () => {
   //! Hook + const
   const t = useTranslations("profile.bookingHistory");
   const { data: tours, loading, error, refetchWithLoading } = useGetBookingHistory();
   const VND = Number(process.env.NEXT_PUBLIC_VND);
+  const { showError } = useNotifications();
+  
   //! Call function
   const groupedTours = groupToursByDate(tours || []);
 
+  //! Function
+  const navigateToPaymentPage = async (tourId: number) => {
+    try {
+         const res = await tourCustomerServices.pendingBookingService(tourId);
+         window.location.href = res.data.data.paymentUrl;
+       } catch (error: any) { 
+         const err: any = error?.response.data.messages[0];
+         showError(err);
+       }
+ }
   //! Loading / Error state
   if (loading) {
     return (
@@ -96,7 +107,7 @@ const BookingHistory = () => {
                         variant="h6"
                         className="tw-font-bold tw-text-gray-700"
                       >
-                        Order item: {tour.id}
+                        Order item: {tour.bookingCode}
                       </Typography>
                       <Typography
                         className={`tw-inline-block tw-py-1 tw-px-4 tw-rounded-full tw-text-xs tw-font-semibold ${statusColors[tour.status]}`}
@@ -162,17 +173,36 @@ const BookingHistory = () => {
                         </Box>
 
                         {/* Cancel Button */}
-                        {!(tour.status === BookingStatus.CANCELLED || tour.status === BookingStatus.REFUNDED) && (
-                          <CommonButton
-                            variant="outlined"
-                            color="error"
-                            size="small"
-                            className="tw-mt-8 tw-scroll-py-px tw-text-xs tw-rounded-lg"
-                            onClick={() => handleCancelTour(tour.id)}
-                          >
-                            {t("cancellation")}
-                          </CommonButton>
+                        {!(tour.status === BookingStatus.CANCELLED || tour.status === BookingStatus.COMPLETED) && (
+                          <>
+                            {/* Nút hủy tour */}
+                            {tour.status === BookingStatus.CONFIRMED && (
+                              <CommonButton
+                                variant="contained"
+                                color="primary"
+                                size="small"
+                                className="tw-mt-8 tw-scroll-py-px tw-text-xs tw-rounded-ls tw-border-red-600 tw-text-red-700 tw-bg-red-100 hover:tw-bg-red-100 hover:tw-border-red-700"
+                                onClick={() => handleCancelTour(tour.id)}
+                              >
+                                {t("cancelTour")}
+                              </CommonButton>
+                            )}
+
+                            {/* Nút thanh toán tiền cho tour */}
+                            {tour.status === BookingStatus.PENDING && (
+                              <CommonButton
+                                variant="contained"
+                                color="primary"
+                                size="small"
+                                className="tw-mt-8 tw-scroll-py-px tw-text-xs tw-rounded-ls tw-border-green-600 tw-text-green-700 tw-bg-green-100 hover:tw-bg-green-100 hover:tw-border-green-700"
+                                onClick={() => navigateToPaymentPage(tour.id)}
+                              >
+                                {t("pay_now")}
+                              </CommonButton>
+                            )}
+                          </>
                         )}
+
                       </Box>
                     </Box>
                   </Box>

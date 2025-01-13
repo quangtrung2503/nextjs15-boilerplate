@@ -31,7 +31,7 @@ import { BookingStatus, PaymentMethod } from "@/helpers/common";
 const CityTourDetail = () => {
   //! prop + state + const
   const intFilter: FiltersGetReviewCustomer = { page: 1, perPage: 10 };
-  const VND = parseFloat(`${process.env.VND}`);
+  const VND = Number(process.env.NEXT_PUBLIC_VND);
 
   //! Hook
   const slug = useParams();
