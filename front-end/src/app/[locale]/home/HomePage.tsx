@@ -40,112 +40,6 @@ interface FormValues {
   location?: string;
 }
 const initValue = { location: "" };
-const listCity = [
-  "New York",
-  "California",
-  "Alaska",
-  "Sidney",
-  "Dubai",
-  "London",
-  "Tokyo",
-  "Delhi",
-];
-const popularCity: PopularCityProps = {
-  imageBanner: commonImg.alaska.src,
-  name: "Alaska",
-  title:
-    "Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint. Velit officia consequat duis enim velit mollit. Exercitation veniam consequat sunt nostrud amet.",
-};
-
-const trendingCity = {
-  imageBanner: commonImg.bannerTrendingCity.src,
-  image: commonImg.imagesTrendingCity.src,
-  title: "Wilderlife of Alaska",
-  place: "Alaska, USA",
-  rate: 4.9,
-  reviews: 300,
-  content:
-    "Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint. Velit officia consequat duis enim velit mollit. Exercitation veniam consequat sunt nostrud amet.",
-};
-export const mocDataCard = [
-  {
-    link: "/citytour/1",
-    src: "https://vietnam.travel/sites/default/files/inline-images/Ha%20Giang%20Loop-9.jpg",
-    title: "Alaska: Westminster to Greenwich River Thames",
-    duration: 2,
-    transport: "Transport Facility",
-    plan: "Family Plan",
-    price: 35,
-    feedback_quantity: 500,
-    feedback_average: 4.5,
-  },
-  {
-    link: "/citytour/1",
-    src: "https://vietnam.travel/sites/default/files/inline-images/Ha%20Giang%20Loop-9.jpg",
-    title: "Alaska: Westminster to Greenwich River Thames",
-    duration: 2,
-    transport: "Transport Facility",
-    plan: "Family Plan",
-    price: 35,
-    feedback_quantity: 500,
-    feedback_average: 4.5,
-  },
-  {
-    link: "/citytour/1",
-    src: "https://vietnam.travel/sites/default/files/inline-images/Ha%20Giang%20Loop-9.jpg",
-    title: "Alaska: Westminster to Greenwich River Thames",
-    duration: 2,
-    transport: "Transport Facility",
-    plan: "Family Plan",
-    price: 35,
-    feedback_quantity: 500,
-    feedback_average: 4.5,
-  },
-  {
-    link: "/citytour/1",
-    src: "https://vietnam.travel/sites/default/files/inline-images/Ha%20Giang%20Loop-9.jpg",
-    title: "Alaska: Westminster to Greenwich River Thames",
-    duration: 2,
-    transport: "Transport Facility",
-    plan: "Family Plan",
-    price: 35,
-    feedback_quantity: 500,
-    feedback_average: 4.5,
-  },
-  {
-    link: "/citytour/1",
-    src: "https://vietnam.travel/sites/default/files/inline-images/Ha%20Giang%20Loop-9.jpg",
-    title: "Alaska: Westminster to Greenwich River Thames",
-    duration: 2,
-    transport: "Transport Facility",
-    plan: "Family Plan",
-    price: 35,
-    feedback_quantity: 500,
-    feedback_average: 4.5,
-  },
-  {
-    link: "/citytour/1",
-    src: "https://vietnam.travel/sites/default/files/inline-images/Ha%20Giang%20Loop-9.jpg",
-    title: "Alaska: Westminster to Greenwich River Thames",
-    duration: 2,
-    transport: "Transport Facility",
-    plan: "Family Plan",
-    price: 35,
-    feedback_quantity: 500,
-    feedback_average: 4.5,
-  },
-  {
-    link: "/citytour/1",
-    src: "https://vietnam.travel/sites/default/files/inline-images/Ha%20Giang%20Loop-9.jpg",
-    title: "Alaska: Westminster to Greenwich River Thames",
-    duration: 2,
-    transport: "Transport Facility",
-    plan: "Family Plan",
-    price: 35,
-    feedback_quantity: 500,
-    feedback_average: 4.5,
-  },
-];
 export default function HomePage() {
   // props + state
   const [slug, setSlug] = useState<string | null>(null);
@@ -161,10 +55,10 @@ export default function HomePage() {
   const { data: dataDestination } = useGetTourDestinationCustomer();
 
   // mocDataDestination 
-  const mocDataDestination = dataDestination?.items?.map((item) => ({
-    link: "",
-    src: `${apiUrls.IMG_URL}/${item.City?.image || ""}`,
-    title: item.City?.description || "",
+  const dataDataDestination = dataDestination?.items?.map((item) => ({
+    link: `/citytour/${item.slug}`,
+    src: `${apiUrls.IMG_URL}/${item.TourImage?.[0]?.image || ""}`,
+    title: item?.name || "",
     transport: item.transport,
     duration: item?.numberOfHours,
     plan: item.package,
@@ -291,78 +185,6 @@ export default function HomePage() {
                   />
                 </div>
               </CommonStyles.Box>
-              {/* <CommonStyles.Box className="tw-flex tw-col-span-2 before:tw-h-1">
-                <Divider
-                  orientation="vertical"
-                  variant="middle"
-                  className="tw-h-5 tw-items-center tw-mr-2"
-                  flexItem
-                />
-                <CommonIcons.PeopleOutlined className="tw-text-primary" />
-                <div className="tw-ml-[10px]">
-                  <CommonStyles.Typography
-                    type="size15Weight800"
-                    className="tw-text-primary"
-                  >
-                    {t("guestsLabel")}
-                  </CommonStyles.Typography>
-                  <RHFField
-                    sx={{
-                      fieldset: {
-                        border: "none",
-                      },
-                      input: {
-                        lineHeight: "25px",
-                        fontSize: "14px",
-                        padding: 0,
-                      },
-                      "& input::-webkit-outer-spin-button, & input::-webkit-inner-spin-button":
-                      {
-                        WebkitAppearance: "none",
-                      },
-                    }}
-                    type="number"
-                    name="guests"
-                    placeholder={t("guestsPlaceholder")}
-                    control={control}
-                    component={InputField}
-                  />
-                </div>
-              </CommonStyles.Box>
-              <CommonStyles.Box className="tw-flex tw-col-span-2">
-                <Divider
-                  orientation="vertical"
-                  variant="middle"
-                  className="tw-h-5 tw-items-center tw-mr-2"
-                  flexItem
-                />
-                <CommonIcons.CalendarMonthOutlined className="tw-text-primary" />
-                <div className="tw-ml-[10px]">
-                  <CommonStyles.Typography
-                    type="size15Weight800"
-                    className="tw-text-primary"
-                  >
-                    {t("dateLabel")}
-                  </CommonStyles.Typography>
-                  <RHFField
-                    sx={{
-                      fieldset: {
-                        border: "none",
-                      },
-                      input: {
-                        fontSize: "14px",
-                        padding: 0,
-                      },
-                    }}
-                    isMobileDate
-                    name="date"
-                    control={control}
-                    className="tw-bg-transparent tw-h"
-                    placeholder={t("datePlaceholder")}
-                    component={CommonDatePicker}
-                  />
-                </div>
-              </CommonStyles.Box> */}
               <CommonStyles.Box className="tw-flex tw-justify-end tw-col-span-2">
                 <CommonButton
                   className="outlined tw-w-[150px]"
@@ -471,7 +293,7 @@ export default function HomePage() {
       {/* IV. Featured Destinations */}
       <CommonStyles.Box>
         <CardCarousel
-          data={mocDataDestination}
+          data={dataDataDestination}
           title={
             <Heading
               title={t("featuredDestinationsHeading")}

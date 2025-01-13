@@ -12,12 +12,11 @@ import { SubmitHandler, useForm } from 'react-hook-form'
 import { CommonDatePicker } from '@/components/common/DatePicker'
 import { CommonButton } from '@/components/common/Button'
 import AccordionMUI from '@/components/common/Accordion'
-import CardGridItem, { CardGridItemProps } from '@/components/Card/CardGirdItem'
+import { CardGridItemProps } from '@/components/Card/CardGirdItem'
 import CardListItem from '@/components/Card/CardListItem'
 import CardCarousel from '@/components/CardCarousel'
 import Gallery from '../home/components/Gallery'
 import LatestStories from '../home/components/LatestStories'
-import { mocDataCard } from '../home/HomePage'
 import { yupResolver } from '@hookform/resolvers/yup'
 import useGetAllTourCustomer from '@/services/modules/tour/hooks/useGetAllTourCustomers'
 import apiUrls from '@/constants/apiUrls'
@@ -25,8 +24,6 @@ import useGetAllThemeCustomer from '@/services/modules/theme/hook/useGetAllTheme
 import { Duration } from '@/helpers/common'
 import useGetAllDestinationCustomer from '@/services/modules/destination/hook/useGetAllDestinationCustomer'
 import useGetOutsideTourCustomer from '@/services/modules/tour/hooks/useGetOutsideTourCustomer'
-import { Tour } from '@/services/modules/tour/interfaces/tour'
-import { title } from 'process'
 
 
 interface Availability {
@@ -109,7 +106,7 @@ const CityTourPage = () => {
     name: string,
     apiUrls: { IMG_URL: string }
   ): {
-    data?: CardGridItemProps[] | undefined;
+    data?: CardGridItemProps[];
     title?: React.ReactNode;
     classNameContainerHeading?: string;
   } => {
@@ -131,17 +128,17 @@ const CityTourPage = () => {
     };
   };
   const waterData = useMemo(
-    () => getActivityData(dataOutside || [], "Water activities", apiUrls),
+    () => getActivityData(dataOutside || [], t("titleWaterActivities"), apiUrls),
     [dataOutside, apiUrls]
   );
 
   const goodForSocialData = useMemo(
-    () => getActivityData(dataOutside || [], "Good for social distancing", apiUrls),
+    () => getActivityData(dataOutside || [], t("titleGoodForSocialDistancing"), apiUrls),
     [dataOutside, apiUrls]
   );
 
   const adrenalineData = useMemo(
-    () => getActivityData(dataOutside || [], "Adrenaline", apiUrls),
+    () => getActivityData(dataOutside || [], t("titleAdrenaline"), apiUrls),
     [dataOutside, apiUrls]
   );
 
@@ -155,33 +152,6 @@ const CityTourPage = () => {
       label: "No"
     },
   ]
-  // const themeOptions = [
-  //   { label: "Water activities", value: "water_activities" },
-  //   { label: "Good for social distancing", value: "good_for_social_distancing" },
-  //   { label: "Adrenaline", value: "adrenaline" },
-  //   { label: "Nature", value: "nature" },
-  //   { label: "Hidden gems", value: "hidden_gems" },
-  //   { label: "Street art & grafitti", value: "street_art_&_grafitti" },
-  //   { label: "Food", value: "food" },
-  //   { label: "Fod", value: "fod" },
-  // ];
-  // const durationOptions = [
-  //   { label: "0-3 hours", value: "0-3 hours" },
-  //   { label: "3-5 hours", value: "3-5 hours" },
-  //   { label: "5-7 hours", value: "5-7 hours" },
-  //   { label: "Full day (7+ hours)", value: "full_day_(7+ hours)" },
-  //   { label: "Multi-day", value: "multi-day" },
-  // ];
-  // const destinationOptions = [
-  //   { label: "Biscayne Bay", value: "biscayne_bay" },
-  //   { label: "Downtown Miami", value: "downtown_miami" },
-  //   { label: "Wynwood Arts District", value: "wynwood_arts_district" },
-  //   { label: "Port of Miami", value: "port_of_miami" },
-  //   { label: "Everglades National Park", value: "everglades_national_park" },
-  //   { label: "Fisher Island", value: "fisher_island" },
-  //   { label: "Coconut Grove", value: "food" },
-  //   { label: "Fod", value: "fod" },
-  // ];
 
   // Render
   return (
@@ -281,7 +251,7 @@ const CityTourPage = () => {
                 <CommonStyles.Box key={index}>
                   <CardListItem
                     name={item?.Theme?.name}
-                    link={`/citytour/1`}
+                    link={`/citytour/${item.slug}`}
                     src={`${apiUrls.IMG_URL}/${item?.TourImage?.[0]?.image}`}
                     title={item?.name}
                     duration={item?.numberOfHours}
@@ -316,7 +286,6 @@ const CityTourPage = () => {
               {...waterData}
               title={
                 <CommonStyles.Typography type='size12Weight800' className="tw-text-center tw-px-6 tw-py-2 tw-rounded-full tw-bg-primary tw-text-white">
-                  {/* {t("titleWaterActivities")} */}
                   {waterData?.title}
                 </CommonStyles.Typography>
               } />
@@ -327,7 +296,6 @@ const CityTourPage = () => {
               {...goodForSocialData}
               title={
                 <CommonStyles.Typography type='size12Weight800' className="tw-text-center tw-px-6 tw-py-2 tw-rounded-full tw-bg-accent_blue tw-text-white">
-                  {/* {t("titleSpecialFoods")} */}
                   {goodForSocialData.title}
                 </CommonStyles.Typography>
               } />
@@ -338,7 +306,6 @@ const CityTourPage = () => {
               {...adrenalineData}
               title={
                 <CommonStyles.Typography type='size12Weight800' className="tw-text-center tw-px-6 tw-py-2 tw-rounded-full tw-bg-accent_red tw-text-white">
-                  {/* {t("titleRiverActivity")} */}
                   {adrenalineData?.title}
                 </CommonStyles.Typography>
               } />
