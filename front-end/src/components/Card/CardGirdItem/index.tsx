@@ -4,16 +4,16 @@ import React from "react";
 import CommonIcons from "../../CommonIcons";
 import { useTranslations } from "next-intl";
 export interface CardGridItemProps {
-  src: string;
-  title: string;
+  src?: string;
+  title?: string;
   description?: string;
-  link: string;
+  link?: string;
   price?: number;
   options?: [];
   feedback_quantity?: number;
   feedback_average?: number;
   plan?: string;
-  duration: number;
+  duration?: number;
   transport?: string;
 }
 const CardGridItem = (props: CardGridItemProps) => {
@@ -31,10 +31,11 @@ const CardGridItem = (props: CardGridItemProps) => {
     transport,
     ...rest
   } = props;
+
   const t = useTranslations("card")
   return (
     <Card className="tw-w-full tw-p-0 tw-shadow-card">
-      <CommonStyles.Link href={link} className="tw-w-full">
+      <CommonStyles.Link href={link ?? ""} className="tw-w-full">
         <CommonStyles.Box className="tw-p-2">
           <CardMedia
             className={`tw-min-h-[180px]`}

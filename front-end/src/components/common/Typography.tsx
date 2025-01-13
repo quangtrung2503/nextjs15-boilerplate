@@ -53,7 +53,8 @@ export type TypeTypographyClient =
   | "size64Weight700"
   | "size15Weight800"
   | "size16Weight800"
-  | "size36Weight800";
+  | "size36Weight800"
+  | "size11Weight800";
 
 interface Props extends TypographyProps {
   type?: TypeTypographyClient;
@@ -261,6 +262,10 @@ const Typography = (props: Props) => {
     });
     styles.set("size36Weight800", {
       fontSize: "36px",
+      fontWeight: 800,
+    });
+    styles.set("size11Weight800", {
+      fontSize: "11px",
       fontWeight: 800,
     });
 

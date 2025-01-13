@@ -32,14 +32,14 @@ import { CityDetail } from "@/services/modules/city/interfaces/city";
 import City from "../admin/city/city";
 import useGetTourTrendingCustomer from "@/services/modules/tour/hooks/useGetTourTrendingCustomer";
 import useGetVideoCustomer from "@/services/modules/video/hook/useGetVideoCustomer";
+import useGetTourDestinationCustomer from "@/services/modules/tour/hooks/useGetTourDestinationCustomer";
+import { duration } from "moment";
 
 
 interface FormValues {
-  location: string;
-  guests: number | undefined;
-  date: string | undefined;
+  location?: string;
 }
-const initValue = { location: "", guests: undefined, date: undefined };
+const initValue = { location: "" };
 const listCity = [
   "New York",
   "California",
@@ -158,7 +158,20 @@ export default function HomePage() {
   const { data: CityDetail, refetch } = useGetDetailCityCustomer(String(slug), { isTrigger: !!slug });
   const { data: dataTrending } = useGetTourTrendingCustomer();
   const { data: dataVideo } = useGetVideoCustomer()
+  const { data: dataDestination } = useGetTourDestinationCustomer();
 
+  // mocDataDestination 
+  const mocDataDestination = dataDestination?.items?.map((item) => ({
+    link: "",
+    src: `${apiUrls.IMG_URL}/${item.City?.image || ""}`,
+    title: item.City?.description || "",
+    transport: item.transport,
+    duration: item?.numberOfHours,
+    plan: item.package,
+    price: item.price,
+    feedback_quantity: item.totalReviews,
+    feedback_average: item.averageRating,
+  }));
   // Function
 
   // Effect
@@ -186,7 +199,6 @@ export default function HomePage() {
   };
 
   // Function Render
-
 
   // Render
   return (
@@ -252,7 +264,7 @@ export default function HomePage() {
             className="tw-relative tw-flex tw-w-[1000px] tw-h-[90px] tw-bg-white tw-rounded-[10px]"
           >
             <CommonStyles.Box className="tw-p-[20px] tw-grid tw-grid-cols-9 tw-items-center tw-w-full">
-              <CommonStyles.Box className="tw-flex tw-col-span-3">
+              <CommonStyles.Box className="tw-flex tw-col-span-7">
                 <LocationOn className="tw-text-primary" />
                 <div className="tw-ml-[10px]">
                   <CommonStyles.Typography
@@ -279,7 +291,7 @@ export default function HomePage() {
                   />
                 </div>
               </CommonStyles.Box>
-              <CommonStyles.Box className="tw-flex tw-col-span-2 before:tw-h-1">
+              {/* <CommonStyles.Box className="tw-flex tw-col-span-2 before:tw-h-1">
                 <Divider
                   orientation="vertical"
                   variant="middle"
@@ -350,7 +362,7 @@ export default function HomePage() {
                     component={CommonDatePicker}
                   />
                 </div>
-              </CommonStyles.Box>
+              </CommonStyles.Box> */}
               <CommonStyles.Box className="tw-flex tw-justify-end tw-col-span-2">
                 <CommonButton
                   className="outlined tw-w-[150px]"
@@ -424,8 +436,8 @@ export default function HomePage() {
             </Link>
           </CommonStyles.Typography>
           <Container className="tw-grid tw-grid-cols-12 tw-gap-x-5">
-            {CityDetail?.data?.Tour.map((item, index) => {
-               return (
+            {CityDetail?.data?.Tour?.map((item, index) => {
+              return (
                 <CommonStyles.Box key={index} className="tw-col-span-3">
                   <CardGridItem
                     link={`/citytour/${item.slug}`}
@@ -459,6 +471,7 @@ export default function HomePage() {
       {/* IV. Featured Destinations */}
       <CommonStyles.Box>
         <CardCarousel
+          data={mocDataDestination}
           title={
             <Heading
               title={t("featuredDestinationsHeading")}

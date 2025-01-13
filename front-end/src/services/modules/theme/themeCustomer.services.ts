@@ -15,10 +15,10 @@ export type ResponseThemeList = AxiosResponse<
   ResponseCommon<ResponseList<Theme[]>>
 >;
 
-class ThemeService {
+class ThemeFilterService {
   getThemes(configs?: AxiosRequestConfig) {
     return httpService.get(`${apiUrls.THEME_CUS_URL}`, configs);
   }
 }
 
-export default new ThemeService();
+export default new ThemeFilterService();

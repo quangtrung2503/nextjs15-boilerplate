@@ -1,5 +1,5 @@
 "use client"
-import React from 'react'
+import React, { useMemo } from 'react'
 import { default as CommonStyles } from '@/components/common'
 import { Checkbox, Container, FormControlLabel, FormGroup } from '@mui/material'
 import RHFField from '@/components/customReactFormField/ReactFormField'
@@ -12,7 +12,7 @@ import { SubmitHandler, useForm } from 'react-hook-form'
 import { CommonDatePicker } from '@/components/common/DatePicker'
 import { CommonButton } from '@/components/common/Button'
 import AccordionMUI from '@/components/common/Accordion'
-import CardGridItem from '@/components/Card/CardGirdItem'
+import CardGridItem, { CardGridItemProps } from '@/components/Card/CardGirdItem'
 import CardListItem from '@/components/Card/CardListItem'
 import CardCarousel from '@/components/CardCarousel'
 import Gallery from '../home/components/Gallery'
@@ -24,6 +24,9 @@ import apiUrls from '@/constants/apiUrls'
 import useGetAllThemeCustomer from '@/services/modules/theme/hook/useGetAllThemeCustomer'
 import { Duration } from '@/helpers/common'
 import useGetAllDestinationCustomer from '@/services/modules/destination/hook/useGetAllDestinationCustomer'
+import useGetOutsideTourCustomer from '@/services/modules/tour/hooks/useGetOutsideTourCustomer'
+import { Tour } from '@/services/modules/tour/interfaces/tour'
+import { title } from 'process'
 
 
 interface Availability {
@@ -33,11 +36,12 @@ interface Availability {
 interface Filter {
   filter: string,
 }
+
 const CityTourPage = () => {
   // Hook
   const t = useTranslations("cityTour");
   const { showSuccess, showError } = useNotifications();
-  const { data } = useGetAllTourCustomer()
+  const { data: dataTour } = useGetAllTourCustomer()
   const { data: dataTheme } = useGetAllThemeCustomer();
   const themeOptions = dataTheme?.items?.map(theme => ({
     label: theme.name,
@@ -52,6 +56,10 @@ const CityTourPage = () => {
     label: theme.name,
     value: theme.id,
   })) || [];
+
+  const { data: dataOutside } = useGetOutsideTourCustomer();
+
+
 
   // Validate
   const validateSchema = Yup.object().shape({
@@ -95,6 +103,47 @@ const CityTourPage = () => {
       showError(err);
     }
   };
+
+  const getActivityData = (
+    activities: any[],
+    name: string,
+    apiUrls: { IMG_URL: string }
+  ): {
+    data?: CardGridItemProps[] | undefined;
+    title?: React.ReactNode;
+    classNameContainerHeading?: string;
+  } => {
+    const filteredActivities = activities?.filter((item) => item?.name === name) || [];
+    return {
+      data: filteredActivities[0]?.Tour?.map((tour: any) => ({
+        title: tour?.name,
+        src: `${apiUrls.IMG_URL}/${tour?.TourImage?.[0]?.image}`,
+        link: "",
+        price: tour?.price,
+        duration: tour?.numberOfHours,
+        transport: tour?.transport,
+        feedback_quantity: tour?.totalReviews,
+        plan: tour?.package,
+        feedback_average: tour?.averageRating
+      })) || [],
+      title: name,
+      classNameContainerHeading: "tw-px-0",
+    };
+  };
+  const waterData = useMemo(
+    () => getActivityData(dataOutside || [], "Water activities", apiUrls),
+    [dataOutside, apiUrls]
+  );
+
+  const goodForSocialData = useMemo(
+    () => getActivityData(dataOutside || [], "Good for social distancing", apiUrls),
+    [dataOutside, apiUrls]
+  );
+
+  const adrenalineData = useMemo(
+    () => getActivityData(dataOutside || [], "Adrenaline", apiUrls),
+    [dataOutside, apiUrls]
+  );
 
   const sortbyOptions: SelectOption[] = [
     {
@@ -228,11 +277,12 @@ const CityTourPage = () => {
           </CommonStyles.Box>
           <CommonStyles.Box className='tw-col-span-9'>
             <CommonStyles.Box className="tw-flex tw-flex-col tw-gap-3 tw-w-full">
-              {data?.items?.map((item, index) => (
+              {dataTour?.items?.map((item, index) => (
                 <CommonStyles.Box key={index}>
                   <CardListItem
+                    name={item?.Theme?.name}
                     link={`/citytour/1`}
-                    src={`${apiUrls.IMG_URL}/${item?.City?.image}`}
+                    src={`${apiUrls.IMG_URL}/${item?.TourImage?.[0]?.image}`}
                     title={item?.name}
                     duration={item?.numberOfHours}
                     transport={item?.transport}
@@ -263,30 +313,33 @@ const CityTourPage = () => {
           <CommonStyles.Box>
             <CardCarousel
               classNameContainerHeading="tw-px-0"
-              // data={mocDataCard}
+              {...waterData}
               title={
                 <CommonStyles.Typography type='size12Weight800' className="tw-text-center tw-px-6 tw-py-2 tw-rounded-full tw-bg-primary tw-text-white">
-                  {t("titleWaterActivities")}
+                  {/* {t("titleWaterActivities")} */}
+                  {waterData?.title}
                 </CommonStyles.Typography>
               } />
           </CommonStyles.Box>
           <CommonStyles.Box>
             <CardCarousel
               classNameContainerHeading="tw-px-0"
-              // data={mocDataCard}
+              {...goodForSocialData}
               title={
                 <CommonStyles.Typography type='size12Weight800' className="tw-text-center tw-px-6 tw-py-2 tw-rounded-full tw-bg-accent_blue tw-text-white">
-                  {t("titleSpecialFoods")}
+                  {/* {t("titleSpecialFoods")} */}
+                  {goodForSocialData.title}
                 </CommonStyles.Typography>
               } />
           </CommonStyles.Box>
           <CommonStyles.Box >
             <CardCarousel
               classNameContainerHeading="tw-px-0"
-              // data={mocDataCard}
+              {...adrenalineData}
               title={
                 <CommonStyles.Typography type='size12Weight800' className="tw-text-center tw-px-6 tw-py-2 tw-rounded-full tw-bg-accent_red tw-text-white">
-                  {t("titleRiverActivity")}
+                  {/* {t("titleRiverActivity")} */}
+                  {adrenalineData?.title}
                 </CommonStyles.Typography>
               } />
           </CommonStyles.Box>
