@@ -6,10 +6,7 @@ export interface Tour {
   price: number;
   transport: string;
   package: string;
-  numberOfPeople: number;
   numberOfHours: number;
-  startDate: string;
-  endDate: string;
   isFeature?: boolean;
   isActive?: boolean;
   description: string;

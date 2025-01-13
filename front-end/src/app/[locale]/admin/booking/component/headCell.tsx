@@ -47,10 +47,8 @@ const StatusCell = ({row,content}: {row: Booking,content: string})=>{
     }
 }
 export const headCells = ({
-  handleEditId,
   t,
 }: {
-  handleEditId: (id: number) => void;
   t: any;
 }) => {
   return [
@@ -62,14 +60,14 @@ export const headCells = ({
         return <span>{_index + 1}</span>;
       },
     },
-    // {
-    //   id: "bookingCode",
-    //   label: t("bookingCode"),
-    //   numeric: true,
-    //   Cell(row: Booking, _index: number) {
-    //     return <span>{row.bookingCode}</span>;
-    //   },
-    // },
+    {
+      id: "bookingCode",
+      label: t("bookingCode"),
+      numeric: true,
+      Cell(row: Booking, _index: number) {
+        return <span>{row.bookingCode}</span>;
+      },
+    },
     {
       id: "name",
       label: t("name"),
@@ -121,14 +119,14 @@ export const headCells = ({
         return <span>{row.totalPrice}</span>;
       },
     },
-    {
-      id: "amountPaid",
-      label: t("amountPaid"),
-      numeric: false,
-      Cell(row: Booking, _index: number) {
-      return <StatusCell row={row} content={row.amountPaid.toString()} />
-      },
-    },
+    // {
+    //   id: "amountPaid",
+    //   label: t("amountPaid"),
+    //   numeric: false,
+    //   Cell(row: Booking, _index: number) {
+    //   return <StatusCell row={row} content={row.amountPaid.toString()} />
+    //   },
+    // },
     // {
     //   id: "actionBooking",
     //   label: t("action"),

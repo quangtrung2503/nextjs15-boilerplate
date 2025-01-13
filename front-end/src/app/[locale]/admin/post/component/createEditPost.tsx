@@ -35,7 +35,7 @@ interface FormValues {
 const CreateEditPost: FC<createEditPostProps> = (props) => {
   const { handleClose, id } = props;
   const { data } = useGetPost(Number(id), { isTrigger: !!id });
-  const { showError,showSuccess } = useNotifications();
+  const { showError, showSuccess } = useNotifications();
   const t = useTranslations("postAdmin");
 
   const schema = yup
@@ -76,7 +76,7 @@ const CreateEditPost: FC<createEditPostProps> = (props) => {
         ? await postServices.updatePost(data)
         : await postServices.createPost(data);
       await fetchPosts();
-      showSuccess(id?t("editSuccess"):t("createSuccess"));
+      showSuccess(id ? t("editSuccess") : t("createSuccess"));
       handleClose();
     } catch (error) {
       showError(error);
@@ -125,30 +125,30 @@ const CreateEditPost: FC<createEditPostProps> = (props) => {
 
           {watch("image") != "" && (
             <CommonStyles.Box className="tw-col-span-12 tw-flex tw-flex-wrap">
-              <CommonStyles.Box className="tw-relative tw-w-fit">
+              <CommonStyles.Box className="tw-relative tw-w-fit tw-rounded-md">
                 {" "}
                 <img
-                  className="tw-max-w-[100px] tw-h-auto tw-p-5"
+                  className="tw-max-w-[100px] tw-h-auto tw-rounded-md"
                   src={`${apiUrls.IMG_URL}/${watch("image")}`}
                   alt="Uploaded Image"
                 />
                 <CommonStyles.Box
-                  className="tw-absolute tw-top-0 tw-right-0 tw-cursor-pointer"
+                  className="tw-cursor-pointer"
                   onClick={() => handleDeleteImage()}
                 >
-                  <CommonIcons.CancelOutlined className="tw-text-accent_gray_500" />
+                  <CommonIcons.Close className="tw-text-accent_gray_500 tw-size-5 tw-bg-gray-100 tw-rounded-tr-md tw-absolute tw-top-0 tw-right-0" />
                 </CommonStyles.Box>
               </CommonStyles.Box>
             </CommonStyles.Box>
           )}
           <CommonStyles.Box className="tw-flex tw-justify-center tw-gap-8 tw-mt-8 tw-mb-4">
-          <CancelButton handleClose={handleClose} />
+            <CancelButton handleClose={handleClose} />
             <CommonButtonAdmin
               variant="outlined"
               type="submit"
               className="active tw-min-w-28"
             >
-              {id? t("edit") : t("create")}
+              {id ? t("edit") : t("create")}
             </CommonButtonAdmin>
           </CommonStyles.Box>
           <CommonStyles.Box
