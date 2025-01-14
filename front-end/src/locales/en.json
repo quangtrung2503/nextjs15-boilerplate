@@ -183,9 +183,9 @@
     "availability": "Availability",
     "loadMoreBtn": "Load more",
     "titleOutSite": "Outside The City Specials",
-    "titleWaterActivities": "Water Activities",
-    "titleSpecialFoods": "Special Foods",
-    "titleRiverActivity": "River Activity",
+    "titleWaterActivities": "Water activities",
+    "titleGoodForSocialDistancing": "Good for social distancing",
+    "titleAdrenaline": "Adrenaline",
     "cityTourDetail": {
       "people": "People",
       "hours": "hours",
@@ -517,7 +517,7 @@
     "editSuccess": "Edit success",
     "createSuccess": "Create success",
     "editTag": "Edit tag",
-    "placeholderName":"Enter name of tag",
+    "placeholderName": "Enter name of tag",
     "submit": "Submit",
     "create": "Create",
     "edit": "Edit"
@@ -540,7 +540,7 @@
     "note": "Note",
     "editSuccess": "Edit success"
   },
-  "confirmTour":{
+  "confirmTour": {
     "code": "Code",
     "confirmSuccess": "Confirm success",
     "guestInformation": "Guest information",
@@ -548,14 +548,14 @@
     "phoneNumber": "Phone number",
     "email": "Email",
     "address": "Address",
-    "numberOfAdults":"Number of adults",
-    "numberOfChildren":"Number of children",
+    "numberOfAdults": "Number of adults",
+    "numberOfChildren": "Number of children",
     "tourDestination": "Tour destination",
     "paidInformation": "Paid information",
-    "amountPaid":"Amount paid",
+    "amountPaid": "Amount paid",
     "confirm": "Confirm",
     "confirmTitle": "Are you sure confirm this booking?",
-    "cancel": "Cancel" 
+    "cancel": "Cancel"
   },
   "adminDashboard": {
     "totalRevenue": "Total revenue",
@@ -606,7 +606,7 @@
     "confirmPassword": "Confirm Password",
     "paySuccess": "Payment Success",
     "payError": "Payment Error",
-     "menuProfile": {
+    "menuProfile": {
       "information": "Profile Information",
       "booking": "Booking History",
       "newsletter": "Newsletter Subscription",

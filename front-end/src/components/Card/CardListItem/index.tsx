@@ -10,7 +10,7 @@ interface CardListItemProps {
   link: string;
   price?: number;
   options?: [];
-  activity?: string;
+  name?: string;
   feedback_quantity?: number;
   feedback_average?: number;
   plan?: string;
@@ -30,7 +30,7 @@ const CardListItem = (props: CardListItemProps) => {
     plan,
     duration,
     transport,
-    activity = "Water Activity",
+    name,
     ...rest
   } = props;
   const t = useTranslations("card");
@@ -46,8 +46,8 @@ const CardListItem = (props: CardListItemProps) => {
         <CardContent className="tw-flex tw-justify-between tw-w-full tw-items-center">
           <CommonStyles.Box className="tw-flex tw-flex-col tw-gap-y-3">
             <CommonStyles.Box className="tw-flex tw-gap-5">
-              <CommonStyles.Typography className="tw-px-3 tw-py-1 tw-rounded-full tw-bg-primary tw-text-white">
-                {activity}
+              <CommonStyles.Typography type="size11Weight800" className="tw-px-3 tw-py-2 tw-rounded-full tw-bg-primary tw-text-white">
+                {name}
               </CommonStyles.Typography>
               <CommonStyles.Box className="tw-flex tw-items-center">
                 <CommonStyles.RatingView
@@ -61,7 +61,7 @@ const CardListItem = (props: CardListItemProps) => {
                 </CommonStyles.Typography>
               </CommonStyles.Box>
             </CommonStyles.Box>
-            <CommonStyles.Typography type="size20Weight800" className="tw-line-clamp-2 tw-overflow-hidden tw-whitespace-normal tw-text-ellipsis tw-w-[560px]">
+            <CommonStyles.Typography type="size20Weight800" className="tw-line-clamp-1 tw-overflow-hidden tw-whitespace-normal tw-text-ellipsis tw-w-[560px]">
               {title}
             </CommonStyles.Typography>
             <CommonStyles.Box className="tw-flex tw-items-center tw-gap-x-2 tw-text-accent_gray_800">
