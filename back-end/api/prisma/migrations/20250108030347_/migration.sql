@@ -220,12 +220,9 @@ CREATE TABLE `booking` (
     `numberOfAdults` INTEGER NOT NULL,
     `numberOfChildren` INTEGER NOT NULL,
     `totalPrice` DOUBLE NOT NULL,
-    `amountPaid` DOUBLE NULL DEFAULT 0,
     `status` VARCHAR(255) NOT NULL,
     `paymentMethod` VARCHAR(255) NOT NULL,
-    `paymentProof` VARCHAR(255) NULL,
     `note` TEXT NULL,
-    `cancelReason` VARCHAR(255) NULL,
     `updatedBy` VARCHAR(255) NULL,
     `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updated_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
@@ -235,15 +232,45 @@ CREATE TABLE `booking` (
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
-CREATE TABLE `bank_account` (
+CREATE TABLE `payment` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
-    `accountHolderName` VARCHAR(255) NOT NULL,
-    `accountNumber` VARCHAR(255) NOT NULL,
-    `imageQrCode` VARCHAR(255) NOT NULL,
-    `isDisplay` BOOLEAN NOT NULL DEFAULT true,
+    `bookingId` INTEGER NOT NULL,
+    `paymentCode` VARCHAR(255) NOT NULL,
+    `amount` DOUBLE NOT NULL,
+    `bankCode` VARCHAR(50) NULL,
+    `bankTranNo` VARCHAR(255) NULL,
+    `cardType` VARCHAR(20) NULL,
+    `orderInfo` VARCHAR(255) NULL,
+    `expireDate` DATETIME(3) NOT NULL,
+    `payDate` DATETIME(3) NULL,
+    `responseCode` VARCHAR(10) NULL,
+    `transactionNo` VARCHAR(50) NULL,
+    `transactionStatus` VARCHAR(20) NOT NULL,
+    `txnRef` VARCHAR(255) NOT NULL,
+    `secureHash` VARCHAR(255) NULL,
     `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updated_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
 
+    UNIQUE INDEX `payment_paymentCode_key`(`paymentCode`),
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `request_refund` (
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `bookingId` INTEGER NOT NULL,
+    `userId` INTEGER NOT NULL,
+    `reason` VARCHAR(255) NOT NULL,
+    `imageQRCode` VARCHAR(255) NOT NULL,
+    `accountHolderName` VARCHAR(255) NOT NULL,
+    `accountNumber` VARCHAR(255) NOT NULL,
+    `bankName` VARCHAR(255) NOT NULL,
+    `status` VARCHAR(255) NOT NULL,
+    `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updated_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updatedBy` VARCHAR(255) NULL,
+
+    UNIQUE INDEX `request_refund_bookingId_userId_key`(`bookingId`, `userId`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -288,3 +315,12 @@ ALTER TABLE `booking` ADD CONSTRAINT `booking_userId_fkey` FOREIGN KEY (`userId`
 
 -- AddForeignKey
 ALTER TABLE `booking` ADD CONSTRAINT `booking_tourId_fkey` FOREIGN KEY (`tourId`) REFERENCES `tour`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `payment` ADD CONSTRAINT `payment_bookingId_fkey` FOREIGN KEY (`bookingId`) REFERENCES `booking`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `request_refund` ADD CONSTRAINT `request_refund_bookingId_fkey` FOREIGN KEY (`bookingId`) REFERENCES `booking`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `request_refund` ADD CONSTRAINT `request_refund_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `user`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;

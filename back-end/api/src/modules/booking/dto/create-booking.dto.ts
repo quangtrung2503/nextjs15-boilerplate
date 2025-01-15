@@ -2,7 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
 import { IsDate, IsEnum, IsNotEmpty, IsNumber, IsPositive } from 'class-validator';
 import moment from 'moment';
-import { BookingStatus, PaymentMethod } from 'src/helpers/constants/enum.constant';
+import { BookingStatus, FORMAT_DATE, PaymentMethod } from 'src/helpers/constants/enum.constant';
 
 export const CreateBookingDtoKeys: (keyof CreateBookingDto)[] = ['tourId', 'startDate', 'endDate', 'numberOfAdults', 'numberOfChildren', 'totalPrice', 'status', 'paymentMethod']
 
@@ -17,27 +17,27 @@ export class CreateBookingDto {
   readonly tourId: number;
 
   @ApiProperty({
-    example: '2024-09-30',
+    example: '2025-01-25',
     description: 'The start date of booking',
     required: true,
   })
   @IsNotEmpty()
   @Transform(({ value }) => {
     if (value)
-      return moment(value ?? null)?.isValid() ? moment(moment(value).format('YYYY-MM-DD')).toDate() : value
+      return moment(value ?? null)?.isValid() ? moment(moment(value).format(FORMAT_DATE.DATE)).toDate() : value
   })
   @IsDate()
   readonly startDate: Date;
 
   @ApiProperty({
-    example: '2024-10-05',
+    example: '2025-01-27',
     description: 'The end date of booking',
     required: true,
   })
   @IsNotEmpty()
   @Transform(({ value }) => {
     if (value)
-      return moment(value ?? null)?.isValid() ? moment(moment(value).format('YYYY-MM-DD')).toDate() : value
+      return moment(value ?? null)?.isValid() ? moment(moment(value).format(FORMAT_DATE.DATE)).toDate() : value
   })
   @IsDate()
   readonly endDate: Date;
@@ -63,7 +63,7 @@ export class CreateBookingDto {
   readonly numberOfChildren: number;
 
   @ApiProperty({
-    example: 120.50,
+    example: 100000,
     description: 'Total price',
     required: true,
   })
@@ -73,10 +73,10 @@ export class CreateBookingDto {
   readonly totalPrice: number;
 
   @ApiProperty({
-    example: BookingStatus.PAYMENT_PENDING,
+    example: BookingStatus.PENDING,
     description: 'Booking status',
     enum: BookingStatus,
-    default: BookingStatus.PAYMENT_PENDING,
+    default: BookingStatus.PENDING,
     required: true,
   })
   @IsEnum(BookingStatus)
@@ -84,10 +84,10 @@ export class CreateBookingDto {
   readonly status: BookingStatus;
 
   @ApiProperty({
-    example: PaymentMethod.QR_CODE,
+    example: PaymentMethod.VNPAY,
     description: 'Payment Method',
     enum: PaymentMethod,
-    default: PaymentMethod.QR_CODE,
+    default: PaymentMethod.VNPAY,
     required: true,
   })
   @IsEnum(PaymentMethod)

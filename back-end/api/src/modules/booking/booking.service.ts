@@ -27,6 +27,10 @@ export class BookingService {
     return this.prismaService.booking.count(args)
   }
 
+  aggregate(args: Prisma.BookingAggregateArgs) {
+    return this.prismaService.booking.aggregate(args)
+  }
+
   async updateMany(where: Prisma.BookingWhereInput, args: Prisma.BookingUncheckedUpdateInput) {
     return this.prismaService.booking.updateMany({ where, data: args });
   }

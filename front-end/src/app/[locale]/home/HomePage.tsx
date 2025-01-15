@@ -32,120 +32,14 @@ import { CityDetail } from "@/services/modules/city/interfaces/city";
 import City from "../admin/city/city";
 import useGetTourTrendingCustomer from "@/services/modules/tour/hooks/useGetTourTrendingCustomer";
 import useGetVideoCustomer from "@/services/modules/video/hook/useGetVideoCustomer";
+import useGetTourDestinationCustomer from "@/services/modules/tour/hooks/useGetTourDestinationCustomer";
+import { duration } from "moment";
 
 
 interface FormValues {
-  location: string;
-  guests: number | undefined;
-  date: string | undefined;
+  location?: string;
 }
-const initValue = { location: "", guests: undefined, date: undefined };
-const listCity = [
-  "New York",
-  "California",
-  "Alaska",
-  "Sidney",
-  "Dubai",
-  "London",
-  "Tokyo",
-  "Delhi",
-];
-const popularCity: PopularCityProps = {
-  imageBanner: commonImg.alaska.src,
-  name: "Alaska",
-  title:
-    "Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint. Velit officia consequat duis enim velit mollit. Exercitation veniam consequat sunt nostrud amet.",
-};
-
-const trendingCity = {
-  imageBanner: commonImg.bannerTrendingCity.src,
-  image: commonImg.imagesTrendingCity.src,
-  title: "Wilderlife of Alaska",
-  place: "Alaska, USA",
-  rate: 4.9,
-  reviews: 300,
-  content:
-    "Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint. Velit officia consequat duis enim velit mollit. Exercitation veniam consequat sunt nostrud amet.",
-};
-export const mocDataCard = [
-  {
-    link: "/citytour/1",
-    src: "https://vietnam.travel/sites/default/files/inline-images/Ha%20Giang%20Loop-9.jpg",
-    title: "Alaska: Westminster to Greenwich River Thames",
-    duration: 2,
-    transport: "Transport Facility",
-    plan: "Family Plan",
-    price: 35,
-    feedback_quantity: 500,
-    feedback_average: 4.5,
-  },
-  {
-    link: "/citytour/1",
-    src: "https://vietnam.travel/sites/default/files/inline-images/Ha%20Giang%20Loop-9.jpg",
-    title: "Alaska: Westminster to Greenwich River Thames",
-    duration: 2,
-    transport: "Transport Facility",
-    plan: "Family Plan",
-    price: 35,
-    feedback_quantity: 500,
-    feedback_average: 4.5,
-  },
-  {
-    link: "/citytour/1",
-    src: "https://vietnam.travel/sites/default/files/inline-images/Ha%20Giang%20Loop-9.jpg",
-    title: "Alaska: Westminster to Greenwich River Thames",
-    duration: 2,
-    transport: "Transport Facility",
-    plan: "Family Plan",
-    price: 35,
-    feedback_quantity: 500,
-    feedback_average: 4.5,
-  },
-  {
-    link: "/citytour/1",
-    src: "https://vietnam.travel/sites/default/files/inline-images/Ha%20Giang%20Loop-9.jpg",
-    title: "Alaska: Westminster to Greenwich River Thames",
-    duration: 2,
-    transport: "Transport Facility",
-    plan: "Family Plan",
-    price: 35,
-    feedback_quantity: 500,
-    feedback_average: 4.5,
-  },
-  {
-    link: "/citytour/1",
-    src: "https://vietnam.travel/sites/default/files/inline-images/Ha%20Giang%20Loop-9.jpg",
-    title: "Alaska: Westminster to Greenwich River Thames",
-    duration: 2,
-    transport: "Transport Facility",
-    plan: "Family Plan",
-    price: 35,
-    feedback_quantity: 500,
-    feedback_average: 4.5,
-  },
-  {
-    link: "/citytour/1",
-    src: "https://vietnam.travel/sites/default/files/inline-images/Ha%20Giang%20Loop-9.jpg",
-    title: "Alaska: Westminster to Greenwich River Thames",
-    duration: 2,
-    transport: "Transport Facility",
-    plan: "Family Plan",
-    price: 35,
-    feedback_quantity: 500,
-    feedback_average: 4.5,
-  },
-  {
-    link: "/citytour/1",
-    src: "https://vietnam.travel/sites/default/files/inline-images/Ha%20Giang%20Loop-9.jpg",
-    title: "Alaska: Westminster to Greenwich River Thames",
-    duration: 2,
-    transport: "Transport Facility",
-    plan: "Family Plan",
-    price: 35,
-    feedback_quantity: 500,
-    feedback_average: 4.5,
-  },
-];
+const initValue = { location: "" };
 export default function HomePage() {
   // props + state
   const [slug, setSlug] = useState<string | null>(null);
@@ -158,7 +52,20 @@ export default function HomePage() {
   const { data: CityDetail, refetch } = useGetDetailCityCustomer(String(slug), { isTrigger: !!slug });
   const { data: dataTrending } = useGetTourTrendingCustomer();
   const { data: dataVideo } = useGetVideoCustomer()
+  const { data: dataDestination } = useGetTourDestinationCustomer();
 
+  // mocDataDestination 
+  const dataDataDestination = dataDestination?.items?.map((item) => ({
+    link: `/citytour/${item.slug}`,
+    src: `${apiUrls.IMG_URL}/${item.TourImage?.[0]?.image || ""}`,
+    title: item?.name || "",
+    transport: item.transport,
+    duration: item?.numberOfHours,
+    plan: item.package,
+    price: item.price,
+    feedback_quantity: item.totalReviews,
+    feedback_average: item.averageRating,
+  }));
   // Function
 
   // Effect
@@ -186,7 +93,6 @@ export default function HomePage() {
   };
 
   // Function Render
-
 
   // Render
   return (
@@ -252,7 +158,7 @@ export default function HomePage() {
             className="tw-relative tw-flex tw-w-[1000px] tw-h-[90px] tw-bg-white tw-rounded-[10px]"
           >
             <CommonStyles.Box className="tw-p-[20px] tw-grid tw-grid-cols-9 tw-items-center tw-w-full">
-              <CommonStyles.Box className="tw-flex tw-col-span-3">
+              <CommonStyles.Box className="tw-flex tw-col-span-7">
                 <LocationOn className="tw-text-primary" />
                 <div className="tw-ml-[10px]">
                   <CommonStyles.Typography
@@ -276,78 +182,6 @@ export default function HomePage() {
                     placeholder={t("locationPlaceholder")}
                     control={control}
                     component={InputField}
-                  />
-                </div>
-              </CommonStyles.Box>
-              <CommonStyles.Box className="tw-flex tw-col-span-2 before:tw-h-1">
-                <Divider
-                  orientation="vertical"
-                  variant="middle"
-                  className="tw-h-5 tw-items-center tw-mr-2"
-                  flexItem
-                />
-                <CommonIcons.PeopleOutlined className="tw-text-primary" />
-                <div className="tw-ml-[10px]">
-                  <CommonStyles.Typography
-                    type="size15Weight800"
-                    className="tw-text-primary"
-                  >
-                    {t("guestsLabel")}
-                  </CommonStyles.Typography>
-                  <RHFField
-                    sx={{
-                      fieldset: {
-                        border: "none",
-                      },
-                      input: {
-                        lineHeight: "25px",
-                        fontSize: "14px",
-                        padding: 0,
-                      },
-                      "& input::-webkit-outer-spin-button, & input::-webkit-inner-spin-button":
-                      {
-                        WebkitAppearance: "none",
-                      },
-                    }}
-                    type="number"
-                    name="guests"
-                    placeholder={t("guestsPlaceholder")}
-                    control={control}
-                    component={InputField}
-                  />
-                </div>
-              </CommonStyles.Box>
-              <CommonStyles.Box className="tw-flex tw-col-span-2">
-                <Divider
-                  orientation="vertical"
-                  variant="middle"
-                  className="tw-h-5 tw-items-center tw-mr-2"
-                  flexItem
-                />
-                <CommonIcons.CalendarMonthOutlined className="tw-text-primary" />
-                <div className="tw-ml-[10px]">
-                  <CommonStyles.Typography
-                    type="size15Weight800"
-                    className="tw-text-primary"
-                  >
-                    {t("dateLabel")}
-                  </CommonStyles.Typography>
-                  <RHFField
-                    sx={{
-                      fieldset: {
-                        border: "none",
-                      },
-                      input: {
-                        fontSize: "14px",
-                        padding: 0,
-                      },
-                    }}
-                    isMobileDate
-                    name="date"
-                    control={control}
-                    className="tw-bg-transparent tw-h"
-                    placeholder={t("datePlaceholder")}
-                    component={CommonDatePicker}
                   />
                 </div>
               </CommonStyles.Box>
@@ -424,8 +258,8 @@ export default function HomePage() {
             </Link>
           </CommonStyles.Typography>
           <Container className="tw-grid tw-grid-cols-12 tw-gap-x-5">
-            {CityDetail?.data?.Tour.map((item, index) => {
-               return (
+            {CityDetail?.data?.Tour?.map((item, index) => {
+              return (
                 <CommonStyles.Box key={index} className="tw-col-span-3">
                   <CardGridItem
                     link={`/citytour/${item.slug}`}
@@ -459,6 +293,7 @@ export default function HomePage() {
       {/* IV. Featured Destinations */}
       <CommonStyles.Box>
         <CardCarousel
+          data={dataDataDestination}
           title={
             <Heading
               title={t("featuredDestinationsHeading")}

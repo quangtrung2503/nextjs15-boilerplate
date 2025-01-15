@@ -44,7 +44,7 @@ export class PostController {
     });
 
     return await this.postService.update(newPost.id, {
-      slug: `${convertToEn(newPost.title.split(' ').join('-'))}-i.${newPost.id}`
+      slug: `${convertToEn(newPost.title.split(' ').join('-'))}-i-${newPost.id}`
     });
   }
 
@@ -137,7 +137,7 @@ export class PostController {
 
     const updatedData: Prisma.PostUpdateInput = { ...body };
     if (body.title && body.title !== existingPost.title) {
-      updatedData.slug = `${convertToEn(body.title.split(' ').join('-'))}-i.${id}`;
+      updatedData.slug = `${convertToEn(body.title.split(' ').join('-'))}-i-${id}`;
     }
 
     return this.postService.update(id, updatedData);

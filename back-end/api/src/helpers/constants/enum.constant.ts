@@ -81,24 +81,16 @@ export enum BookingStatus {
   COMPLETED = 'COMPLETED',
   CANCELLED = 'CANCELLED',
 }
+
 export enum PaymentMethod {
   VNPAY = 'VNPAY'
 }
+
 export enum PaymentStatus {
   PENDING = 'PENDING',
   SUCCESS = 'SUCCESS',
   FAILED = 'FAILED',
   EXPIRED = 'EXPIRED'
-}
-
-export enum PaymentMethod {
-  QR_CODE = 'QR Code',
-}
-
-export enum RequestRefundStatus {
-  PENDING = 'PENDING',
-  APPROVED = 'APPROVED',
-  REJECTED ='REJECTED'
 }
 
 export enum BookingCancellationReason {
@@ -112,6 +104,12 @@ export enum BookingCancellationReason {
   FOUND_BETTER_OPTION = 'Found a Better Option', // Tìm được lựa chọn khác phù hợp hơn
   PERSONAL_REASONS = 'Personal Reasons', // Lý do cá nhân
   OTHER = 'Other', // Lý do khác không cụ thể
+}
+
+export enum RequestRefundStatus {
+  PENDING = 'PENDING',
+  APPROVED = 'APPROVED',
+  REJECTED ='REJECTED'
 }
 
 export enum Rating {
