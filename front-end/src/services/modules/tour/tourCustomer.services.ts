@@ -33,6 +33,7 @@ export type ResponseTourDestinationList = AxiosResponse<ResponseCommon<ResponseL
 export type ResponseReviewCustomer = AxiosResponse<ExtraReview<CustomerReview[]>>
 export type ResponseBookingHistory = AxiosResponse<ResponseCommon<ResponseList<HistoryBookingTour[]>>>;
 
+export type ResponseBookingDetail = ResponseCommon<HistoryBookingTour>;
 export type ResponseTourCustomer = ResponseCommon<ApiResponse>;
 export type ResponseTourCustomerReview = ResponseCommon<ReviewData>;
 export type ResponseTourBestTrending = ResponseCommon<Tour>;
@@ -85,6 +86,9 @@ class TourService {
   }
   getBookingHistory(configs?: AxiosRequestConfig) {
     return httpService.get(`${apiUrls.BOOKING_TOUR_URL}`)
+  }
+  getDetaiBookingHistory(idTourBooking: number, configs: AxiosRequestConfig) {
+    return httpService.get(`${apiUrls.BOOKING_TOUR_URL}/${idTourBooking}`)
   }
 }
 

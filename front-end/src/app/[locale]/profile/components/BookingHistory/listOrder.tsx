@@ -11,11 +11,10 @@ import useGetBookingHistory from "@/services/modules/tour/hooks/useGetBookingHis
 import apiUrls from "@/constants/apiUrls";
 import { BookingStatus, PaymentMethod } from "@/helpers/common";
 import moment from "moment";
-import { number } from "yup";
 import Loading from "@/components/common/Loading";
 import tourCustomerServices from "@/services/modules/tour/tourCustomer.services";
-import { SubmitHandler } from "react-hook-form";
 import { useNotifications } from "@/helpers/toast";
+import { useRouter } from "next/navigation";
 
 const groupToursByDate = (tours: HistoryBookingTour[]) => {
   return tours.reduce((groups: Record<string, HistoryBookingTour[]>, tour) => {
@@ -36,16 +35,19 @@ const handleCancelTour = (tourId: number) => {
   // console.log(`Hủy tour với ID: ${tourId}`);
 };
 
-const BookingHistory = () => {
+interface IPropsListOrder {
+  onViewDetail: ( id: number) => void
+}
+
+const ListOrder = ({onViewDetail}: IPropsListOrder) => {
   //! Hook + const
   const t = useTranslations("profile.bookingHistory");
+  const router = useRouter();
   const { data: tours, loading, error, refetchWithLoading } = useGetBookingHistory();
   const VND = Number(process.env.NEXT_PUBLIC_VND);
   const { showError } = useNotifications();
-  
   //! Call function
   const groupedTours = groupToursByDate(tours || []);
-
   //! Function
   const navigateToPaymentPage = async (tourId: number) => {
     try {
@@ -56,35 +58,31 @@ const BookingHistory = () => {
          showError(err);
        }
  }
-  //! Loading / Error state
-  if (loading) {
-    return (
-      <Loading />
-    );
-  }
+  const handleNavigateToDetail = (id: number) => {
+    onViewDetail?.(id)
+  };
 
   if (error) {
     return (
       <Box className="tw-flex tw-justify-center tw-items-center tw-h-full">
         <Typography variant="h6" color="error">
-          Error Fetching Data
+          {t('error_fetching_data')}
         </Typography>
         <CommonButton variant="contained" onClick={refetchWithLoading} className="tw-ml-4">
-          Retry
+          {t('retry')}
         </CommonButton>
       </Box>
     );
   }
   //! Render UI
   return (
-    <Box className="tw-flex-grow tw-rounded-sm tw-bg-gray-50 tw-p-10">
+    <Box className="tw-flex-grow tw-rounded-sm tw-bg-gray-50 tw-px-10">
       <Typography
-        variant="h6"
-        className="tw-mb-6 tw-text-left tw-text-xl tw-font-bold tw-text-gray-800"
-      >
+          variant="h6"
+          className="tw-pt-9 tw-pb-5 tw-text-left tw-text-lg tw-font-semibold tw-text-accent_gray_dark"
+        >
         {t("booking")}
-      </Typography>
-
+        </Typography>
       <Box className="tw-max-h-[500px] tw-overflow-y-auto">
         {Object.entries(groupedTours).map(([date, tours]) => (
           <Box key={date} className="tw-mb-6">
@@ -107,7 +105,7 @@ const BookingHistory = () => {
                         variant="h6"
                         className="tw-font-bold tw-text-gray-700"
                       >
-                        Order item: {tour.bookingCode}
+                        {t('order_id')} {tour.bookingCode}
                       </Typography>
                       <Typography
                         className={`tw-inline-block tw-py-1 tw-px-4 tw-rounded-full tw-text-xs tw-font-semibold ${statusColors[tour.status]}`}
@@ -124,7 +122,8 @@ const BookingHistory = () => {
                         <Tooltip title={tour.Tour.name} placement="top">
                           <Typography
                             className="tw-font-semibold tw-text-lg tw-text-gray-800 tw-line-clamp-1 tw-break-words"
-                          >
+                            onClick={() => handleNavigateToDetail(tour.id)} // Chuyển hướng khi nhấp vào tên tour
+                            >
                             {truncateText(tour.Tour.name, 70)}
                           </Typography>
                         </Tooltip>
@@ -202,7 +201,6 @@ const BookingHistory = () => {
                             )}
                           </>
                         )}
-
                       </Box>
                     </Box>
                   </Box>
@@ -216,4 +214,4 @@ const BookingHistory = () => {
   );
 };
 
-export default BookingHistory;
+export default ListOrder;

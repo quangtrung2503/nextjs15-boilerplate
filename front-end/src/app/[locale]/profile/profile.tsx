@@ -14,11 +14,11 @@ import { default as CommonStyles } from "@/components/common";
 import Loading from "@/components/common/Loading";
 import withAuth from "@/HOCs/withAuth";
 import useGetProfile from "@/services/modules/profile/hook/useGetProfile";
-import CardBreadcrumbs from "./components/BreadCrump/breadcrumb";
+import CardBreadcrumbs from "../../../components/BreadCrump/breadcrumb";
 import { useNotifications } from "@/helpers/toast";
 import { useTranslations } from "next-intl";
-import BookingHistory from "./components/BookingHistory/bookingHistory";
 import tourCustomerServices from "@/services/modules/tour/tourCustomer.services";
+import BookingHistory from "./components/BookingHistory";
 
 const FormProfileWithCustomComponent: React.FC = () => {
   const t = useTranslations("profile");
@@ -63,20 +63,12 @@ const FormProfileWithCustomComponent: React.FC = () => {
       window.history.replaceState({}, document.title, currentURL);
     }
   }, [data]);
-  
+
   return (
     <Box className="FormProfileWithCustomComponent">
       {loading ? (
         <CommonStyles.Box
-          sx={{
-            width: "100vw",
-            height: "100vh",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            position: "fixed",
-            zIndex: 10,
-          }}
+          className="tw-w-screen tw-h-screen tw-flex tw-justify-center tw-items-center tw-fixed tw-z-10"
         >
           <Loading />
         </CommonStyles.Box>
@@ -109,19 +101,30 @@ const FormProfileWithCustomComponent: React.FC = () => {
             </Box>
           </Grid>
           <Grid size={9} className={"tw-flex tw-flex-col"}>
-            {activeMenuProfile === 1 ? (
-              <Box>
-                <PersonalProfile
-                  data={data}
-                  avatar={avatar}
-                  onSuccess={onSuccessApp}
-                />
-                <Divider />
-                <SecurityInformation />
-              </Box>
-            ) : (
-              <BookingHistory />
-            )}
+            {(() => {
+              switch (activeMenuProfile) {
+                case 1:
+                  return (
+                    <Box>
+                      <PersonalProfile
+                        data={data}
+                        avatar={avatar}
+                        onSuccess={onSuccessApp}
+                      />
+                      <Divider />
+                      <SecurityInformation />
+                    </Box>
+                  );
+                case 2:
+                  return <BookingHistory />;
+                case 3:
+                //return <DetailOrder />; // Hiển thị danh sách tour yêu thích
+                case 4:
+                //return <BookingHistory />; // Hiển thị cài đặt tài khoản
+                default:
+                //return <BookingHistory />;
+              }
+            })()}
           </Grid>
         </Grid>
       </Box>
