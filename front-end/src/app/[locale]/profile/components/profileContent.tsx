@@ -6,10 +6,11 @@ import Divider from "@/components/common/Divider";
 import PersonalProfile from "./PersonalInformation/personalInformation";
 import SecurityInformation from "./SecurityInformation/securityInformation";
 import BookingHistory from "./BookingHistory";
+import { Profile } from "@/services/modules/profile/interface/profile";
 
 interface ProfileContentProps {
   activeMenuProfile: number;
-  data: any;
+  data: Profile | undefined;
   avatar?: string;
   onSuccess: () => void;
   setAvatar: (avatar: string) => void;

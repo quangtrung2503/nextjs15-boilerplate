@@ -10,6 +10,7 @@ import tourCustomerServices from "@/services/modules/tour/tourCustomer.services"
 import { useNotifications } from "@/helpers/toast";
 import TourCard from "./orderCard";
 import { DateTimeFormat } from "@/helpers/common";
+import { VND } from "@/constants/env";
 
 interface IPropsListOrder {
   onViewDetail: (id: number) => void
@@ -32,7 +33,6 @@ const ListOrder = ({ onViewDetail }: IPropsListOrder) => {
   //! Hook + const
   const t = useTranslations("profile.bookingHistory");
   const { data: tours, loading } = useGetBookingHistory();
-  const VND = Number(process.env.NEXT_PUBLIC_VND);
   const { showError } = useNotifications();
 
   //! Call function
@@ -80,7 +80,6 @@ const ListOrder = ({ onViewDetail }: IPropsListOrder) => {
                 <TourCard
                   key={tour.id}
                   tour={tour}
-                  VND={VND}
                   onNavigateToDetail={handleNavigateToDetail}
                   onCancelTour={handleCancelTour}
                   onNavigateToPaymentPage={navigateToPaymentPage}

@@ -7,10 +7,10 @@ import { HistoryBookingTour } from "@/services/modules/tour/interfaces/tour";
 import { statusColors } from "@/utils/utils";
 import apiUrls from "@/constants/apiUrls";
 import StatusActionButtons from "@/components/ActionButton/actionButton";
+import { VND } from "@/constants/env";
 
 interface TourCardProps {
   tour: HistoryBookingTour; // Replace `any` with the actual type for tour
-  VND: number;
   onNavigateToDetail: (id: number) => void;
   onCancelTour: (tourId: number) => void;
   onNavigateToPaymentPage: (tourId: number) => void;
@@ -19,7 +19,6 @@ interface TourCardProps {
 
 const TourCard = ({
   tour,
-  VND,
   onNavigateToDetail,
   onCancelTour,
   onNavigateToPaymentPage,
@@ -81,7 +80,7 @@ const TourCard = ({
               <Typography className="tw-text-sm tw-font-semibold tw-border tw-border-gray-600 tw-bg-gray-200 tw-rounded-lg tw-py-1 tw-px-2">
                 {`${tour.numberOfAdults + tour.numberOfChildren} x `}
                 {tour.paymentMethod === PaymentMethod.VNPAY
-                  ? `${(tour.Tour.price * VND).toLocaleString("vi-VN")} VND`
+                  ? `${(tour.Tour.price * Number(VND)).toLocaleString("vi-VN")} VND`
                   : `$ ${tour.Tour.price.toLocaleString()}`}
               </Typography>
 

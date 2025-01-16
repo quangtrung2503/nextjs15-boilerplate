@@ -16,7 +16,7 @@ import { useTranslations } from "next-intl";
 import tourCustomerServices from "@/services/modules/tour/tourCustomer.services";
 import ProfileContent from "./components/profileContent";
 
-const FormProfileWithCustomComponent: React.FC = () => {
+const ProfileWithCustomComponent: React.FC = () => {
   //!Const + Hook
   const t = useTranslations("profile");
   const auth = useAuth();
@@ -30,21 +30,24 @@ const FormProfileWithCustomComponent: React.FC = () => {
     setActiveMenuProfile(menuProfileValue);
   };
   const { data, loading, refetch } = useGetProfile(Number(user?.id));
-  const onSuccessApp = async () => {
+  const onSuccessNotify = async () => {
     await refetch();
     showSuccess(t("updateDataSuccess"));
   };
   useEffect(() => {
-    const search = window.location.search;
+    const searchParams = window.location.search;
+  
     if (data?.avatar) {
       setAvatar(data.avatar);
     }
-    if (search) {
-      const fetchPaymentData = async () => {
+  
+    if (searchParams) {
+      const reloadPaymentData = async () => {
         try {
-          const res = await tourCustomerServices.reloadPayByVnpay(search);
-          const status = res.data.statusCode;
-          if (status == 200) {
+          const response = await tourCustomerServices.reloadPayByVnpay(searchParams);
+          const statusCode = response.data.statusCode;
+  
+          if (statusCode === 200) {
             showSuccess(t('paySuccess'));
           } else {
             showError(t('payError'));
@@ -53,11 +56,15 @@ const FormProfileWithCustomComponent: React.FC = () => {
           console.error("Error reloading payment data:", error);
         }
       };
-      fetchPaymentData();
-      const currentURL = window.location.href.split("?")[0];
-      window.history.replaceState({}, document.title, currentURL);
+  
+      reloadPaymentData();
+  
+      // Clean up the URL by removing query parameters
+      const baseUrl = window.location.href.split("?")[0];
+      window.history.replaceState({}, document.title, baseUrl);
     }
   }, [data]);
+  
 
   return (
     <Box className="FormProfileWithCustomComponent">
@@ -96,7 +103,7 @@ const FormProfileWithCustomComponent: React.FC = () => {
               activeMenuProfile={activeMenuProfile}
               data={data}
               avatar={avatar}
-              onSuccess={onSuccessApp}
+              onSuccess={onSuccessNotify}
               setAvatar={(newAvatar) => setAvatar(newAvatar)}
             />
           </Grid>
@@ -106,4 +113,4 @@ const FormProfileWithCustomComponent: React.FC = () => {
   );
 };
 
-export default withAuth(FormProfileWithCustomComponent);
+export default withAuth(ProfileWithCustomComponent);
