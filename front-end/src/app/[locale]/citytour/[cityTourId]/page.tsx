@@ -20,18 +20,16 @@ import { BookTour, defaultValue, InfoBooking, NoOfGuest } from "./forms";
 import useGetTourCustomerReview from "@/services/modules/tour/hooks/useGetTourReviewCustomer";
 import useFiltersHandler from "@/hooks/useFiltersHandler";
 import { generateHtmlContent, mapTours } from "./functions";
-import { values } from "lodash";
 import tourCustomerServices, { FiltersGetReviewCustomer } from "@/services/modules/tour/tourCustomer.services";
 import Loading from "@/components/common/Loading";
 import { useParams } from "next/navigation";
-import { stat } from "fs";
 import { useEffect, useState } from "react";
 import { BookingStatus, PaymentMethod } from "@/helpers/common";
 
 const CityTourDetail = () => {
   //! prop + state + const
   const intFilter: FiltersGetReviewCustomer = { page: 1, perPage: 10 };
-  const VND = parseFloat(`${process.env.VND}`);
+  const VND = Number(process.env.NEXT_PUBLIC_VND);
 
   //! Hook
   const slug = useParams();
