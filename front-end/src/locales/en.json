@@ -615,8 +615,22 @@
     "bookingHistory": {
       "booking": "Booking History",
       "peoples": "peoples",
-      "people": "people",
-      "cancellation": "Tour Cancellation"
+      "people": "People",
+      "cancelTour": "Cancel Tour",
+      "pay_now": "Paynow",
+      "destinations": "Destination",
+      "price": "Price",
+      "order_id": "Order Id",
+      "unknown": "Unknown",
+      "tour_name_unavailable": "Tour name unavailable",
+      "status_unknown": "Status unknown",
+      "back_to_booking_history": "Back to booking history",
+      "booking_detail": "Booking Detail",
+      "cancel_tour": "Cancel tour",
+      "error_fetching_data": "Error fetching data",
+      "go_back": "Go back",
+      "location": "Location",
+      "retry": "Retry"
     }
   },
   "uploadField": {
