@@ -1,5 +1,5 @@
 "use client"
-import React, { useMemo } from 'react'
+import React, { useEffect, useMemo } from 'react'
 import { default as CommonStyles } from '@/components/common'
 import { Checkbox, Container, FormControlLabel, FormGroup } from '@mui/material'
 import RHFField from '@/components/customReactFormField/ReactFormField'
@@ -21,9 +21,14 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import useGetAllTourCustomer from '@/services/modules/tour/hooks/useGetAllTourCustomers'
 import apiUrls from '@/constants/apiUrls'
 import useGetAllThemeCustomer from '@/services/modules/theme/hook/useGetAllThemeCustomer'
-import { Duration } from '@/helpers/common'
+import { Duration, getOptionEnum, TourSortField } from '@/helpers/common'
 import useGetAllDestinationCustomer from '@/services/modules/destination/hook/useGetAllDestinationCustomer'
 import useGetOutsideTourCustomer from '@/services/modules/tour/hooks/useGetOutsideTourCustomer'
+import useFiltersHandler from '@/hooks/useFiltersHandler'
+import { useSearchParams } from 'next/navigation'
+import ThemeFilter from '@/app/components/ThemeFilter'
+import DestinationFilter from '@/app/components/DestinationFilter'
+import DurationFilter from '@/app/components/DurationFilter'
 
 
 interface Availability {
@@ -38,20 +43,27 @@ const CityTourPage = () => {
   // Hook
   const t = useTranslations("cityTour");
   const { showSuccess, showError } = useNotifications();
-  const { data: dataTour } = useGetAllTourCustomer()
+  const { filters, selected, setFilters, handleChangePage, handleChangeRowsPerPage: changeRowPerPage, handleRequestSort, handleSelectAllClick: handleSelectAll, handleCheckBox, } = useFiltersHandler({
+    page: 1,
+    perPage: 10,
+  });
+  const { data: dataTour } = useGetAllTourCustomer(filters, {
+    isTrigger: true,
+    refetchKey: "getAllTours",
+  });
+
+  const searchParams = useSearchParams();
+  const searchQuery = searchParams.get("search");
   const { data: dataTheme } = useGetAllThemeCustomer();
   const themeOptions = dataTheme?.items?.map(theme => ({
     label: theme.name,
     value: theme.id,
   })) || [];
-  const durationOptions = Object.entries(Duration).map(([key, value]) => ({
-    label: value,
-    value: key,
-  }));
-  const { data: dataDuration } = useGetAllDestinationCustomer();
-  const destinationOptions = dataDuration?.items?.map(theme => ({
-    label: theme.name,
-    value: theme.id,
+  const durationOptions = getOptionEnum(Duration);
+  const { data: dataDestination } = useGetAllDestinationCustomer();
+  const destinationOptions = dataDestination?.items?.map(des => ({
+    label: des.name,
+    value: des.id,
   })) || [];
 
   const { data: dataOutside } = useGetOutsideTourCustomer();
@@ -142,16 +154,45 @@ const CityTourPage = () => {
     [dataOutside, apiUrls]
   );
 
-  const sortbyOptions: SelectOption[] = [
-    {
-      value: 'Popularity',
-      label: "Popularity"
-    },
-    {
-      value: 'No',
-      label: "No"
-    },
-  ]
+  const sortbyOptions = getOptionEnum(TourSortField)
+
+  useEffect(() => {
+    if (searchQuery) {
+      setFilters((prev) => {
+        return {
+          ...prev,
+          textSearch: searchQuery,
+        }
+      })
+    }
+  }, [searchQuery]);
+
+  const handleChangTheme = (selectedOptions: string[]) => {
+    setFilters((prev) => {
+      return {
+        ...prev,
+        themeIds: selectedOptions
+      }
+    })
+  }
+  const handleChangDestination = (selectedOptions: string[]) => {
+    setFilters((prev) => {
+      return {
+        ...prev,
+        destinationIds: selectedOptions
+      }
+    })
+  }
+
+  const handleChangDuration = (selectedOptions: string[]) => {
+    setFilters((prev) => {
+      return {
+        ...prev,
+        durations: selectedOptions
+      }
+    })
+  }
+
 
   // Render
   return (
@@ -232,43 +273,60 @@ const CityTourPage = () => {
 
             {/* Theme Section */}
             <CommonStyles.Box >
-              <AccordionMUI title="Theme" options={themeOptions} />
+              <ThemeFilter options={themeOptions} onChange={handleChangTheme} />
             </CommonStyles.Box>
 
             {/*Duration Section */}
             <CommonStyles.Box>
-              <AccordionMUI title="Duration" options={durationOptions} />
+              <DurationFilter options={durationOptions} onChange={handleChangDuration} />
             </CommonStyles.Box>
 
             {/*Destination Section */}
             <CommonStyles.Box>
-              <AccordionMUI title="Destination" options={destinationOptions} />
+              <DestinationFilter options={destinationOptions} onChange={handleChangDestination} />
             </CommonStyles.Box>
           </CommonStyles.Box>
-          <CommonStyles.Box className='tw-col-span-9'>
+          <CommonStyles.Box className="tw-col-span-9">
             <CommonStyles.Box className="tw-flex tw-flex-col tw-gap-3 tw-w-full">
-              {dataTour?.items?.map((item, index) => (
-                <CommonStyles.Box key={index}>
-                  <CardListItem
-                    name={item?.Theme?.name}
-                    link={`/citytour/${item.slug}`}
-                    src={`${apiUrls.IMG_URL}/${item?.TourImage?.[0]?.image}`}
-                    title={item?.name}
-                    duration={item?.numberOfHours}
-                    transport={item?.transport}
-                    plan={item?.package}
-                    price={item?.price}
-                    feedback_quantity={item?.totalReviews}
-                    feedback_average={item?.averageRating}
-                  />
-                </CommonStyles.Box>
-              ))}
+              {(dataTour?.items?.length || 0) > 0 ? (
+                dataTour?.items?.map((item, index) => (
+                  <CommonStyles.Box key={index}>
+                    <CardListItem
+                      name={item?.Theme?.name}
+                      link={`/citytour/${item.slug}`}
+                      src={`${apiUrls.IMG_URL}/${item?.TourImage?.[0]?.image}`}
+                      title={item?.name}
+                      duration={item?.numberOfHours}
+                      transport={item?.transport}
+                      plan={item?.package}
+                      price={item?.price}
+                      feedback_quantity={item?.totalReviews}
+                      feedback_average={item?.averageRating}
+                    />
+                  </CommonStyles.Box>
+                ))
+              ) : (
+                <CommonStyles.Typography
+                  type="size16Weight700"
+                  className="tw-text-center tw-text-gray-500"
+                >
+                  {t("searchNoResult")}
+                </CommonStyles.Typography>
+              )}
             </CommonStyles.Box>
-            <CommonStyles.CommonButton className='tw-w-full tw-border-solid tw-rounded-full tw-mt-7 tw-mb-[80px]' variant='outlined'>
-              <CommonStyles.Typography type='size16Weight700' className='tw-text-primary '>
-                {t("loadMoreBtn")}
-              </CommonStyles.Typography>
-            </CommonStyles.CommonButton>
+            {(dataTour?.items?.length || 0) > 0 && (
+              <CommonStyles.CommonButton
+                className="tw-w-full tw-border-solid tw-rounded-full tw-mt-7 tw-mb-[80px]"
+                variant="outlined"
+              >
+                <CommonStyles.Typography
+                  type="size16Weight700"
+                  className="tw-text-primary"
+                >
+                  {t("loadMoreBtn")}
+                </CommonStyles.Typography>
+              </CommonStyles.CommonButton>
+            )}
           </CommonStyles.Box>
         </Container>
       </CommonStyles.Box >

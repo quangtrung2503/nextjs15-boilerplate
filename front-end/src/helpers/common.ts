@@ -1,15 +1,22 @@
 // import { IMAGE_REGEX, WarehousingStatus } from 'constants/common';
-import apiUrls from '@/constants/apiUrls';
+import apiUrls from "@/constants/apiUrls";
 
-import { FormikValues } from 'formik';
+import { FormikValues } from "formik";
 // import { languages } from 'i18nOptions';
-import Lodash, { get, identity, isEmpty, isNumber, isString, pickBy } from 'lodash';
-import moment from 'moment';
-import { usePathname } from 'next/navigation';
-import queryString from 'query-string';
+import Lodash, {
+  get,
+  identity,
+  isEmpty,
+  isNumber,
+  isString,
+  pickBy,
+} from "lodash";
+import moment from "moment";
+import { usePathname } from "next/navigation";
+import queryString from "query-string";
 
 export const localStorageFunc: Storage | undefined =
-  typeof window !== 'undefined' ? window.localStorage : undefined;
+  typeof window !== "undefined" ? window.localStorage : undefined;
 
 export const parseQueryString = () => {
   const search = queryString.parse(window.location.search);
@@ -94,21 +101,21 @@ export const calculateRating = (rating: number): number => {
 // };
 
 export const formatCurrency = (value: number) => {
-  return value.toLocaleString().replaceAll(',', '.');
+  return value.toLocaleString().replaceAll(",", ".");
 };
 
 export const convertCurrencyToString = (currency: string) => {
-  return currency.toString().replaceAll('.', '');
+  return currency.toString().replaceAll(".", "");
 };
 
 export const convertToDate = (value: Date | string) => {
-  const formatDayMonthYear = moment(value).format('DD/MM/YYYY');
+  const formatDayMonthYear = moment(value).format("DD/MM/YYYY");
 
   return formatDayMonthYear;
 };
 
 export const isDevelopment = () => {
-  return window.location.origin.includes('localhost');
+  return window.location.origin.includes("localhost");
 };
 
 export const isDateObject = (date: Date | moment.Moment) => {
@@ -124,20 +131,20 @@ export const localeNumber = (
   options?: {
     locales: Intl.LocalesArgument;
     options: Intl.NumberFormatOptions;
-  }
+  },
 ) => {
   if (isNumber(number)) {
-    return number.toLocaleString(options?.locales || 'vi-VI', options?.options);
+    return number.toLocaleString(options?.locales || "vi-VI", options?.options);
   }
 
-  return 'N/A';
+  return "N/A";
 };
 
 export const snakeCaseToWords = (input: string) => {
   return input
-    ?.split('_')
+    ?.split("_")
     ?.map((word) => word.toLowerCase())
-    ?.join(' ');
+    ?.join(" ");
 };
 
 // export const convertToQueryDate = (value: dayjs.Dayjs | Date | string | undefined) => {
@@ -163,21 +170,20 @@ export const convertStringToDateTime = (value: string) => {
     year,
     month,
     day,
-    parseInt(time.split(':')[0]),
-    parseInt(time.split(':')[1])
+    parseInt(time.split(":")[0]),
+    parseInt(time.split(":")[1]),
   );
   return dateTime;
 };
 
 export const removeAMPM = (timeString: string) => {
-  return timeString.replace(/AM|PM/gi, '');
+  return timeString.replace(/AM|PM/gi, "");
 };
 
-
 export const formatPrice = (price: number) => {
-  const formatter = new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: 'USD',
+  const formatter = new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD",
     minimumFractionDigits: 0,
     maximumFractionDigits: 2,
   });
@@ -186,30 +192,30 @@ export const formatPrice = (price: number) => {
 };
 
 export const formatPriceCurrency = (price: number, currencyType: string) => {
-  let currency = 'USD';
-  let unit = '';
+  let currency = "USD";
+  let unit = "";
 
   switch (currencyType) {
-    case 'USD':
-      currency = 'USD';
-      unit = '$';
+    case "USD":
+      currency = "USD";
+      unit = "$";
       break;
-    case 'peso':
-      currency = 'PHP';
-      unit = '₱';
+    case "peso":
+      currency = "PHP";
+      unit = "₱";
       break;
-    case 'vnđ':
-      currency = 'VND';
-      unit = '₫';
+    case "vnđ":
+      currency = "VND";
+      unit = "₫";
       break;
     default:
-      currency = 'USD';
-      unit = '$';
+      currency = "USD";
+      unit = "$";
       break;
   }
 
-  const formatter = new Intl.NumberFormat('en-US', {
-    style: 'currency',
+  const formatter = new Intl.NumberFormat("en-US", {
+    style: "currency",
     currency: currency,
     minimumFractionDigits: 0,
     maximumFractionDigits: 2,
@@ -218,8 +224,8 @@ export const formatPriceCurrency = (price: number, currencyType: string) => {
   let formattedPrice = formatter.format(price);
 
   // Nếu loại tiền tệ là VND, loại bỏ ký hiệu tiền tệ và thay thế nó bằng đơn vị tiền tệ
-  if (currencyType === 'vnđ') {
-    formattedPrice = formattedPrice.replace(/^([^0-9]*)([0-9,]+)/, '$2');
+  if (currencyType === "vnđ") {
+    formattedPrice = formattedPrice.replace(/^([^0-9]*)([0-9,]+)/, "$2");
     // Thêm ký hiệu tiền tệ vào cuối chuỗi kết quả
     formattedPrice += unit;
   }
@@ -232,43 +238,43 @@ export const formatPriceCurrency = (price: number, currencyType: string) => {
 // };
 
 export enum DateTimeFormat {
-  FullYearDash = 'YYYY-MM-DD',
-  FullDateDash = 'DD/MM/YYYY',
-  FullYearFormatDash = 'YYYY/MM/DD',
-  FullMonthDash = 'MM/DD/YYYY',
-  APIFormat = 'YYYY-MM-DD HH:mm:ss',
-  FullDateShortMonth = 'MMM DD, YYY',
-  DateMonth = 'DD/MM',
-  DateMonthDash = 'MM-YYYY',
-  DateYearMonthDash = 'YYYY-MM',
-  MonthYear = 'MM, YYYY',
-  Year = 'YYYY',
-  Month = 'MM',
+  FullYearDash = "YYYY-MM-DD",
+  FullDateDash = "DD/MM/YYYY",
+  FullYearFormatDash = "YYYY/MM/DD",
+  FullMonthDash = "MM/DD/YYYY",
+  APIFormat = "YYYY-MM-DD HH:mm:ss",
+  FullDateShortMonth = "MMM DD, YYY",
+  DateMonth = "DD/MM",
+  DateMonthDash = "MM-YYYY",
+  DateYearMonthDash = "YYYY-MM",
+  MonthYear = "MM, YYYY",
+  Year = "YYYY",
+  Month = "MM",
 
-  FullDateTime = 'DD/MM/YYYY hh:mm:ss',
-  DateTimeAmPm = 'DD/MM/YYYY hh A',
-  DateTime24h = 'DD/MM/YYYY HH:mm',
-  Time = 'hh:mm:ss',
-  FullDate = 'DD MMM YYYY',
-  TimeHourMinPM = 'HH:mm A',
-  HourMinutes = 'HH:mm',
+  FullDateTime = "DD/MM/YYYY hh:mm:ss",
+  DateTimeAmPm = "DD/MM/YYYY hh A",
+  DateTime24h = "DD/MM/YYYY HH:mm",
+  Time = "hh:mm:ss",
+  FullDate = "DD MMM YYYY",
+  TimeHourMinPM = "HH:mm A",
+  HourMinutes = "HH:mm",
 
-  TimeFullDateDash = 'HH:mm - DD/MM/YYYY',
-  TimeFullDateDashReverse = 'HH:mm - YYYY/MM/DD',
-  DateTime24hReverse = 'HH:mm DD/MM/YYYY',
-  Time24hDateFullReverse = 'HH:mm:ss YYYY/MM/DD',
-  AmPmDateMonthYear = 'HH:mm A - DD/MM/YYYY',
+  TimeFullDateDash = "HH:mm - DD/MM/YYYY",
+  TimeFullDateDashReverse = "HH:mm - YYYY/MM/DD",
+  DateTime24hReverse = "HH:mm DD/MM/YYYY",
+  Time24hDateFullReverse = "HH:mm:ss YYYY/MM/DD",
+  AmPmDateMonthYear = "HH:mm A - DD/MM/YYYY",
 
-  NameMonthYear = 'MMMM YYYY',
-  DateMonthYear = 'DD-MM-YYYY',
+  NameMonthYear = "MMMM YYYY",
+  DateMonthYear = "DD-MM-YYYY",
 
-  FullDateDashLowercase = 'dd/MM/yyyy',
-  DateTime24hFull = 'HH:mm:ss DD/MM/YYYY',
+  FullDateDashLowercase = "dd/MM/yyyy",
+  DateTime24hFull = "HH:mm:ss DD/MM/YYYY",
 }
 
 export const checkPathname = (itemCheck: string) => {
   const pathname = usePathname();
-  const arrayItemInPathname = pathname.split('/');
+  const arrayItemInPathname = pathname.split("/");
   const checkInclude = arrayItemInPathname.includes(itemCheck);
   return checkInclude;
 };
@@ -322,14 +328,16 @@ export function addQueryParams(url: string, params: any) {
 }
 
 export const formatCurrencyVND = (amount: number) => {
-  return `${new Intl.NumberFormat('en-US', { style: 'decimal', currency: 'VND' }).format(
-    amount
-  )} ₫`;
+  return `${new Intl.NumberFormat("en-US", {
+    style: "decimal",
+    currency: "VND",
+  }).format(amount)} ₫`;
 };
 
 export function generateRandomString(length: number) {
-  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-  let result = '';
+  const characters =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  let result = "";
   const charactersLength = characters.length;
   for (let i = 0; i < length; i++) {
     result += characters.charAt(Math.floor(Math.random() * charactersLength));
@@ -338,21 +346,28 @@ export function generateRandomString(length: number) {
 }
 
 export const removeVietnameseTones = (str: string) => {
-  str = str.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-  str = str.replace(/đ/g, 'd').replace(/Đ/g, 'D');
+  str = str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+  str = str.replace(/đ/g, "d").replace(/Đ/g, "D");
   return str;
 };
 
-export function formatNumber(number?: number, thousandSeparator = ',', decimalSeparator = '') {
+export function formatNumber(
+  number?: number,
+  thousandSeparator = ",",
+  decimalSeparator = "",
+) {
   if (!number) {
     return 0;
   }
-  if (typeof number !== 'number') {
-    return '';
+  if (typeof number !== "number") {
+    return "";
   }
 
-  const [integerPart, decimalPart] = number.toFixed(2).split('.');
-  const formattedIntegerPart = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, thousandSeparator);
+  const [integerPart, decimalPart] = number.toFixed(2).split(".");
+  const formattedIntegerPart = integerPart.replace(
+    /\B(?=(\d{3})+(?!\d))/g,
+    thousandSeparator,
+  );
 
   return `${formattedIntegerPart}${decimalSeparator}`;
 }
@@ -361,18 +376,17 @@ export function parseFormattedNumber(formattedNumber: string | number) {
   if (!formattedNumber) {
     return 0;
   }
-  if (typeof formattedNumber === 'number') {
+  if (typeof formattedNumber === "number") {
     return formattedNumber;
   }
   // Remove thousand separators and convert to number
-  const numberString = formattedNumber.replace(/,/g, '');
+  const numberString = formattedNumber.replace(/,/g, "");
   return Number(parseFloat(numberString));
 }
 
 export const formatStringDataIsEmpty = (value: string) => {
-  return value === '' ? undefined : value;
+  return value === "" ? undefined : value;
 };
-
 
 export const getOptionEnum = <T extends Record<string, string>>(data: T) => {
   return Object.values(data).map((item) => ({
@@ -383,132 +397,132 @@ export const getOptionEnum = <T extends Record<string, string>>(data: T) => {
 };
 
 export enum TransportOfTour {
-  TransportFacility= "Transport Facility",
-  PrivateCar= "Private Car",
-  SharedBus= "Shared Bus" 
+  TransportFacility = "Transport Facility",
+  PrivateCar = "Private Car",
+  SharedBus = "Shared Bus",
 }
-export enum Role{
-  ADMIN ="ADMIN",
-  STAFF ="STAFF",
-  CUSTOMER ="CUSTOMER",
+export enum Role {
+  ADMIN = "ADMIN",
+  STAFF = "STAFF",
+  CUSTOMER = "CUSTOMER",
 }
 
-export const TINY_API = 'z05d7wzwwza58npx1ncwvo79r6rnxq5zivx4gqk5sz4zsr9z';
+export const TINY_API = "z05d7wzwwza58npx1ncwvo79r6rnxq5zivx4gqk5sz4zsr9z";
 
 export enum FORMAT_DATE {
-  DATE_TIME = 'YYYY-MM-DD HH:mm:ss',
-  DATE = 'YYYY-MM-DD',
-  TIME = 'HH:mm:ss'
+  DATE_TIME = "YYYY-MM-DD HH:mm:ss",
+  DATE = "YYYY-MM-DD",
+  TIME = "HH:mm:ss",
 }
 export enum SortOrder {
-  ASC = 'asc',
-  DESC = 'desc',
+  ASC = "asc",
+  DESC = "desc",
 }
 export enum Platform {
-  WEB = 'WEB',
-  APP = 'APP',
+  WEB = "WEB",
+  APP = "APP",
 }
 export enum LoginMethod {
-  PHONE = 'PHONE',
-  EMAIL = 'EMAIL',
+  PHONE = "PHONE",
+  EMAIL = "EMAIL",
 }
 export enum MediaType {
-  IMAGE = 'IMAGE',
-  VIDEO = 'VIDEO',
-  PDF = 'PDF',
+  IMAGE = "IMAGE",
+  VIDEO = "VIDEO",
+  PDF = "PDF",
 }
 export enum UserStatus {
-  ACTIVE = 'ACTIVE',
-  BANNED = 'BANNED',
-  DELETED = 'DELETED'
+  ACTIVE = "ACTIVE",
+  BANNED = "BANNED",
+  DELETED = "DELETED",
 }
 export enum Gender {
-  MALE = 'MALE',
-  FEMALE = 'FEMALE',
-  OTHER = 'OTHER'
+  MALE = "MALE",
+  FEMALE = "FEMALE",
+  OTHER = "OTHER",
 }
 export enum Language {
-  VI = 'VI',
-  EN = 'EN',
+  VI = "VI",
+  EN = "EN",
 }
 export enum AppType {
-  WEB_HOOK = 'WEB_HOOK',
-  REPORT = 'REPORT',
+  WEB_HOOK = "WEB_HOOK",
+  REPORT = "REPORT",
 }
 export enum Transport {
-  TRANSPORT_FACILITY = 'Transport Facility',
-  PRIVATE_CAR = 'Private Car',
-  SHARED_BUS = 'Shared Bus',
+  TRANSPORT_FACILITY = "Transport Facility",
+  PRIVATE_CAR = "Private Car",
+  SHARED_BUS = "Shared Bus",
 }
 export enum Package {
-  FAMILY_PLAN = 'Family Plan',
-  COUPLE_PLAN = 'Couple Plan',
-  SINGLE_PLAN = 'Single Plan',
-  BUSINESS_TOUR = 'Business Tour' 
+  FAMILY_PLAN = "Family Plan",
+  COUPLE_PLAN = "Couple Plan",
+  SINGLE_PLAN = "Single Plan",
+  BUSINESS_TOUR = "Business Tour",
 }
 export enum Duration {
-  ZERO_TO_THREE_HOURS = '0-3 hours',
-  THREE_TO_FIVE_HOURS = '3-5 hours',
-  FIVE_TO_SEVEN_HOURS = '5-7 hours',
-  FULL_DAY = 'Full day (7+ hours)',
-  MULTI_DAY = 'Multi-day'
+  ZERO_TO_THREE_HOURS = "0-3 hours",
+  THREE_TO_FIVE_HOURS = "3-5 hours",
+  FIVE_TO_SEVEN_HOURS = "5-7 hours",
+  FULL_DAY = "Full day (7+ hours)",
+  MULTI_DAY = "Multi-day",
 }
 export enum Rating {
   ONE = 1,
   TWO = 2,
   THREE = 3,
   FOUR = 4,
-  FIVE = 5
+  FIVE = 5,
 }
 export enum TourSortField {
-  CREATED_AT = 'createdAt',
-  PRICE = 'price',
-  POPULARITY = 'popularity'
+  CREATED_AT = "CreatedAt",
+  PRICE = "Price",
+  POPULARITY = "Popularity",
 }
 
 export enum BookingStatus {
-  PENDING = 'PENDING',
-  CONFIRMED = 'CONFIRMED',
-  COMPLETED = 'COMPLETED',
-  CANCELLED = 'CANCELLED',
+  PENDING = "PENDING",
+  CONFIRMED = "CONFIRMED",
+  COMPLETED = "COMPLETED",
+  CANCELLED = "CANCELLED",
 }
 
 export enum PaymentStatus {
-  PENDING = 'PENDING',
-  SUCCESS = 'SUCCESS',
-  FAILED = 'FAILED',
+  PENDING = "PENDING",
+  SUCCESS = "SUCCESS",
+  FAILED = "FAILED",
 }
 
 export enum RequestRefundStatus {
-  PENDING = 'PENDING',
-  APPROVED = 'APPROVED',
-  REJECTED ='REJECTED'
+  PENDING = "PENDING",
+  APPROVED = "APPROVED",
+  REJECTED = "REJECTED",
 }
 
 export enum PaymentMethod {
-  VNPAY = 'VNPAY'
+  VNPAY = "VNPAY",
 }
 
 export enum BookingCancellationReason {
-  CHANGE_OF_PLANS = 'Change of Plans', // Khách thay đổi kế hoạch cá nhân
-  HEALTH_ISSUES = 'Health Issues', // Gặp vấn đề về sức khỏe
-  FAMILY_EMERGENCY = 'Family Emergency', // Khẩn cấp gia đình
-  FINANCIAL_ISSUES = 'Financial Issues', // Vấn đề tài chính
-  SCHEDULE_CONFLICT = 'Schedule Conflict', // Trùng lịch trình
-  TRAVEL_RESTRICTIONS = 'Travel Restrictions', // Hạn chế đi lại
-  WEATHER_CONCERNS = 'Weather Concerns', // Lo ngại về thời tiết
-  FOUND_BETTER_OPTION = 'Found a Better Option', // Tìm được lựa chọn khác phù hợp hơn
-  PERSONAL_REASONS = 'Personal Reasons', // Lý do cá nhân
-  OTHER = 'Other', // Lý do khác không cụ thể
+  CHANGE_OF_PLANS = "Change of Plans", // Khách thay đổi kế hoạch cá nhân
+  HEALTH_ISSUES = "Health Issues", // Gặp vấn đề về sức khỏe
+  FAMILY_EMERGENCY = "Family Emergency", // Khẩn cấp gia đình
+  FINANCIAL_ISSUES = "Financial Issues", // Vấn đề tài chính
+  SCHEDULE_CONFLICT = "Schedule Conflict", // Trùng lịch trình
+  TRAVEL_RESTRICTIONS = "Travel Restrictions", // Hạn chế đi lại
+  WEATHER_CONCERNS = "Weather Concerns", // Lo ngại về thời tiết
+  FOUND_BETTER_OPTION = "Found a Better Option", // Tìm được lựa chọn khác phù hợp hơn
+  PERSONAL_REASONS = "Personal Reasons", // Lý do cá nhân
+  OTHER = "Other", // Lý do khác không cụ thể
 }
 
 export enum NotificationType {
-  DEFAULT = 'DEFAULT',
-  NEW_BOOKING = 'NEW_BOOKING',
-  REQUEST_REFUND = 'REQUEST_REFUND',
-  COMPLETE_BOOKING = 'COMPLETE_BOOKING'
+  DEFAULT = "DEFAULT",
+  NEW_BOOKING = "NEW_BOOKING",
+  REQUEST_REFUND = "REQUEST_REFUND",
+  COMPLETE_BOOKING = "COMPLETE_BOOKING",
 }
 export enum TopicNoti {
-  TopicForAllAdminStaff = 'TopicForAllAdminStaff',
-  TopicForAllCustomer = 'TopicForAllCustomer'
+  TopicForAllAdminStaff = "TopicForAllAdminStaff",
+  TopicForAllCustomer = "TopicForAllCustomer",
 }

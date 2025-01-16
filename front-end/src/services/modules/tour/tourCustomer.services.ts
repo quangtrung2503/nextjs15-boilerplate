@@ -19,8 +19,16 @@ import {
 } from "./interfaces/tour";
 import { BookTour } from "@/app/[locale]/citytour/[cityTourId]/forms";
 
-export interface FiltersGetTours extends CommonFilters {}
-export interface RequestGetTours extends CommonFilters {}
+export interface FiltersGetTours extends CommonFilters {
+  themeIds?: string[] | number[] | symbol;
+  destinationIds?: string[] | number[] | symbol;
+  durations?: string[] | number[] | symbol;
+}
+export interface RequestGetTours extends CommonFilters {
+  themeIds?: string[] | number[] | symbol;
+  destinationIds?: string[] | number[] | symbol;
+  durations?: string[] | number[] | symbol;
+}
 
 export interface FiltersGetReviewCustomer extends CommonFilters {
   ratings?: number;
@@ -71,8 +79,11 @@ export type ResponseOutsideTourList = AxiosResponse<
 >;
 
 class TourService {
-  getTours(configs?: AxiosRequestConfig) {
-    return httpService.get(`${apiUrls.TOUR_CUS_URL}`, configs);
+  getTours(filters: RequestGetTours, configs?: AxiosRequestConfig) {
+    return httpService.get(
+      `${apiUrls.TOUR_CUS_URL}?${queryString.stringify(filters)}`,
+      configs,
+    );
   }
   getTour(slug: string, configs?: AxiosRequestConfig) {
     return httpService.get(`${apiUrls.TOUR_CUS_URL}/${slug}`, configs);
