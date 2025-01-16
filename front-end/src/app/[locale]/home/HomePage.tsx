@@ -33,13 +33,12 @@ import City from "../admin/city/city";
 import useGetTourTrendingCustomer from "@/services/modules/tour/hooks/useGetTourTrendingCustomer";
 import useGetVideoCustomer from "@/services/modules/video/hook/useGetVideoCustomer";
 import useGetTourDestinationCustomer from "@/services/modules/tour/hooks/useGetTourDestinationCustomer";
-import { duration } from "moment";
 
 
 interface FormValues {
-  location?: string;
+  name?: string;
 }
-const initValue = { location: "" };
+const initValue = { name: "" };
 export default function HomePage() {
   // props + state
   const [slug, setSlug] = useState<string | null>(null);
@@ -89,7 +88,10 @@ export default function HomePage() {
   });
 
   const onSubmit: SubmitHandler<FormValues> = (data) => {
-    console.log("Form Data:", data);
+    const searchQuery = data.name?.trim();
+    if (searchQuery) {
+      router.push(`/citytour?search=${encodeURIComponent(searchQuery)}`);
+    }
   };
 
   // Function Render
@@ -178,7 +180,7 @@ export default function HomePage() {
                         padding: 0,
                       },
                     }}
-                    name="location"
+                    name="name"
                     placeholder={t("locationPlaceholder")}
                     control={control}
                     component={InputField}

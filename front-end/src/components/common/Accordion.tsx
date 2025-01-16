@@ -15,6 +15,7 @@ import { default as CommonStyles } from ".";
 interface AccordionMUIProps {
   title: string;
   options: SelectOption[];
+  onChange: (selectedOptions: string[]) => void;
 }
 
 const Accordion = styled((props: AccordionProps) => (
@@ -55,9 +56,22 @@ const AccordionDetails = styled(MuiAccordionDetails)(({ theme }) => ({
 }));
 
 const AccordionMUI = (props: AccordionMUIProps) => {
-  const { title, options } = props;
+  const { title, options, onChange } = props;
   const [expanded, setExpanded] = React.useState<string | false>("panel1");
   const [showMore, setShowMore] = React.useState(false);
+  const [selectedOptions, setSelectedOptions] = React.useState<string[]>([]);
+
+  const handleCheckboxChange = (label: React.ReactNode) => {
+    const stringLabel = String(label); // Chuyển đổi label thành chuỗi
+    setSelectedOptions((prevSelected) => {
+      const updated = prevSelected.includes(stringLabel)
+        ? prevSelected.filter((item) => item !== stringLabel)
+        : [...prevSelected, stringLabel];
+
+      onChange(updated);
+      return updated;
+    });
+  };
 
   const handleChange =
     (panel: string) => (event: React.SyntheticEvent, newExpanded: boolean) => {
@@ -96,7 +110,12 @@ const AccordionMUI = (props: AccordionMUIProps) => {
                   },
                 }}
                 key={index}
-                control={<Checkbox />}
+                control={
+                  <Checkbox
+                    checked={selectedOptions.includes(String(item.value))}
+                    onChange={() => handleCheckboxChange(item.value)}
+                  />
+                }
                 label={item.label}
               />
             ))}

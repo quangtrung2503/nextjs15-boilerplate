@@ -177,6 +177,7 @@
     }
   },
   "cityTour": {
+    "searchNoResult": "Search no result",
     "title": "Things To Do In London",
     "activitiesFound": "49 Activities Found",
     "sortBy": "Sort by:",

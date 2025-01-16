@@ -1,11 +1,13 @@
 import { useEffect, useState, useCallback, useRef } from "react";
-import { cloneDeep, isEmpty, isObject } from "lodash";
+import { cloneDeep, filter, isEmpty, isObject } from "lodash";
 
 import { useSave } from "@/stores/useStore";
 import axios, { AxiosError, AxiosResponse } from "axios";
 import { useNotifications } from "@/helpers/toast";
 import { ResponseList } from "@/interfaces/common";
 import tourCustomerServices, {
+  FiltersGetTours,
+  RequestGetTours,
   ResponseTourCustomerList,
 } from "../tourCustomer.services";
 import { Tour } from "../interfaces/tour";
@@ -24,10 +26,27 @@ import { Tour } from "../interfaces/tour";
  ********************************************************/
 
 //* Check parse body request
+const parseRequest = (filters: FiltersGetTours): RequestGetTours => {
+  return cloneDeep({
+    page: filters.page,
+    perPage: filters.perPage,
+    textSearch: filters.textSearch,
+    sortField: filters.sortField,
+    sortOrder: filters.sortOrder,
+    themeIds: filters.themeIds,
+    destinationIds: filters.destinationIds,
+    durations: filters.durations,
+  });
+};
+
 const requestAPI = tourCustomerServices.getTours;
 
 const useGetAllTourCustomer = (
-  options: { isTrigger?: boolean; refetchKey?: string } = {
+  filters: FiltersGetTours,
+  options: {
+    isTrigger?: boolean;
+    refetchKey?: string;
+  } = {
     isTrigger: true,
     refetchKey: "",
   },
@@ -50,8 +69,8 @@ const useGetAllTourCustomer = (
       return new Promise((resolve, reject) => {
         (async () => {
           try {
-            // const nextFilters = parseRequest(filters);
-            const response = await requestAPI({
+            const nextFilters = parseRequest(filters);
+            const response = await requestAPI(nextFilters, {
               signal: signal.current.signal,
             });
             resolve(response);
@@ -61,7 +80,7 @@ const useGetAllTourCustomer = (
           }
         })();
       });
-    }, [isTrigger]);
+    }, [filters, isTrigger]);
 
   const checkConditionPass = useCallback(
     (response: ResponseTourCustomerList) => {
