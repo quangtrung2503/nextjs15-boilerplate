@@ -26,6 +26,9 @@ import useGetAllDestinationCustomer from '@/services/modules/destination/hook/us
 import useGetOutsideTourCustomer from '@/services/modules/tour/hooks/useGetOutsideTourCustomer'
 import useFiltersHandler from '@/hooks/useFiltersHandler'
 import { useSearchParams } from 'next/navigation'
+import ThemeFilter from '@/app/components/ThemeFilter'
+import DestinationFilter from '@/app/components/DestinationFilter'
+import DurationFilter from '@/app/components/DurationFilter'
 
 
 interface Availability {
@@ -270,17 +273,17 @@ const CityTourPage = () => {
 
             {/* Theme Section */}
             <CommonStyles.Box >
-              <AccordionMUI title="Theme" options={themeOptions} onChange={handleChangTheme} />
+              <ThemeFilter options={themeOptions} onChange={handleChangTheme} />
             </CommonStyles.Box>
 
             {/*Duration Section */}
             <CommonStyles.Box>
-              <AccordionMUI title="Duration" options={durationOptions} onChange={handleChangDuration} />
+              <DurationFilter options={durationOptions} onChange={handleChangDuration} />
             </CommonStyles.Box>
 
             {/*Destination Section */}
             <CommonStyles.Box>
-              <AccordionMUI title="Destination" options={destinationOptions} onChange={handleChangDestination} />
+              <DestinationFilter options={destinationOptions} onChange={handleChangDestination} />
             </CommonStyles.Box>
           </CommonStyles.Box>
           <CommonStyles.Box className="tw-col-span-9">
