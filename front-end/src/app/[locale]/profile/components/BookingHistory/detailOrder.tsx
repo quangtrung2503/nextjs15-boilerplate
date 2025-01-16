@@ -2,16 +2,16 @@
 
 import { Box, Typography, CardMedia, Button } from "@mui/material";
 import moment from "moment";
-import { BookingStatus, PaymentMethod } from "@/helpers/common";
+import { BookingStatus, DateTimeFormat, PaymentMethod } from "@/helpers/common";
 import CommonIcons from "@/components/CommonIcons";
 import useGetBookingDetail from "@/services/modules/tour/hooks/useGetBookingDetail";
 import apiUrls from "@/constants/apiUrls";
 import { statusColors } from "@/utils/utils";
-import { CommonButton } from "@/components/common/Button";
 import { useTranslations } from "next-intl";
 import tourCustomerServices from "@/services/modules/tour/tourCustomer.services";
 import { useNotifications } from "@/helpers/toast";
 import Loading from "@/components/common/Loading";
+import StatusActionButtons from "@/components/ActionButton/actionButton";
 
 interface DetailOrderProps {
   id: number;
@@ -19,9 +19,11 @@ interface DetailOrderProps {
 }
 
 const DetailOrder = ({ id, onGoBack }: DetailOrderProps) => {
+  //!Const,data,hook
   const t = useTranslations("profile.bookingHistory");
   const { data: bookingDetail, loading, error } = useGetBookingDetail(Number(id));
   const { showError } = useNotifications();
+
   //Function
   const handleCancelTour = (tourId: number) => {
     // console.log(`Hủy tour với ID: ${tourId}`);
@@ -35,24 +37,7 @@ const DetailOrder = ({ id, onGoBack }: DetailOrderProps) => {
       showError(err);
     }
   }
-
-  if (error) {
-    return (
-      <Box className="tw-flex tw-justify-center tw-items-center tw-h-full">
-        <Typography variant="h6" color="error">
-          {t("error_fetching_data")}
-        </Typography>
-        <Button
-          variant="contained"
-          onClick={onGoBack}
-          className="tw-ml-4"
-        >
-          {t("go_back")}
-        </Button>
-      </Box>
-    );
-  }
-
+  
   const {
     bookingCode,
     status,
@@ -71,18 +56,17 @@ const DetailOrder = ({ id, onGoBack }: DetailOrderProps) => {
 
   return (
     <Box className="tw-flex-grow tw-rounded-sm tw-bg-gray-50 tw-px-10">
-      {loading ?? <Loading/>}
+      {loading ?? <Loading />}
       <Typography
         onClick={onGoBack}
         className="tw-flex tw-items-center tw-pt-9 tw-pb-5 tw-text-left tw-text-lg tw-font-semibold tw-text-accent_gray_dark"
       >
-        <CommonIcons.ArrowBack className="tw-mr-2"/> {t("booking")}
+        <CommonIcons.ArrowBack className="tw-mr-2" /> {t("booking")}
       </Typography>
-
       <Typography
         variant="h6"
         className="tw-pb-5 tw-text-left tw-text-lg tw-font-semibold tw-text-accent_gray_dark"
-        >
+      >
         {t("booking_detail")}
       </Typography>
       <Box className="tw-flex tw-gap-6 tw-items-start">
@@ -95,7 +79,6 @@ const DetailOrder = ({ id, onGoBack }: DetailOrderProps) => {
             alt="Tour Image"
           />
         )}
-
         {/* Booking Info */}
         <Box className="tw-flex-grow">
           <Box className="tw-flex tw-justify-between tw-items-center tw-mb-2">
@@ -111,7 +94,6 @@ const DetailOrder = ({ id, onGoBack }: DetailOrderProps) => {
               {status || t("status_unknown")}
             </Typography>
           </Box>
-
           <Box className="tw-flex tw-flex-wrap">
             <Box className="tw-flex-1 tw-mb-2">
               <Box className="tw-flex tw-items-center tw-mb-2">
@@ -123,8 +105,8 @@ const DetailOrder = ({ id, onGoBack }: DetailOrderProps) => {
               <Box className="tw-flex tw-items-center tw-mb-2">
                 <CommonIcons.CalendarMonthOutlined className="tw-text-gray-500" />
                 <Typography className="tw-ml-2 tw-text-sm tw-text-gray-600">
-                  {moment(startDate).format("YYYY/MM/DD")} -{" "}
-                  {moment(endDate).format("YYYY/MM/DD")}
+                  {moment(startDate).format(DateTimeFormat.FullYearFormatDash)} - {" "}
+                  {moment(endDate).format(DateTimeFormat.FullYearFormatDash)}
                 </Typography>
               </Box>
               <Box className="tw-flex tw-items-center tw-mb-2">
@@ -143,7 +125,6 @@ const DetailOrder = ({ id, onGoBack }: DetailOrderProps) => {
                 </Typography>
               </Box>
             </Box>
-
             {/* Destinations */}
             <Box className="tw-flex-1 tw-border tw-border-indigo-300 tw-rounded-md tw-p-4 tw-bg-white tw-shadow-sm">
               <Typography
@@ -162,25 +143,14 @@ const DetailOrder = ({ id, onGoBack }: DetailOrderProps) => {
               </ul>
             </Box>
           </Box>
-
           {/* Action Buttons */}
           {!(status === BookingStatus.CANCELLED || status === BookingStatus.COMPLETED) && (
-            <Box className="tw-mt-1">
-              {status === BookingStatus.CONFIRMED && (
-                <CommonButton variant="contained" color="primary" size="small"
-                  onClick={() => handleCancelTour(id)}
-                >
-                  {t("cancel_tour")}
-                </CommonButton>
-              )}
-              {status === BookingStatus.PENDING && (
-                <CommonButton variant="contained" color="primary" size="small"
-                  onClick={() => navigateToPaymentPage(id)}
-                >
-                  {t("pay_now")}
-                </CommonButton>
-              )}
-            </Box>
+            <StatusActionButtons
+              status={status}
+              id={id}
+              onCancel={handleCancelTour}
+              onNavigate={navigateToPaymentPage}
+            />
           )}
         </Box>
       </Box>

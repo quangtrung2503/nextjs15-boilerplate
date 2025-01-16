@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
- import DetailOrder from "./detail";
+import DetailOrder from "./detailOrder";
 import { Box } from "@mui/material";
 import ListOrder from "./listOrder";
 

@@ -501,3 +501,14 @@ export enum BookingCancellationReason {
   PERSONAL_REASONS = 'Personal Reasons', // Lý do cá nhân
   OTHER = 'Other', // Lý do khác không cụ thể
 }
+
+export enum NotificationType {
+  DEFAULT = 'DEFAULT',
+  NEW_BOOKING = 'NEW_BOOKING',
+  REQUEST_REFUND = 'REQUEST_REFUND',
+  COMPLETE_BOOKING = 'COMPLETE_BOOKING'
+}
+export enum TopicNoti {
+  TopicForAllAdminStaff = 'TopicForAllAdminStaff',
+  TopicForAllCustomer = 'TopicForAllCustomer'
+}
