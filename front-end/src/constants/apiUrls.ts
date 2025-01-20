@@ -1,5 +1,6 @@
 export const BASE_URL = `${process.env.NEXT_PUBLIC_ROOT_URL}`;
 export const PUBLIC_URL = `${process.env.NEXT_PUBLIC_URL}`;
+
 export default {
   IMG_URL: `${PUBLIC_URL}`,
   AUTH: {
@@ -27,5 +28,6 @@ export default {
   TRANSACTION_URL: `${BASE_URL}/transaction`,
   STATS_URL: `${BASE_URL}/stats`,
   BOOKING_TOUR_URL: `${BASE_URL}/booking-customer`,
+  PENDING_PAYMENT_URL: `${BASE_URL}/booking-customer/get-payment-url`,
   VNPAY_RETURN_URL: `${BASE_URL}/booking-customer/payment-return/vnpay-return`
 };

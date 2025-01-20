@@ -37,10 +37,7 @@ interface FormValues {
   price: number;
   transport: string;
   package: string;
-  numberOfPeople: number;
   numberOfHours: number;
-  startDate: string;
-  endDate: string;
   description: string;
   activity: string;
   included: string;
@@ -58,7 +55,7 @@ const packageOption = getOptionEnum(Package);
 const CreateEditTour: FC<createEditTourProps> = (props) => {
   const { id, handleClose } = props;
   const { data, loading } = useGetTour(Number(id), { isTrigger: !!id });
-  const { showError,showSuccess } = useNotifications();
+  const { showError, showSuccess } = useNotifications();
   const t = useTranslations("tourAdmin");
   const [loadingPost, setLoadingPost] = useState(false);
 
@@ -69,32 +66,7 @@ const CreateEditTour: FC<createEditTourProps> = (props) => {
       transport: yup.string().required(t("transportRequire")),
       price: yup.number().required(t("priceRequire")),
       package: yup.string().required(t("packageRequire")),
-      numberOfPeople: yup.number().required(t("numberOfPeopleRequire")),
       numberOfHours: yup.number().required(t("numberOfHoursRequire")),
-      startDate: yup.string().required(t("startDateRequire"))
-      .test(
-        "is-after-today",
-        t("startDateAfterToday"),
-        (value) => {
-          if (!value) return false;
-          const startDate = new Date(value);
-          const today = new Date();
-          today.setHours(0, 0, 0, 0); // Đặt thời gian về đầu ngày
-          return startDate >= today; // `startDate` phải sau ngày hôm nay
-        }
-      ),
-      endDate: yup.string().required(t("endDateRequire"))
-      .test(
-        "is-after-or-equal-startDate",
-        t("endDateAfterStartDate"),
-        function (value) {
-          const { startDate } = this.parent;
-          if (!value || !startDate) return false;
-          const endDate = new Date(value);
-          const start = new Date(startDate);
-          return endDate >= start; // `endDate` phải lớn hơn hoặc bằng `startDate`
-        }
-      ),
       language: yup.string().required(t("languageRequire")),
       cityId: yup.number().required(t("cityRequire")),
       themeId: yup.number().required(t("themeRequire")),
@@ -107,10 +79,13 @@ const CreateEditTour: FC<createEditTourProps> = (props) => {
       included: yup.string().required(t("includedRequire")),
       notIncluded: yup.string().required(t("notIncludedRequire")),
       safety: yup.string().required(t("safetyRequire")),
-      images: yup.array()
-      .min(1, t("imagesRequire"))
-      .required(t("imagesRequire")),
-      guideMeetingAddress: yup.string().required(t("guideMeetingAddressRequired"))
+      images: yup
+        .array()
+        .min(1, t("imagesRequire"))
+        .required(t("imagesRequire")),
+      guideMeetingAddress: yup
+        .string()
+        .required(t("guideMeetingAddressRequired")),
     })
     .required();
   const { filters } = useFiltersHandler({});
@@ -125,10 +100,7 @@ const CreateEditTour: FC<createEditTourProps> = (props) => {
       transport: data?.data.transport ?? "",
       price: data?.data.price ?? 0,
       package: data?.data.package ?? "",
-      numberOfPeople: data?.data.numberOfPeople ?? 0,
       numberOfHours: data?.data.numberOfHours ?? 0,
-      startDate: data?.data.startDate ?? "",
-      endDate: data?.data.endDate ?? "",
       language: data?.data.language ?? "",
       cityId: data?.data.cityId ?? undefined,
       themeId: data?.data.themeId ?? undefined,
@@ -138,7 +110,7 @@ const CreateEditTour: FC<createEditTourProps> = (props) => {
       notIncluded: data?.data.notIncluded ?? "",
       safety: data?.data.safety ?? "",
       images: data?.data.images ?? [],
-      guideMeetingAddress: data?.data.guideMeetingAddress ?? ""
+      guideMeetingAddress: data?.data.guideMeetingAddress ?? "",
     };
   }, [data?.data]);
 
@@ -185,10 +157,7 @@ const CreateEditTour: FC<createEditTourProps> = (props) => {
       transport: data?.data.transport || "",
       price: data?.data.price || 0,
       package: data?.data.package || "",
-      numberOfPeople: data?.data.numberOfPeople || 0,
       numberOfHours: data?.data.numberOfHours || 0,
-      startDate: data?.data.startDate || "",
-      endDate: data?.data.endDate || "",
       language: data?.data.language || "",
       cityId: data?.data.cityId || undefined,
       themeId: data?.data.themeId || undefined,
@@ -201,7 +170,7 @@ const CreateEditTour: FC<createEditTourProps> = (props) => {
       notIncluded: data?.data.notIncluded || "",
       safety: data?.data.safety || "",
       images: data?.data.TourImage?.map((image) => image.image) || [],
-      guideMeetingAddress: data?.data.guideMeetingAddress ?? ""
+      guideMeetingAddress: data?.data.guideMeetingAddress ?? "",
     });
   }, [data?.data, reset]);
 
@@ -217,17 +186,17 @@ const CreateEditTour: FC<createEditTourProps> = (props) => {
       id
         ? await tourServices.updateTour({ id, ...body })
         : await tourServices.createTour(body);
-      id? showSuccess(t("editSuccess")) : showSuccess(t("createSuccess"))
+      id ? showSuccess(t("editSuccess")) : showSuccess(t("createSuccess"));
       await fetchTour();
     } catch (error) {
       showError(error);
-    }finally{
+    } finally {
       setLoadingPost(false);
       handleClose();
     }
   };
   const handleDeleteImage = (image: string) => {
-      setValue("images", watch("images").filter((img) => img !== image) || []);
+    setValue("images", watch("images").filter((img) => img !== image) || []);
   };
 
   const watchImages = useMemo(() => {
@@ -273,7 +242,7 @@ const CreateEditTour: FC<createEditTourProps> = (props) => {
                 label={t("package")}
               />
             </CommonStyles.Box>
-            <CommonStyles.Box className="tw-col-span-2">
+            <CommonStyles.Box className="tw-col-span-4">
               <RHFField
                 name="price"
                 type="number"
@@ -283,18 +252,8 @@ const CreateEditTour: FC<createEditTourProps> = (props) => {
                 label={t("price")}
               />
             </CommonStyles.Box>
-            <CommonStyles.Box className="tw-col-span-3">
-              <RHFField
-                name="numberOfPeople"
-                type="number"
-                placeholder={t("numberOfPeople")}
-                control={methods.control}
-                component={InputField}
-                label={t("numberOfPeople")}
-              />
-            </CommonStyles.Box>
 
-            <CommonStyles.Box className="tw-col-span-3">
+            <CommonStyles.Box className="tw-col-span-4">
               <RHFField
                 type="number"
                 name="numberOfHours"
@@ -314,29 +273,10 @@ const CreateEditTour: FC<createEditTourProps> = (props) => {
                 placeholder={t("placeholderTransport")}
               />
             </CommonStyles.Box>
-            <CommonStyles.Box className="tw-col-span-6">
-              <RHFField
-                name="startDate"
-                control={methods.control}
-                component={CommonDatePicker}
-                label={t("startDate")}
-                placeholder={t("startDate")}
-              />
-            </CommonStyles.Box>
-
-            <CommonStyles.Box className="tw-col-span-6">
-              <RHFField
-                name="endDate"
-                control={methods.control}
-                component={CommonDatePicker}
-                label={t("endDate")}
-                placeholder={t("endDate")}
-              />
-            </CommonStyles.Box>
 
             <CommonStyles.Box className="tw-col-span-12">
               <RHFField
-              id="language"
+                id="language"
                 name="language"
                 height={200}
                 control={methods.control}
@@ -352,6 +292,7 @@ const CreateEditTour: FC<createEditTourProps> = (props) => {
                 placeholder={t("placeholderDescription")}
                 control={methods.control}
                 component={InputField}
+                multiline
                 label={t("description")}
               />
             </CommonStyles.Box>
@@ -369,7 +310,7 @@ const CreateEditTour: FC<createEditTourProps> = (props) => {
 
             <CommonStyles.Box className="tw-col-span-12">
               <RHFField
-              id="included"
+                id="included"
                 name="included"
                 control={methods.control}
                 placeholder={t("placeholderIncluded")}
@@ -379,7 +320,7 @@ const CreateEditTour: FC<createEditTourProps> = (props) => {
             </CommonStyles.Box>
             <CommonStyles.Box className="tw-col-span-12">
               <RHFField
-              id="notIncluded"
+                id="notIncluded"
                 name="notIncluded"
                 placeholder={t("placeholderNotIncluded")}
                 control={methods.control}
@@ -447,23 +388,24 @@ const CreateEditTour: FC<createEditTourProps> = (props) => {
                 label={t("image")}
               />
             </CommonStyles.Box>
-            <CommonStyles.Box className="tw-col-span-12 tw-flex tw-flex-wrap">
+            <CommonStyles.Box className="tw-col-span-12 tw-flex tw-flex-wrap tw-gap-5">
               {watchImages.map((image, index) => {
                 return (
                   <CommonStyles.Box
-                    className="tw-relative tw-w-fit"
                     key={index} // Thêm key để tránh cảnh báo của React
+                    className="tw-relative tw-w-fit tw-rounded-md"
                   >
+                    {" "}
                     <img
-                      className="tw-max-w-[100px] tw-h-auto tw-p-5"
+                      className="tw-max-w-[100px] tw-max-h-[120px] tw-rounded-md"
                       src={`${apiUrls.IMG_URL}/${image}`}
                       alt="Uploaded Image"
                     />
                     <CommonStyles.Box
-                      className="tw-absolute tw-top-0 tw-right-0 tw-cursor-pointer"
+                      className="tw-cursor-pointer"
                       onClick={() => handleDeleteImage(image)}
                     >
-                      <CommonIcons.CancelOutlined className="tw-text-accent_gray_500" />
+                      <CommonIcons.Close className="tw-text-accent_gray_500 tw-size-5 tw-bg-gray-100 tw-rounded-tr-md tw-absolute tw-top-0 tw-right-0" />
                     </CommonStyles.Box>
                   </CommonStyles.Box>
                 );
@@ -471,13 +413,13 @@ const CreateEditTour: FC<createEditTourProps> = (props) => {
             </CommonStyles.Box>
           </CommonStyles.Box>
           <CommonStyles.Box className="tw-flex tw-justify-center tw-gap-8 tw-mt-8 tw-mb-4">
-          <CancelButton handleClose={handleClose} />
+            <CancelButton handleClose={handleClose} />
             <CommonButtonAdmin
               variant="outlined"
               type="submit"
               className="active tw-min-w-28"
             >
-              {id? t("edit") : t("create")}
+              {id ? t("edit") : t("create")}
             </CommonButtonAdmin>
           </CommonStyles.Box>
           <CommonStyles.Box

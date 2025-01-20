@@ -1,5 +1,5 @@
 "use client"
-import React from 'react'
+import React, { useEffect, useMemo } from 'react'
 import { default as CommonStyles } from '@/components/common'
 import { Checkbox, Container, FormControlLabel, FormGroup } from '@mui/material'
 import RHFField from '@/components/customReactFormField/ReactFormField'
@@ -12,18 +12,23 @@ import { SubmitHandler, useForm } from 'react-hook-form'
 import { CommonDatePicker } from '@/components/common/DatePicker'
 import { CommonButton } from '@/components/common/Button'
 import AccordionMUI from '@/components/common/Accordion'
-import CardGridItem from '@/components/Card/CardGirdItem'
+import { CardGridItemProps } from '@/components/Card/CardGirdItem'
 import CardListItem from '@/components/Card/CardListItem'
 import CardCarousel from '@/components/CardCarousel'
 import Gallery from '../home/components/Gallery'
 import LatestStories from '../home/components/LatestStories'
-import { mocDataCard } from '../home/HomePage'
 import { yupResolver } from '@hookform/resolvers/yup'
 import useGetAllTourCustomer from '@/services/modules/tour/hooks/useGetAllTourCustomers'
 import apiUrls from '@/constants/apiUrls'
 import useGetAllThemeCustomer from '@/services/modules/theme/hook/useGetAllThemeCustomer'
-import { Duration } from '@/helpers/common'
+import { Duration, getOptionEnum, TourSortField } from '@/helpers/common'
 import useGetAllDestinationCustomer from '@/services/modules/destination/hook/useGetAllDestinationCustomer'
+import useGetOutsideTourCustomer from '@/services/modules/tour/hooks/useGetOutsideTourCustomer'
+import useFiltersHandler from '@/hooks/useFiltersHandler'
+import { useSearchParams } from 'next/navigation'
+import ThemeFilter from '@/app/components/ThemeFilter'
+import DestinationFilter from '@/app/components/DestinationFilter'
+import DurationFilter from '@/app/components/DurationFilter'
 
 
 interface Availability {
@@ -33,25 +38,37 @@ interface Availability {
 interface Filter {
   filter: string,
 }
+
 const CityTourPage = () => {
   // Hook
   const t = useTranslations("cityTour");
   const { showSuccess, showError } = useNotifications();
-  const { data } = useGetAllTourCustomer()
+  const { filters, selected, setFilters, handleChangePage, handleChangeRowsPerPage: changeRowPerPage, handleRequestSort, handleSelectAllClick: handleSelectAll, handleCheckBox, } = useFiltersHandler({
+    page: 1,
+    perPage: 10,
+  });
+  const { data: dataTour } = useGetAllTourCustomer(filters, {
+    isTrigger: true,
+    refetchKey: "getAllTours",
+  });
+
+  const searchParams = useSearchParams();
+  const searchQuery = searchParams.get("search");
   const { data: dataTheme } = useGetAllThemeCustomer();
   const themeOptions = dataTheme?.items?.map(theme => ({
     label: theme.name,
     value: theme.id,
   })) || [];
-  const durationOptions = Object.entries(Duration).map(([key, value]) => ({
-    label: value,
-    value: key,
-  }));
-  const { data: dataDuration } = useGetAllDestinationCustomer();
-  const destinationOptions = dataDuration?.items?.map(theme => ({
-    label: theme.name,
-    value: theme.id,
+  const durationOptions = getOptionEnum(Duration);
+  const { data: dataDestination } = useGetAllDestinationCustomer();
+  const destinationOptions = dataDestination?.items?.map(des => ({
+    label: des.name,
+    value: des.id,
   })) || [];
+
+  const { data: dataOutside } = useGetOutsideTourCustomer();
+
+
 
   // Validate
   const validateSchema = Yup.object().shape({
@@ -96,43 +113,86 @@ const CityTourPage = () => {
     }
   };
 
-  const sortbyOptions: SelectOption[] = [
-    {
-      value: 'Popularity',
-      label: "Popularity"
-    },
-    {
-      value: 'No',
-      label: "No"
-    },
-  ]
-  // const themeOptions = [
-  //   { label: "Water activities", value: "water_activities" },
-  //   { label: "Good for social distancing", value: "good_for_social_distancing" },
-  //   { label: "Adrenaline", value: "adrenaline" },
-  //   { label: "Nature", value: "nature" },
-  //   { label: "Hidden gems", value: "hidden_gems" },
-  //   { label: "Street art & grafitti", value: "street_art_&_grafitti" },
-  //   { label: "Food", value: "food" },
-  //   { label: "Fod", value: "fod" },
-  // ];
-  // const durationOptions = [
-  //   { label: "0-3 hours", value: "0-3 hours" },
-  //   { label: "3-5 hours", value: "3-5 hours" },
-  //   { label: "5-7 hours", value: "5-7 hours" },
-  //   { label: "Full day (7+ hours)", value: "full_day_(7+ hours)" },
-  //   { label: "Multi-day", value: "multi-day" },
-  // ];
-  // const destinationOptions = [
-  //   { label: "Biscayne Bay", value: "biscayne_bay" },
-  //   { label: "Downtown Miami", value: "downtown_miami" },
-  //   { label: "Wynwood Arts District", value: "wynwood_arts_district" },
-  //   { label: "Port of Miami", value: "port_of_miami" },
-  //   { label: "Everglades National Park", value: "everglades_national_park" },
-  //   { label: "Fisher Island", value: "fisher_island" },
-  //   { label: "Coconut Grove", value: "food" },
-  //   { label: "Fod", value: "fod" },
-  // ];
+  const getActivityData = (
+    activities: any[],
+    name: string,
+    apiUrls: { IMG_URL: string }
+  ): {
+    data?: CardGridItemProps[];
+    title?: React.ReactNode;
+    classNameContainerHeading?: string;
+  } => {
+    const filteredActivities = activities?.filter((item) => item?.name === name) || [];
+    return {
+      data: filteredActivities[0]?.Tour?.map((tour: any) => ({
+        title: tour?.name,
+        src: `${apiUrls.IMG_URL}/${tour?.TourImage?.[0]?.image}`,
+        link: "",
+        price: tour?.price,
+        duration: tour?.numberOfHours,
+        transport: tour?.transport,
+        feedback_quantity: tour?.totalReviews,
+        plan: tour?.package,
+        feedback_average: tour?.averageRating
+      })) || [],
+      title: name,
+      classNameContainerHeading: "tw-px-0",
+    };
+  };
+  const waterData = useMemo(
+    () => getActivityData(dataOutside || [], t("titleWaterActivities"), apiUrls),
+    [dataOutside, apiUrls]
+  );
+
+  const goodForSocialData = useMemo(
+    () => getActivityData(dataOutside || [], t("titleGoodForSocialDistancing"), apiUrls),
+    [dataOutside, apiUrls]
+  );
+
+  const adrenalineData = useMemo(
+    () => getActivityData(dataOutside || [], t("titleAdrenaline"), apiUrls),
+    [dataOutside, apiUrls]
+  );
+
+  const sortbyOptions = getOptionEnum(TourSortField)
+
+  useEffect(() => {
+    if (searchQuery) {
+      setFilters((prev) => {
+        return {
+          ...prev,
+          textSearch: searchQuery,
+        }
+      })
+    }
+  }, [searchQuery]);
+
+  const handleChangTheme = (selectedOptions: string[]) => {
+    setFilters((prev) => {
+      return {
+        ...prev,
+        themeIds: selectedOptions
+      }
+    })
+  }
+  const handleChangDestination = (selectedOptions: string[]) => {
+    setFilters((prev) => {
+      return {
+        ...prev,
+        destinationIds: selectedOptions
+      }
+    })
+  }
+
+  const handleChangDuration = (selectedOptions: string[]) => {
+    setFilters((prev) => {
+      return {
+        ...prev,
+        durations: selectedOptions
+      }
+    })
+  }
+
 
   // Render
   return (
@@ -213,42 +273,60 @@ const CityTourPage = () => {
 
             {/* Theme Section */}
             <CommonStyles.Box >
-              <AccordionMUI title="Theme" options={themeOptions} />
+              <ThemeFilter options={themeOptions} onChange={handleChangTheme} />
             </CommonStyles.Box>
 
             {/*Duration Section */}
             <CommonStyles.Box>
-              <AccordionMUI title="Duration" options={durationOptions} />
+              <DurationFilter options={durationOptions} onChange={handleChangDuration} />
             </CommonStyles.Box>
 
             {/*Destination Section */}
             <CommonStyles.Box>
-              <AccordionMUI title="Destination" options={destinationOptions} />
+              <DestinationFilter options={destinationOptions} onChange={handleChangDestination} />
             </CommonStyles.Box>
           </CommonStyles.Box>
-          <CommonStyles.Box className='tw-col-span-9'>
+          <CommonStyles.Box className="tw-col-span-9">
             <CommonStyles.Box className="tw-flex tw-flex-col tw-gap-3 tw-w-full">
-              {data?.items?.map((item, index) => (
-                <CommonStyles.Box key={index}>
-                  <CardListItem
-                    link={`/citytour/1`}
-                    src={`${apiUrls.IMG_URL}/${item?.City?.image}`}
-                    title={item?.name}
-                    duration={item?.numberOfHours}
-                    transport={item?.transport}
-                    plan={item?.package}
-                    price={item?.price}
-                    feedback_quantity={item?.totalReviews}
-                    feedback_average={item?.averageRating}
-                  />
-                </CommonStyles.Box>
-              ))}
+              {(dataTour?.items?.length || 0) > 0 ? (
+                dataTour?.items?.map((item, index) => (
+                  <CommonStyles.Box key={index}>
+                    <CardListItem
+                      name={item?.Theme?.name}
+                      link={`/citytour/${item.slug}`}
+                      src={`${apiUrls.IMG_URL}/${item?.TourImage?.[0]?.image}`}
+                      title={item?.name}
+                      duration={item?.numberOfHours}
+                      transport={item?.transport}
+                      plan={item?.package}
+                      price={item?.price}
+                      feedback_quantity={item?.totalReviews}
+                      feedback_average={item?.averageRating}
+                    />
+                  </CommonStyles.Box>
+                ))
+              ) : (
+                <CommonStyles.Typography
+                  type="size16Weight700"
+                  className="tw-text-center tw-text-gray-500"
+                >
+                  {t("searchNoResult")}
+                </CommonStyles.Typography>
+              )}
             </CommonStyles.Box>
-            <CommonStyles.CommonButton className='tw-w-full tw-border-solid tw-rounded-full tw-mt-7 tw-mb-[80px]' variant='outlined'>
-              <CommonStyles.Typography type='size16Weight700' className='tw-text-primary '>
-                {t("loadMoreBtn")}
-              </CommonStyles.Typography>
-            </CommonStyles.CommonButton>
+            {(dataTour?.items?.length || 0) > 0 && (
+              <CommonStyles.CommonButton
+                className="tw-w-full tw-border-solid tw-rounded-full tw-mt-7 tw-mb-[80px]"
+                variant="outlined"
+              >
+                <CommonStyles.Typography
+                  type="size16Weight700"
+                  className="tw-text-primary"
+                >
+                  {t("loadMoreBtn")}
+                </CommonStyles.Typography>
+              </CommonStyles.CommonButton>
+            )}
           </CommonStyles.Box>
         </Container>
       </CommonStyles.Box >
@@ -263,30 +341,30 @@ const CityTourPage = () => {
           <CommonStyles.Box>
             <CardCarousel
               classNameContainerHeading="tw-px-0"
-              // data={mocDataCard}
+              {...waterData}
               title={
                 <CommonStyles.Typography type='size12Weight800' className="tw-text-center tw-px-6 tw-py-2 tw-rounded-full tw-bg-primary tw-text-white">
-                  {t("titleWaterActivities")}
+                  {waterData?.title}
                 </CommonStyles.Typography>
               } />
           </CommonStyles.Box>
           <CommonStyles.Box>
             <CardCarousel
               classNameContainerHeading="tw-px-0"
-              // data={mocDataCard}
+              {...goodForSocialData}
               title={
                 <CommonStyles.Typography type='size12Weight800' className="tw-text-center tw-px-6 tw-py-2 tw-rounded-full tw-bg-accent_blue tw-text-white">
-                  {t("titleSpecialFoods")}
+                  {goodForSocialData.title}
                 </CommonStyles.Typography>
               } />
           </CommonStyles.Box>
           <CommonStyles.Box >
             <CardCarousel
               classNameContainerHeading="tw-px-0"
-              // data={mocDataCard}
+              {...adrenalineData}
               title={
                 <CommonStyles.Typography type='size12Weight800' className="tw-text-center tw-px-6 tw-py-2 tw-rounded-full tw-bg-accent_red tw-text-white">
-                  {t("titleRiverActivity")}
+                  {adrenalineData?.title}
                 </CommonStyles.Typography>
               } />
           </CommonStyles.Box>

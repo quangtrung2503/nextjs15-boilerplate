@@ -36,17 +36,19 @@ export interface Tour {
 
 export interface HistoryBookingTour {
   id: number;
-  orderId: string;
-  bookingDate: string;
+  createdAt: string;
+  bookingCode: string;
   status: keyof typeof statusColors;
   name: string;
   startDate: string;
   endDate: string;
   location: string;
-  people: number;
+  numberOfAdults: number;
+  numberOfChildren: number;
+  paymentMethod: string;
   pricePerTour: number;
   totalPrice: number;
-  image: string;
+  Tour: Tour;
 };
 
 export interface City {
@@ -92,6 +94,18 @@ export interface TourImage {
   image: string;
   createdAt: string;
   updatedAt: string;
+}
+export interface ThemeTour {
+  id?: string;
+  name?: string;
+  isDisplay?: boolean;
+  isActive?: boolean;
+  slug?: string;
+  createdAt?: string;
+  updatedAt?: string;
+  Tour: Tour[];
+  averageRating?: number;
+  totalReviews?: number;
 }
 
 export interface ApiResponse {

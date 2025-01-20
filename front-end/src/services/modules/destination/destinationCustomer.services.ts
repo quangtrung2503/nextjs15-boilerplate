@@ -15,10 +15,10 @@ export type ResponseDestinationList = AxiosResponse<
   ResponseCommon<ResponseList<Destination[]>>
 >;
 
-class ThemeService {
+class DestinationFilterService {
   getDestinations(configs?: AxiosRequestConfig) {
     return httpService.get(`${apiUrls.DESTINATION_CUS_URL}`, configs);
   }
 }
 
-export default new ThemeService();
+export default new DestinationFilterService();

@@ -206,6 +206,17 @@ const CreateEditUser: FC<createEditUserProps> = (props) => {
               />
             </CommonStyles.Box>
 
+            <CommonStyles.Box className="tw-col-span-12">
+              <RHFField
+                name="email"
+                control={methods.control}
+                component={InputField}
+                placeholder={t("userAdmin.placeholderEmail")}
+                label={t("userAdmin.email")}
+                readOnly
+              />
+            </CommonStyles.Box>
+
             {!id && (
               <>
                 <CommonStyles.Box className="tw-col-span-12">
@@ -221,16 +232,6 @@ const CreateEditUser: FC<createEditUserProps> = (props) => {
               </>
             )}
 
-            <CommonStyles.Box className="tw-col-span-12">
-              <RHFField
-                name="email"
-                control={methods.control}
-                component={InputField}
-                placeholder={t("userAdmin.placeholderEmail")}
-                label={t("userAdmin.email")}
-                readOnly
-              />
-            </CommonStyles.Box>
             <CommonStyles.Box className="tw-col-span-12">
               <RHFField
                 name="address"
@@ -295,18 +296,18 @@ const CreateEditUser: FC<createEditUserProps> = (props) => {
             </CommonStyles.Box>
             {watch("avatar") != "" && (
               <CommonStyles.Box className="tw-col-span-12 tw-flex tw-flex-wrap">
-                <CommonStyles.Box className="tw-relative tw-w-fit">
+                <CommonStyles.Box className="tw-relative tw-w-fit tw-rounded-md">
                   {" "}
                   <img
-                    className="tw-max-w-[100px] tw-h-auto tw-p-5"
+                    className="tw-max-w-[100px] tw-h-auto tw-rounded-md"
                     src={`${apiUrls.IMG_URL}/${watch("avatar")}`}
                     alt="Uploaded Image"
                   />
                   <CommonStyles.Box
-                    className="tw-absolute tw-top-0 tw-right-0 tw-cursor-pointer"
+                    className="tw-cursor-pointer"
                     onClick={() => handleDeleteImage()}
                   >
-                    <CommonIcons.CancelOutlined className="tw-text-accent_gray_500" />
+                    <CommonIcons.Close className="tw-text-accent_gray_500 tw-size-5 tw-bg-gray-100 tw-rounded-tr-md tw-absolute tw-top-0 tw-right-0" />
                   </CommonStyles.Box>
                 </CommonStyles.Box>
               </CommonStyles.Box>

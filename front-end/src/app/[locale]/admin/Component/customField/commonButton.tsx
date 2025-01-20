@@ -1,5 +1,5 @@
 import Loading from "@/components/common/Loading";
-import { Button } from "@mui/material";
+import { Button, CircularProgress } from "@mui/material";
 import { ButtonProps } from "@mui/material/Button";
 import { SxProps } from "@mui/material/styles";
 import { ReactNode, useMemo } from "react";
@@ -101,7 +101,7 @@ export const CommonButtonAdmin = (props: CommonButtonAdminProps) => {
       {...rest}
     >
       {loading ? (
-        <Loading className="!tw-w-5 !tw-h-5"/>
+        <CircularProgress className="!tw-w-5 !tw-h-5"/>
       ) : (
         <>
           {label}

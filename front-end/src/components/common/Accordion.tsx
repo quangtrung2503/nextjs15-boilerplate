@@ -8,13 +8,12 @@ import MuiAccordionSummary, {
   accordionSummaryClasses,
 } from "@mui/material/AccordionSummary";
 import MuiAccordionDetails from "@mui/material/AccordionDetails";
-import { SelectOption } from "@/interfaces/common";
-import { Checkbox, FormControlLabel, FormGroup } from "@mui/material";
 import { default as CommonStyles } from ".";
+
 
 interface AccordionMUIProps {
   title: string;
-  options: SelectOption[];
+  detail?: React.ReactNode;
 }
 
 const Accordion = styled((props: AccordionProps) => (
@@ -55,9 +54,10 @@ const AccordionDetails = styled(MuiAccordionDetails)(({ theme }) => ({
 }));
 
 const AccordionMUI = (props: AccordionMUIProps) => {
-  const { title, options } = props;
+  const { title, detail } = props;
   const [expanded, setExpanded] = React.useState<string | false>("panel1");
   const [showMore, setShowMore] = React.useState(false);
+
 
   const handleChange =
     (panel: string) => (event: React.SyntheticEvent, newExpanded: boolean) => {
@@ -68,7 +68,6 @@ const AccordionMUI = (props: AccordionMUIProps) => {
     setShowMore(!showMore);
   };
 
-  const visibleOptions = showMore ? options : options.slice(0, 7);
 
   return (
     <div className="tw-w-full tw-shadow-md tw-rounded-md tw-overflow-hidden">
@@ -82,35 +81,7 @@ const AccordionMUI = (props: AccordionMUIProps) => {
           </CommonStyles.Typography>
         </AccordionSummary>
         <AccordionDetails className="tw-flex tw-flex-col tw-items-start">
-          <FormGroup sx={{ width: "100%" }}>
-            {visibleOptions.map((item: SelectOption, index) => (
-              <FormControlLabel
-                sx={{
-                  width: "100%",
-                  paddingY: "3px",
-                  boxShadow: "5px",
-                  fontSize: "14px !important",
-                  fontFamily: "'Mulish'",
-                  "&:hover": {
-                    backgroundColor: "rgba(0, 0, 0, 0.1)",
-                  },
-                }}
-                key={index}
-                control={<Checkbox />}
-                label={item.label}
-              />
-            ))}
-          </FormGroup>
-          {options.length >= 7 && (
-            <CommonStyles.Typography
-              type="size14Weight700"
-              className="tw-cursor-pointer tw-mt-3"
-              color="#7BBCB0"
-              onClick={handleShowMore}
-            >
-              {showMore ? "Show Less Destinations" : "Show More Destinations"}
-            </CommonStyles.Typography>
-          )}
+          {detail}
         </AccordionDetails>
       </Accordion>
     </div>

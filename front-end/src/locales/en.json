@@ -177,15 +177,19 @@
     }
   },
   "cityTour": {
+    "titleTheme": "Theme",
+    "titleDestination": "Destination",
+    "titleDuration": "Duration",
+    "searchNoResult": "Search no result",
     "title": "Things To Do In London",
     "activitiesFound": "49 Activities Found",
     "sortBy": "Sort by:",
     "availability": "Availability",
     "loadMoreBtn": "Load more",
     "titleOutSite": "Outside The City Specials",
-    "titleWaterActivities": "Water Activities",
-    "titleSpecialFoods": "Special Foods",
-    "titleRiverActivity": "River Activity",
+    "titleWaterActivities": "Water activities",
+    "titleGoodForSocialDistancing": "Good for social distancing",
+    "titleAdrenaline": "Adrenaline",
     "cityTourDetail": {
       "people": "People",
       "hours": "hours",
@@ -517,7 +521,7 @@
     "editSuccess": "Edit success",
     "createSuccess": "Create success",
     "editTag": "Edit tag",
-    "placeholderName":"Enter name of tag",
+    "placeholderName": "Enter name of tag",
     "submit": "Submit",
     "create": "Create",
     "edit": "Edit"
@@ -540,7 +544,7 @@
     "note": "Note",
     "editSuccess": "Edit success"
   },
-  "confirmTour":{
+  "confirmTour": {
     "code": "Code",
     "confirmSuccess": "Confirm success",
     "guestInformation": "Guest information",
@@ -548,14 +552,14 @@
     "phoneNumber": "Phone number",
     "email": "Email",
     "address": "Address",
-    "numberOfAdults":"Number of adults",
-    "numberOfChildren":"Number of children",
+    "numberOfAdults": "Number of adults",
+    "numberOfChildren": "Number of children",
     "tourDestination": "Tour destination",
     "paidInformation": "Paid information",
-    "amountPaid":"Amount paid",
+    "amountPaid": "Amount paid",
     "confirm": "Confirm",
     "confirmTitle": "Are you sure confirm this booking?",
-    "cancel": "Cancel" 
+    "cancel": "Cancel"
   },
   "adminDashboard": {
     "totalRevenue": "Total revenue",
@@ -606,7 +610,7 @@
     "confirmPassword": "Confirm Password",
     "paySuccess": "Payment Success",
     "payError": "Payment Error",
-     "menuProfile": {
+    "menuProfile": {
       "information": "Profile Information",
       "booking": "Booking History",
       "newsletter": "Newsletter Subscription",
@@ -615,8 +619,22 @@
     "bookingHistory": {
       "booking": "Booking History",
       "peoples": "peoples",
-      "people": "people",
-      "cancellation": "Tour Cancellation"
+      "people": "People",
+      "cancelTour": "Cancel Tour",
+      "pay_now": "Paynow",
+      "destinations": "Destination",
+      "price": "Price",
+      "order_id": "Order Id",
+      "unknown": "Unknown",
+      "tour_name_unavailable": "Tour name unavailable",
+      "status_unknown": "Status unknown",
+      "back_to_booking_history": "Back to booking history",
+      "booking_detail": "Booking Detail",
+      "cancel_tour": "Cancel tour",
+      "error_fetching_data": "Error fetching data",
+      "go_back": "Go back",
+      "location": "Location",
+      "retry": "Retry"
     }
   },
   "uploadField": {

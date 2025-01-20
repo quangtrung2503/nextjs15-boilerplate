@@ -1,16 +1,15 @@
 import { useEffect, useState, useCallback, useRef } from "react";
-import { cloneDeep, filter, isEmpty, isObject } from "lodash";
+import { cloneDeep, isEmpty, isObject } from "lodash";
 
 import { useSave } from "@/stores/useStore";
 import axios, { AxiosError, AxiosResponse } from "axios";
 import { useNotifications } from "@/helpers/toast";
 import { ResponseList } from "@/interfaces/common";
 import tourCustomerServices, {
-  FiltersGetTours,
-  RequestGetTours,
+  ResponseOutsideTourList,
   ResponseTourCustomerList,
 } from "../tourCustomer.services";
-import { Tour } from "../interfaces/tour";
+import { ThemeTour, Tour } from "../interfaces/tour";
 
 /********************************************************
  * SNIPPET GENERATED
@@ -26,27 +25,10 @@ import { Tour } from "../interfaces/tour";
  ********************************************************/
 
 //* Check parse body request
-const parseRequest = (filters: FiltersGetTours): RequestGetTours => {
-  return cloneDeep({
-    page: filters.page,
-    perPage: filters.perPage,
-    textSearch: filters.textSearch,
-    sortField: filters.sortField,
-    sortOrder: filters.sortOrder,
-    themeIds: filters.themeIds,
-    destinationIds: filters.destinationIds,
-    durations: filters.durations,
-  });
-};
+const requestAPI = tourCustomerServices.getOutsideTour;
 
-const requestAPI = tourCustomerServices.getTours;
-
-const useGetAllTourCustomer = (
-  filters: FiltersGetTours,
-  options: {
-    isTrigger?: boolean;
-    refetchKey?: string;
-  } = {
+const useGetOutsideTourCustomer = (
+  options: { isTrigger?: boolean; refetchKey?: string } = {
     isTrigger: true,
     refetchKey: "",
   },
@@ -55,13 +37,13 @@ const useGetAllTourCustomer = (
   const { isTrigger = true, refetchKey = "" } = options;
   const signal = useRef(new AbortController());
   const save = useSave();
-  const [data, setData] = useState<ResponseList<Tour[]>>();
+  const [data, setData] = useState<ThemeTour[]>();
   const [loading, setLoading] = useState(false);
   const [refetching, setRefetching] = useState(false);
   const [error, setError] = useState<unknown>(null);
   const { showError } = useNotifications();
   //! Function
-  const fetch: () => Promise<ResponseTourCustomerList> | undefined =
+  const fetch: () => Promise<ResponseOutsideTourList> | undefined =
     useCallback(() => {
       if (!isTrigger) {
         return;
@@ -69,8 +51,8 @@ const useGetAllTourCustomer = (
       return new Promise((resolve, reject) => {
         (async () => {
           try {
-            const nextFilters = parseRequest(filters);
-            const response = await requestAPI(nextFilters, {
+            // const nextFilters = parseRequest(filters);
+            const response = await requestAPI({
               signal: signal.current.signal,
             });
             resolve(response);
@@ -80,13 +62,13 @@ const useGetAllTourCustomer = (
           }
         })();
       });
-    }, [filters, isTrigger]);
+    }, [isTrigger]);
 
   const checkConditionPass = useCallback(
-    (response: ResponseTourCustomerList) => {
+    (response: ResponseOutsideTourList) => {
       //* Check condition of response here to set data
       if (isObject(response?.data)) {
-        setData(response.data.data);
+        setData(response?.data?.data);
       }
     },
     [],
@@ -173,4 +155,4 @@ const useGetAllTourCustomer = (
   };
 };
 
-export default useGetAllTourCustomer;
+export default useGetOutsideTourCustomer;

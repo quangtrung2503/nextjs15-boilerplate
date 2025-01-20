@@ -1,16 +1,10 @@
 import { useEffect, useState, useCallback, useRef } from "react";
-import { cloneDeep, filter, isEmpty, isObject } from "lodash";
-
+import { isEmpty, isObject } from "lodash";
+import tourCustomerServices, { ResponseBookingDetail, ResponseTourCustomer } from "../tourCustomer.services";
 import { useSave } from "@/stores/useStore";
-import axios, { AxiosError, AxiosResponse } from "axios";
+import { AxiosResponse } from "axios";
 import { useNotifications } from "@/helpers/toast";
-import { ResponseList } from "@/interfaces/common";
-import tourCustomerServices, {
-  FiltersGetTours,
-  RequestGetTours,
-  ResponseTourCustomerList,
-} from "../tourCustomer.services";
-import { Tour } from "../interfaces/tour";
+import { ApiResponse, HistoryBookingTour } from "../interfaces/tour";
 
 /********************************************************
  * SNIPPET GENERATED
@@ -26,71 +20,50 @@ import { Tour } from "../interfaces/tour";
  ********************************************************/
 
 //* Check parse body request
-const parseRequest = (filters: FiltersGetTours): RequestGetTours => {
-  return cloneDeep({
-    page: filters.page,
-    perPage: filters.perPage,
-    textSearch: filters.textSearch,
-    sortField: filters.sortField,
-    sortOrder: filters.sortOrder,
-    themeIds: filters.themeIds,
-    destinationIds: filters.destinationIds,
-    durations: filters.durations,
-  });
-};
+const requestAPI = tourCustomerServices.getDetaiBookingHistory;
 
-const requestAPI = tourCustomerServices.getTours;
-
-const useGetAllTourCustomer = (
-  filters: FiltersGetTours,
-  options: {
-    isTrigger?: boolean;
-    refetchKey?: string;
-  } = {
+const useGetBookingDetail = (
+  idBookingTour: number,
+  options: { isTrigger?: boolean; refetchKey?: string } = {
     isTrigger: true,
     refetchKey: "",
-  },
+  }
 ) => {
   //! State
   const { isTrigger = true, refetchKey = "" } = options;
   const signal = useRef(new AbortController());
   const save = useSave();
-  const [data, setData] = useState<ResponseList<Tour[]>>();
+  const [data, setData] = useState<HistoryBookingTour>();
   const [loading, setLoading] = useState(false);
   const [refetching, setRefetching] = useState(false);
   const [error, setError] = useState<unknown>(null);
-  const { showError } = useNotifications();
+  const {showError} = useNotifications();
   //! Function
-  const fetch: () => Promise<ResponseTourCustomerList> | undefined =
-    useCallback(() => {
-      if (!isTrigger) {
-        return;
-      }
-      return new Promise((resolve, reject) => {
-        (async () => {
-          try {
-            const nextFilters = parseRequest(filters);
-            const response = await requestAPI(nextFilters, {
-              signal: signal.current.signal,
-            });
-            resolve(response);
-          } catch (error) {
-            // setError(error);
-            reject(error);
-          }
-        })();
-      });
-    }, [filters, isTrigger]);
+  const fetch: () => Promise<AxiosResponse<ResponseBookingDetail>> | undefined = useCallback(() => {
+    if (!isTrigger) {
+      return;
+    }
+    return new Promise((resolve, reject) => {
+      (async () => {
+        try {
+          const response = await requestAPI(idBookingTour,{
+            signal: signal.current.signal,
+          });
+          resolve(response);
+        } catch (error) {
+          setError(error);
+          reject(error);
+        }
+      })();
+    });
+  }, [idBookingTour, isTrigger]);
 
-  const checkConditionPass = useCallback(
-    (response: ResponseTourCustomerList) => {
-      //* Check condition of response here to set data
-      if (isObject(response?.data)) {
-        setData(response.data.data);
-      }
-    },
-    [],
-  );
+  const checkConditionPass = useCallback((response: AxiosResponse<ResponseBookingDetail>) => {
+    //* Check condition of response here to set data
+    if (isObject(response?.data)) {
+      setData(response.data.data);
+    }
+  }, []);
 
   //* Refetch implicity (without changing loading state)
   const refetch = useCallback(async () => {
@@ -99,7 +72,7 @@ const useGetAllTourCustomer = (
         signal.current.abort();
         signal.current = new AbortController();
       }
-      console.log("refetch");
+
       setRefetching(true);
       const response = await fetch();
       if (response) {
@@ -108,7 +81,7 @@ const useGetAllTourCustomer = (
 
       setRefetching(false);
     } catch (error: any) {
-      if (!axios.isCancel(error)) {
+      if (!error.isCanceled) {
         showError(error);
       }
     }
@@ -123,14 +96,14 @@ const useGetAllTourCustomer = (
     try {
       setLoading(true);
       const response = await fetch();
+      console.log("Response: ", response);
       if (response) {
+        
         checkConditionPass(response);
       }
-    } catch (error: any) {
-      if (!axios.isCancel(error)) {
-        showError(error);
-      }
-    } finally {
+      setLoading(false);
+    } catch (error) {
+      showError(error);
       setLoading(false);
     }
   }, [fetch, checkConditionPass]);
@@ -147,9 +120,10 @@ const useGetAllTourCustomer = (
           checkConditionPass(response);
         }
       } catch (error) {
-        if (!axios.isCancel(error)) {
-          showError(error);
-        }
+        // showError(error);
+        
+        console.log({error});
+        
       } finally {
         setLoading(false);
       }
@@ -173,4 +147,4 @@ const useGetAllTourCustomer = (
   };
 };
 
-export default useGetAllTourCustomer;
+export default useGetBookingDetail;
