@@ -6,6 +6,7 @@ import { I18nCustomModule } from 'src/resources/i18n/i18n.module';
 import { TourModule } from '../tour/tour.module';
 import { BookingController } from './booking.controller';
 import { PaymentService } from './payment.service';
+import { NotificationLogsModule } from '../notification-log/notification-log.module';
 
 @Module({
   controllers: [BookingController, BookingCustomerController],
@@ -14,7 +15,8 @@ import { PaymentService } from './payment.service';
   imports: [
     PrismaModule,
     I18nCustomModule,
-    forwardRef(() => TourModule)
+    forwardRef(() => TourModule),
+    forwardRef(() => NotificationLogsModule)
   ]
 })
 export class BookingModule {}

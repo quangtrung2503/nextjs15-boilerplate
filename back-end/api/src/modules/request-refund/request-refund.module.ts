@@ -5,6 +5,7 @@ import { PrismaModule } from 'prisma/prisma.module';
 import { I18nCustomModule } from 'src/resources/i18n/i18n.module';
 import { BookingModule } from '../booking/booking.module';
 import { RequestRefundController } from './request-refund.controller';
+import { NotificationLogsModule } from '../notification-log/notification-log.module';
 
 @Module({
   controllers: [RequestRefundCustomerController, RequestRefundController],
@@ -13,7 +14,8 @@ import { RequestRefundController } from './request-refund.controller';
   imports: [
     PrismaModule,
     I18nCustomModule,
-    forwardRef(() => BookingModule)
+    forwardRef(() => BookingModule),
+    forwardRef(() => NotificationLogsModule)
   ],
  
 })

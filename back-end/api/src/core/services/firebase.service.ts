@@ -4,7 +4,8 @@ import { TokenMessage, TopicMessage } from 'firebase-admin/lib/messaging/messagi
 import { FirebaseConfig } from 'src/core/services/firebase-admin-sdk.config';
 
 export enum TopicNoti {
-  TopicForAllUser = 'TopicForAllUser',
+  TopicForAllAdminStaff = 'TopicForAllAdminStaff',
+  TopicForAllCustomer = 'TopicForAllCustomer'
 }
 @Injectable()
 export class FirebaseService {

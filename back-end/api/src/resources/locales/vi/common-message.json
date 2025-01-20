@@ -218,10 +218,9 @@
       "not_found": "Đơn đặt",
       "invalid_status_update": "Không thể cập nhật trạng thái đơn đặt thành Chờ xác nhận"
     },
-    "confirmBooking": {
-      "wrong_parameter": "{keyNotInDto} không được định nghĩa trong các tham số",
+    "updateBookingCompleted": {
       "not_found": "Đơn đặt",
-      "invalid_amount_paid": "Số tiền khách trả chưa đủ"
+      "not_confirmed": "Đơn đặt chưa được thanh toán hoặc đã bị hủy"
     }
   },
   "request-refund": {
@@ -274,6 +273,21 @@
     },
     "remove": {
       "not_found": "Video"
+    }
+  },
+  "notification-log": {
+    "create": {
+      "wrong_parameter": "{keyNotInDto} không được định nghĩa trong các tham số",
+      "send_fail": "Không gửi được thông báo"
+    },
+    "findOne": {
+      "forbidden": "Thông báo này không được gửi đến bạn"
+    },
+    "readed": {
+      "not_found": "Thông báo"
+    },
+    "send_service": {
+      "notification_send_conflict": "Chỉ gửi thông báo theo type hoặc topic, không thể thực hiện cả hai"
     }
   },
   

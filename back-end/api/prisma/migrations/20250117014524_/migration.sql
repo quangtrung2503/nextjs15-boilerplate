@@ -118,7 +118,6 @@ CREATE TABLE `tour` (
     `transport` VARCHAR(255) NOT NULL,
     `package` VARCHAR(255) NOT NULL,
     `numberOfHours` INTEGER NOT NULL,
-    `numberOfPeople` INTEGER NOT NULL,
     `isActive` BOOLEAN NOT NULL DEFAULT true,
     `description` TEXT NOT NULL,
     `activity` TEXT NOT NULL,
@@ -251,6 +250,7 @@ CREATE TABLE `payment` (
     `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updated_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
 
+    UNIQUE INDEX `payment_bookingId_key`(`bookingId`),
     UNIQUE INDEX `payment_paymentCode_key`(`paymentCode`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -266,11 +266,42 @@ CREATE TABLE `request_refund` (
     `accountNumber` VARCHAR(255) NOT NULL,
     `bankName` VARCHAR(255) NOT NULL,
     `status` VARCHAR(255) NOT NULL,
+    `imageProof` VARCHAR(255) NULL,
+    `note` TEXT NULL,
     `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updated_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedBy` VARCHAR(255) NULL,
 
+    UNIQUE INDEX `request_refund_bookingId_key`(`bookingId`),
     UNIQUE INDEX `request_refund_bookingId_userId_key`(`bookingId`, `userId`),
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `notification_logs` (
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `title` VARCHAR(1000) NOT NULL,
+    `subTitle` VARCHAR(1000) NULL,
+    `imageUrl` VARCHAR(1000) NULL,
+    `body` TEXT NULL,
+    `data` VARCHAR(191) NULL,
+    `userCreatedId` INTEGER NULL,
+    `type` VARCHAR(191) NOT NULL DEFAULT 'DEFAULT',
+    `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updated_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `notification_logs_with` (
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `notificationId` INTEGER NOT NULL,
+    `userReceiveId` INTEGER NOT NULL,
+    `isRead` BOOLEAN NOT NULL DEFAULT false,
+    `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updated_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -324,3 +355,12 @@ ALTER TABLE `request_refund` ADD CONSTRAINT `request_refund_bookingId_fkey` FORE
 
 -- AddForeignKey
 ALTER TABLE `request_refund` ADD CONSTRAINT `request_refund_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `user`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `notification_logs` ADD CONSTRAINT `notification_logs_userCreatedId_fkey` FOREIGN KEY (`userCreatedId`) REFERENCES `user`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `notification_logs_with` ADD CONSTRAINT `notification_logs_with_notificationId_fkey` FOREIGN KEY (`notificationId`) REFERENCES `notification_logs`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `notification_logs_with` ADD CONSTRAINT `notification_logs_with_userReceiveId_fkey` FOREIGN KEY (`userReceiveId`) REFERENCES `user`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;

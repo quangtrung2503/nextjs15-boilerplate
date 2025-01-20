@@ -2,7 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { IsEnum, IsNotEmpty, IsNumber, IsPositive, IsString } from 'class-validator';
 import { Package, Transport } from 'src/helpers/constants/enum.constant';
 
-export const CreateTourDtoKeys: (keyof CreateTourDto)[] = ['name', 'price', 'transport', 'package', 'numberOfPeople', 'numberOfHours', 'description', 'activity', 'included', 'notIncluded', 'safety', 'language', 'guideMeetingAddress', 'cityId', 'themeId', 'destinationIds', 'images'];
+export const CreateTourDtoKeys: (keyof CreateTourDto)[] = ['name', 'price', 'transport', 'package', 'numberOfHours', 'description', 'activity', 'included', 'notIncluded', 'safety', 'language', 'guideMeetingAddress', 'cityId', 'themeId', 'destinationIds', 'images'];
 
 export class CreateTourDto {
   @ApiProperty({
@@ -45,16 +45,6 @@ export class CreateTourDto {
   @IsEnum(Package)
   @IsNotEmpty()
   readonly package: Package;
-
-  @ApiProperty({
-    example: 2,
-    description: 'Number of people of tour',
-    required: true,
-  })
-  @IsNotEmpty()
-  @IsNumber()
-  @IsPositive()
-  readonly numberOfPeople: number;
 
   @ApiProperty({
     example: 3.5,
