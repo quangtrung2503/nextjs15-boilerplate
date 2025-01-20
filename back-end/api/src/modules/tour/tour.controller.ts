@@ -79,7 +79,6 @@ export class TourController {
       price: body.price,
       transport: body.transport,
       package: body.package,
-      numberOfPeople: body.numberOfPeople,
       numberOfHours: body.numberOfHours,
 
       description: body.description,
@@ -369,7 +368,6 @@ export class TourController {
       price: body.price,
       transport: body.transport,
       package: body.package,
-      numberOfPeople: body.numberOfPeople,
       numberOfHours: body.numberOfHours,
 
       description: body.description,

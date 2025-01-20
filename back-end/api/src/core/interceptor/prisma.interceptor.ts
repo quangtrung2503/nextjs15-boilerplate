@@ -82,8 +82,6 @@ implements NestInterceptor<T, Response> {
         return I18nContext.current().lang === 'en' ? 'Email' : 'Email';
       case 'user_phone_key':
         return I18nContext.current().lang === 'en' ? 'The phone' : 'Số điện thoại';
-      case 'user_username_key':
-        return I18nContext.current().lang === 'en' ? 'Username' : 'Tên đăng nhập';
       case 'city_name_key':
         return I18nContext.current().lang === 'en' ? 'The city' : 'Thành phố';
       case 'city_slug_key':
@@ -98,16 +96,18 @@ implements NestInterceptor<T, Response> {
         return I18nContext.current().lang === 'en' ? 'The destination' : 'Điểm đến';
       case 'destination_slug_key':
         return I18nContext.current().lang === 'en' ? 'The destination slug' : 'Tên đường dẫn điểm đến';
-      case 'tour_name_key':
-        return I18nContext.current().lang === 'en' ? 'The tour' : 'Chuyến đi';
       case 'tour_slug_key':
         return I18nContext.current().lang === 'en' ? 'The tour slug' : 'Tên đường dẫn chuyến đi';
-      case 'post_title_key':
-        return I18nContext.current().lang === 'en' ? 'The post' : 'Bài viết';
       case 'post_slug_key':
         return I18nContext.current().lang === 'en' ? 'The post slug' : 'Tên đường dẫn bài viết';
+      case 'booking_bookingCode_key':
+        return I18nContext.current().lang === 'en' ? 'The booking code' : 'Mã chuyến đi';
       case 'payment_bookingId_key':
         return I18nContext.current().lang === 'en' ? 'The payment' : 'Mã thanh toán';
+      case 'payment_paymentCode_key':
+        return I18nContext.current().lang === 'en' ? 'The payment code' : 'Mã thanh toán';
+      case 'request_refund_bookingId_key':
+        return I18nContext.current().lang === 'en' ? 'The request refund' : 'Yêu cầu hủy đơn đặt';
       case 'review_userId_tourId_key':
         return I18nContext.current().lang === 'en' ? 'The review' : 'Đánh giá';
       case 'city_tag_cityId_tagId_key':

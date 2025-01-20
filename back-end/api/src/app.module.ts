@@ -28,6 +28,7 @@ import { VideoModule } from './modules/video/video.module';
 import { TagModule } from './modules/tag/tag.module';
 import { StatsModule } from './modules/stats/stats.module';
 import { RequestRefundModule } from './modules/request-refund/request-refund.module';
+import { NotificationLogsModule } from './modules/notification-log/notification-log.module';
 
 @Module({
   imports: [
@@ -63,7 +64,8 @@ import { RequestRefundModule } from './modules/request-refund/request-refund.mod
     BookingModule,
     ReviewModule,
     RequestRefundModule,
-    StatsModule
+    StatsModule,
+    NotificationLogsModule
   ],
   controllers: [AppController],
   providers: [

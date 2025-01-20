@@ -15,6 +15,9 @@ import { TourService } from '../tour/tour.service';
 import { BookingService } from './booking.service';
 import { FilterAllBooking } from './dto/filter-booking.dto';
 import { UpdateBookingDto, UpdateBookingDtoKeys } from './dto/update-booking.dto';
+import { BookingStatus, NotificationType } from 'src/helpers/constants/enum.constant';
+import { CreateNotificationLogsDto } from '../notification-log/dto/create-notification-log.dto';
+import { NotificationLogsService } from '../notification-log/notification-log.service';
 
 @ApiTags('Booking (Administrator)')
 @Controller('booking')
@@ -23,7 +26,8 @@ export class BookingController {
     private readonly prismaService: PrismaService,
     private readonly bookingService: BookingService,
     private readonly i18n: I18nCustomService,
-    private readonly tourService: TourService
+    private readonly tourService: TourService,
+    private readonly notificationLogsService: NotificationLogsService,
   ) { }
 
   @ApiBearerAuth()
@@ -75,7 +79,8 @@ export class BookingController {
         Tour: {
           select: {
             id: true,
-            name: true
+            name: true,
+            slug: true,
           }
         },
         User: {
@@ -86,7 +91,17 @@ export class BookingController {
             phone: true,
             avatar: true,
           }
-        }
+        },
+        Payment: {
+          select: {
+            id: true,
+            paymentCode: true,
+            amount: true,
+            payDate: true,
+            transactionStatus: true,
+          }
+        },
+        RequestRefund: true
       }
     }
 
@@ -126,7 +141,17 @@ export class BookingController {
             phone: true,
             avatar: true,
           }
-        }
+        },
+        Payment: {
+          select: {
+            id: true,
+            paymentCode: true,
+            amount: true,
+            payDate: true,
+            transactionStatus: true,
+          }
+        },
+        RequestRefund: true
       }
     });
 
@@ -135,9 +160,12 @@ export class BookingController {
 
     const tourId = booking.Tour.id;
     const tourName = booking.Tour.name;
+    const tourSlug = booking.Tour.slug;
+    const tourPrice = booking.Tour.price;
     const TourImage = booking.Tour.TourImage;
     const TourDestination = booking.Tour.TourDestination;
     const User = booking.User;
+    const Payment = booking.Payment;
 
     delete booking.Tour;
 
@@ -146,10 +174,13 @@ export class BookingController {
       Tour: {
         id: tourId,
         name: tourName,
+        slug: tourSlug,
+        price: tourPrice,
         TourImage: TourImage,
         TourDestination: TourDestination
       },
-      User: User
+      User: User,
+      Payment: Payment
     };
   }
 
@@ -179,5 +210,47 @@ export class BookingController {
       booking.id,
       updateData
     );
+  }
+
+  @ApiBearerAuth()
+  @Roles(UserRole.ADMIN, UserRole.STAFF)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Patch('update-booking-completed/:id')
+  async updateBookingCompleted(@UserDecorator() user: IUserJwt, @Param('id', ParseIdPipe) id: number) {
+    const booking = await this.bookingService.findOne({
+      where: {
+        id: id
+      }
+    });
+
+    if (!booking)
+      throw new BaseException(Errors.ITEM_NOT_FOUND(this.i18n.t('common-message.booking.updateBookingCompleted.not_found')));
+
+    if (booking.status !== BookingStatus.CONFIRMED)
+      throw new BaseException(Errors.BAD_REQUEST(this.i18n.t('common-message.booking.updateBookingCompleted.not_confirmed')));
+
+    const updateData: Prisma.BookingUpdateInput = {
+      status: BookingStatus.COMPLETED,
+      updatedBy: user.data.id + ' - ' + user.data.name,
+    };
+
+    const updateComplete = await this.bookingService.update(
+      booking.id,
+      updateData
+    );
+
+    if (updateComplete) {
+      const notificationDataCustomer: CreateNotificationLogsDto = {
+        title: `Tour đã hoàn thành: ${booking.bookingCode}`,
+        subTitle: `Cảm ơn bạn đã lựa chọn dịch vụ của chúng tôi`,
+        body: `Hẹn gặp lại bạn vào ngày gần nhất`,
+        userReceiveIds: [booking.userId],
+        type: NotificationType.COMPLETE_BOOKING,
+      }
+  
+      return await this.notificationLogsService.send(notificationDataCustomer, user)
+    } else {
+      return false;
+    }
   }
 }

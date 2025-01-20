@@ -9,6 +9,7 @@ import { IJwtPayload } from './interfaces/jwt-payload.interface';
 import { IUserJwt } from './strategies/jwt.strategy';
 import { UserService } from 'src/modules/user/user.service';
 import { I18nCustomService } from 'src/resources/i18n/i18n.service';
+import { UserRole } from '@prisma/client';
 
 @Injectable()
 export class AuthService {
@@ -71,7 +72,11 @@ export class AuthService {
   async logout(user: IUserJwt) {
     const userRequest = await this.userService.findOne({ where: { id: user.data.id } });
     if (!userRequest) throw new BaseException(Errors.UNAUTHORIZED(this.i18n.t('common-message.auth.logout.user_not_found')));
-    await this.firebaseService.unsubscribeFromTopic([userRequest.fcmToken], TopicNoti.TopicForAllUser)
+    if (userRequest.role === UserRole.ADMIN || userRequest.role === UserRole.STAFF) {
+      await this.firebaseService.unsubscribeFromTopic([userRequest.fcmToken], TopicNoti.TopicForAllAdminStaff);
+    } else {
+      await this.firebaseService.unsubscribeFromTopic([userRequest.fcmToken], TopicNoti.TopicForAllCustomer);
+    }
     await this.userService.update(userRequest.id, { lastAccessToken: null, fcmToken: null });
     return true;
   }

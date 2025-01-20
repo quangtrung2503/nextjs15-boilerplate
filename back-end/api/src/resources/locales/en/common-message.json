@@ -218,10 +218,9 @@
       "not_found": "Booking",
       "invalid_status_update": "Unable to update booking status to PENDING"
     },
-    "confirmBooking": {
-      "wrong_parameter": "{keyNotInDto} is not defined in parameters",
+    "updateBookingCompleted": {
       "not_found": "Booking",
-      "invalid_amount_paid": "The amount paid by the customer is not enough"
+      "not_confirmed": "Booking has not been paid or has been canceled"
     }
   },
   "request-refund": {
@@ -274,6 +273,21 @@
     },
     "remove": {
       "not_found": "The video"
+    }
+  },
+  "notification-log": {
+    "create": {
+      "wrong_parameter": "{keyNotInDto} is not defined in parameters",
+      "send_fail": "Failed to send notification"
+    },
+    "findOne": {
+      "forbidden": "This notice has not been sent to you"
+    },
+    "readed": {
+      "not_found": "Notification"
+    },
+    "send_service": {
+      "notification_send_conflict": "Only send notification to topic or each user, cannot do both"
     }
   },
 

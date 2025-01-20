@@ -11,7 +11,7 @@ import { RolesGuard } from 'src/core/auth/guards/roles.guard';
 import { IUserJwt } from 'src/core/auth/strategies/jwt.strategy';
 import { ParseIdPipe } from 'src/core/pipes/parse-id.pipe';
 import { funcListPaging } from 'src/helpers/common/list-paging';
-import { BookingStatus, PaymentMethod, PaymentStatus, SortOrder } from 'src/helpers/constants/enum.constant';
+import { BookingStatus, NotificationType, PaymentMethod, PaymentStatus } from 'src/helpers/constants/enum.constant';
 import { BaseException, Errors } from 'src/helpers/constants/error.constant';
 import { I18nCustomService } from 'src/resources/i18n/i18n.service';
 import { TourService } from '../tour/tour.service';
@@ -19,6 +19,9 @@ import { BookingService } from './booking.service';
 import { CreateBookingDto, CreateBookingDtoKeys } from './dto/create-booking.dto';
 import { FilterMyBooking } from './dto/filter-booking.dto';
 import { PaymentService } from './payment.service';
+import { CreateNotificationLogsDto } from '../notification-log/dto/create-notification-log.dto';
+import { TopicNoti } from 'src/core/services/firebase.service';
+import { NotificationLogsService } from '../notification-log/notification-log.service';
 
 @ApiTags('Booking (Customer)')
 @Controller('booking-customer')
@@ -28,7 +31,8 @@ export class BookingCustomerController {
     private readonly bookingService: BookingService,
     private readonly i18n: I18nCustomService,
     private readonly tourService: TourService,
-    private readonly paymentService: PaymentService
+    private readonly paymentService: PaymentService,
+    private readonly notificationLogsService: NotificationLogsService,
   ) { }
 
   @ApiBearerAuth()
@@ -85,42 +89,32 @@ export class BookingCustomerController {
         userId: user.data.id
       },
       include: {
-        Payment: {
-          where: {
-            transactionStatus: {
-              in: [PaymentStatus.PENDING, PaymentStatus.SUCCESS]
-            }
-          },
-          orderBy: {
-            createdAt: SortOrder.DESC
-          },
-          take: 1
-        }
+        Payment: true
       }
     });
-  
+
     if (!booking) {
       throw new BaseException(Errors.ITEM_NOT_FOUND(this.i18n.t('common-message.booking.getPaymentUrl.not_found')));
     }
-  
+
     // Kiểm tra trạng thái booking
     switch (booking.status) {
       case BookingStatus.CANCELLED:
         throw new BaseException(Errors.BAD_REQUEST(this.i18n.t('common-message.booking.getPaymentUrl.cancelled')));
-      
+
       case BookingStatus.CONFIRMED:
         throw new BaseException(Errors.BAD_REQUEST(this.i18n.t('common-message.booking.getPaymentUrl.already_paid')));
-      
+
       case BookingStatus.COMPLETED:
         throw new BaseException(Errors.BAD_REQUEST(this.i18n.t('common-message.booking.getPaymentUrl.completed')));
-  
+
       case BookingStatus.PENDING:
         // Kiểm tra nếu có payment thành công
-        const latestPayment = booking.Payment[0];
+        const latestPayment = booking.Payment;
         if (latestPayment?.transactionStatus === PaymentStatus.SUCCESS) {
           throw new BaseException(Errors.BAD_REQUEST(this.i18n.t('common-message.booking.getPaymentUrl.already_paid')));
         }
-  
+
         // Tạo payment URL mới
         const paymentUrl = await this.paymentService.createPaymentUrl(
           ipAddr,
@@ -129,9 +123,9 @@ export class BookingCustomerController {
           booking.totalPrice,
           I18nContext.current().lang
         );
-  
+
         return { paymentUrl };
-  
+
       default:
         throw new BaseException(Errors.BAD_REQUEST(this.i18n.t('common-message.booking.getPaymentUrl.invalid_status')));
     }
@@ -145,6 +139,30 @@ export class BookingCustomerController {
     const result = await this.paymentService.handlePaymentReturn(query);
 
     if (result.code === '00') {
+      const payment = result?.payment;
+      const notificationDataCustomer: CreateNotificationLogsDto = {
+        title: `Đặt tour thành công: ${payment?.Booking?.bookingCode}`,
+        subTitle: `Từ ${moment(payment?.Booking?.startDate).format('DD-MM-YYYY')} đến ${moment(payment?.Booking?.endDate).format('DD-MM-YYYY')}`,
+        body: `Giá: ${payment?.Booking?.totalPrice.toLocaleString('vi-VN')} VNĐ`,
+        userReceiveIds: [payment?.Booking?.userId],
+        type: NotificationType.NEW_BOOKING,
+      }
+
+      const notificationDataAdminStaff: CreateNotificationLogsDto = {
+        title: `Có đơn đặt tour mới: ${payment?.Booking?.bookingCode}`,
+        subTitle: `Từ ${moment(payment?.Booking?.startDate).format('DD-MM-YYYY')} đến ${moment(payment?.Booking?.endDate).format('DD-MM-YYYY')}`,
+        body: `Giá: ${payment?.Booking?.totalPrice.toLocaleString('vi-VN')} VNĐ`,
+        topic: TopicNoti.TopicForAllAdminStaff,
+        type: NotificationType.NEW_BOOKING
+      }
+
+      await Promise.all(
+        [
+          this.notificationLogsService.send(notificationDataCustomer),
+          this.notificationLogsService.send(notificationDataAdminStaff),
+        ]
+      )
+
       return {
         code: result.code,
         message: this.i18n.t('common-message.booking.vnpayReturn.success'),
@@ -190,22 +208,128 @@ export class BookingCustomerController {
           select: {
             id: true,
             name: true,
+            slug: true,
             price: true,
             guideMeetingAddress: true,
             numberOfHours: true,
-            numberOfPeople: true,
             City: true,
             TourImage: true
           }
-        }
+        },
+        Payment: {
+          select: {
+            id: true,
+            paymentCode: true,
+            amount: true,
+            payDate: true,
+            transactionStatus: true,
+          }
+        },
+        RequestRefund: true
       }
     }
 
-    return await funcListPaging(
+    // return await funcListPaging(
+    //   this.bookingService,
+    //   whereInput,
+    //   options?.page,
+    //   options?.perPage,
+    // )
+
+    const raws = await funcListPaging(
       this.bookingService,
       whereInput,
       options?.page,
       options?.perPage,
-    )
+    );
+  
+    const modifiedResults = {
+      ...raws,
+      items: raws.items.map(booking => {
+        const cancellationDeadline = moment(booking.createdAt).add(3, 'days');
+        const now = moment();
+        
+        return {
+          ...booking,
+          canRequestRefund: now.isBefore(cancellationDeadline),
+          requestRefundDeadline: cancellationDeadline
+        };
+      })
+    };
+  
+    return modifiedResults;
+  }
+
+  @ApiBearerAuth()
+  @Roles(UserRole.ADMIN, UserRole.STAFF, UserRole.CUSTOMER)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Get(':id')
+  async findOne(@Param('id', ParseIdPipe) id: number) {
+    const booking = await this.prismaService.booking.findFirst({
+      where: {
+        id: id
+      },
+      include: {
+        Tour: {
+          include: {
+            TourImage: true,
+            TourDestination: {
+              include: {
+                Destination: true
+              }
+            }
+          }
+        },
+        User: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            phone: true,
+            avatar: true,
+          }
+        },
+        Payment: {
+          select: {
+            id: true,
+            paymentCode: true,
+            amount: true,
+            payDate: true,
+            transactionStatus: true,
+          }
+        },
+        RequestRefund: true
+      }
+    });
+
+    if (!booking)
+      throw new BaseException(Errors.ITEM_NOT_FOUND(this.i18n.t('common-message.booking.findOne.not_found')));
+
+    const tourId = booking.Tour.id;
+    const tourName = booking.Tour.name;
+    const tourSlug = booking.Tour.slug;
+    const tourPrice = booking.Tour.price;
+    const TourImage = booking.Tour.TourImage;
+    const TourDestination = booking.Tour.TourDestination;
+    const User = booking.User;
+    const Payment = booking.Payment;
+    const RequestRefund = booking.RequestRefund;
+
+    delete booking.Tour;
+
+    return {
+      ...booking,
+      Tour: {
+        id: tourId,
+        name: tourName,
+        slug: tourSlug,
+        price: tourPrice,
+        TourImage: TourImage,
+        TourDestination: TourDestination,
+      },
+      User: User,
+      Payment: Payment,
+      RequestRefund: RequestRefund,
+    };
   }
 }

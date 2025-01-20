@@ -128,7 +128,11 @@ export class AuthController {
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Post('push-token-fcm')
   async pushTokenFcm(@UserDecorator() user: IUserJwt, @Body() body: PushFcmTokenDto) {
-    await this.firebaseService.subscribeToTopic([body.fcm], TopicNoti.TopicForAllUser);
+    if (user.role === UserRole.ADMIN || user.role === UserRole.STAFF) {
+      await this.firebaseService.subscribeToTopic([body.fcm], TopicNoti.TopicForAllAdminStaff);
+    } else {
+      await this.firebaseService.subscribeToTopic([body.fcm], TopicNoti.TopicForAllCustomer);
+    }
     return this.userService.update(user.data.id, { fcmToken: body.fcm });
   }
 }

@@ -59,16 +59,6 @@ export class PaymentService {
       return `${this.configService.getEnv('VNP_URL')}?${querystring.stringify(vnpParams, { encode: false })}`;
     }
 
-    // Nếu có payment session đã hết hạn, cập nhật status
-    if (existingPayment && moment().isAfter(existingPayment.expireDate)) {
-      await this.prismaService.payment.update({
-        where: { id: existingPayment.id },
-        data: {
-          transactionStatus: PaymentStatus.EXPIRED,
-        }
-      });
-    }
-
     // Tạo payment session mới
     const timestamp = moment().format('YYYYMMDDHHmmss');
     const txnRef = `${timestamp}${bookingId}`;
@@ -147,35 +137,45 @@ export class PaymentService {
         throw new BaseException(Errors.BAD_REQUEST(this.i18n.t('common-message.booking.vnpayReturn.invalid_booking_status')));
       }
 
-      // Update payment status
-      const status = responseCode === '00' 
-        ? PaymentStatus.SUCCESS 
-        : PaymentStatus.FAILED;
+      if (responseCode === '00') {
+        // Update payment status success
+        await this.prismaService.payment.update({
+          where: { id: payment.id },
+          data: {
+            transactionStatus: PaymentStatus.SUCCESS,
+            responseCode,
+            bankTranNo: vnpParams['vnp_BankTranNo'],
+            cardType: vnpParams['vnp_CardType'],
+            orderInfo: vnpParams['vnp_OrderInfo'],
+            bankCode: vnpParams['vnp_BankCode'],
+            payDate: moment(vnpParams['vnp_PayDate'], 'YYYYMMDDHHmmss').toDate(),
+            transactionNo: vnpParams['vnp_TransactionNo'],
+            secureHash: secureHash
+          },
+        });
 
-      await this.prismaService.payment.update({
-        where: { id: payment.id },
-        data: {
-          transactionStatus: status,
-          responseCode,
-          bankTranNo: vnpParams['vnp_BankTranNo'],
-          cardType: vnpParams['vnp_CardType'],
-          orderInfo: vnpParams['vnp_OrderInfo'],
-          bankCode: vnpParams['vnp_BankCode'],
-          payDate: moment(vnpParams['vnp_PayDate'], 'YYYYMMDDHHmmss').toDate(),
-          transactionNo: vnpParams['vnp_TransactionNo'],
-          secureHash: secureHash
-        },
-      });
-
-      // Update booking status if payment successful
-      if (status === PaymentStatus.SUCCESS) {
+        // Update booking status if payment successful
         await this.prismaService.booking.update({
           where: { id: payment.bookingId },
           data: { status: BookingStatus.CONFIRMED },
         });
+      } else {
+        await this.prismaService.payment.update({
+          where: { id: payment.id },
+          data: {
+            transactionStatus: PaymentStatus.FAILED,
+            responseCode,
+            bankTranNo: vnpParams['vnp_BankTranNo'],
+            cardType: vnpParams['vnp_CardType'],
+            orderInfo: vnpParams['vnp_OrderInfo'],
+            bankCode: vnpParams['vnp_BankCode'],
+            transactionNo: vnpParams['vnp_TransactionNo'],
+            secureHash: secureHash
+          },
+        });
       }
 
-      return { code: responseCode };
+      return { code: responseCode, payment: payment };
     }
 
     return { code: '97' }; // Checksum failed
@@ -208,32 +208,28 @@ export class PaymentService {
           include: {
             Payment: {
               where: {
-                transactionStatus: PaymentStatus.PENDING
+                OR: [
+                  { transactionStatus: PaymentStatus.PENDING },
+                  { transactionStatus: PaymentStatus.FAILED}
+                ]
               }
             }
           }
         });
 
-        // Chỉ hủy nếu booking vẫn PENDING và có payment đang PENDING
-        if (booking?.status === BookingStatus.PENDING && booking.Payment.length > 0) {
+        // Chỉ hủy nếu booking vẫn PENDING và có payment đang PENDING hoặc FAILED
+        if (booking?.status === BookingStatus.PENDING && booking.Payment) {
           await this.prismaService.$transaction(async (tx) => {
-            // Cập nhật payment status thành EXPIRED
-            await tx.payment.updateMany({
+            // Xóa luôn các bản ghi liên quan đến payment
+            await tx.payment.delete({
               where: {
-                bookingId,
-                transactionStatus: PaymentStatus.PENDING
-              },
-              data: {
-                transactionStatus: PaymentStatus.EXPIRED
+                id: booking.Payment.id
               }
             });
 
-            // Cập nhật booking status thành CANCELLED
-            await tx.booking.update({
-              where: { id: bookingId },
-              data: {
-                status: BookingStatus.CANCELLED
-              }
+            // Xóa bản ghi booking
+            await tx.booking.delete({
+              where: { id: bookingId }
             });
           });
 

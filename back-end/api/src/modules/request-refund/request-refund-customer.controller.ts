@@ -8,7 +8,7 @@ import { JwtAuthGuard } from 'src/core/auth/guards/jwt-auth.guard';
 import { RolesGuard } from 'src/core/auth/guards/roles.guard';
 import { IUserJwt } from 'src/core/auth/strategies/jwt.strategy';
 import { ParseIdPipe } from 'src/core/pipes/parse-id.pipe';
-import { BookingStatus, RequestRefundStatus } from 'src/helpers/constants/enum.constant';
+import { BookingStatus, NotificationType, RequestRefundStatus } from 'src/helpers/constants/enum.constant';
 import { BaseException, Errors } from 'src/helpers/constants/error.constant';
 import { I18nCustomService } from 'src/resources/i18n/i18n.service';
 import { BookingService } from '../booking/booking.service';
@@ -16,6 +16,9 @@ import { CreateRequestRefundDto, CreateRequestRefundDtoKeys } from './dto/create
 import { RequestRefundService } from './request-refund.service';
 import { UpdateRequestRefundCustomerDto } from './dto/update-request-refund.dto';
 import moment from 'moment';
+import { NotificationLogsService } from '../notification-log/notification-log.service';
+import { CreateNotificationLogsDto } from '../notification-log/dto/create-notification-log.dto';
+import { TopicNoti } from 'src/core/services/firebase.service';
 
 @ApiTags('Request Refund (Customer)')
 @Controller('request-refund-customer')
@@ -25,7 +28,8 @@ export class RequestRefundCustomerController {
     private readonly prismaService: PrismaService,
     private readonly i18n: I18nCustomService,
     private readonly bookingService: BookingService,
-  ) {}
+    private readonly notificationLogsService: NotificationLogsService,
+  ) { }
 
   @ApiBearerAuth()
   @Roles(UserRole.ADMIN, UserRole.STAFF, UserRole.CUSTOMER)
@@ -45,7 +49,7 @@ export class RequestRefundCustomerController {
     const currentDate = moment();
     const bookingDate = moment(booking.createdAt);
     const diffDays = currentDate.diff(bookingDate, 'days');
-    
+
     if (diffDays > 3) {
       throw new BaseException(Errors.BAD_REQUEST(this.i18n.t('common-message.request-refund.create.expired_time')));
     }
@@ -59,8 +63,8 @@ export class RequestRefundCustomerController {
       throw new BaseException(Errors.BAD_REQUEST(this.i18n.t('common-message.request-refund.create.cancelled')));
     if (booking.status === BookingStatus.COMPLETED)
       throw new BaseException(Errors.BAD_REQUEST(this.i18n.t('common-message.request-refund.create.completed')));
-    
-    return await this.prismaService.requestRefund.create({
+
+    const requestRefund = await this.prismaService.requestRefund.create({
       data: {
         userId: user.data.id,
         bookingId: booking.id,
@@ -72,6 +76,22 @@ export class RequestRefundCustomerController {
         status: RequestRefundStatus.PENDING
       }
     })
+
+    if (requestRefund) {
+      const notificationDataAdminStaff: CreateNotificationLogsDto = {
+        title: `Có yêu cầu hoàn tiền: ${booking.bookingCode}`,
+        subTitle: `Từ ${moment(booking.startDate).format('DD-MM-YYYY')} đến ${moment(booking.endDate).format('DD-MM-YYYY')}`,
+        body: `Lí do: ${body.reason}`,
+        topic: TopicNoti.TopicForAllAdminStaff,
+        type: NotificationType.REQUEST_REFUND,
+      }
+
+      await this.notificationLogsService.send(notificationDataAdminStaff);
+
+      return requestRefund;
+    } else {
+      return false;
+    }
   }
 
   @ApiBearerAuth()
@@ -82,6 +102,9 @@ export class RequestRefundCustomerController {
     const requestRefund = await this.requestRefundService.findOne({
       where: {
         id: id,
+      },
+      include: {
+        Booking: true
       }
     });
 
@@ -97,8 +120,24 @@ export class RequestRefundCustomerController {
     const keyNotInDto = Object.keys(body).find((key: keyof UpdateRequestRefundCustomerDto) => !CreateRequestRefundDtoKeys.includes(key))
     if (keyNotInDto) throw new BaseException(Errors.BAD_REQUEST(this.i18n.t('common-message.request-refund.update.wrong_parameter', { keyNotInDto })));
 
-    return await this.requestRefundService.update(requestRefund.id, {
+    const updateRequest = await this.requestRefundService.update(requestRefund.id, {
       ...body
-    })
+    });
+
+    if (updateRequest) {
+      const notificationDataAdminStaff: CreateNotificationLogsDto = {
+        title: `Cập nhật yêu cầu hoàn tiền: ${requestRefund?.Booking?.bookingCode}`,
+        subTitle: `Từ ${moment(requestRefund?.Booking?.startDate).format('DD-MM-YYYY')} đến ${moment(requestRefund?.Booking?.endDate).format('DD-MM-YYYY')}`,
+        body: `Mã yêu cầu hoàn tiền: ${requestRefund.id}`,
+        topic: TopicNoti.TopicForAllAdminStaff,
+        type: NotificationType.REQUEST_REFUND,
+      }
+
+      await this.notificationLogsService.send(notificationDataAdminStaff);
+
+      return updateRequest;
+    } else {
+      return false;
+    }
   }
 }

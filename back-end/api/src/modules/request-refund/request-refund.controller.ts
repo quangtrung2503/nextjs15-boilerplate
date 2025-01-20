@@ -15,7 +15,9 @@ import { BaseException, Errors } from 'src/helpers/constants/error.constant';
 import { UserDecorator } from 'src/core/auth/decorators/user.decorator';
 import { IUserJwt } from 'src/core/auth/strategies/jwt.strategy';
 import { UpdateRequestRefundDto, UpdateRequestRefundDtoKeys } from './dto/update-request-refund.dto';
-import { BookingStatus, PaymentStatus, RequestRefundStatus } from 'src/helpers/constants/enum.constant';
+import { BookingStatus, NotificationType, PaymentStatus, RequestRefundStatus } from 'src/helpers/constants/enum.constant';
+import { CreateNotificationLogsDto } from '../notification-log/dto/create-notification-log.dto';
+import { NotificationLogsService } from '../notification-log/notification-log.service';
 
 @ApiTags('Request Refund (Administrator)')
 @Controller('request-refund')
@@ -25,6 +27,7 @@ export class RequestRefundController {
     private readonly prismaService: PrismaService,
     private readonly i18n: I18nCustomService,
     private readonly bookingService: BookingService,
+    private readonly notificationLogsService: NotificationLogsService,
   ) { }
 
   @ApiBearerAuth()
@@ -81,6 +84,8 @@ export class RequestRefundController {
             endDate: true,
             totalPrice: true,
             status: true,
+            createdAt: true,
+            updatedAt: true,
             Tour: {
               select: {
                 id: true,
@@ -105,33 +110,19 @@ export class RequestRefundController {
               },
               where: {
                 transactionStatus: PaymentStatus.SUCCESS
-              },
-              take: 1
+              }
             }
           },
         },
       },
     }
 
-    const raw = await funcListPaging(
+    return await funcListPaging(
       this.requestRefundService,
       whereInput,
       options?.page,
       options?.perPage,
     )
-
-    const modifiedResults = {
-      ...raw,
-      items: raw?.items.map(requestRefund => {
-        const Payment = requestRefund.Booking.Payment[0];
-        requestRefund.Booking.Payment = Payment;
-
-        return requestRefund;
-      })
-
-    };
-
-    return modifiedResults;
   }
 
   @ApiBearerAuth()
@@ -152,6 +143,8 @@ export class RequestRefundController {
             endDate: true,
             totalPrice: true,
             status: true,
+            createdAt: true,
+            updatedAt: true,
             Tour: {
               select: {
                 id: true,
@@ -176,8 +169,7 @@ export class RequestRefundController {
               },
               where: {
                 transactionStatus: PaymentStatus.SUCCESS
-              },
-              take: 1
+              }
             }
           },
         },
@@ -187,16 +179,7 @@ export class RequestRefundController {
     if (!requestRefund)
       throw new BaseException(Errors.ITEM_NOT_FOUND(this.i18n.t('common-message.request-refund.findOne.not_found')));
 
-    const Payment = requestRefund.Booking.Payment[0];
-    delete requestRefund.Booking.Payment;
-
-    return {
-      ...requestRefund,
-      Booking: {
-        ...requestRefund.Booking,
-        Payment: Payment
-      }
-    };
+    return requestRefund;
   }
 
   @ApiBearerAuth()
@@ -210,6 +193,10 @@ export class RequestRefundController {
     const requestRefund = await this.requestRefundService.findOne({
       where: {
         id: id
+      },
+      include: {
+        User: true,
+        Booking: true,
       }
     });
 
@@ -224,9 +211,25 @@ export class RequestRefundController {
     if (body.status === RequestRefundStatus.APPROVED)
       await this.bookingService.update(requestRefund.bookingId, { status: BookingStatus.CANCELLED });
 
-    return await this.requestRefundService.update(
+    const updateRequest = await this.requestRefundService.update(
       requestRefund.id,
       updateData
     );
+
+    if (updateRequest) {
+      const notificationDataCustomer: CreateNotificationLogsDto = {
+        title: `Cập nhật yêu cầu hoàn tiền: ${requestRefund?.Booking?.bookingCode}`,
+        subTitle: body.status === RequestRefundStatus.APPROVED ? 'Đã chấp nhận' : body.status === RequestRefundStatus.REJECTED ? 'Đã từ chối' : 'Đang chờ xử lý',
+        body: `Mã yêu cầu hoàn tiền: ${requestRefund.id}`,
+        userReceiveIds: [requestRefund?.User?.id],
+        type: NotificationType.REQUEST_REFUND,
+      }
+
+      await this.notificationLogsService.send(notificationDataCustomer, user);
+
+      return updateRequest;
+    } else {
+      return false;
+    }
   }
 }

@@ -90,7 +90,6 @@ export enum PaymentStatus {
   PENDING = 'PENDING',
   SUCCESS = 'SUCCESS',
   FAILED = 'FAILED',
-  EXPIRED = 'EXPIRED'
 }
 
 export enum BookingCancellationReason {
@@ -118,4 +117,11 @@ export enum Rating {
   THREE = 3,
   FOUR = 4,
   FIVE = 5
+}
+
+export enum NotificationType {
+  DEFAULT = 'DEFAULT',
+  NEW_BOOKING = 'NEW_BOOKING',
+  REQUEST_REFUND = 'REQUEST_REFUND',
+  COMPLETE_BOOKING = 'COMPLETE_BOOKING'
 }
