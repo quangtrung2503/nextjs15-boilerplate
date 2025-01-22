@@ -27,7 +27,7 @@ const MenuProfile: React.FC<menuProfilesProps> = ({menuProfiles, activeMenuProfi
             menu.value === activeMenuProfile
               ? "tw-text-white tw-bg-primary hover:tw-bg-primary tw-cursor-pointer"
               : "tw-text-black tw-bg-white hover:tw-bg-white tw-cursor-pointer"
-          )}          
+          )}
         >
           {t(menu.label as any)}
 

@@ -6,9 +6,9 @@ import moment from "moment";
 import { HistoryBookingTour } from "@/services/modules/tour/interfaces/tour";
 import { statusColors } from "@/utils/utils";
 import apiUrls from "@/constants/apiUrls";
-import StatusActionButtons from "@/components/ActionButton/actionButton";
+import StatusActionButtons from "@/app/[locale]/profile/components/BookingHistory/actionButton";
 import { VND } from "@/constants/env";
-
+ 
 interface TourCardProps {
   tour: HistoryBookingTour; // Replace `any` with the actual type for tour
   onNavigateToDetail: (id: number) => void;
@@ -26,10 +26,11 @@ const TourCard = ({
 }: TourCardProps) => {
   return (
     <Box className="tw-flex tw-mb-2 tw-bg-white tw-rounded-lg tw-shadow-lg tw-p-6 tw-border tw-border-gray-200"
-      onClick={() => onNavigateToDetail(tour.id)}
-    >
+     >
       <Box className="tw-flex-grow">
-        <Box className="tw-mb-4 tw-flex tw-justify-between tw-items-center">
+        <Box className="tw-mb-4 tw-flex tw-justify-between tw-items-center"
+          onClick={() => onNavigateToDetail(tour.id)}
+        >
           <Typography variant="h6" className="tw-font-bold tw-text-gray-700">
             {t('order_id')} {tour.bookingCode}
           </Typography>
@@ -49,6 +50,7 @@ const TourCard = ({
             <Tooltip title={tour.Tour.name} placement="top">
               <Typography
                 className="tw-font-semibold tw-text-lg tw-text-gray-800 tw-line-clamp-1 tw-text-ellipsis"
+                onClick={() => onNavigateToDetail(tour.id)}
               >
                 {tour.Tour.name}
               </Typography>

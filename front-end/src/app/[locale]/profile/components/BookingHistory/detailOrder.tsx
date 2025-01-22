@@ -11,7 +11,7 @@ import { useTranslations } from "next-intl";
 import tourCustomerServices from "@/services/modules/tour/tourCustomer.services";
 import { useNotifications } from "@/helpers/toast";
 import Loading from "@/components/common/Loading";
-import StatusActionButtons from "@/components/ActionButton/actionButton";
+import StatusActionButtons from "@/app/[locale]/profile/components/BookingHistory/actionButton";
 
 interface DetailOrderProps {
   id: number;
@@ -26,7 +26,6 @@ const DetailOrder = ({ id, onGoBack }: DetailOrderProps) => {
 
   //Function
   const handleCancelTour = (tourId: number) => {
-    // console.log(`Hủy tour với ID: ${tourId}`);
   };
   const navigateToPaymentPage = async (tourId: number) => {
     try {
@@ -152,7 +151,7 @@ const DetailOrder = ({ id, onGoBack }: DetailOrderProps) => {
               onNavigate={navigateToPaymentPage}
             />
           )}
-        </Box>
+         </Box>
       </Box>
     </Box>
   );

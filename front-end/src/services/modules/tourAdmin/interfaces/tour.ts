@@ -1,4 +1,5 @@
 import { TransportOfTour } from "@/helpers/common";
+import internal from "stream";
 export interface Tour {
   id?: number;
   name: string;
@@ -81,4 +82,10 @@ export interface ApiResponse {
   tour: Tour;
   listTourInToday: Tour[];
   listTourSameCity: Tour[];
+}
+
+export interface RefundDataAdmin {
+  status: string,
+  imageProof: string,
+  note: string,
 }

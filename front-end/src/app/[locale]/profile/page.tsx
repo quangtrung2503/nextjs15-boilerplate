@@ -4,8 +4,8 @@ import React, { useEffect, useState } from "react";
 import { Box } from "@mui/material";
 import Grid from "@mui/material/Grid2";
 import ProfileCard from "@/app/[locale]/profile/components/CardProfile/cardProfile";
-import MenuProfile from "./components/MenuProfile/menuProfile";
-import { menuProfile } from "./components/MenuProfile/menuProfileData";
+import MenuProfile from "./components/CardProfile/menuProfile";
+import { menuProfile } from "./components/CardProfile/menuProfileData";
 import useAuth from "@/hooks/useAuth";
 import Loading from "@/components/common/Loading";
 import withAuth from "@/HOCs/withAuth";
@@ -14,7 +14,7 @@ import CardBreadcrumbs from "../../../components/BreadCrump/breadcrumb";
 import { useNotifications } from "@/helpers/toast";
 import { useTranslations } from "next-intl";
 import tourCustomerServices from "@/services/modules/tour/tourCustomer.services";
-import ProfileContent from "./components/profileContent";
+import ProfileContent from "./components/CardProfile/profileContent";
 
 const ProfileWithCustomComponent: React.FC = () => {
   //!Const + Hook
