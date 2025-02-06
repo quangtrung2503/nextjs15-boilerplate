@@ -64,10 +64,12 @@ export class ThemeController {
 
     if (options?.from || options?.to) {
       // @ts-ignore
-      where.AND = where.AND.concat([
-        { createdAt: { gte: moment(options?.from).toDate() } },
-        { createdAt: { lte: moment(options?.to).toDate() } },
-      ])
+      where.AND.push({
+        createdAt: {
+          ...(options.from && { gte: moment(options.from).toDate() }),
+          ...(options.to && { lte: moment(options.to).toDate() }),
+        },
+      });
     }
 
     const whereInput: Prisma.ThemeFindManyArgs = {
@@ -90,7 +92,7 @@ export class ThemeController {
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Get(':id')
   async findOne(@Param('id', ParseIdPipe) id: number) {
-    const theme = await this.themeService.findOne({ 
+    const theme = await this.themeService.findOne({
       where: { id }
     });
     if (!theme) throw new BaseException(Errors.ITEM_NOT_FOUND(this.i18n.t('common-message.theme.findOne.not_found')));
@@ -141,7 +143,7 @@ export class ThemeController {
         { id: { in: tourIds } },
         { isActive: newStatus }
       );
-      
+
     }
 
     return updateTheme;

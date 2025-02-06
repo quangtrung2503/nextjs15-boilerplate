@@ -14,6 +14,15 @@ export class CreateDestinationDto {
   readonly name: string;
 
   @ApiProperty({
+    example: 'https://example.com/image1.jpg',
+    description: 'Image of destination',
+    required: true,
+  })
+  @IsNotEmpty()
+  @IsString()
+  readonly image: string;
+
+  @ApiProperty({
     example: true,
     description: 'Is feature destination',
     required: false,

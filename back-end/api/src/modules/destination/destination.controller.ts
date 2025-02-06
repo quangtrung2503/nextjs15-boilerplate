@@ -71,10 +71,12 @@ export class DestinationController {
 
     if (options?.from || options?.to) {
       // @ts-ignore
-      where.AND = where.AND.concat([
-        { createdAt: { gte: moment(options?.from).toDate() } },
-        { createdAt: { lte: moment(options?.to).toDate() } },
-      ])
+      where.AND.push({
+        createdAt: {
+          ...(options.from && { gte: moment(options.from).toDate() }),
+          ...(options.to && { lte: moment(options.to).toDate() }),
+        },
+      });
     }
 
     const whereInput: Prisma.DestinationFindManyArgs = {
@@ -97,7 +99,7 @@ export class DestinationController {
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Get(':id')
   async findOne(@Param('id', ParseIdPipe) id: number) {
-    const destination = await this.destinationService.findOne({ 
+    const destination = await this.destinationService.findOne({
       where: { id }
     });
     if (!destination) throw new BaseException(Errors.ITEM_NOT_FOUND(this.i18n.t('common-message.destination.findOne.not_found')));

@@ -1,4 +1,4 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, OmitType } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
 import { IsBoolean, IsOptional } from 'class-validator';
 import { FilterOptions } from 'src/helpers/common/filterOption.dto';
@@ -17,3 +17,5 @@ export class FilterDestinationDto extends FilterOptions {
   @IsOptional()
     isFeature?: boolean;
 }
+
+export class FilterPopularDestinationDto extends OmitType(FilterOptions, ['from', 'to', 'sortField', 'sortOrder', 'page', 'perPage']) {}
