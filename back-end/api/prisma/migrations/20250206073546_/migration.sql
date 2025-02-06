@@ -98,6 +98,7 @@ CREATE TABLE `theme` (
 CREATE TABLE `destination` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `name` VARCHAR(255) NOT NULL,
+    `image` VARCHAR(255) NOT NULL,
     `isFeature` BOOLEAN NOT NULL DEFAULT false,
     `isActive` BOOLEAN NOT NULL DEFAULT true,
     `slug` VARCHAR(255) NOT NULL,

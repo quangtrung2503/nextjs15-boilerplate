@@ -7,7 +7,8 @@ import { funcListPaging } from 'src/helpers/common/list-paging';
 import { BaseException, Errors } from 'src/helpers/constants/error.constant';
 import { I18nCustomService } from 'src/resources/i18n/i18n.service';
 import { DestinationService } from './destination.service';
-import { FilterDestinationDto } from './dto/filter-destination.dto';
+import { FilterDestinationDto, FilterPopularDestinationDto } from './dto/filter-destination.dto';
+import { BookingStatus } from 'src/helpers/constants/enum.constant';
 
 @ApiTags('Destination (Customer)')
 @Controller('destination-customer')
@@ -43,10 +44,12 @@ export class DestinationCustomerController {
 
     if (options?.from || options?.to) {
       // @ts-ignore
-      where.AND = where.AND.concat([
-        { createdAt: { gte: moment(options?.from).toDate() } },
-        { createdAt: { lte: moment(options?.to).toDate() } },
-      ])
+      where.AND.push({
+        createdAt: {
+          ...(options.from && { gte: moment(options.from).toDate() }),
+          ...(options.to && { lte: moment(options.to).toDate() }),
+        },
+      });
     }
 
     const whereInput: Prisma.DestinationFindManyArgs = {
@@ -66,12 +69,85 @@ export class DestinationCustomerController {
 
   @Get(':slug')
   async findOne(@Param('slug') slug: string) {
-    const destination = await this.destinationService.findOne({ 
+    const destination = await this.destinationService.findOne({
       where: { slug, isActive: true }
     });
     if (!destination) throw new BaseException(Errors.ITEM_NOT_FOUND(this.i18n.t('common-message.destination.findOne.not_found')));
 
     return destination;
+  }
+
+  @Get('popular/get-popular-destinations')
+  async getPopularDestinatons(@Query() options: FilterPopularDestinationDto) {
+    const where: Prisma.DestinationWhereInput = {
+      isActive: true,
+      AND: [
+        {
+          TourDestination: {
+            some: {
+              Tour: {
+                Booking: {
+                  some: {
+                    status: BookingStatus.COMPLETED
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    };
+
+    if (options.textSearch) {
+      // @ts-ignore
+      where.AND.push({
+        OR: [
+          { name: { contains: options.textSearch } }
+        ]
+      });
+    }
+
+    const raws = await this.prismaService.destination.findMany({
+      where: where,
+      include: {
+        TourDestination: {
+          include: {
+            Tour: {
+              include: {
+                Booking: {
+                  where: {
+                    status: BookingStatus.COMPLETED
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      take: 20
+    });
+
+    // Tính toán số lượng booking COMPLETED
+    const processedDestinations = raws.map((destination) => {
+      const completedBookingCount = destination.TourDestination.reduce(
+        (count, tourDest) =>
+          count + (tourDest.Tour?.Booking ? tourDest.Tour.Booking.length : 0),
+        0
+      );
+
+      delete destination.TourDestination;
+      return {
+        ...destination,
+        completedBookingCount,
+      };
+    });
+
+    // Sắp xếp theo số lượng booking COMPLETED
+    processedDestinations.sort((a, b) => b.completedBookingCount - a.completedBookingCount);
+
+    return {
+      items: processedDestinations,
+    };
   }
 
 }

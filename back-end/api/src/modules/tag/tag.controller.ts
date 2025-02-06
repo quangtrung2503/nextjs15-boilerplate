@@ -61,10 +61,12 @@ export class TagController {
 
     if (options?.from || options?.to) {
       // @ts-ignore
-      where.AND = where.AND.concat([
-        { createdAt: { gte: moment(options?.from).toDate() } },
-        { createdAt: { lte: moment(options?.to).toDate() } },
-      ])
+      where.AND.push({
+        createdAt: {
+          ...(options.from && { gte: moment(options.from).toDate() }),
+          ...(options.to && { lte: moment(options.to).toDate() }),
+        },
+      });
     }
 
     const whereInput: Prisma.TagFindManyArgs = {
