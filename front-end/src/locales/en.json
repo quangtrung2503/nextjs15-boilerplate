@@ -527,6 +527,8 @@
     "edit": "Edit"
   },
   "bookingAdmin": {
+    "submit": "Submit",
+    "cancel": "Cancel",
     "placeholderSearch": "Search booking",
     "name": "Tour Booker",
     "tour": "Tour name",
@@ -542,7 +544,25 @@
     "numberOfAdults": "Number of adults",
     "numberOfChildren": "Number of children",
     "note": "Note",
-    "editSuccess": "Edit success"
+    "editSuccess": "Edit success",
+    "refundBooking": "Refund Booking",
+    "imageProof": "Image Proof",
+    "clientRequest": "Client Request",
+    "reason": "Reason",
+    "accountHolderName": "Account Holder Name",
+    "accountHolderNameRequired": "Account Holder Name Required",
+    "accountNumber": "Account Number",
+    "accountNumberRequired": "Account Number Required",
+    "accountNumberNumeric": "Account Number Numeric",
+    "bankName": "Bank Name",
+    "bankNameRequired": "Bank Name Required",
+    "qrCode": "QR Code",
+    "adminResponse": "Admin Response",
+    "notePlaceholder": "notePlaceholder",
+    "refundRequest": "Refund Request",
+    "refundSuccess": "Refund Succsess",
+    "anErrorOccurred": "An error occurred",
+    "uploadedQRCode": "Uploaded QR Code"
   },
   "confirmTour": {
     "code": "Code",

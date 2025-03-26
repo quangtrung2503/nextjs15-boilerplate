@@ -4,22 +4,23 @@ import CommonIcons from "@/components/CommonIcons";
 import { Tooltip } from "@mui/material";
 import moment from "moment";
 import { DateTimeFormat } from "@/helpers/common";
+import { isEmpty } from "lodash";
 
 const ActionCell: React.FC<{
   row: Booking;
-  handleEditId: (id: number) => void;
+  handleRefundBooking: (id: number) => void;
   t: any;
-}> = ({ row, handleEditId, t }) => {
+}> = ({ row, handleRefundBooking, t }) => {
   return (
     <CommonStyles.Box className="tw-flex tw-gap-2">
       {row.id && (
         <>
           <Tooltip title={t("confirm")}>
             <CommonStyles.Box
-              onClick={() => handleEditId(Number(row.id))}
+              onClick={() => handleRefundBooking(Number(row.id))}
               className="tw-cursor-pointer tw-size-7"
             >
-              <CommonIcons.EditOutlined className="tw-text-blue-500" />
+              <CommonIcons.CurrencyExchange className="tw-text-blue-500" />
             </CommonStyles.Box>
           </Tooltip>
         </>
@@ -34,7 +35,7 @@ const StatusCell = ({row,content}: {row: Booking,content: string})=>{
         return <span className={`tw-flex tw-w-fit tw-items-center tw-rounded-full tw-py-1 tw-px-4 tw-text-sm tw-font-medium tw-capitalize tw-text-green-600 tw-bg-green-100`}>
         {content}
       </span>
-      case "COMPLETED": 
+      case "COMPLETED":
       return <span className={`tw-flex tw-w-fit tw-items-center tw-rounded-full tw-py-1 tw-px-4 tw-text-sm tw-font-medium tw-capitalize tw-text-blue-600 tw-bg-blue-100`}>
         {content}
       </span>
@@ -43,8 +44,10 @@ const StatusCell = ({row,content}: {row: Booking,content: string})=>{
     }
 }
 export const headCells = ({
+  handleRefundBooking,
   t,
 }: {
+  handleRefundBooking: (id: number) => void;
   t: any;
 }) => {
   return [
@@ -123,13 +126,14 @@ export const headCells = ({
     //   return <StatusCell row={row} content={row.amountPaid.toString()} />
     //   },
     // },
-    // {
-    //   id: "actionBooking",
-    //   label: t("action"),
-    //   numeric: false,
-    //   Cell(row: Booking, _index: number) {
-    //     return <ActionCell row={row} handleEditId={handleEditId} t={t} />;
-    //   },
-    // },
+    {
+      id: "actionBooking",
+      label: t("action"),
+      numeric: false,
+      Cell(row: Booking, _index: number) {
+        if(isEmpty(row.RequestRefund)) return <div />
+        return <ActionCell row={row} handleRefundBooking={handleRefundBooking} t={t} />;
+      },
+    },
   ];
 };

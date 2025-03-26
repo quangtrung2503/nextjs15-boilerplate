@@ -11,6 +11,7 @@ import {
   ApiResponse,
   CustomerReview,
   HistoryBookingTour,
+  IRefundData,
   ReviewData,
   Stats,
   ThemeTour,
@@ -138,6 +139,9 @@ class TourService {
   }
   getDetaiBookingHistory(idTourBooking: number, configs: AxiosRequestConfig) {
     return httpService.get(`${apiUrls.BOOKING_TOUR_URL}/${idTourBooking}`)
+  }
+  requestRefundOrder(idBooking: number, refundRequest: IRefundData) {
+    return httpService.post(`${apiUrls.REQUEST_REFUND_CUSTOMER}/${idBooking}`, refundRequest)
   }
 }
 

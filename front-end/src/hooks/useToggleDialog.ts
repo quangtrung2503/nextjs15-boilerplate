@@ -16,14 +16,7 @@ const useToggleDialog = () => {
 
   const shouldRender = open || close;
 
-  const setStateDialog = useCallback((status: boolean) => {
-    setOpen(status);
-    setTimeout(() => {
-      setClose(status);
-    }, 500);
-  }, []);
-
-  return { open, toggle, shouldRender, setStateDialog };
+  return { open, toggle, shouldRender };
 };
 
-export default useToggleDialog;
+export default useToggleDialog

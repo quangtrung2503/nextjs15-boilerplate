@@ -155,3 +155,11 @@ export interface ReviewData {
   perPage: number;
   stats: Stats;
 }
+
+export interface IRefundData {
+  reason: string;
+  accountHolderName: string;
+  accountNumber: string;
+  bankName: string;
+  imageQRCode: string;
+}

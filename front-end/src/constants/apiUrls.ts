@@ -29,5 +29,7 @@ export default {
   STATS_URL: `${BASE_URL}/stats`,
   BOOKING_TOUR_URL: `${BASE_URL}/booking-customer`,
   PENDING_PAYMENT_URL: `${BASE_URL}/booking-customer/get-payment-url`,
-  VNPAY_RETURN_URL: `${BASE_URL}/booking-customer/payment-return/vnpay-return`
+  VNPAY_RETURN_URL: `${BASE_URL}/booking-customer/payment-return/vnpay-return`,
+  REQUEST_REFUND_CUSTOMER: `${BASE_URL}/request-refund-customer`,
+  FEEDBACK_REFUND_ADMIN: `${BASE_URL}/request-refund/update-status`,
 };

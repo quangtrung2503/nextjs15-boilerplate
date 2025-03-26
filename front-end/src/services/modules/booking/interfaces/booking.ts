@@ -23,7 +23,8 @@ export interface Booking{
   createdAt?: string,
   updatedAt?: string,
   User: User,
-  Tour: Tour,  
+  Tour: Tour,
+  RequestRefund: RequestRefund,
 }
 export interface BookingUpdate{
   id?: number;
@@ -41,4 +42,21 @@ export interface PaymentProof {
   image: string,
   createdAt?: string,
   updatedAt?: string
+}
+
+export interface RequestRefund {
+  id: number;
+  bookingId: number;
+  userId: number;
+  reason: string;
+  imageQRCode: string;
+  accountHolderName: string;
+  accountNumber: string;
+  bankName: string;
+  status: string;
+  imageProof: string | null;
+  note: string | null;
+  createdAt: Date;
+  updatedAt: Date;
+  updatedBy: string | null;
 }

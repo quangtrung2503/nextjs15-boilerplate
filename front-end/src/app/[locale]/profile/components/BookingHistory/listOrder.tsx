@@ -8,9 +8,8 @@ import moment from "moment";
 import Loading from "@/components/common/Loading";
 import tourCustomerServices from "@/services/modules/tour/tourCustomer.services";
 import { useNotifications } from "@/helpers/toast";
-import TourCard from "./orderCard";
+import TourCard from "./cardOrder";
 import { DateTimeFormat } from "@/helpers/common";
-import { VND } from "@/constants/env";
 
 interface IPropsListOrder {
   onViewDetail: (id: number) => void
@@ -52,9 +51,8 @@ const ListOrder = ({ onViewDetail }: IPropsListOrder) => {
     onViewDetail?.(id)
   };
   
-  const handleCancelTour = (tourId: number) => {
-    // console.log(`Cancel Tour: ${tourId}`);
-  };
+  const handleCancelTour = (tourId: number) => {};
+
 
   return (
     <Box className="tw-flex-grow tw-rounded-sm tw-bg-gray-50 tw-px-10">
@@ -84,7 +82,7 @@ const ListOrder = ({ onViewDetail }: IPropsListOrder) => {
                   onCancelTour={handleCancelTour}
                   onNavigateToPaymentPage={navigateToPaymentPage}
                   t={t}
-                />
+                />     
               );
             })}
           </Box>

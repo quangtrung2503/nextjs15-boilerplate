@@ -45,7 +45,8 @@ const useGetBookings = (
   const { isTrigger = true, refetchKey = "" } = options;
   const signal = useRef(new AbortController());
   const save = useSave();
-  const [data, setData] = useState<ResponseList<Booking[]>>();
+  const [data, setData] = useState<Booking[]>();
+  const [total, setTotal] = useState<number>(0);
   const [loading, setLoading] = useState(false);
   const [refetching, setRefetching] = useState(false);
   const [error, setError] = useState<unknown>(null);
@@ -77,8 +78,9 @@ const useGetBookings = (
   const checkConditionPass = useCallback((response: ResponseBookingList) => {
     //* Check condition of response here to set data
     if (isObject(response?.data)) {
-      setData(response?.data.data);
-      setHasMore(data?data.currentPage < data.totalPage : false);
+      setData(response?.data.data.items);
+      setHasMore(response?.data?.data.currentPage < response?.data?.data.totalPage);
+      setTotal(response?.data.data?.totalItems)
     }
   }, []);
 
@@ -159,6 +161,7 @@ const useGetBookings = (
     refetching,
     hasMore,
     setData,
+    total
   };
 };
 

@@ -3,9 +3,9 @@
 import React from "react";
 import { Box } from "@mui/material";
 import Divider from "@/components/common/Divider";
-import PersonalProfile from "./PersonalInformation/personalInformation";
-import SecurityInformation from "./SecurityInformation/securityInformation";
-import BookingHistory from "./BookingHistory";
+import PersonalProfile from "../PersonalInformation/personalInformation";
+import SecurityInformation from "../PersonalInformation/securityInformation";
+import BookingHistory from "../BookingHistory";
 import { Profile } from "@/services/modules/profile/interface/profile";
 
 interface ProfileContentProps {

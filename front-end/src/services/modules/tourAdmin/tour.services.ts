@@ -3,7 +3,7 @@ import httpService from "@/services/httpService";
 import { AxiosRequestConfig, AxiosResponse } from "axios";
 import apiUrls from "@/constants/apiUrls";
 import queryString from "query-string";
-import { Tour } from "./interfaces/tour";
+import { RefundDataAdmin, Tour } from "./interfaces/tour";
 
 export interface FiltersGetTours extends CommonFilters { }
 export interface RequestGetTours extends CommonFilters { }
@@ -37,6 +37,9 @@ class TourService {
 
   deleteTour(id: number, configs?: AxiosRequestConfig) {
     return httpService.delete(`${apiUrls.TOUR_URL}/${id}`, configs)
+  }
+  feedbackRefundBooking(id: number, refundData: RefundDataAdmin) {
+    return httpService.patch(`${apiUrls.FEEDBACK_REFUND_ADMIN}/${id}`, refundData)
   }
 }
 
